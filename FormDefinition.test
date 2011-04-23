@@ -1,0 +1,71 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ *
+ * Simple Tests.
+ */
+
+/**
+ *
+ */
+class XMLFormAPITestCase extends DrupalWebTestCase {
+
+  /**
+   * Get Test info.
+   * 
+   * @return array
+   *   Properties that are displayed in the test selection form.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'XML Form API functional tests',
+      'description' => 'Ensure that the XML Form API functions properly.',
+      'group' => 'XML Form API',
+    );
+  }
+
+  /**
+   * setUp() performs any pre-requisite tasks that need to happen. 
+   */
+  public function setUp() {
+    // Enable any modules required for the test.
+    parent::setUp('xml_form_api');
+  }
+
+  public function testFormDefinition() {
+    
+  }
+
+}
+
+/**
+ * Unit Tests for the FormDefinition class.
+ */
+class XMLFormAPIFormDefinitionTestCase extends DrupalUnitTestCase {
+
+  /**
+   * Get Test info.
+   * 
+   * @return array
+   *   Properties that are displayed in the test selection form.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Form Definition Unit Tests.',
+      'description' => 'Unit tests for FormDefinition.inc.',
+      'group' => 'XML Form API',
+    );
+  }
+
+  /**
+   * setUp() performs any pre-requisite tasks that need to happen. 
+   */
+  public function setUp() {
+    // Enable any modules required for the test.
+    parent::setUp('xml_form_api');
+  }
+
+}

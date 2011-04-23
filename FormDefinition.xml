@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:/Users/nbanks/Sites/dgi/drupal/sites/xml_form_api.local/modules/xml_form_api/FormDefinition.xsd">
+    <properties>
+        <schemas>
+            <schema></schema>
+        </schemas>
+    </properties>
+    <elements>
+        <textfield>
+            <title>Foo</title>
+            <description></description>
+        </textfield>
+        <textarea>
+            <attributes>foo</attributes>
+        </textarea>
+    </elements>
+</form>

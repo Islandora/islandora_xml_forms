@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="form">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="properties">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="schemas">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="schema" type="xs:normalizedString"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="elements" minOccurs="1">
+                    <xs:complexType>
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="textfield"/>
+                            <xs:element name="textarea">
+                                <xs:complexType>
+                                    <xs:group ref="textfieldFormControls"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:choice>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:group name="elementsGroup">
+        <xs:choice>
+            <xs:element name="textfield" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element minOccurs="0" name="access" type="accessFormControl"/>
+                        <xs:element minOccurs="0" name="after_build" type="afterBuildFormControl"> </xs:element>
+                        <xs:element minOccurs="0" name="attributes" type="array"/>
+                        <xs:element minOccurs="0" name="autocomplete_path"
+                            type="xs:normalizedString"/>
+                        <xs:element minOccurs="0" name="description" type="xs:normalizedString"/>
+                        <xs:element minOccurs="0" name="element_validate" type="xs:normalizedString"/>
+                        <xs:element minOccurs="0" name="post_render">
+                            <xs:simpleType>
+                                <xs:list itemType="xs:normalizedString"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="prefix" type="xs:normalizedString"/>
+                        <xs:element minOccurs="0" name="pre_render">
+                            <xs:simpleType>
+                                <xs:list itemType="xs:normalizedString"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="process">
+                            <xs:simpleType>
+                                <xs:list itemType="xs:normalizedString"/>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="suffix" type="xs:normalizedString"/>
+                        <xs:element minOccurs="0" name="theme" type="xs:normalizedString"/>
+                        <xs:element minOccurs="0" name="title" type="xs:normalizedString"/>
+                        <xs:element minOccurs="0" name="tree" type="xs:boolean"/>
+                        <xs:element minOccurs="0" name="weight" type="xs:decimal"/>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="textarea">
+                <xs:complexType>
+                    <xs:group ref="textfieldFormControls"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="commonFormControls">
+        <xs:choice>
+            <xs:element minOccurs="0" name="access" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="after_build">
+                <xs:simpleType>
+                    <xs:list itemType="xs:normalizedString"/>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element minOccurs="0" name="description" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="element_validate" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="post_render">
+                <xs:simpleType>
+                    <xs:list itemType="xs:normalizedString"/>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element minOccurs="0" name="prefix" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="pre_render">
+                <xs:simpleType>
+                    <xs:list itemType="xs:normalizedString"/>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element minOccurs="0" name="process">
+                <xs:simpleType>
+                    <xs:list itemType="xs:normalizedString"/>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element minOccurs="0" name="suffix" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="theme" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="title" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="tree" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="weight" type="xs:decimal"/>
+        </xs:choice>
+    </xs:group>
+    <xs:group name="textfieldFormControls">
+        <xs:choice>
+            <xs:group ref="commonFormControls"/>
+            <xs:element name="attributes" type="xs:string"/>
+        </xs:choice>
+    </xs:group>
+    <xs:complexType name="elementsDefiniton">
+        <xs:group maxOccurs="1" minOccurs="1" ref="elementsGroup"/>
+    </xs:complexType>
+    <xs:complexType name="elementDefinition">
+        <xs:group maxOccurs="1" minOccurs="1" ref="commonFormControls"/>
+    </xs:complexType>
+    <xs:complexType name="textfieldDefinition">
+        <xs:choice maxOccurs="unbounded" minOccurs="0"/>
+    </xs:complexType>
+    <xs:complexType name="array">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="key" type="arrayKey"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="arrayKey">
+        <xs:choice>
+            <xs:element name="value" type="xs:normalizedString"/>
+            <xs:element name="key" type="arrayKey"/>
+        </xs:choice>
+        <xs:attribute name="name"/>
+    </xs:complexType>
+    <xs:complexType name="accessFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:boolean"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="afterBuildFormControl">
+        <xs:complexContent>
+            <xs:extension base="array"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="ahahFormControl">
+        <xs:all>
+            <xs:element minOccurs="0" name="effect" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="event" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="keypress" type="xs:boolean"/>
+            <xs:element minOccurs="0" name="method">
+                <xs:simpleType>
+                    <xs:restriction base="xs:normalizedString">
+                        <xs:enumeration value="replace"/>
+                        <xs:enumeration value="after"/>
+                        <xs:enumeration value="before"/>
+                        <xs:enumeration value="prepend"/>
+                        <xs:enumeration value="append"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element minOccurs="0" name="path" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="progress">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element minOccurs="0" name="type">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:normalizedString">
+                                    <xs:enumeration value="throbber"/>
+                                    <xs:enumeration value="bar"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                        <xs:element minOccurs="0" name="message" type="xs:normalizedString"/>
+                        <xs:element minOccurs="0" name="url" type="xs:string"/>
+                        <xs:element minOccurs="0" name="interval" type="xs:string"/>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="wrapper" type="xs:normalizedString"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="attributesFormControl">
+        <xs:complexContent>
+            <xs:extension base="array"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="buttonTypeFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:normalizedString"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="collapsedFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:boolean"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="collapsibleFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:boolean"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="colsFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:positiveInteger"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="defaultValueFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:normalizedString"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="deltaFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:positiveInteger"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="descriptionFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:normalizedString"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="disabledFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:boolean"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="elementValidateFormControl">
+        <xs:complexContent>
+            <xs:extension base="array"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="executesSubmitCallbackFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:boolean"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="fieldPrefixFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:normalizedString"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="fieldSuffixFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:normalizedString"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="maxLengthFormControl">
+        <xs:simpleContent>
+            <xs:extension base="xs:positiveInteger"/>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:simpleType name="methodFormControl">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="post"/>
+            <xs:enumeration value="get"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="multipleFormControl">
+        <xs:restriction base="xs:boolean"/>
+    </xs:simpleType>
+    <xs:simpleType name="nameFormControl">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:complexType name="optionsFormControl">
+        <xs:complexContent>
+            <xs:extension base="array"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="postRenderFormControl">
+        <xs:complexContent>
+            <xs:extension base="array"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="prefixFormControl">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:complexType name="preRenderFormControl">
+        <xs:complexContent>
+            <xs:extension base="array"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="processFormControl">
+        <xs:complexContent>
+            <xs:extension base="array"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="redirectFormControl">
+        <xs:choice>
+            <xs:element fixed="false" name="false" type="xs:boolean"/>
+            <xs:element name="internal_path" type="xs:string"/>
+            <xs:element name="array" type="array"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:simpleType name="requiredFormControl">
+        <xs:restriction base="xs:boolean"/>
+    </xs:simpleType>
+    <xs:simpleType name="returnValueFormControl">
+        <xs:restriction base="xs:normalizedString"/>
+    </xs:simpleType>
+    <xs:simpleType name="rowsFormControl">
+        <xs:restriction base="xs:positiveInteger"/>
+    </xs:simpleType>
+    <xs:simpleType name="sizeFormControl">
+        <xs:restriction base="xs:positiveInteger"/>
+    </xs:simpleType>
+    <xs:simpleType name="srcFormControl">
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:complexType name="submitFormControl">
+        <xs:complexContent>
+            <xs:extension base="array"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="suffixFormControl">
+        <xs:restriction base="xs:normalizedString"/>
+    </xs:simpleType>
+    <xs:simpleType name="themeFormControl">
+        <xs:restriction base="xs:normalizedString"/>
+    </xs:simpleType>
+    <xs:simpleType name="titleFormControl">
+        <xs:restriction base="xs:normalizedString"/>
+    </xs:simpleType>
+</xs:schema>

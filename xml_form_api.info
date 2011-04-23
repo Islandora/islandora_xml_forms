@@ -1,0 +1,6 @@
+; $Id$
+name = XML Form API
+description = Generates Drupal Forms from an XML definition. Create/Edit XML documents via Drupal forms.
+dependencies[] = jquery_update
+dependencies[] = jquery_ui
+core = 6.x
