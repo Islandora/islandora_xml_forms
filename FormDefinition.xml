@@ -6,12 +6,31 @@
         </schemas>
     </properties>
     <elements>
-        <textfield>
+        <element>
+            <type>Foo</type>
+            <src></src>
             <title>Foo</title>
             <description></description>
-        </textfield>
-        <textarea>
-            <attributes>foo</attributes>
-        </textarea>
+            <children>
+                <element>
+                    <type>var</type>
+                </element>
+            </children>
+        </element>
+        <element>
+            <type></type>
+            <attributes>
+                <key name="0">
+                    <value>foo</value>
+                </key>
+                <key name="1">
+                    <key name="">
+                        <key>
+                            <value>1</value>
+                        </key>
+                    </key>
+                </key>
+            </attributes>
+        </element>
     </elements>
 </form>

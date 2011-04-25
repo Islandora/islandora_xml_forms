@@ -46,13 +46,24 @@ class FormDefinition {
    * Validates the document.
    */
   public function validate() {
-    $path = drupal_get_path('module', 'xml_form_api') . 'FormDefinition.xsd';
+    $path = drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xsd';
     if ($this->doc->schemaValidate($path) == FALSE) {
       throw new Exception('Could not create FormDefintion object, the XML provided was not valid.');
     }
   }
   
+  /**
+   * 
+   */
+  public function getProperties() {
+    
+  }
   
-
+  /**
+   * 
+   */
+  public function getElements() {
+    
+  }
 }
 
