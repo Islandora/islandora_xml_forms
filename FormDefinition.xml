@@ -16,6 +16,20 @@
                     <type>var</type>
                 </element>
             </children>
+            <xml_form>
+                <xpath>
+                    <path></path>
+                    <parent_path></parent_path>
+                </xpath>
+                <schema>
+                    <name></name>
+                    <path></path>
+                </schema>
+                <settings>
+                    <require_value>true</require_value>
+                    <remove_if_null>true</remove_if_null>
+                </settings>
+            </xml_form>
         </element>
         <element>
             <type></type>
@@ -32,5 +46,17 @@
                 </key>
             </attributes>
         </element>
+        <element>
+            <type>tabpanel</type>
+            <children>
+                <element>
+                    <type>textfield</type>
+                </element>
+                <element>
+                    <type>set</type>
+                </element>
+            </children>
+        </element>
+        
     </elements>
 </form>

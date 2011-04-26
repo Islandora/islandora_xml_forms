@@ -13,25 +13,25 @@
 /**
  * Form Control Type
  */
-class FCType extends SplEnum {
-  const __default = 0;
+class FCType {
+  const __default = 0; // Enum supported with pecl... Need to extend SplEnum
   /* Common form control types */
   const FC_String = 0; // Default Form Control Type.
   const FC_Boolean = 1;
   const FC_Integer = 2;
   const FC_Array = 3;
-  const FC_XMLForm = 4;
   /* Special processing (Form Control Specific)  */
-  const FC_Ahah = 5;
-  const FC_Redirect = 6;
+  const FC_Ahah = 4;
+  const FC_Redirect = 5;
 }
 
 class FormControlGeneratorFunctions {
+
   /**
    *
    * @var array 
    */
-  static private $formControlToTypeMap = array(
+  public static $form_control_type_map = array(
     /* Drupal API Form Controls */
     'access' => FCType::FC_Boolean,
     'action' => FCType::FC_String,
@@ -76,22 +76,126 @@ class FormControlGeneratorFunctions {
     'validate' => FCType::FC_Array,
     'value' => FCType::FC_String,
     'weight' => FCType::FC_Integer,
-    /* XML Form API specific Form Controls */
-    'xml_form' => FCType::FC_XMLForm
   );
-  
+
+  /**
+   * @param DOMElement $form_control
+   * @return string
+   */
+  public static function stringGenerateFunction(DOMElement &$form_control) {
+    return $form_control->textContent;
+  }
+
+  /**
+   *
+   * @param DOMElement $form_control
+   * @return boolean
+   */
+  public static function booleanGenerateFunction(DOMElement &$form_control) {
+    $value = $form_control->textContent;
+    if (strcasecmp($value, 'true') === 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  public static function integerGenerateFunction(DOMElement &$form_control) {
+    return (int) $form_control->textContent;
+  }
+
+  public static function arrayGenerateFunction(DOMElement &$form_control) {
+    $keys = $form_control->getElementsByTagName('key');
+    return self::generateArrayFromKeys($keys);
+  }
+
+  private static function generateArrayFromKeys(DOMNodeList &$keys) {
+    $output = array();
+    $count = $keys->length;
+    for ($i = 0; $i < $count; $i++) {
+      $key = $keys->item($i);
+      list($name, $value) = self::processKey($key);
+      if ($name != '') {
+        $output[$name] = $value;
+      }
+      else {
+        $output[] = $value;
+      }
+    }
+    return $output;
+  }
+
+  private static function processKey(DOMElement &$key) {
+    $keys = $key->getElementsByTagName('key');
+    if ($keys->length > 0) {
+      $value = self::generateArrayFromKeys($keys);
+    }
+    else {
+      $value = $key->getElementsByTagName('value')->item(0)->textContent;
+    }
+    $name = $key->getAttribute('name');
+    return array($name, $value);
+  }
+
+  public static function ahahGenerateFunction(DOMElement &$form_control) {
+    $output = array();
+    $element = simplexml_import_dom($form_control);
+    if (isset($element->effect)) {
+      $output['effect'] = (string) $element->effect;
+    }
+    if (isset($element->event)) {
+      $output['event'] = (string) $element->event;
+    }
+    if (isset($element->keypress)) {
+      $output['keypress'] = strcasecmp((string) $element->keypress, 'true') == 0;
+    }
+    if (isset($element->method)) {
+      $output['method'] = (string) $element->method;
+    }
+    if (isset($element->path)) {
+      $output['path'] = (string) $element->path;
+    }
+    if (isset($element->wrapper)) {
+      $output['wrapper'] = (string) $element->wrapper;
+    }
+    if (isset($element->progress)) {
+      $progress = $element->progress;
+      $output['progress'] = array();
+      $output['progress']['type'] = isset($progress->type) ? (string) $progress->type : null;
+      $output['progress']['message'] = isset($progress->message) ? (string) $progress->message : null;
+      $output['progress']['url'] = isset($progress->url) ? (string) $progress->url : null;
+      $output['progress']['interval'] = isset($progress->interval) ? (string) $progress->interval : null;
+    }
+    return $output;
+  }
+
+  public static function redirectGenerateFunction(DOMElement &$form_control) {
+    $element = simplexml_import_dom($form_control);
+    if (isset($element->false)) {
+      return FALSE;
+    }
+    else if (isset($element->internal_path)) {
+      return (string) $element->internal_path;
+    }
+    else {
+      $xpath = new DOMXPath($form_control->ownerDocument);
+      $keys = $xpath->query('array/child::key');
+      return self::generateArrayFromKeys($keys);
+    }
+  }
+
   /**
    *
    * @var type 
    */
-  static private $typeToGenerateFunctionMap = array(
-    FCType::FC_String => self::defaultGenerateFunction,
-    FCType::FC_Boolean => self::defaultGenerateFunction,
-    FCType::FC_Integer => self::defaultGenerateFunction,
-    FCType::FC_Array => self::arrayGenerateFunction,
-    FCType::FC_XMLForm => self::XMLFormGenerateFunction,
-    FCType::FC_Ahah => self::ahahGenerateFunction,
-    FCType::FC_Redirect => self::redirectGenerateFunction,
+  public static $type_generate_function_map = array(
+    FCType::FC_String => 'stringGenerateFunction',
+    FCType::FC_Boolean => 'booleanGenerateFunction',
+    FCType::FC_Integer => 'integerGenerateFunction',
+    FCType::FC_Array => 'arrayGenerateFunction',
+    FCType::FC_Ahah => 'ahahGenerateFunction',
+    FCType::FC_Redirect => 'redirectGenerateFunction'
   );
 
   /**
@@ -100,8 +204,8 @@ class FormControlGeneratorFunctions {
    * @return FormControlType
    */
   public static function getFormControlType(&$name) {
-    if (array_key_exists($name, self::$formControlToTypeMap)) {
-      return self::$formControlToTypeMap[$name];
+    if (array_key_exists($name, self::$form_control_type_map)) {
+      return self::$form_control_type_map[$name];
     }
     else {
       throw new Exception('Form Control ' . $name . ' does not exist.');
@@ -115,9 +219,9 @@ class FormControlGeneratorFunctions {
    * @return string
    *   Function name of the generator function associated with the form control defined by $name
    */
-  public static function getGeneratorFunctionFromName(&$name) {
+  public static function getFunctionFromName(&$name) {
     $type = self::getFormControlType($name);
-    return self::getFormControlGeneratorFunction($name);
+    return self::getFunctionFromType($type);
   }
 
   /**
@@ -126,16 +230,8 @@ class FormControlGeneratorFunctions {
    * @return string
    *   Function name of the generator function for the requested type.
    */
-  public static function getGeneratorFunctionFromType(FCType $type) {
-    return self::$typeToGenerateFunctionMap[$type];
-  }
-
-  /**
-   * @param DOMElement $form_control
-   * @return array
-   */
-  public static function defaultGenerateFunction(DOMElement $form_control) {
-    return $form_control->textContent;
+  public static function getFunctionFromType($type) {
+    return self::$type_generate_function_map[$type];
   }
 
 }

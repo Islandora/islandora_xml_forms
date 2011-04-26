@@ -79,18 +79,19 @@
             <xs:element minOccurs="0" name="validate" type="array"/>
             <xs:element minOccurs="0" name="value" type="xs:normalizedString"/>
             <xs:element minOccurs="0" name="weight" type="xs:decimal"/>
-            <xs:element minOccurs="0" name="xml_form" type="xmlFormAPIFormControl"/>
+            <xs:element minOccurs="0" name="xml_properties" type="xmlProperties"/>
         </xs:all>
+        <xs:attribute name="name" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="array">
         <xs:sequence>
-            <xs:element maxOccurs="unbounded" minOccurs="0" name="key" type="arrayKey"/>
+            <xs:element maxOccurs="unbounded" minOccurs="1" name="key" type="arrayKey"/>
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="arrayKey">
         <xs:choice>
             <xs:element name="value" type="xs:normalizedString"/>
-            <xs:element name="key" type="arrayKey"/>
+            <xs:element name="key" type="arrayKey" maxOccurs="unbounded"/>
         </xs:choice>
         <xs:attribute name="name"/>
     </xs:complexType>
@@ -138,7 +139,7 @@
             <xs:element name="array" type="array"/>
         </xs:choice>
     </xs:complexType>
-    <xs:complexType name="xmlFormAPIFormControl">
+    <xs:complexType name="xmlProperties">
         <xs:sequence>
             <xs:element name="xpath">
                 <xs:complexType>
@@ -156,12 +157,19 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="settings">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element minOccurs="0" name="require_value" type="xs:boolean"/>
+                        <xs:element minOccurs="0" name="remove_if_null" type="xs:boolean"/>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
             <xs:choice>
                 <xs:element name="xml"/>
                 <xs:element name="element"/>
                 <xs:element name="attribute"/>
             </xs:choice>
-            <xs:element name="settings"/>
         </xs:sequence>
     </xs:complexType>
 </xs:schema>

@@ -19,6 +19,13 @@ function xml_form_api_menu() {
     'page callback' => 'xml_form_api_get_form_defintion',
     'type' => MENU_CALLBACK,
   );
+  $items['test'] = array(
+    'title' => 'Test',
+    'description' => 'test',
+    'page callback' => 'xml_form_api_test',
+    'access arguments' => array('administer access control'),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
@@ -26,5 +33,53 @@ function xml_form_api_menu() {
  * Menu Callback, returns FormDefinition.xsd
  */
 function xml_form_api_get_form_defintion() {
+  
+}
 
+/**
+ * 
+ */
+function xml_form_api_test() {
+  return drupal_get_form('xml_form');
+}
+
+function xml_form(&$form_state) {
+  
+  $xml = <<<EOT
+  <form>
+    <properties></properties>
+    <elements>
+      <element>
+        <type>textfield</type>
+      </element>
+      <element>
+        <type>submit</type>
+        <name>submit</name>
+      </element>
+    </elements>
+  </form>
+EOT;
+  module_load_include('inc', 'xml_form_api', 'FormDefinition');
+  module_load_include('inc', 'xml_form_api', 'Form');
+  module_load_include('inc', 'xml_form_api', 'FormStorage');
+  $storage = new FormStorage($form_state);
+  $form = new Form($storage);
+  if($form->isInitialized()) { // Was initialized from storage.
+    return $form->toArray();
+  }
+  else {
+    $definition = new FormDefinition($xml);
+    $form->initialize($definition); // Hidden Params for extra, but at very least we need the definition.
+    return $form->toArray();
+  }
+}
+
+function xml_form_validate(&$form, &$form_state) {
+  $test = 0;
+  $test++;
+}
+
+function xml_form_submit(&$form, &$form_state) {
+  $test = 0;
+  $test++;
 }

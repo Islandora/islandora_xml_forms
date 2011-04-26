@@ -61,7 +61,7 @@ class FormGenerator {
       $children = $xpath->query("child::children", $element);
       if ($children && $children->length == 1) {
         $child_elements = $xpath->query("child::element", $children->item(0));
-        $output['children'] = $this->generateElements($child_elements);
+        $output['#children'] = $this->generateElements($child_elements);
       }
       return $output;
     }

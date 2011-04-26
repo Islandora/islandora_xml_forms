@@ -9,39 +9,6 @@
  */
 
 /**
- *
- */
-class XMLFormAPITestCase extends DrupalWebTestCase {
-
-  /**
-   * Get Test info.
-   * 
-   * @return array
-   *   Properties that are displayed in the test selection form.
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'XML Form API functional tests',
-      'description' => 'Ensure that the XML Form API functions properly.',
-      'group' => 'XML Form API',
-    );
-  }
-
-  /**
-   * setUp() performs any pre-requisite tasks that need to happen. 
-   */
-  public function setUp() {
-// Enable any modules required for the test.
-    parent::setUp('xml_form_api');
-  }
-
-  public function testFormDefinition() {
-    
-  }
-
-}
-
-/**
  * Unit Tests for the FormDefinition class.
  */
 class XMLFormAPIFormDefinitionTestCase extends DrupalUnitTestCase {
@@ -64,62 +31,15 @@ class XMLFormAPIFormDefinitionTestCase extends DrupalUnitTestCase {
    * setUp() performs any pre-requisite tasks that need to happen. 
    */
   public function setUp() {
-// Enable any modules required for the test.
-    parent::setUp('xml_form_api');
-  }
-
-}
-
-/**
- * Unit Tests for the FormGenerator class.
- */
-class XMLFormAPIFormGeneratorTestCase extends DrupalUnitTestCase {
-
-  /**
-   *
-   * @var array 
-   */
-  private $validFormDefinitions = array(
-    'validFormDefinition'
-  );
-
-  /**
-   * Get Test info.
-   * 
-   * @return array
-   *   Properties that are displayed in the test selection form.
-   */
-  public static function getInfo() {
-    return array(
-      'name' => 'Form Generator Unit Tests.',
-      'description' => 'Unit tests for FormGenerator.inc.',
-      'group' => 'XML Form API',
-    );
-  }
-
-  /**
-   * setUp() performs any pre-requisite tasks that need to happen. 
-   */
-  public function setUp() {
     // Enable any modules required for the test.
     parent::setUp('xml_form_api');
-    module_load_include('inc', 'xml_form_api', 'FormDefinition');
-    module_load_include('inc', 'xml_form_api', 'FormGenerator');
   }
-
-  public function testCreateGenerator() {
-    $path = drupal_get_path('module', 'xml_form_api');
-    $doc = new DOMDocument();
-    $doc->load("$path/test_data/validFormDefinition01.xml");
-    try {
-      $xml = $doc->saveXML();
-      $definition = new FormDefinition($xml);
-      $generator = new FormGenerator($definition);
-    } catch (Exception $e) {
-      $this->fail("Failed to create FormGenerator.");
-      return;
-    }
-    $this->pass('Successfully created FormGenerator.');
+  
+  /**
+   * Test constructing the Form definition.
+   */
+  public function createTest() {
+    
   }
 
 }

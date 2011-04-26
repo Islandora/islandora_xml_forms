@@ -1,0 +1,59 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ * 
+ * Unit Tests.
+ */
+
+/**
+ * Unit Tests for the FormControl class.
+ */
+class XMLFormAPIFormElementTestCase extends DrupalUnitTestCase {
+
+  /**
+   * Get Test info.
+   * 
+   * @return array
+   *   Properties that are displayed in the test selection form.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Form Element Unit Tests.',
+      'description' => 'Unit tests for FormElement.inc.',
+      'group' => 'XML Form API',
+    );
+  }
+
+  /**
+   * setUp() performs any pre-requisite tasks that need to happen. 
+   */
+  public function setUp() {
+    // Enable any modules required for the test.
+    parent::setUp('xml_form_api');
+    module_load_include('inc', 'xml_form_api', 'FormDefinition');
+    module_load_include('inc', 'xml_form_api', 'FormElement');
+  }
+  
+  /**
+   * Test constructing the Form definition.
+   */
+  public function testCreate() {
+    $xml = <<<EOT
+      <element name="foobar">
+        <type>textfield</type>
+      </element>
+EOT;
+    $doc = new DOMDocument();
+    $doc->loadXML($xml);
+    /* Test Simple Create */
+    $form_element = new FormElement($doc->documentElement);
+    list($name, $a) = $form_element->toArray();
+    $b = array(
+      '#type' => 'textfield'
+    );
+    $this->assert($a === $b, 'FormElement->toArray produced an incorrect value.');
+  }
+}
