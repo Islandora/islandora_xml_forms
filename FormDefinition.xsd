@@ -5,15 +5,44 @@
             <xs:sequence>
                 <xs:element name="properties">
                     <xs:complexType>
-                        <xs:sequence>
-                            <xs:element minOccurs="0" name="schemas">
+                        <xs:all>
+                            <xs:element minOccurs="0" name="schema">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:anyURI">
+                                            <xs:attribute name="name">
+                                                <xs:simpleType>
+                                                  <xs:restriction base="xs:string">
+                                                  <xs:pattern value="[a-zA-Z0-9]+"/>
+                                                  </xs:restriction>
+                                                </xs:simpleType>
+                                            </xs:attribute>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element minOccurs="0" name="namespaces">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="schema" type="xs:normalizedString"/>
+                                        <xs:element name="namespace">
+                                            <xs:complexType>
+                                                <xs:simpleContent>
+                                                  <xs:extension base="xs:anyURI">
+                                                  <xs:attribute name="prefix">
+                                                  <xs:simpleType>
+                                                  <xs:restriction base="xs:string">
+                                                  <xs:pattern value="[a-zA-Z0-9]*"/>
+                                                  </xs:restriction>
+                                                  </xs:simpleType>
+                                                  </xs:attribute>
+                                                  </xs:extension>
+                                                </xs:simpleContent>
+                                            </xs:complexType>
+                                        </xs:element>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                        </xs:sequence>
+                        </xs:all>
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="elements" minOccurs="1" type="elementsDefinition"> </xs:element>
@@ -140,36 +169,37 @@
         </xs:choice>
     </xs:complexType>
     <xs:complexType name="xmlProperties">
-        <xs:sequence>
-            <xs:element name="xpath">
+        <xs:all>
+            <xs:element minOccurs="0" name="create">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="path"/>
-                        <xs:element name="parent_path"/>
+                        <xs:element minOccurs="0" name="parent_path" type="xs:normalizedString"/>
+                        <xs:element name="schema_path" minOccurs="0" type="xs:normalizedString"> </xs:element>
+                        <xs:choice>
+                            <xs:element name="element" type="xs:normalizedString"/>
+                            <xs:element name="attribute" type="xs:normalizedString"/>
+                            <xs:element name="xml" type="xs:normalizedString"/>
+                        </xs:choice>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="schema">
+            <xs:element minOccurs="0" name="read">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="name"/>
                         <xs:element name="path"/>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
-            <xs:element name="settings">
+            <xs:element minOccurs="0" name="update">
                 <xs:complexType>
-                    <xs:all>
-                        <xs:element minOccurs="0" name="require_value" type="xs:boolean"/>
-                        <xs:element minOccurs="0" name="remove_if_null" type="xs:boolean"/>
-                    </xs:all>
+                    <xs:sequence/>
                 </xs:complexType>
             </xs:element>
-            <xs:choice>
-                <xs:element name="xml"/>
-                <xs:element name="element"/>
-                <xs:element name="attribute"/>
-            </xs:choice>
-        </xs:sequence>
+            <xs:element minOccurs="0" name="remove">
+                <xs:complexType>
+                    <xs:sequence/>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
     </xs:complexType>
 </xs:schema>

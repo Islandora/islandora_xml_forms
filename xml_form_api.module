@@ -47,14 +47,20 @@ function xml_form(&$form_state) {
   
   $xml = <<<EOT
   <form>
-    <properties></properties>
+    <properties>
+      <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>
+      <namespaces>
+        <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
+      </namespaces>
+    </properties>
     <elements>
       <element>
         <type>textfield</type>
-      </element>
-      <element>
-        <type>submit</type>
-        <name>submit</name>
+        <xml_properties>
+          <create>
+            <parent_path>/mods:mods</parent_path>
+          </create>
+        </xml_properties>
       </element>
     </elements>
   </form>
@@ -75,11 +81,13 @@ EOT;
 }
 
 function xml_form_validate(&$form, &$form_state) {
-  $test = 0;
-  $test++;
+  $storage = new FormStorage($form_state);
+  $form = new Form($storage);
+  $form->validate($form, $form_state);
 }
 
 function xml_form_submit(&$form, &$form_state) {
-  $test = 0;
-  $test++;
+  $storage = new FormStorage($form_state);
+  $form = new Form($storage);
+  $form->submit($form, $form_state);
 }

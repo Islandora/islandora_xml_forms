@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:/Users/nbanks/Sites/dgi/drupal/sites/xml_form_api.local/modules/xml_form_api/FormDefinition.xsd">
     <properties>
-        <schemas>
-            <schema></schema>
-        </schemas>
+        <schema name="mods">http://www.w3.org/2001/XMLSchema-instance</schema>
+        <namespaces>
+            <namespace prefix="">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</namespace>
+        </namespaces>
     </properties>
     <elements>
         <element>
@@ -16,20 +17,13 @@
                     <type>var</type>
                 </element>
             </children>
-            <xml_form>
-                <xpath>
-                    <path></path>
-                    <parent_path></parent_path>
-                </xpath>
-                <schema>
-                    <name></name>
-                    <path></path>
-                </schema>
-                <settings>
-                    <require_value>true</require_value>
-                    <remove_if_null>true</remove_if_null>
-                </settings>
-            </xml_form>
+            <xml_properties>
+               <create>
+                   <parent_path></parent_path>
+                   <schema_path></schema_path>
+                   <element>foo</element>
+               </create>
+            </xml_properties>
         </element>
         <element>
             <type></type>

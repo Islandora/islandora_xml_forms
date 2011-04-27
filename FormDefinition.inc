@@ -104,7 +104,7 @@ class FormDefinition {
    * 
    */
   public function getProperties() {
-    
+    $this->schema = new Schema();
   }
 
   /**

@@ -60,8 +60,9 @@ class Form {
    * called.
    * 
    * @param FormDefinition $form_definition 
+   * @param XMLDocument $xml_document
    */
-  public function initialize(&$form_definition) {
+  public function initialize(&$form_definition, &$xml_document) {
     if (!$this->initialized) {
       $this->definition = &$form_definition;
       $this->storage->setDefinition($form_definition);
@@ -80,7 +81,7 @@ class Form {
   public function isInitialized() {
     return $this->initialized;
   }
-  
+
   /**
    *
    * @return array 
@@ -88,4 +89,24 @@ class Form {
   public function toArray() {
     return $this->definition->toArray();
   }
+
+  /**
+   *
+   * @param array $form
+   * @param array $form_state 
+   */
+  public function validate(&$form, &$form_state) {
+    
+  }
+  
+  /**
+   *
+   * @param array $form
+   * @param array $form_state 
+   * @return XMLDocument
+   */
+  public function submit(&$form, &$form_state) {
+    
+  }
+
 }
