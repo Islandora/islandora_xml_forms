@@ -46,24 +46,43 @@ function xml_form_api_test() {
 function xml_form(&$form_state) {
   
   $xml = <<<EOT
-  <form>
+  <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://localhost/FormDefinition.xsd">
     <properties>
-      <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>
-      <namespaces>
-        <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
-      </namespaces>
+        <document_properties>
+            <root>mods:mods</root>
+            <namespaces>
+                <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
+            </namespaces>
+            <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>
+        </document_properties>
     </properties>
     <elements>
-      <element>
-        <type>textfield</type>
-        <xml_properties>
-          <create>
-            <parent_path>/mods:mods</parent_path>
-          </create>
-        </xml_properties>
-      </element>
+        <element>
+            <type>fieldset</type>
+            <title>test</title>
+            <children>
+                <element>
+                    <type>textfield</type>
+                    <title>title</title>
+                    <required>true</required>
+                    <xml_properties>
+                        <create>
+                            <parent_path>/mods:mods</parent_path>
+                            <schema_path name="mods">/xs:schema/xs:element[@name='title']</schema_path>
+                            <element>mods:title</element>
+                        </create>
+                    </xml_properties>
+                </element>
+                <element>
+                    <type>submit</type>
+                    <value>submit</value>
+                </element>
+            </children>
+        </element>
     </elements>
-  </form>
+</form>
+
 EOT;
   module_load_include('inc', 'xml_form_api', 'FormDefinition');
   module_load_include('inc', 'xml_form_api', 'Form');
@@ -75,18 +94,20 @@ EOT;
   }
   else {
     $definition = new FormDefinition($xml);
-    $form->initialize($definition); // Hidden Params for extra, but at very least we need the definition.
+    $xml_document_properties = $definition->getDocumentProperties();
+    $xml_document = new XMLDocument($xml_document_properties);
+    $form->initialize($definition, $xml_document); // Hidden Params for extra, but at very least we need the definition.
     return $form->toArray();
   }
 }
 
-function xml_form_validate(&$form, &$form_state) {
+function xml_form_validate($form, &$form_state) {
   $storage = new FormStorage($form_state);
-  $form = new Form($storage);
-  $form->validate($form, $form_state);
+  $_form = new Form($storage);
+  //$_form->validate($form, $form_state);
 }
 
-function xml_form_submit(&$form, &$form_state) {
+function xml_form_submit($form, &$form_state) {
   $storage = new FormStorage($form_state);
   $form = new Form($storage);
   $form->submit($form, $form_state);

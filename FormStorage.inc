@@ -16,6 +16,7 @@ class FormStorage {
    */
   const STORAGE_ROOT = 'xml_form_storage';
   const DEFINITION = 'definition';
+  const DOCUMENT = 'document';
 
   /**
    *
@@ -74,10 +75,26 @@ class FormStorage {
   
   /**
    *
-   * @return type 
+   * @return FormDefinition
    */
   public function &getDefinition() {
     return $this->storage[self::DEFINITION];
+  }
+  
+  /**
+   *
+   * @param XMLDocument $document 
+   */
+  public function setDocument(XMLDocument &$document) {
+    $this->storage[self::DOCUMENT] = &$document;
+  }
+  
+  /**
+   *
+   * @return XMLDocument 
+   */
+  public function &getDocument() {
+    return $this->storage[self::DOCUMENT];
   }
 
 }

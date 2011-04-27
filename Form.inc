@@ -9,6 +9,10 @@
 module_load_include('inc', 'xml_form_api', 'FormStorage');
 
 class Form {
+  /**
+   * Root of the form;
+   */
+  const ROOT = 'xml_form_root';
 
   /**
    * Is this object ready to use? This object can be initialized from storage or, 
@@ -28,7 +32,12 @@ class Form {
    * The definition of the form from which the Drupal Form API repersentation is generated.
    * @var FormDefinition 
    */
-  public $definition;
+  protected $definition;
+  /**
+   *
+   * @var XMLDocument 
+   */
+  protected $document;
 
   /**
    * Construct the form class.
@@ -66,6 +75,8 @@ class Form {
     if (!$this->initialized) {
       $this->definition = &$form_definition;
       $this->storage->setDefinition($form_definition);
+      $this->document = &$xml_document;
+      $this->storage->setDocument($xml_document);
       $this->initialized = true;
     }
     else {
@@ -87,7 +98,7 @@ class Form {
    * @return array 
    */
   public function toArray() {
-    return $this->definition->toArray();
+    return array(self::ROOT => $this->definition->toArray());
   }
 
   /**
@@ -96,9 +107,10 @@ class Form {
    * @param array $form_state 
    */
   public function validate(&$form, &$form_state) {
-    
+    module_load_include('inc', 'xml_form_api', 'FormValidator');
+    $validator = new FormValidator($form_state, $this->storage);
   }
-  
+
   /**
    *
    * @param array $form
@@ -106,7 +118,9 @@ class Form {
    * @return XMLDocument
    */
   public function submit(&$form, &$form_state) {
-    
+    module_load_include('inc', 'xml_form_api', 'FormProcessor');
+    $processor = new FormProcessor($form_state, $this->storage);
+    return $processor->process();
   }
 
 }

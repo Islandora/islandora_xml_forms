@@ -1,56 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:/Users/nbanks/Sites/dgi/drupal/sites/xml_form_api.local/modules/xml_form_api/FormDefinition.xsd">
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://localhost/FormDefinition.xsd">
     <properties>
-        <schema name="mods">http://www.w3.org/2001/XMLSchema-instance</schema>
-        <namespaces>
-            <namespace prefix="">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</namespace>
-        </namespaces>
+        <document_properties>
+            <root>mods:mods</root>
+            <namespaces>
+                <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
+            </namespaces>
+            <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>
+        </document_properties>
     </properties>
     <elements>
         <element>
-            <type>Foo</type>
-            <src></src>
-            <title>Foo</title>
-            <description></description>
-            <children>
-                <element>
-                    <type>var</type>
-                </element>
-            </children>
-            <xml_properties>
-               <create>
-                   <parent_path></parent_path>
-                   <schema_path></schema_path>
-                   <element>foo</element>
-               </create>
-            </xml_properties>
-        </element>
-        <element>
-            <type></type>
-            <attributes>
-                <key name="0">
-                    <value>foo</value>
-                </key>
-                <key name="1">
-                    <key name="">
-                        <key>
-                            <value>1</value>
-                        </key>
-                    </key>
-                </key>
-            </attributes>
-        </element>
-        <element>
-            <type>tabpanel</type>
+            <type>fieldset</type>
+            <title>test</title>
             <children>
                 <element>
                     <type>textfield</type>
+                    <title>title</title>
+                    <xml_properties>
+                        <create>
+                            <parent_path>/mods:mods</parent_path>
+                            <schema_path name="mods">/xs:schema/xs:element[@name='title']</schema_path>
+                            <element>mods:title</element>
+                        </create>
+                    </xml_properties>
                 </element>
                 <element>
-                    <type>set</type>
+                    <type>submit</type>
+                    <value>submit</value>
                 </element>
             </children>
         </element>
-        
     </elements>
 </form>

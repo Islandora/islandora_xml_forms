@@ -23,20 +23,21 @@ class FormControl {
 
   /**
    *
-   * @param DOMElement $form_control 
+   * @param SimpleXMLElement $form_control 
    */
-  public function __construct(DOMElement &$form_control) {
-    $this->name = $form_control->tagName;
+  public function __construct(SimpleXMLElement &$form_control) {
+    $this->name = $form_control->getName();
     $this->setValue($form_control);
   }
 
   /**
    *
-   * @param DOMElement $form_control 
+   * @param SimpleXMLElement $form_control 
    */
-  private function setValue(DOMElement &$form_control) {    
+  private function setValue(SimpleXMLElement &$form_control) {    
     $function = FormControlGeneratorFunctions::getFunctionFromName($this->name);
-    $this->value = FormControlGeneratorFunctions::$function($form_control);
+    $hack = dom_import_simplexml($form_control);
+    $this->value = FormControlGeneratorFunctions::$function($hack);
   }
 
   /**

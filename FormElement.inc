@@ -6,17 +6,10 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'XMLProperties');
 module_load_include('inc', 'xml_form_api', 'FormControl');
+module_load_include('inc', 'xml_form_api', 'XMLProperties');
 
 class FormElement {
-
-  /**
-   * The form definition this element belongs to.
-   * 
-   * @var FormDefinition 
-   */
-  //protected $form;
   /**
    * The parent element of this element if it exists.
    * @var FormElement 
@@ -47,71 +40,55 @@ class FormElement {
 
   /**
    *
-   * @param DOMElement $element
+   * @param SimpleXMLElement $element
    * @param FormElement $parent 
    */
-  public function __construct(DOMElement $element, FormElement $parent = NULL) {
+  public function __construct(SimpleXMLElement &$element, FormElement &$parent = NULL) {
     $this->parent = $parent;
     $this->initialize($element);
   }
 
   /**
    *
-   * @param DOMElement $element 
+   * @param SimpleXMLElement $element 
    */
-  private function initialize(DOMElement $element) {
-    $xpath = new DOMXPath($element->ownerDocument);
-    $name = $xpath->query("@name", $element);
-    $this->setName($name);
-    $form_controls = $xpath->query("child::*[local-name() != 'children' and local-name() != 'xml_form']", $element);
-    $this->setFormControls($form_controls);
-    $xml_properties = $xpath->query("child::xml_properties");
-    $this->setXMLProperties($xml_properties);
-    $children = $xpath->query("child::children/element", $element);
-    $this->createChildren($children);
+  private function initialize(SimpleXMLElement &$element) {
+    $this->name = isset ($element['name']) ? $element['name'] : null;
+    $this->createFormControls($element);
+    $this->createXMLProperties($element);
+    $this->createChildren($element);
   }
 
   /**
    *
-   * @param DOMNodeList $name 
+   * @param SimpleXMLElement $element 
    */
-  private function setName(DOMNodeList $name) {
-    if ($name && $name->length == 1) {
-      $this->name = $name->item(0)->value;
+  private function createFormControls(SimpleXMLElement &$element) {
+    $form_controls = $element->xpath("child::*[local-name() != 'children' and local-name() != 'xml_properties']");
+    foreach($form_controls as $form_control) {
+      $name = $form_control->getName();
+      $this->controls[$name] = new FormControl($form_control);
     }
   }
 
   /**
    *
-   * @param DOMNodeList $form_controls 
+   * @param SimpleXMLElement $element 
    */
-  private function setFormControls(DOMNodeList $form_controls) {
-    $count = $form_controls->length;
-    for ($i = 0; $i < $count; $i++) {
-      $form_control = $form_controls->item($i);
-      $form_control = new FormControl($form_control);
-      $this->controls[$form_control->getName()] = &$form_control;
-    }
-  }
-
-  /**
-   * @param DOMNodeList $xml_form_properties
-   */
-  private function setXMLProperties(DOMNodeList &$xml_form) {
-    if ($xml_form && $xml_form->length == 1) {
-      $this->xmlProperties = new XMLProperties($xml_form->item(0));
+  private function createXMLProperties(SimpleXMLElement &$element) {
+    if(isset($element->xml_properties)) {
+      $this->xmlProperties = new XMLProperties($element->xml_properties);
     }
   }
 
   /**
    *
-   * @param DOMNodeList $children 
+   * @param SimpleXMLElement $element 
    */
-  private function createChildren(DOMNodeList $children) {
-    $count = $children->length;
-    for ($i = 0; $i < $count; $i++) {
-      $element = $children->item($i);
-      $this->children[] = new FormElement($element, $this);
+  private function createChildren(SimpleXMLElement &$element) {
+    $children = &$element->children;
+    foreach($children->children() as $child) {
+      $this->children[] = new FormElement($child, $this);
     }
   }
 

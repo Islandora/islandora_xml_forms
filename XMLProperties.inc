@@ -57,13 +57,12 @@ class XMLCreateProperties {
 
   /**
    *
-   * @param DOMElement $create_properties 
+   * @param SimpleXMLElement $create 
    */
-  public function __construct(DOMElement &$create_properties) {
-    $create = simplexml_import_dom($create_properties);
+  public function __construct(SimpleXMLElement &$create) {
     $this->parentPath = isset($create->parent_path) ? (string) $create->parent_path : null;
     $this->schemaPath = isset($create->schema_path) ? (string) $create->schema_path : null;
-    if(isset($create->element)) {
+    if (isset($create->element)) {
       $this->element = (string) $create->element;
       $this->type = XMLCreateType::Element;
     }
@@ -73,8 +72,30 @@ class XMLCreateProperties {
     }
     else {
       $this->xml = (string) $create->xml;
-      $this->type = XMLCreateType::xml;
+      $this->type = XMLCreateType::XML;
     }
+  }
+
+}
+
+/**
+ * 
+ */
+class XMLReadProperties {
+
+  /**
+   * Path used to locate the form element.
+   * 
+   * @var string 
+   */
+  protected $path;
+
+  /**
+   *
+   * @param SimpleXMLElement $read 
+   */
+  public function __construct(SimpleXMLElement &$read) {
+    
   }
 
 }
@@ -93,29 +114,10 @@ class XMLUpdateProperties {
 
   /**
    *
-   * @param DOMElement $update_properties 
+   * @param SimpleXMLElement $update 
    */
-  public function __construct(DOMElement &$update_properties) {
-    $update = simplexml_import_dom($update_properties);
+  public function __construct(SimpleXMLElement &$update) {
     $this->path = (string) $update->path;
-  }
-
-}
-
-/**
- * 
- */
-class XMLReadProperties {
-
-  /**
-   * Path used to locate the form element.
-   * 
-   * @var string 
-   */
-  protected $path;
-
-  public function __construct(DOMElement &$read_properties) {
-    
   }
 
 }
@@ -135,9 +137,9 @@ class XMLDeleteProperties {
 
   /**
    *
-   * @param DOMElement $delete_properties 
+   * @param SimpleXMLElement $delete 
    */
-  public function __construct(DOMElement &$delete_properties) {
+  public function __construct(SimpleXMLElement &$delete) {
     
   }
 
@@ -170,24 +172,21 @@ class XMLProperties {
   public $delete;
 
   /**
-   * 
+   *
+   * @param SimpleXMLElement $xml_properties 
    */
-  public function __construct(DOMElement &$xml_properties) {
-    $create = $xml_properties->getElementsByTagName('create');
-    if ($create->length == 1) {
-      $this->create = new XMLCreateProperties($create->item(0));
+  public function __construct(SimpleXMLElement &$xml_properties) {
+    if (isset($xml_properties->create)) {
+      $this->create = new XMLCreateProperties($xml_properties->create);
     }
-    $read = $xml_properties->getElementsByTagName('read');
-    if ($read->length == 1) {
-      $this->read = new XMLCreateProperties($read->item(0));
+    if (isset($xml_properties->read)) {
+      $this->read = new XMLReadProperties($xml_properties->read);
     }
-    $update = $xml_properties->getElementsByTagName('update');
-    if ($update->length == 1) {
-      $this->create = new XMLCreateProperties($update->item(0));
+    if (isset($xml_properties->update)) {
+      $this->update = new XMLUpdateProperties($xml_properties->update);
     }
-    $delete = $xml_properties->getElementsByTagName('delete');
-    if ($delete->length == 1) {
-      $this->create = new XMLCreateProperties($delete->item(0));
+    if (isset($xml_properties->delete)) {
+      $this->delete = new XMLDeleteProperties($xml_properties->delete);
     }
   }
 

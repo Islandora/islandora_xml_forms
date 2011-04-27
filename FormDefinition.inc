@@ -9,13 +9,13 @@
  * Defines a FormDefinition class that allows XML form defintions to be processed by the FormGenerator, and other
  * classes.
  */
+module_load_include('inc', 'xml_form_api', 'FormElement');
+module_load_include('inc', 'xml_form_api', 'XMLDocument');
 
 /**
  * Describes a form
  */
 class FormDefinition {
-
-  const FORM_ROOT = 'xml_form_root';
   
   /**
    * The XML form definiton.
@@ -23,10 +23,21 @@ class FormDefinition {
    */
   protected $xml;
   /**
+   * The Schema used for validating/generating the XML document.
    * 
-   * @var array 
+   * @var Schema
+   */
+  protected $schema;
+  /**
+   * 
+   * @var FormElement[] 
    */
   protected $elements;
+  /**
+   *
+   * @var XMLDocumentProperties 
+   */
+  protected $documentProperties;
 
   /**
    * Creates a form defintion object from an XML form definition.
@@ -39,46 +50,9 @@ class FormDefinition {
       throw new Exception('The argument $form_definition must be a non-empty string.');
     }
     $this->xml = $form_definition;
-    $this->createDefinitionFromXML();
+    $this->initialize();
   }
-
-  /**
-   * 
-   */
-  private function createDefinitionFromXML() {
-    $doc = new DOMDocument();
-    $doc->loadXML($this->xml);
-    if (!self::validate($doc)) {
-      throw new Exception('Could not create FormDefintion object, the XML provided was not valid.');
-    }
-    $xpath = new DOMXPath($doc);
-    $properties = $xpath->query('//properties/child::*');
-    $this->initializeProperties($properties);
-    $elements = $xpath->query('//elements/child::*');
-    $this->createElements($elements);
-  }
-
-  /**
-   * @TODO Implement this function.
-   * @param DOMNodeList $properties 
-   */
-  private function initializeProperties(DOMNodeList &$properties) {
-    
-  }
-
-  /**
-   *
-   * @param DOMNodeList $elements 
-   */
-  private function createElements(DOMNodeList &$elements) {
-    module_load_include('inc', 'xml_form_api', 'FormElement');
-    $count = $elements->length;
-    for ($i = 0; $i < $count; $i++) {
-      $element = $elements->item($i);
-      $this->elements[] = new FormElement($element);
-    }
-  }
-
+  
   /**
    * Checks to see if a xml form definition is valid.
    * 
@@ -87,7 +61,7 @@ class FormDefinition {
    * @return boolean
    *   TRUE if $definition is a valid form definition, FALSE otherwise.
    */
-  public static function validate($definition) {
+  public static function isValid($definition) {
     $path = drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xsd';
     if (is_string($definition)) {
       $doc = new DOMDocument();
@@ -103,8 +77,48 @@ class FormDefinition {
   /**
    * 
    */
-  public function getProperties() {
-    $this->schema = new Schema();
+  private function validate() {
+    $definition = new DOMDocument();
+    $definition->loadXML($this->xml);
+    if (!self::isValid($definition)) {
+      throw new Exception('Could not create FormDefintion object, the XML provided was not valid.');
+    }
+    return $definition;
+  }
+  /**
+   * 
+   */
+  private function initialize() {
+    $document = $this->validate();
+    $form = simplexml_import_dom($document);
+    $this->initializeProperties($form->properties);
+    $this->createElements($form->elements);
+  }
+
+  /**
+   * @TODO Implement this function.
+   * @param DOMElement $properties 
+   */
+  private function initializeProperties(SimpleXMLElement &$properties) {
+    $this->documentProperties = new XMLDocumentProperties($properties->document_properties);
+  }
+
+  /**
+   *
+   * @param DOMNodeList $elements 
+   */
+  private function createElements(SimpleXMLElement &$elements) {
+    foreach($elements->children() as $element) {
+      $this->elements[] = new FormElement($element);
+    }
+  }
+
+  /**
+   *
+   * @return XMLDocumentProperties 
+   */
+  public function &getDocumentProperties() {
+    return $this->documentProperties;
   }
 
   /**
@@ -131,7 +145,7 @@ class FormDefinition {
         $output[] = $value;
       }
     }
-    return array(self::FORM_ROOT => $output);
+    return $output;
   }
 
 }
