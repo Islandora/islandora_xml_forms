@@ -10,23 +10,24 @@ module_load_include('inc', 'xml_form_api', 'FormControl');
 module_load_include('inc', 'xml_form_api', 'XMLProperties');
 
 class FormElement {
+
   /**
    * The parent element of this element if it exists.
    * @var FormElement 
    */
-  protected $parent;
+  public $parent;
   /**
    * The form controls that define this element.
    * 
    * @var FormControl[]
    */
-  protected $controls;
+  public $controls;
   /**
    * This elements children if they exist.
    * 
    * @var FormElement[]
    */
-  protected $children;
+  public $children;
   /**
    *
    * @var XMLProperties 
@@ -36,7 +37,8 @@ class FormElement {
    * 
    * @var string 
    */
-  protected $name;
+  public $_key;
+  public $value;
 
   /**
    *
@@ -53,7 +55,7 @@ class FormElement {
    * @param SimpleXMLElement $element 
    */
   private function initialize(SimpleXMLElement &$element) {
-    $this->name = isset ($element['name']) ? $element['name'] : null;
+    $this->key = isset($element['key']) ? (string) $element['key'] : null;
     $this->createFormControls($element);
     $this->createXMLProperties($element);
     $this->createChildren($element);
@@ -65,7 +67,7 @@ class FormElement {
    */
   private function createFormControls(SimpleXMLElement &$element) {
     $form_controls = $element->xpath("child::*[local-name() != 'children' and local-name() != 'xml_properties']");
-    foreach($form_controls as $form_control) {
+    foreach ($form_controls as $form_control) {
       $name = $form_control->getName();
       $this->controls[$name] = new FormControl($form_control);
     }
@@ -76,7 +78,7 @@ class FormElement {
    * @param SimpleXMLElement $element 
    */
   private function createXMLProperties(SimpleXMLElement &$element) {
-    if(isset($element->xml_properties)) {
+    if (isset($element->xml_properties)) {
       $this->xmlProperties = new XMLProperties($element->xml_properties);
     }
   }
@@ -87,9 +89,42 @@ class FormElement {
    */
   private function createChildren(SimpleXMLElement &$element) {
     $children = &$element->children;
-    foreach($children->children() as $child) {
-      $this->children[] = new FormElement($child, $this);
+    foreach ($children->children() as $child) {
+      $child = new FormElement($child);
+      $this->addChild($child);
     }
+  }
+
+  /**
+   *
+   * @param string $name 
+   */
+  public function __get($name) {
+    if ($name == 'key') {
+      return $this->getKey();
+    }
+    if (isset($this->controls[$name])) {
+      return $this->controls[$name]->getValue();
+    }
+    return NULL;
+  }
+
+  /**
+   *
+   * @return mixed 
+   */
+  private function getKey() {
+    if (isset($this->_key)) {
+      return $this->_key;
+    }
+    else if (isset($this->parent)) {
+      foreach ($this->parent->children as $key => &$sibling) {
+        if ($sibling === $this) {
+          return $key;
+        }
+      }
+    }
+    return NULL;
   }
 
   /**
@@ -128,6 +163,20 @@ class FormElement {
   }
 
   /**
+   *
+   * @param FormElement $child 
+   */
+  public function addChild(FormElement &$child) {
+    if ($child->key) {
+      $this->children[$child->key] = &$child;
+    }
+    else {
+      $this->children[] = &$child;
+    }
+    $child->parent = &$this; // Important to set this after.
+  }
+
+  /**
    * 
    * @return array
    *   
@@ -135,8 +184,7 @@ class FormElement {
   public function toArray() {
     $output = $this->getFormControlsAsArray();
     $output = array_merge($output, $this->getChildrenAsArray());
-
-    return array($this->name, $output);
+    return $output;
   }
 
   /**
@@ -158,17 +206,21 @@ class FormElement {
   private function getChildrenAsArray() {
     $output = array();
     if (isset($this->children)) {
-      foreach ($this->children as $child) {
-        list($name, $value) = $child->toArray();
-        if ($name) {
-          $output[$name] = $value;
-        }
-        else {
-          $output[] = $value;
-        }
+      foreach ($this->children as $key => $child) {
+        $output[$key] = $child->toArray();
       }
     }
     return $output;
   }
-
+  
+  /**
+   *
+   * @param FormValues $values 
+   */
+  public function setValue(FormValues $values) {
+    $value = $values->getValue($this);
+    foreach($this->children as $child) {
+      $child->setValue($values);
+    }
+  }
 }

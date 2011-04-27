@@ -56,7 +56,7 @@ class FormControl {
    *   This form controls value.
    */
   public function getValue() {
-    
+    return $this->value;
   }
 
   /**

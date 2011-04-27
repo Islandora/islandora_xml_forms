@@ -58,18 +58,44 @@ function xml_form(&$form_state) {
         </document_properties>
     </properties>
     <elements>
-        <element>
+        <element key="a">
             <type>fieldset</type>
             <title>test</title>
+            <tree>true</tree>
             <children>
-                <element>
+                <element key="b">
+                    <type>fieldset</type>
+                    <tree>false</tree>
+                    <children>
+                        <element key="d">
+                            <type>fieldset</type>
+                            <tree>true</tree>
+                            <children>
+                                <element key="e">
+                                    <type>textfield</type>
+                                    <default_value>0ne</default_value>
+                                </element>
+                                <element key="f">
+                                    <type>fieldset</type>
+                                    <tree>true</tree>
+                                    <children>
+                                        <element key="g">
+                                            <type>textfield</type>
+                                            <default_value>bluene</default_value>
+                                        </element>
+                                    </children>
+                                </element>
+                            </children>
+                        </element>
+                    </children>
+                </element>
+                <element key="c">
                     <type>textfield</type>
                     <title>title</title>
-                    <required>true</required>
                     <xml_properties>
                         <create>
                             <parent_path>/mods:mods</parent_path>
-                            <schema_path name="mods">/xs:schema/xs:element[@name='title']</schema_path>
+                            <schema_path name="mods">/xs:schema/xs:element[@key='title']</schema_path>
                             <element>mods:title</element>
                         </create>
                     </xml_properties>

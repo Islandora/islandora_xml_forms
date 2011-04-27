@@ -98,7 +98,7 @@ class Form {
    * @return array 
    */
   public function toArray() {
-    return array(self::ROOT => $this->definition->toArray());
+    return $this->definition->toArray();
   }
 
   /**

@@ -111,13 +111,13 @@
             <xs:element minOccurs="0" name="theme" type="xs:normalizedString"/>
             <xs:element minOccurs="0" name="title" type="xs:normalizedString"/>
             <xs:element minOccurs="0" name="tree" type="xs:boolean"/>
-            <xs:element minOccurs="1" name="type" type="xs:normalizedString"/>
+            <xs:element minOccurs="0" name="type" type="xs:normalizedString"/>
             <xs:element minOccurs="0" name="validate" type="array"/>
             <xs:element minOccurs="0" name="value" type="xs:normalizedString"/>
             <xs:element minOccurs="0" name="weight" type="xs:decimal"/>
             <xs:element minOccurs="0" name="xml_properties" type="xmlProperties"/>
         </xs:all>
-        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="key" type="xs:string"/>
     </xs:complexType>
     <xs:complexType name="array">
         <xs:sequence>

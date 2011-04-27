@@ -154,10 +154,9 @@ class XMLFormAPIFormControlTestCase extends DrupalUnitTestCase {
       '<value>321</value>' => array('#value' => '321'),
       '<weight>10</weight>' => array('#weight' => 10),
     );
-    $doc = new DOMDocument();
     foreach ($form_control_definitions as $definition => $value) {
-      $doc->loadXML($definition);
-      $form_control = new FormControl($doc->documentElement);
+      $node = simplexml_load_string($definition);
+      $form_control = new FormControl($node);
       $a = $form_control->toArray();
       if ($a !== $value) {
         $this->fail('FormControl::toArray() failed to generate the correct value for the xml definition ' . htmlentities($definition));

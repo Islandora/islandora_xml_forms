@@ -4,6 +4,71 @@
 
 /**
  * @file
- *
+ * 
+ * Unit Tests.
  */
 
+/**
+ * Unit Tests.
+ */
+class XMLFormAPIFormProcessorTestCase extends DrupalUnitTestCase {
+
+  /**
+   * Get Test info.
+   * 
+   * @return array
+   *   Properties that are displayed in the test selection form.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Form Processor Unit Tests.',
+      'description' => 'Unit tests for FormProcessor.inc.',
+      'group' => 'XML Form API',
+    );
+  }
+
+  /**
+   * setUp() performs any pre-requisite tasks that need to happen. 
+   */
+  public function setUp() {
+    // Enable any modules required for the test.
+    parent::setUp('xml_form_api');
+    module_load_include('inc', 'xml_form_api', 'FormProcessor');
+    module_load_include('inc', 'xml_form_api', 'FormElement');
+    module_load_include('inc', 'xml_form_api', 'Form');
+  }
+
+  /**
+   * Test constructing the Form definition.
+   */
+  public function testCreate() {
+    /* Throw Exception on invalid form state */
+    try {
+      $form_state = array();
+      $form_values = new FormValues($form_state);
+    } catch (Exception $e) {
+      $this->pass('Threw exception when constructor given invalid parameters');
+    }
+    /* Create FormValues */
+    $form_state = array(
+      'values' => array(
+        Form::ROOT => array(
+          0 => 'one',
+          'key_1' => array(
+            0 => 'two'
+          )
+        ),
+        'key_1' => 'value_1',
+      )
+    );
+    $form_values = new FormValues($form_state);
+    $this->assertEqual($form_values->current, $form_state['values'][Form::ROOT], 'FormValues Current value was initialized correctly.');
+    /* Test getValue */
+    $xml = "<element/>";
+    $element = simplexml_load_string($xml);
+    $form_element = new FormElement($element);
+    $value = $form_values->getValue(0, $form_element);
+    $this->assertEqual($value, 'one', 'FormValue::getValue');
+  }
+
+}

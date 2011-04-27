@@ -16,7 +16,7 @@ module_load_include('inc', 'xml_form_api', 'XMLDocument');
  * Describes a form
  */
 class FormDefinition {
-  
+
   /**
    * The XML form definiton.
    * @var string 
@@ -29,10 +29,11 @@ class FormDefinition {
    */
   protected $schema;
   /**
+   * The root FormElement, all form elements are a decendent of this element.
    * 
-   * @var FormElement[] 
+   * @var FormElement 
    */
-  protected $elements;
+  protected $root;
   /**
    *
    * @var XMLDocumentProperties 
@@ -52,7 +53,7 @@ class FormDefinition {
     $this->xml = $form_definition;
     $this->initialize();
   }
-  
+
   /**
    * Checks to see if a xml form definition is valid.
    * 
@@ -85,6 +86,7 @@ class FormDefinition {
     }
     return $definition;
   }
+
   /**
    * 
    */
@@ -108,9 +110,17 @@ class FormDefinition {
    * @param DOMNodeList $elements 
    */
   private function createElements(SimpleXMLElement &$elements) {
-    foreach($elements->children() as $element) {
-      $this->elements[] = new FormElement($element);
+    $this->root = $this->createRootElement();
+    foreach ($elements->children() as $element) {
+      $form_element = new FormElement($element);
+      $this->root->addChild($form_element);
     }
+  }
+
+  private function createRootElement() {
+    $xml = "<element key='" . Form::ROOT . "'><tree>true</tree></element>";
+    $root = simplexml_load_string($xml);
+    return new FormElement($root);
   }
 
   /**
@@ -135,17 +145,11 @@ class FormDefinition {
    * @return array 
    */
   public function toArray() {
-    $output = array();
-    foreach ($this->elements as $element) {
-      list($name, $value) = $element->toArray();
-      if (isset($name)) {
-        $output[$name] = $value;
-      }
-      else {
-        $output[] = $value;
-      }
+    $output = array('#tree' => true); // Store form elements under the Form::ROOT to prevent name collisions.
+    foreach ($this->elements as $key => $element) {
+      $output[$key] = $element->toArray();
     }
-    return $output;
+    return array(Form::ROOT => $output);
   }
 
 }

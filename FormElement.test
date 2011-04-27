@@ -36,24 +36,63 @@ class XMLFormAPIFormElementTestCase extends DrupalUnitTestCase {
     module_load_include('inc', 'xml_form_api', 'FormDefinition');
     module_load_include('inc', 'xml_form_api', 'FormElement');
   }
-  
+
   /**
    * Test constructing the Form definition.
    */
   public function testCreate() {
-    $xml = <<<EOT
-      <element name="foobar">
-        <type>textfield</type>
-      </element>
+    /* Create Basic Form Element */
+    $basic = "<element/>";
+    $element = simplexml_load_string($basic);
+    $form_element = new FormElement($element);
+    $this->assertNotNull($form_element, 'Created simplest element.');
+    /* Create simple named Element */
+    $named = "<element key='title'/>";
+    $element = simplexml_load_string($named);
+    $form_element = new FormElement($element);
+    $this->assertNotNull($form_element, 'Created simple named element.');
+    $this->assertEqual($form_element->key, 'title', 'Named is the correct value.');
+    /* Create simple textfield */
+    $basic_textfield = <<<EOT
+    <element>
+      <title>test textfield</title>
+      <type>textfield</type>
+    </element>  
 EOT;
-    $doc = new DOMDocument();
-    $doc->loadXML($xml);
-    /* Test Simple Create */
-    $form_element = new FormElement($doc->documentElement);
-    list($name, $a) = $form_element->toArray();
-    $b = array(
-      '#type' => 'textfield'
-    );
-    $this->assert($a === $b, 'FormElement->toArray produced an incorrect value.');
+    $element = simplexml_load_string($basic_textfield);
+    $form_element = new FormElement($element);
+    $this->assertNotNull($form_element, 'Created basic textfield element.');
+    $this->assertEqual($form_element->title, 'test textfield', 'Access form control through get method');
+    $this->assertEqual(count($form_element->controls), 2, 'Created the correct number of form controls');
+    /* Create fieldset with child elements */
+    $basic_fieldset = <<<EOT
+    <element>
+      <type>fieldset</type>
+      <children>
+        <element>
+          <type>textfield</type>
+        </element>
+        <element key='named'>
+          <type>checkbox</type>
+        </element>
+      </children>
+    </element>  
+EOT;
+    $element = simplexml_load_string($basic_fieldset);
+    $form_element = new FormElement($element);
+    $this->assertNotNull($form_element, 'Created basic fieldset with child.');
+    $this->assertEqual(count($form_element->children), 2, 'Created the correct number of children for the fieldset.');
+    /* Generate drupal form */
+    $drupal_form = $form_element->toArray();
+    $this->assertEqual($drupal_form, array(
+      '#type' => 'fieldset',
+      0 => array(
+        '#type' => 'textfield'
+      ),
+      'named' => array(
+        '#type' => 'checkbox'
+      )
+    ), 'FormElement::toArray(), created the correct drupal form repersentation of the form element.');
   }
+
 }
