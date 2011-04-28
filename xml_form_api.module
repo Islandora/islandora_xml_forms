@@ -114,27 +114,15 @@ EOT;
   module_load_include('inc', 'xml_form_api', 'Form');
   module_load_include('inc', 'xml_form_api', 'FormStorage');
   $storage = new FormStorage($form_state);
+  $doc = new DOMDocument();
+  $doc->loadXML($xml);
+  $form_state['storage']['test'] = $doc;
   $form = new Form($storage);
   if($form->isInitialized()) { // Was initialized from storage.
     return $form->toArray();
   }
   else {
     $definition = new FormDefinition($xml);
-    //var_dump($definition->root->children);
-    /* Create FormValues */
-    $form_state = array(
-      'values' => array(
-        Form::ROOT => array(
-          'a' => array(
-            'c' => 'c'
-          )
-        ),
-      )
-    );
-    module_load_include('inc', 'xml_form_api', 'FormProcessor');
-    $form_values = new FormValues($form_state);
-    $definition->root->setValue($form_values);
-    var_dump($definition->root->children['a']->children['c']);
     $xml_document_properties = $definition->getDocumentProperties();
     $xml_document = new XMLDocument($xml_document_properties);
     $form->initialize($definition, $xml_document); // Hidden Params for extra, but at very least we need the definition.
@@ -149,7 +137,8 @@ function xml_form_validate($form, &$form_state) {
 }
 
 function xml_form_submit($form, &$form_state) {
+  var_dump($form_state['storage']['test']->documentElement->tagName);
   $storage = new FormStorage($form_state);
   $form = new Form($storage);
-  $form->submit($form, $form_state);
+  //$form->submit($form, $form_state);
 }

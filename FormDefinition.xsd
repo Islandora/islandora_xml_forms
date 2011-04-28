@@ -116,6 +116,7 @@
             <xs:element minOccurs="0" name="value" type="xs:normalizedString"/>
             <xs:element minOccurs="0" name="weight" type="xs:decimal"/>
             <xs:element minOccurs="0" name="xml_properties" type="xmlProperties"/>
+            <xs:element minOccurs="0" name="user_data"/>
         </xs:all>
         <xs:attribute name="key" type="xs:string"/>
     </xs:complexType>

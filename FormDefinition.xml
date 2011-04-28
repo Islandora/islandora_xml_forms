@@ -51,6 +51,10 @@
                             <element>mods:title</element>
                         </create>
                     </xml_properties>
+                    <user_data>
+                        <tab_index>1</tab_index>
+                        asdf
+                    </user_data>
                 </element>
                 <element>
                     <type>submit</type>

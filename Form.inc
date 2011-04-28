@@ -57,7 +57,7 @@ class Form {
    * Initialize this object from values in storage.
    */
   private function initializeFromStorage() {
-    $this->definition = &$this->storage->getDefinition();
+    $this->definition = $this->storage->getDefinition();
     $this->initialized = true;
   }
 

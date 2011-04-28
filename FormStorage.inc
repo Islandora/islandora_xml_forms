@@ -34,6 +34,9 @@ class FormStorage {
    * @param array $form_state 
    */
   public function __construct(array &$form_state) {
+    if(empty($form_state['storage'])) {
+      $form_state['storage'] = array();
+    }
     $this->setStorage($form_state['storage']);
   }
 

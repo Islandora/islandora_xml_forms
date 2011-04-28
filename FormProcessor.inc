@@ -23,7 +23,7 @@ class FormValues {
    * 
    * @var mixed 
    */
-  protected $ptr;
+  protected $current;
   /**
    * TRUE if we are tracking a location in the values array.
    * 
@@ -99,6 +99,36 @@ class FormValues {
 }
 
 /**
+ * Types of FormProcessActions.
+ */
+class FormProcessActionType {
+  const __default = 0;
+  const Undefined = 0;
+  const Create = 1;
+  const Modify = 2;
+  const Delete = 3;
+}
+
+class FormProcessAction {
+  /**
+   * The form value associated with this action. Actions do not require form values.
+   * 
+   * @var mixed 
+   */
+  protected $value;
+  /**
+   *
+   * @var XMLProperties 
+   */
+  protected $properties;
+
+  public function __construct(FormValues $form_values, FormElement $element) {
+    
+  }
+  
+}
+
+/**
  * 
  */
 class FormProcessor {
@@ -138,4 +168,3 @@ class FormProcessor {
   }
 
 }
-

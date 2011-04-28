@@ -145,11 +145,7 @@ class FormDefinition {
    * @return array 
    */
   public function toArray() {
-    $output = array('#tree' => true); // Store form elements under the Form::ROOT to prevent name collisions.
-    foreach ($this->elements as $key => $element) {
-      $output[$key] = $element->toArray();
-    }
-    return array(Form::ROOT => $output);
+    return array(Form::ROOT => $this->root->toArray());
   }
 
 }

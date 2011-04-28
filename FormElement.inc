@@ -89,8 +89,8 @@ class FormElement {
    * @param SimpleXMLElement $element 
    */
   private function createChildren(SimpleXMLElement $element) {
-    $children = $element->children;
-    foreach ($children->children() as $child) {
+    $children = $element->xpath('child::children/element');
+    foreach ($children as $child) {
       $child = new FormElement($child);
       $this->addChild($child);
     }
@@ -214,15 +214,16 @@ class FormElement {
     }
     return $output;
   }
-  
+
   /**
    *
    * @param FormValues $values 
    */
   public function setValue(FormValues $values) {
     $this->value = $values->getValue($this);
-    foreach($this->children as $child) {
-      $child->setValue(clone $values);
+    foreach ($this->children as $child) {
+      $child->setValue(clone $values); // Clone so FormValues->current tracks correctly.
     }
   }
+
 }
