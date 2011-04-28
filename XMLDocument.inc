@@ -31,7 +31,7 @@ class XMLDocumentProperties {
    *
    * @param SimpleXMLElement $properties 
    */
-  public function __construct(SimpleXMLElement &$properties) {
+  public function __construct(SimpleXMLElement $properties) {
     $this->root = (string) $properties->root;
     if (isset($properties->schema)) {
       $this->schema = (string) $properties->schema;
@@ -69,7 +69,7 @@ class XMLDocument {
    * @param XMLDocumentProperties $document_properties
    * @param string $xml 
    */
-  public function __construct(XMLDocumentProperties &$document_properties, &$xml = NULL) {
+  public function __construct(XMLDocumentProperties $document_properties, &$xml = NULL) {
     $this->properties = $document_properties;
   }
 

@@ -59,7 +59,7 @@ class XMLCreateProperties {
    *
    * @param SimpleXMLElement $create 
    */
-  public function __construct(SimpleXMLElement &$create) {
+  public function __construct(SimpleXMLElement $create) {
     $this->parentPath = isset($create->parent_path) ? (string) $create->parent_path : null;
     $this->schemaPath = isset($create->schema_path) ? (string) $create->schema_path : null;
     if (isset($create->element)) {
@@ -94,7 +94,7 @@ class XMLReadProperties {
    *
    * @param SimpleXMLElement $read 
    */
-  public function __construct(SimpleXMLElement &$read) {
+  public function __construct(SimpleXMLElement $read) {
     
   }
 
@@ -116,7 +116,7 @@ class XMLUpdateProperties {
    *
    * @param SimpleXMLElement $update 
    */
-  public function __construct(SimpleXMLElement &$update) {
+  public function __construct(SimpleXMLElement $update) {
     $this->path = (string) $update->path;
   }
 
@@ -139,7 +139,7 @@ class XMLDeleteProperties {
    *
    * @param SimpleXMLElement $delete 
    */
-  public function __construct(SimpleXMLElement &$delete) {
+  public function __construct(SimpleXMLElement $delete) {
     
   }
 
@@ -175,7 +175,7 @@ class XMLProperties {
    *
    * @param SimpleXMLElement $xml_properties 
    */
-  public function __construct(SimpleXMLElement &$xml_properties) {
+  public function __construct(SimpleXMLElement $xml_properties) {
     if (isset($xml_properties->create)) {
       $this->create = new XMLCreateProperties($xml_properties->create);
     }
