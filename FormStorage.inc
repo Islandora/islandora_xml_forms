@@ -33,7 +33,7 @@ class FormStorage {
    *
    * @param array $form_state 
    */
-  public function __construct(&$form_state) {
+  public function __construct(array &$form_state) {
     $this->setStorage($form_state['storage']);
   }
 
@@ -44,7 +44,7 @@ class FormStorage {
    * @param array $storage
    *   Storage array.
    */
-  private function setStorage(&$storage) {
+  private function setStorage(array &$storage) {
     if (empty($storage[self::STORAGE_ROOT])) {
       $storage[self::STORAGE_ROOT] = array();
       $this->storage = &$storage[self::STORAGE_ROOT];
@@ -69,15 +69,15 @@ class FormStorage {
    *
    * @param FormDefinition $definition 
    */
-  public function setDefinition(FormDefinition &$definition) {
-    $this->storage[self::DEFINITION] = &$definition;
+  public function setDefinition(FormDefinition $definition) {
+    $this->storage[self::DEFINITION] = $definition;
   }
   
   /**
    *
    * @return FormDefinition
    */
-  public function &getDefinition() {
+  public function getDefinition() {
     return $this->storage[self::DEFINITION];
   }
   
@@ -85,15 +85,15 @@ class FormStorage {
    *
    * @param XMLDocument $document 
    */
-  public function setDocument(XMLDocument &$document) {
-    $this->storage[self::DOCUMENT] = &$document;
+  public function setDocument(XMLDocument $document) {
+    $this->storage[self::DOCUMENT] = $document;
   }
   
   /**
    *
    * @return XMLDocument 
    */
-  public function &getDocument() {
+  public function getDocument() {
     return $this->storage[self::DOCUMENT];
   }
 

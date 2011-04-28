@@ -37,7 +37,7 @@ class FormElement {
    * 
    * @var string 
    */
-  public $_key;
+  protected $_key;
   public $value;
 
   /**
@@ -45,8 +45,9 @@ class FormElement {
    * @param SimpleXMLElement $element
    * @param FormElement $parent 
    */
-  public function __construct(SimpleXMLElement &$element, FormElement &$parent = NULL) {
+  public function __construct(SimpleXMLElement $element, FormElement $parent = NULL) {
     $this->parent = $parent;
+    $this->children = array();
     $this->initialize($element);
   }
 
@@ -54,8 +55,8 @@ class FormElement {
    *
    * @param SimpleXMLElement $element 
    */
-  private function initialize(SimpleXMLElement &$element) {
-    $this->key = isset($element['key']) ? (string) $element['key'] : null;
+  private function initialize(SimpleXMLElement $element) {
+    $this->_key = isset($element['key']) ? (string) $element['key'] : null;
     $this->createFormControls($element);
     $this->createXMLProperties($element);
     $this->createChildren($element);
@@ -65,7 +66,7 @@ class FormElement {
    *
    * @param SimpleXMLElement $element 
    */
-  private function createFormControls(SimpleXMLElement &$element) {
+  private function createFormControls(SimpleXMLElement $element) {
     $form_controls = $element->xpath("child::*[local-name() != 'children' and local-name() != 'xml_properties']");
     foreach ($form_controls as $form_control) {
       $name = $form_control->getName();
@@ -77,7 +78,7 @@ class FormElement {
    *
    * @param SimpleXMLElement $element 
    */
-  private function createXMLProperties(SimpleXMLElement &$element) {
+  private function createXMLProperties(SimpleXMLElement $element) {
     if (isset($element->xml_properties)) {
       $this->xmlProperties = new XMLProperties($element->xml_properties);
     }
@@ -87,8 +88,8 @@ class FormElement {
    *
    * @param SimpleXMLElement $element 
    */
-  private function createChildren(SimpleXMLElement &$element) {
-    $children = &$element->children;
+  private function createChildren(SimpleXMLElement $element) {
+    $children = $element->children;
     foreach ($children->children() as $child) {
       $child = new FormElement($child);
       $this->addChild($child);
@@ -118,7 +119,7 @@ class FormElement {
       return $this->_key;
     }
     else if (isset($this->parent)) {
-      foreach ($this->parent->children as $key => &$sibling) {
+      foreach ($this->parent->children as $key => $sibling) {
         if ($sibling === $this) {
           return $key;
         }
@@ -166,14 +167,15 @@ class FormElement {
    *
    * @param FormElement $child 
    */
-  public function addChild(FormElement &$child) {
-    if ($child->key) {
-      $this->children[$child->key] = &$child;
+  public function addChild(FormElement $child) {
+    $child->parent = $this;
+    $key = $child->key;
+    if ($key) {
+      $this->children[$child->key] = $child;
     }
     else {
-      $this->children[] = &$child;
+      $this->children[] = $child;
     }
-    $child->parent = &$this; // Important to set this after.
   }
 
   /**
@@ -218,9 +220,9 @@ class FormElement {
    * @param FormValues $values 
    */
   public function setValue(FormValues $values) {
-    $value = $values->getValue($this);
+    $this->value = $values->getValue($this);
     foreach($this->children as $child) {
-      $child->setValue($values);
+      $child->setValue(clone $values);
     }
   }
 }

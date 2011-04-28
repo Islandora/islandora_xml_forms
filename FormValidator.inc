@@ -14,7 +14,7 @@ class FormValidator {
    */
   protected $values;
   
-  public function __construct(&$form_state) {
-    $this->values = &$form_state['values'][Form::ROOT];
+  public function __construct(FormValues $values) {
+    
   }
 }

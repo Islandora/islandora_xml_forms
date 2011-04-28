@@ -82,7 +82,7 @@ class FormControlGeneratorFunctions {
    * @param DOMElement $form_control
    * @return string
    */
-  public static function stringGenerateFunction(DOMElement &$form_control) {
+  public static function stringGenerateFunction(DOMElement $form_control) {
     return $form_control->textContent;
   }
 
@@ -91,7 +91,7 @@ class FormControlGeneratorFunctions {
    * @param DOMElement $form_control
    * @return boolean
    */
-  public static function booleanGenerateFunction(DOMElement &$form_control) {
+  public static function booleanGenerateFunction(DOMElement $form_control) {
     $value = $form_control->textContent;
     if (strcasecmp($value, 'true') === 0) {
       return true;
@@ -101,16 +101,16 @@ class FormControlGeneratorFunctions {
     }
   }
 
-  public static function integerGenerateFunction(DOMElement &$form_control) {
+  public static function integerGenerateFunction(DOMElement $form_control) {
     return (int) $form_control->textContent;
   }
 
-  public static function arrayGenerateFunction(DOMElement &$form_control) {
+  public static function arrayGenerateFunction(DOMElement $form_control) {
     $keys = $form_control->getElementsByTagName('key');
     return self::generateArrayFromKeys($keys);
   }
 
-  private static function generateArrayFromKeys(DOMNodeList &$keys) {
+  private static function generateArrayFromKeys(DOMNodeList $keys) {
     $output = array();
     $count = $keys->length;
     for ($i = 0; $i < $count; $i++) {
@@ -126,7 +126,7 @@ class FormControlGeneratorFunctions {
     return $output;
   }
 
-  private static function processKey(DOMElement &$key) {
+  private static function processKey(DOMElement $key) {
     $keys = $key->getElementsByTagName('key');
     if ($keys->length > 0) {
       $value = self::generateArrayFromKeys($keys);
@@ -138,7 +138,7 @@ class FormControlGeneratorFunctions {
     return array($name, $value);
   }
 
-  public static function ahahGenerateFunction(DOMElement &$form_control) {
+  public static function ahahGenerateFunction(DOMElement $form_control) {
     $output = array();
     $element = simplexml_import_dom($form_control);
     if (isset($element->effect)) {
@@ -170,7 +170,7 @@ class FormControlGeneratorFunctions {
     return $output;
   }
 
-  public static function redirectGenerateFunction(DOMElement &$form_control) {
+  public static function redirectGenerateFunction(DOMElement $form_control) {
     $element = simplexml_import_dom($form_control);
     if (isset($element->false)) {
       return FALSE;
@@ -200,10 +200,10 @@ class FormControlGeneratorFunctions {
 
   /**
    *
-   * @param type $name 
+   * @param string $name 
    * @return FormControlType
    */
-  public static function getFormControlType(&$name) {
+  public static function getFormControlType($name) {
     if (array_key_exists($name, self::$form_control_type_map)) {
       return self::$form_control_type_map[$name];
     }
@@ -219,7 +219,7 @@ class FormControlGeneratorFunctions {
    * @return string
    *   Function name of the generator function associated with the form control defined by $name
    */
-  public static function getFunctionFromName(&$name) {
+  public static function getFunctionFromName($name) {
     $type = self::getFormControlType($name);
     return self::getFunctionFromType($type);
   }

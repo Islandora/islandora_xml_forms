@@ -33,7 +33,7 @@ class FormDefinition {
    * 
    * @var FormElement 
    */
-  protected $root;
+  public $root;
   /**
    *
    * @var XMLDocumentProperties 
@@ -101,7 +101,7 @@ class FormDefinition {
    * @TODO Implement this function.
    * @param DOMElement $properties 
    */
-  private function initializeProperties(SimpleXMLElement &$properties) {
+  private function initializeProperties(SimpleXMLElement $properties) {
     $this->documentProperties = new XMLDocumentProperties($properties->document_properties);
   }
 
@@ -109,7 +109,7 @@ class FormDefinition {
    *
    * @param DOMNodeList $elements 
    */
-  private function createElements(SimpleXMLElement &$elements) {
+  private function createElements(SimpleXMLElement $elements) {
     $this->root = $this->createRootElement();
     foreach ($elements->children() as $element) {
       $form_element = new FormElement($element);
@@ -127,7 +127,7 @@ class FormDefinition {
    *
    * @return XMLDocumentProperties 
    */
-  public function &getDocumentProperties() {
+  public function getDocumentProperties() {
     return $this->documentProperties;
   }
 

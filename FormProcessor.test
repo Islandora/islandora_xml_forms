@@ -35,6 +35,7 @@ class XMLFormAPIFormProcessorTestCase extends DrupalUnitTestCase {
     parent::setUp('xml_form_api');
     module_load_include('inc', 'xml_form_api', 'FormProcessor');
     module_load_include('inc', 'xml_form_api', 'FormElement');
+    module_load_include('inc', 'xml_form_api', 'FormDefinition');
     module_load_include('inc', 'xml_form_api', 'Form');
   }
 
@@ -49,26 +50,87 @@ class XMLFormAPIFormProcessorTestCase extends DrupalUnitTestCase {
     } catch (Exception $e) {
       $this->pass('Threw exception when constructor given invalid parameters');
     }
+    /* Test getValue */
+    $xml = <<<EOT
+    <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://localhost/FormDefinition.xsd">
+    <properties>
+        <document_properties>
+            <root>mods:mods</root>
+            <namespaces>
+                <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
+            </namespaces>
+            <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>
+        </document_properties>
+    </properties>
+    <elements>
+        <element key="a">
+            <type>fieldset</type>
+            <title>test</title>
+            <tree>true</tree>
+            <children>
+                <element key="b">
+                    <type>fieldset</type>
+                    <tree>false</tree>
+                    <children>
+                        <element key="d">
+                            <type>fieldset</type>
+                            <tree>true</tree>
+                            <children>
+                                <element key="e">
+                                    <type>textfield</type>
+                                    <default_value>0ne</default_value>
+                                </element>
+                                <element key="f">
+                                    <type>fieldset</type>
+                                    <tree>true</tree>
+                                    <children>
+                                        <element key="g">
+                                            <type>textfield</type>
+                                            <default_value>bluene</default_value>
+                                        </element>
+                                    </children>
+                                </element>
+                            </children>
+                        </element>
+                    </children>
+                </element>
+                <element key="c">
+                    <type>textfield</type>
+                    <title>title</title>
+                    <xml_properties>
+                        <create>
+                            <parent_path>/mods:mods</parent_path>
+                            <schema_path name="mods">/xs:schema/xs:element[@key='title']</schema_path>
+                            <element>mods:title</element>
+                        </create>
+                    </xml_properties>
+                </element>
+                <element>
+                    <type>submit</type>
+                    <value>submit</value>
+                </element>
+            </children>
+        </element>
+    </elements>
+</form>
+EOT;
     /* Create FormValues */
     $form_state = array(
       'values' => array(
         Form::ROOT => array(
-          0 => 'one',
-          'key_1' => array(
-            0 => 'two'
+          'a' => array(
+            'c' => 'c'
           )
         ),
-        'key_1' => 'value_1',
       )
     );
     $form_values = new FormValues($form_state);
-    $this->assertEqual($form_values->current, $form_state['values'][Form::ROOT], 'FormValues Current value was initialized correctly.');
-    /* Test getValue */
-    $xml = "<element/>";
     $element = simplexml_load_string($xml);
-    $form_element = new FormElement($element);
-    $value = $form_values->getValue(0, $form_element);
-    $this->assertEqual($value, 'one', 'FormValue::getValue');
+    $def = new FormDefinition($xml);
+    //$def->root->setValue($form_values);
+    //var_dump($def->root);
+    $this->assertEqual($def->root->children['a']->children['c']->value, 'c', 'FormValue::getValue');
   }
 
 }

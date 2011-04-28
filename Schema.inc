@@ -98,7 +98,7 @@ class ElementDefinition extends NodeDefinition {
    */
   public function __construct($element, $parser) {
     parent::__construct($element, $parser);
-    $this->element = &$this->node;
+    $this->element = $this->node;
   }
 
   public function getName() {
@@ -125,7 +125,7 @@ class AttributeDefinition extends NodeDefinition {
    */
   public function __construct($attribute) {
     parent::__construct($attribute, $parser);
-    $this->attribute = &$this->node;
+    $this->attribute = $this->node;
   }
 
 }
@@ -151,7 +151,7 @@ class Schema {
     $this->filename = $filename;
     $this->location = $this->getSchemaLocation();
     $this->namespace = $this->getNamespace($namespace);
-    self::$schemas[$this->filename] = &$this;
+    self::$schemas[$this->filename] = $this;
     $this->loadSchema();
     var_dump($filename);
   }
@@ -202,7 +202,7 @@ class Schema {
         $this->includes[$filename] = new Schema($filename, $this->namespace); // Included files share the same namespace.
       }
       else {
-        $this->includes[$filename] = &self::$schemas[$filename];
+        $this->includes[$filename] = self::$schemas[$filename];
       }
     }
   }
@@ -227,7 +227,7 @@ class Schema {
         $this->imports[$filename] = new Schema($filename, $namespace);
       }
       else {
-        $this->imports[$filename] = &self::$schemas[$filename];
+        $this->imports[$filename] = self::$schemas[$filename];
       }
     }
   }
@@ -259,9 +259,6 @@ class Schema {
     var_dump($results);
   }
 
-  function foo(&$item, $key) {
-    $item = array($item->getAttribute('name'), $this->filename);
-  }
 
   private function domNodeListToArray($node_list) {
     $result = array();

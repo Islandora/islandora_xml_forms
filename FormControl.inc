@@ -15,6 +15,7 @@ class FormControl {
    * @var string 
    */
   protected $name;
+  
   /**
    *
    * @var mixed 
@@ -25,7 +26,7 @@ class FormControl {
    *
    * @param SimpleXMLElement $form_control 
    */
-  public function __construct(SimpleXMLElement &$form_control) {
+  public function __construct(SimpleXMLElement $form_control) {
     $this->name = $form_control->getName();
     $this->setValue($form_control);
   }
@@ -34,7 +35,7 @@ class FormControl {
    *
    * @param SimpleXMLElement $form_control 
    */
-  private function setValue(SimpleXMLElement &$form_control) {    
+  private function setValue(SimpleXMLElement $form_control) {    
     $function = FormControlGeneratorFunctions::getFunctionFromName($this->name);
     $hack = dom_import_simplexml($form_control);
     $this->value = FormControlGeneratorFunctions::$function($hack);
