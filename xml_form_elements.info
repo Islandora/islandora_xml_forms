@@ -1,0 +1,6 @@
+; $Id$
+name = XML Form Elements
+description = Coming soon.
+package = XML Form API
+dependencies[] = xml_form_api
+core = 6.x
