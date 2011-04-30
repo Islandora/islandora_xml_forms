@@ -9,7 +9,70 @@
 module_load_include('inc', 'xml_form_api', 'FormControl');
 module_load_include('inc', 'xml_form_api', 'XMLProperties');
 
-class FormElement {
+/**
+ * 
+ */
+class FormElements implements IteratorAggregate {
+
+  /**
+   * Dummy root element, doesn't get used.
+   * 
+   * @var FormElement
+   */
+  public $_root;
+  /**
+   * The root of this set of elements.
+   * 
+   * @var FormElement
+   */
+  public $root;
+  /**
+   *
+   * @var RecursiveIteratorIterator
+   */
+  protected $iterator;
+
+  /**
+   *
+   * @param string $root_name 
+   */
+  public function __construct($root_name) {
+    $this->createRoot($root_name);
+  }
+
+  /**
+   *
+   * @param string $root_name 
+   */
+  private function createRoot($root_name) {
+    $this->root = new FormElement();
+    $this->root->name = $root_name;
+    $this->root->tree = new FormControl('#tree', true);
+    $this->_root = new ArrayObject(array($root_name => $this->root));
+    return $this->_root;
+  }
+
+  /**
+   *
+   * @return RecursiveIteratorIterator
+   */
+  public function getIterator() {
+    return new RecursiveIteratorIterator(new RecursiveArrayIterator($this->_root), RecursiveIteratorIterator::SELF_FIRST);
+  }
+
+  /**
+   * 
+   */
+  public function toDrupalForm() {
+    return array($this->root->name => $this->root->toDrupalForm());
+  }
+
+}
+
+/**
+ * 
+ */
+class FormElement extends ArrayObject {
 
   /**
    * The parent element of this element if it exists.
@@ -19,80 +82,145 @@ class FormElement {
   /**
    * The form controls that define this element.
    * 
-   * @var FormControl[]
+   * @var FormControls
    */
   public $controls;
-  /**
-   * This elements children if they exist.
-   * 
-   * @var FormElement[]
-   */
-  public $children;
   /**
    *
    * @var XMLProperties 
    */
-  protected $xmlProperties;
+  public $xmlProperties;
   /**
    * 
    * @var string 
    */
-  protected $_key;
-  public $value;
+  public $name;
 
   /**
    *
-   * @param SimpleXMLElement $element
-   * @param FormElement $parent 
+   * @param string $xml_definition
+   * @return type 
    */
-  public function __construct(SimpleXMLElement $element, FormElement $parent = NULL) {
-    $this->parent = $parent;
-    $this->children = array();
-    $this->initialize($element);
+  public static function createFromXMLDefiniton($xml_definition) {
+    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
   }
 
   /**
    *
-   * @param SimpleXMLElement $element 
+   * @param SimpleXMLElement $simple 
    */
-  private function initialize(SimpleXMLElement $element) {
-    $this->_key = isset($element['key']) ? (string) $element['key'] : null;
-    $this->createFormControls($element);
-    $this->createXMLProperties($element);
-    $this->createChildren($element);
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $element 
-   */
-  private function createFormControls(SimpleXMLElement $element) {
-    $form_controls = $element->xpath("child::*[local-name() != 'children' and local-name() != 'xml_properties']");
-    foreach ($form_controls as $form_control) {
-      $name = $form_control->getName();
-      $this->controls[$name] = new FormControl($form_control);
-    }
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $element 
-   */
-  private function createXMLProperties(SimpleXMLElement $element) {
-    if (isset($element->xml_properties)) {
-      $this->xmlProperties = new XMLProperties($element->xml_properties);
-    }
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $element 
-   */
-  private function createChildren(SimpleXMLElement $element) {
+  public static function createFromSimpleXML(SimpleXMLElement $element) {
+    $form_element = new FormElement();
+    $form_element->name = isset($element['key']) ? (string) $element['key'] : NULL;
+    $form_element->xmlProperties = isset($element->xml_properties) ? new XMLProperties($element->xml_properties) : NULL;
+    $form_element->controls = FormControls::createFromSimpleXML($element);
     $children = $element->xpath('child::children/element');
     foreach ($children as $child) {
-      $child = new FormElement($child);
-      $this->addChild($child);
+      $child = self::createFromSimpleXML($child);
+      $child->parent = $form_control;
+      $form_element[$child->name] = $child;
+    }
+    return $form_element;
+  }
+
+  /**
+   * Creates a FormElement.
+   * 
+   * By default it won't have any form controls or children.
+   */
+  public function __construct() {
+    $this->controls = new FormControls();
+  }
+
+  /**
+   * Returns the Drupal Form repersentation of this object.
+   * 
+   * @return array
+   *   Drupal Form array.
+   */
+  public function toDrupalForm() {
+    $output = $this->controls->toDrupalForm();
+    foreach ($this as $key => $child) {
+      $output[$key] = $child->toDrupalForm();
+    }
+    return $output;
+  }
+
+  /**
+   * Returns the XML repersentation of this object. The XML repersentation is defined by FormDefinition.xsd.
+   * 
+   * @return SimpleXMLElement
+   */
+  public function toXML() {
+    
+  }
+
+  /**
+   * Check to see if a FormControl or child FormElement exists.
+   * 
+   * @param mixed $offset
+   *   Key for either a FormControl or child FormElement, generally a integer or string.  
+   * @return boolean
+   *   True if the offset refers to a FormControl or a child FormElement.
+   */
+  public function offsetExists($offset) {
+    if (parent::offsetExists($offset)) {
+      return true;
+    }
+    else {
+      return isset($this->contols[$offset]);
+    }
+  }
+
+  /**
+   * Retrieves a FormControl or child FormElement if it exists.
+   * 
+   * @param mixed $offset
+   *   Key for either a FormControl or child FormElement, generally a integer or string.  
+   * @return mixed
+   *   It returns either a FormControl or a child FormElement.
+   */
+  public function offsetGet($offset) {
+    if (parent::offsetExists($offset)) {
+      return $this[$offset];
+    }
+    return $this->controls[$offset];
+  }
+
+  /**
+   * Adds/modifies a FormControl or child FormElement.
+   * 
+   * @param mixed $offset
+   *   Key for either a FormControl or child FormElement, generally a integer or string.  
+   * @param mixed $value 
+   *  Either a FormControl or a FormElement.
+   */
+  public function offsetSet($offset, $value) {
+    $class = isset($value) ? get_class($value) : 'throw error';
+    switch ($class) {
+      case 'FormElement':
+        parent::offsetSet($offset, $value);
+        break;
+      case 'FormControl':
+        $this->controls[$offset] = $value;
+        break;
+      default:
+        throw new Exception('Invalid Type. Only FormControl and FormElement objects can be used with FormElement\'s array access funcitons');
+    }
+  }
+
+  /**
+   * Removes a FormControl or child FormElement.
+   * 
+   * @param mixed $offset 
+   *   Key for either a FormControl or child FormElement, generally a integer or string.  
+   */
+  public function offsetUnset($offset) {
+    if (parent::offsetExists($offset)) {
+      unset($this[$offset]);
+    }
+    else {
+      unset($this->controls[$offset]);
     }
   }
 
@@ -101,129 +229,28 @@ class FormElement {
    * @param string $name 
    */
   public function __get($name) {
-    if ($name == 'key') {
-      return $this->getKey();
+    if($this->offsetExists($name)) {
+      return $this->offsetGet($name);
     }
-    if (isset($this->controls[$name])) {
-      return $this->controls[$name]->getValue();
-    }
-    return NULL;
+    return $this->controls["#$name"];
   }
 
   /**
    *
-   * @return mixed 
+   * @param string $name
+   * @param mixed $value 
    */
-  private function getKey() {
-    if (isset($this->_key)) {
-      return $this->_key;
-    }
-    else if (isset($this->parent)) {
-      foreach ($this->parent->children as $key => $sibling) {
-        if ($sibling === $this) {
-          return $key;
-        }
-      }
-    }
-    return NULL;
-  }
-
-  /**
-   * Gets this elements parent, if it exists.
-   * 
-   * @return FormElement 
-   */
-  public function getParent() {
-    return isset($this->parent) ? $this->parent : NULL;
-  }
-
-  /**
-   * Gets this elements children, if they exist.
-   * 
-   * @return FormElements[] 
-   */
-  public function getChildren() {
-    return isset($this->children) ? $this->children : NULL;
-  }
-
-  /**
-   * Returns this elements form controls.
-   * 
-   * @return FormControl[] 
-   */
-  public function getFormControls() {
-    return $this->controls;
-  }
-
-  /**
-   * 
-   * @return XMLProperties 
-   */
-  public function getXMLProperties() {
-    return (isset($this->xmlProperties)) ? $this->xmlProperties : NULL;
-  }
-
-  /**
-   *
-   * @param FormElement $child 
-   */
-  public function addChild(FormElement $child) {
-    $child->parent = $this;
-    $key = $child->key;
-    if ($key) {
-      $this->children[$child->key] = $child;
-    }
-    else {
-      $this->children[] = $child;
+  public function __set($name, $value) {
+    $class = isset($value) && is_object($value) ? get_class($value) : null;
+    switch ($class) {
+      case 'FormElement':
+        parent::offsetSet($name, $value);
+        break;
+      case 'FormControl':
+        $this->controls->$name = $value;
+        break;
+      default:
+        throw new Exception('Invalid Type. Only FormControl and FormElement objects can be used with FormElement\'s array access funcitons');
     }
   }
-
-  /**
-   * 
-   * @return array
-   *   
-   */
-  public function toArray() {
-    $output = $this->getFormControlsAsArray();
-    $output = array_merge($output, $this->getChildrenAsArray());
-    return $output;
-  }
-
-  /**
-   *
-   * @return array 
-   */
-  private function getFormControlsAsArray() {
-    $output = array();
-    foreach ($this->controls as $form_control) {
-      $output = array_merge($output, $form_control->toArray());
-    }
-    return $output;
-  }
-
-  /**
-   *
-   * @return array 
-   */
-  private function getChildrenAsArray() {
-    $output = array();
-    if (isset($this->children)) {
-      foreach ($this->children as $key => $child) {
-        $output[$key] = $child->toArray();
-      }
-    }
-    return $output;
-  }
-
-  /**
-   *
-   * @param FormValues $values 
-   */
-  public function setValue(FormValues $values) {
-    $this->value = $values->getValue($this);
-    foreach ($this->children as $child) {
-      $child->setValue(clone $values); // Clone so FormValues->current tracks correctly.
-    }
-  }
-
 }

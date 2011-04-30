@@ -8,56 +8,229 @@
  */
 module_load_include('inc', 'xml_form_api', 'FormControlGeneratorFunctions');
 
+/**
+ * 
+ */
 class FormControl {
 
+  /**
+   * 
+   * @var array
+   */
+  protected static $convertSimpleXMLFunctions;
   /**
    *
    * @var string 
    */
-  protected $name;
-  
+  protected $_name;
   /**
    *
    * @var mixed 
    */
-  protected $value;
+  public $value;
 
   /**
    *
-   * @param SimpleXMLElement $form_control 
+   * @param type $xml_definition 
    */
-  public function __construct(SimpleXMLElement $form_control) {
-    $this->name = $form_control->getName();
-    $this->setValue($form_control);
+  public static function createFromXMLDefiniton($xml_definition) {
+    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
+  }
+
+  /**
+   *
+   * @param type $element
+   * @return FormControl 
+   */
+  public static function createFromSimpleXML(SimpleXMLElement $form_control) {
+    list($name, $value) = self::getNameAndValueFromSimpleXML($form_control);
+    return new FormControl("#$name", $value);
   }
 
   /**
    *
    * @param SimpleXMLElement $form_control 
    */
-  private function setValue(SimpleXMLElement $form_control) {    
+  public static function getNameAndValueFromSimpleXML(SimpleXMLElement $form_control) {
+    $name = $form_control->getName();
+    $value = self::getValueFromSimpleXML($name, $form_control);
+    return array($name, $value);
+  }
+
+  /**
+   *
+   * @param type $name
+   * @param SimpleXMLElement $form_control 
+   */
+  public static function getValueFromSimpleXML($name, SimpleXMLElement $form_control) {
+    $function = self::getSimpleXMLConvertFunction($name);
+    var_dump($function);
+    return call_user_func(array('FormControl', $function), $form_control);
+  }
+
+  /**
+   *
+   * @param type $name 
+   */
+  public static function getSimpleXMLConvertFunction($name) {
+    if (empty(self::$convertSimpleXMLFunctions)) {
+      $type_function_map = array(
+        'string' => 'convertSimpleXMLToString',
+        'boolean' => 'convertSimpleXMLToBoolean',
+        'integer' => 'convertSimpleXMLToInteger',
+        'float' => 'convertSimpleXMLToFloat',
+        'array' => 'convertSimpleXMLToArray',
+        'mixed' => 'convertSimpleXMLToMixed',
+      );
+      $filename = drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xsd';
+      $form_definition = simplexml_load_file($filename);
+      $filter_types = "@type='string' or @type = 'boolean' or @type = 'integer' or @type = 'float' or @type = 'array' or @type = 'mixed'";
+      $form_controls = $form_definition->xpath("/xs:schema/xs:complexType/xs:all/xs:element[$filter_types]");
+      foreach ($form_controls as $form_control) {
+        self::$convertSimpleXMLFunctions[(string) $form_control['name']] = $type_function_map[(string) $form_control['type']];
+      }
+    }
+    return self::$convertSimpleXMLFunctions[$name];
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $element 
+   */
+  public static function convertSimpleXMLToString(SimpleXMLElement $element) {
+    return (string) $element;
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $element 
+   */
+  public static function convertSimpleXMLToBoolean(SimpleXMLElement $element) {
+    return strcasecmp((string) $element, 'true') === 0 ? true : false;
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $element 
+   */
+  public static function convertSimpleXMLToInteger(SimpleXMLElement $element) {
+    return (int) $element;
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $element 
+   */
+  public static function convertSimpleXMLToFloat(SimpleXMLElement $element) {
+    return (float) $element;
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $element 
+   */
+  public static function convertSimpleXMLToArray(SimpleXMLElement $element) {
+    $keys = $element->xpath('key');
+    foreach ($keys as $key) {
+      if (($name = $key['name']) != null) {
+        $output[$name] = self::convertSimpleXMLArrayKey($key);
+      }
+      else {
+        $output[] = self::convertSimpleXMLArrayKey($key);
+      }
+    }
+    return $output;
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $key
+   * @return type 
+   */
+  private static function convertSimpleXMLArrayKey(SimpleXMLElement $key) {
+    if (isset($key->value)) {
+      switch ($key->value['type']) {
+        case 'string':
+          return self::convertSimpleXMLToString($key->value);
+          break;
+        case 'integer':
+          return self::convertSimpleXMLToInteger($key->value);
+          break;
+        case 'boolean':
+          return self::convertSimpleXMLToBoolean($key->value);
+          break;
+        default:
+          throw new Exception('Invalid Type: ' . $key->value['type']);
+      }
+    }
+    else {
+      self::convertSimpleXMLToArray($key);
+    }
+  }
+
+  /**
+   *
+   * @param type $element 
+   */
+  public static function convertSimpleXMLToMixed(SimpleXMLElement $element) {
+    //xs:element[@name = 'access']  
+  }
+
+  /**
+   *
+   * @param string $name 
+   * @return boolean
+   */
+  public static function validName($name) {
+    return is_string($name) && strpos($name, '#') === 0;
+  }
+
+  /**
+   *
+   * @param string $name
+   * @param mixed $value 
+   */
+  public function __construct($name, $value) {
+    if (self::validName($name)) {
+      $this->_name = $name;
+      $this->value = $value;
+    }
+    else {
+      throw new Exception("Invalid Name: $name for FormControl.");
+    }
+  }
+
+  /**
+   *
+   * @param type $name
+   * @return type 
+   */
+  public function __get($name) {
+    return $name == 'name' ? $this->_name : null;
+  }
+
+  /**
+   * 
+   */
+  public function asDrupalForm() {
+    
+  }
+
+  /**
+   * 
+   */
+  public function asXML() {
+    
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $form_control 
+   */
+  private function setValue(SimpleXMLElement $form_control) {
     $function = FormControlGeneratorFunctions::getFunctionFromName($this->name);
     $hack = dom_import_simplexml($form_control);
     $this->value = FormControlGeneratorFunctions::$function($hack);
-  }
-
-  /**
-   * Get this form controls name.
-   * 
-   * @return string
-   *   This form control's name. 
-   */
-  public function getName() {
-    return $this->name;
-  }
-  
-  /**
-   * 
-   * @return mixed
-   *   This form controls value.
-   */
-  public function getValue() {
-    return $this->value;
   }
 
   /**
@@ -67,6 +240,96 @@ class FormControl {
    */
   public function toArray() {
     return array('#' . $this->name => $this->value);
+  }
+
+}
+
+/**
+ * 
+ */
+class FormControls extends ArrayObject {
+
+  /**
+   *
+   * @param type $xml_definition 
+   */
+  public static function createFromXMLDefiniton($xml_definition) {
+    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
+  }
+
+  /**
+   *
+   * @param type $element
+   * @return FormControl 
+   */
+  public static function createFromSimpleXML($element) {
+    $form_controls = new FormControls();
+    $controls = $element->xpath("child::*[local-name() != 'children' and local-name() != 'xml_properties']");
+    foreach ($controls as $name => $control) {
+      $form_controls['#' . $control->getName()] = FormControl::createFromSimpleXML($control);
+    }
+    return $form_controls;
+  }
+
+  /**
+   * 
+   */
+  public function toDrupalForm() {
+    foreach ($this as $key => $control) {
+      $output[$key] = $control->value;
+    }
+    return $output;
+  }
+
+  /**
+   * 
+   */
+  public function asXML() {
+    $xml = '';
+    foreach ($this as $control) {
+      $xml .= $control->asXML() . "/n";
+    }
+    return $xml;
+  }
+
+  /**
+   *
+   * @param string $index 
+   */
+  public function offsetGet($index) {
+    if (parent::offsetExists($index)) {
+      return parent::offsetGet($index)->value;
+    }
+    return NULL;
+  }
+
+  /**
+   *
+   * @param mixed $offset
+   * @param mixed $value 
+   */
+  public function offsetSet($offset, $value) {
+    $convert_to_form_control = !(isset($value) && is_object($value) && get_class($value) == 'FormControl');
+    $value = $convert_to_form_control ? new FormControl($offset, $value) : $value;
+    parent::offsetSet($offset, $value);
+  }
+
+  /**
+   *
+   * @param type $name
+   * @param type $value 
+   */
+  public function __set($name, $value) {
+    $this->offsetSet("#$name", $value);
+  }
+
+  /**
+   *
+   * @param type $name
+   * @return type 
+   */
+  public function __get($name) {
+    return $this->offsetGet("#$name");
   }
 
 }

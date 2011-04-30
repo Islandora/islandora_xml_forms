@@ -18,6 +18,7 @@
                 <element key="b">
                     <type>fieldset</type>
                     <tree>false</tree>
+                    <redirect></redirect>
                     <children>
                         <element key="d">
                             <type>fieldset</type>

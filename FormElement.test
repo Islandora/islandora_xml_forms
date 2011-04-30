@@ -94,5 +94,13 @@ EOT;
       )
     ), 'FormElement::toArray(), created the correct drupal form repersentation of the form element.');
   }
+  
+  function testToDrupalForm() {
+    
+  }
+  
+  function testAsXML() {
+    
+  }
 
 }

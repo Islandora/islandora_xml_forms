@@ -29,11 +29,11 @@ class FormDefinition {
    */
   protected $schema;
   /**
-   * The root FormElement, all form elements are a decendent of this element.
+   * A Depth first iterator containing all the elements in the form definition, plus a default root element.
    * 
-   * @var FormElement 
+   * @var FormElements
    */
-  public $root;
+  public $elements;
   /**
    *
    * @var XMLDocumentProperties 
@@ -110,17 +110,11 @@ class FormDefinition {
    * @param DOMNodeList $elements 
    */
   private function createElements(SimpleXMLElement $elements) {
-    $this->root = $this->createRootElement();
+    $this->elements = new FormElements(Form::ROOT);
     foreach ($elements->children() as $element) {
       $form_element = new FormElement($element);
-      $this->root->addChild($form_element);
+      $this->elements->add($form_element);
     }
-  }
-
-  private function createRootElement() {
-    $xml = "<element key='" . Form::ROOT . "'><tree>true</tree></element>";
-    $root = simplexml_load_string($xml);
-    return new FormElement($root);
   }
 
   /**
@@ -132,20 +126,11 @@ class FormDefinition {
   }
 
   /**
-   * Gets the form elements that define this form.
-   * 
-   * @return FormElement[]
-   */
-  public function getElements() {
-    return $this->elements;
-  }
-
-  /**
    *
    * @return array 
    */
   public function toArray() {
-    return array(Form::ROOT => $this->root->toArray());
+    return $this->elements->root->toArray();
   }
 
 }
