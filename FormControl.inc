@@ -200,48 +200,6 @@ class FormControl {
     }
   }
 
-  /**
-   *
-   * @param type $name
-   * @return type 
-   */
-  public function __get($name) {
-    return $name == 'name' ? $this->_name : null;
-  }
-
-  /**
-   * 
-   */
-  public function asDrupalForm() {
-    
-  }
-
-  /**
-   * 
-   */
-  public function asXML() {
-    
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $form_control 
-   */
-  private function setValue(SimpleXMLElement $form_control) {
-    $function = FormControlGeneratorFunctions::getFunctionFromName($this->name);
-    $hack = dom_import_simplexml($form_control);
-    $this->value = FormControlGeneratorFunctions::$function($hack);
-  }
-
-  /**
-   * Converts this form control into a Drupal API form control.
-   * 
-   * @return array
-   */
-  public function toArray() {
-    return array('#' . $this->name => $this->value);
-  }
-
 }
 
 /**
@@ -309,8 +267,7 @@ class FormControls extends ArrayObject {
    * @param mixed $value 
    */
   public function offsetSet($offset, $value) {
-    $convert_to_form_control = !(isset($value) && is_object($value) && get_class($value) == 'FormControl');
-    $value = $convert_to_form_control ? new FormControl($offset, $value) : $value;
+    $value = gettype($value) == 'FormControl' ? $value : new FormControl($offset, $value);
     parent::offsetSet($offset, $value);
   }
 

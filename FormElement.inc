@@ -182,7 +182,7 @@ class FormElement extends ArrayObject {
    */
   public function offsetGet($offset) {
     if (parent::offsetExists($offset)) {
-      return $this[$offset];
+      return parent::offsetGet($offset);
     }
     return $this->controls[$offset];
   }
@@ -196,16 +196,11 @@ class FormElement extends ArrayObject {
    *  Either a FormControl or a FormElement.
    */
   public function offsetSet($offset, $value) {
-    $class = isset($value) ? get_class($value) : 'throw error';
-    switch ($class) {
-      case 'FormElement':
-        parent::offsetSet($offset, $value);
-        break;
-      case 'FormControl':
-        $this->controls[$offset] = $value;
-        break;
-      default:
-        throw new Exception('Invalid Type. Only FormControl and FormElement objects can be used with FormElement\'s array access funcitons');
+    if (gettype($value) == 'FormElement') {
+      parent::offsetSet($offset, $value);
+    }
+    else {
+      $this->controls[$offset] = $value;
     }
   }
 
@@ -229,10 +224,10 @@ class FormElement extends ArrayObject {
    * @param string $name 
    */
   public function __get($name) {
-    if($this->offsetExists($name)) {
+    if ($this->offsetExists($name)) {
       return $this->offsetGet($name);
     }
-    return $this->controls["#$name"];
+    return $this->controls->$name;
   }
 
   /**
@@ -241,16 +236,7 @@ class FormElement extends ArrayObject {
    * @param mixed $value 
    */
   public function __set($name, $value) {
-    $class = isset($value) && is_object($value) ? get_class($value) : null;
-    switch ($class) {
-      case 'FormElement':
-        parent::offsetSet($name, $value);
-        break;
-      case 'FormControl':
-        $this->controls->$name = $value;
-        break;
-      default:
-        throw new Exception('Invalid Type. Only FormControl and FormElement objects can be used with FormElement\'s array access funcitons');
-    }
+    $this->offsetSet($name, $value);
   }
+
 }
