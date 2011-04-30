@@ -196,7 +196,7 @@ class FormElement extends ArrayObject {
    *  Either a FormControl or a FormElement.
    */
   public function offsetSet($offset, $value) {
-    if (gettype($value) == 'FormElement') {
+    if (isset($value) && is_object($value) && get_class($value) == 'FormElement') {
       parent::offsetSet($offset, $value);
     }
     else {

@@ -173,7 +173,7 @@ class FormControl {
    * @param type $element 
    */
   public static function convertSimpleXMLToMixed(SimpleXMLElement $element) {
-    //xs:element[@name = 'access']  
+    
   }
 
   /**
@@ -267,7 +267,8 @@ class FormControls extends ArrayObject {
    * @param mixed $value 
    */
   public function offsetSet($offset, $value) {
-    $value = gettype($value) == 'FormControl' ? $value : new FormControl($offset, $value);
+    $value_is_form_control = isset($value) && is_object($value) && get_class($value) == 'FormControl';
+    $value = $value_is_form_control ? $value : new FormControl($offset, $value);
     parent::offsetSet($offset, $value);
   }
 
