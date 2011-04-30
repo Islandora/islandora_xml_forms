@@ -40,91 +40,7 @@ function xml_form_api_get_form_defintion() {
  * 
  */
 function xml_form_api_test() {
-  /* module_load_include('inc', 'xml_form_api', 'FormDefinition');
-    module_load_include('inc', 'xml_form_api', 'Form');
-    module_load_include('inc', 'xml_form_api', 'FormStorage');
-    $basic = <<<EOT
-    <element key="a">
-    <children>
-    <element key="a>a">
-    <children>
-    <element key="a>a>a">
-    <children>
-    <element key="a>a>a>a">
-    </element>
-    </children>
-    </element>
-    </children>
-    </element>
-    <element key="a>b"></element>
-    <element key="a>c">
-    <children>
-    <element key="a>c>a"></element>
-    </children>
-    </element>
-    </children>
-    </element>
-    EOT;
-    $xml = simplexml_load_string($basic);
-    $form_element = new FormElement($xml);
-    var_dump($form_element);
-    $itoritor = new RecursiveIteratorIterator(new RecursiveArrayIterator(array('foo'=>$form_element)), RecursiveIteratorIterator::SELF_FIRST);
-    echo '&&&&&&&&&</br>';
-    foreach ($itoritor as $b => $c) {
-    var_dump($b, $c);
-    echo '-----</br>';
-    }
-    return; */
-  module_load_include('inc', 'xml_form_api', 'FormElement');
-  module_load_include('inc', 'xml_form_api', 'Form');
-  $obj = new FormElement();
-  $foo = new FormElement();
-  $obj->name = "obj";
-  $foo->name = "foo";
-  //$foo->name = 'foo';
-  $obj['foo'] = $foo;
-  $foo['boo'] = $boo = FormElement::createFromXMLDefiniton('<element key="boo"><type>textfield</type></element>');
-  $elements = new FormElements(Form::ROOT);
-  $elements->root['obj'] = $obj;
-  $form = $elements->toDrupalForm();
-  var_dump($elements->root);
-  var_dump($form[Form::ROOT]['obj']);
-  var_dump($boo->toDrupalForm());
-  return;
-  //var_dump($elements->toArray());
-  //var_dump($obj->asXML());
-  
-  //$obj->addChild($foo);
-  /*$obj->a = 'sub';
-  $obj->b = 'sub';
-  $obj->__toString = function() {
-        return "{$this->a},{$this->b}";
-      };*/
-  $a = array(
-      'a' => array($obj),
-      'b' => 'c'
-      );
-  
-  
-  //$blah = new RecursiveCachingIterator(new RecursiveArrayIterator($a), RecursiveCachingIterator::CATCH_GET_CHILD);
-  $blah = new RecursiveIteratorIterator(new RecursiveArrayIterator($elements->root), RecursiveIteratorIterator::SELF_FIRST);
-  
-  foreach ($blah as $q => $z) {
-    echo "$q => " . print_r($z, true);
-    echo '</br>---</br>';
-  }
-  return;
-  foreach ($blah as $q => $z) {
-    echo "$q => " . print_r($z, true);
-    echo '</br>---</br>';
-  }
-  exit();
-  foreach ($blah as $q => $z) {
-    echo "$q => " . print_r($z, true);
-    echo '</br>---</br>';
-  }
-  echo 'end';
-  //return drupal_get_form('xml_form');
+  return drupal_get_form('xml_form');
 }
 
 function xml_form(&$form_state) {
@@ -157,7 +73,7 @@ function xml_form(&$form_state) {
                             <children>
                                 <element key="e">
                                     <type>textfield</type>
-                                    <default_value>0ne</default_value>
+                                    <default_value type="string">0ne</default_value>
                                 </element>
                                 <element key="f">
                                     <type>fieldset</type>
@@ -165,7 +81,7 @@ function xml_form(&$form_state) {
                                     <children>
                                         <element key="g">
                                             <type>textfield</type>
-                                            <default_value>bluene</default_value>
+                                            <default_value type="string">bluene</default_value>
                                         </element>
                                     </children>
                                 </element>
@@ -203,29 +119,15 @@ EOT;
   $form_state['storage']['test'] = $doc;
   $form = new Form($storage);
   if ($form->isInitialized()) { // Was initialized from storage.
-    return $form->toArray();
+    return $form->toDrupalForm();
   }
   else {
     $definition = new FormDefinition($xml);
-    $count = 0;
-    // var_dump($definition->elements->root);
-
-    $itor = $definition->elements; //->_root->children;//getIterator();
-    //$itor = new RecursiveIteratorIterator($root); 
-    foreach ($definition->elements as $a => $b) {
-      echo '----</br>';
-      var_dump($a);
-    }
-    return;
-    foreach ($definition->elements as $a => $b) {
-      var_dump($a);
-    }
-    $definition->elements->add(new FormElement());
-    return;
     $xml_document_properties = $definition->getDocumentProperties();
     $xml_document = new XMLDocument($xml_document_properties);
     $form->initialize($definition, $xml_document); // Hidden Params for extra, but at very least we need the definition.
-    return $form->toArray();
+    var_dump($form->toDrupalForm());
+    return $form->toDrupalForm();
   }
 }
 

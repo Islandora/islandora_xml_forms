@@ -94,7 +94,7 @@ class FormDefinition {
     $document = $this->validate();
     $form = simplexml_import_dom($document);
     $this->initializeProperties($form->properties);
-    $this->createElements($form->elements);
+    $this->elements = FormElements::createFromSimpleXML(Form::ROOT, $form->elements);
   }
 
   /**
@@ -103,18 +103,6 @@ class FormDefinition {
    */
   private function initializeProperties(SimpleXMLElement $properties) {
     $this->documentProperties = new XMLDocumentProperties($properties->document_properties);
-  }
-
-  /**
-   *
-   * @param DOMNodeList $elements 
-   */
-  private function createElements(SimpleXMLElement $elements) {
-    $this->elements = new FormElements(Form::ROOT);
-    foreach ($elements->children() as $element) {
-      $form_element = new FormElement($element);
-      $this->elements->add($form_element);
-    }
   }
 
   /**
@@ -129,8 +117,8 @@ class FormDefinition {
    *
    * @return array 
    */
-  public function toArray() {
-    return $this->elements->root->toArray();
+  public function toDrupalForm() {
+    return $this->elements->toDrupalForm();
   }
 
 }

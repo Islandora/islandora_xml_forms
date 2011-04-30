@@ -233,6 +233,7 @@ class FormControls extends ArrayObject {
    * 
    */
   public function toDrupalForm() {
+    $output = null;
     foreach ($this as $key => $control) {
       $output[$key] = $control->value;
     }

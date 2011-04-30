@@ -240,7 +240,7 @@
     </xs:simpleType>
     <xs:complexType mixed="true" name="mixed">
         <xs:sequence>
-            <xs:element name="array" type="array"/>
+            <xs:element minOccurs="0" name="array" type="array"/>
         </xs:sequence>
         <xs:attribute name="type" use="required">
             <xs:simpleType>

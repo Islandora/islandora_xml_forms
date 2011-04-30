@@ -34,6 +34,31 @@ class FormElements implements IteratorAggregate {
 
   /**
    *
+   * @param type $root_name
+   * @param type $xml_definition
+   * @return type 
+   */
+  public static function createFromXMLDefiniton($root_name, $xml_definition) {
+    return self::createFromSimpleXML($root_name, simplexml_load_string($xml_definition));
+  }
+
+  /**
+   *
+   * @param type $root_name
+   * @param SimpleXMLElement $elements 
+   */
+  public static function createFromSimpleXML($root_name, SimpleXMLElement $elements) {
+    $form_elements = new FormElements($root_name);
+    $children = $elements->children();
+    foreach ($children as $child) {
+      $child = FormElement::createFromSimpleXML($child);
+      $form_elements->root[$child->name] = $child;
+    }
+    return $form_elements;
+  }
+
+  /**
+   *
    * @param string $root_name 
    */
   public function __construct($root_name) {
@@ -117,7 +142,7 @@ class FormElement extends ArrayObject {
     $children = $element->xpath('child::children/element');
     foreach ($children as $child) {
       $child = self::createFromSimpleXML($child);
-      $child->parent = $form_control;
+      $child->parent = $form_element;
       $form_element[$child->name] = $child;
     }
     return $form_element;
@@ -236,7 +261,12 @@ class FormElement extends ArrayObject {
    * @param mixed $value 
    */
   public function __set($name, $value) {
-    $this->offsetSet($name, $value);
+    if (isset($value) && is_object($value) && get_class($value) == 'FormElement') {
+      $this->offsetSet($name, $value);
+    }
+    else {
+      $this->controls->$name = $value;
+    }
   }
 
 }

@@ -97,8 +97,8 @@ class Form {
    *
    * @return array 
    */
-  public function toArray() {
-    return $this->definition->toArray();
+  public function toDrupalForm() {
+    return $this->definition->toDrupalForm();
   }
 
   /**
