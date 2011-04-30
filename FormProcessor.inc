@@ -122,8 +122,7 @@ class FormProcessAction {
    */
   protected $properties;
 
-  public function __construct(FormValues $form_values, FormElement $element) {
-    
+  public function __construct(FormValues $form_values, FormElement $element) { 
   }
   
 }

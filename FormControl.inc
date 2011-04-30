@@ -64,7 +64,6 @@ class FormControl {
    */
   public static function getValueFromSimpleXML($name, SimpleXMLElement $form_control) {
     $function = self::getSimpleXMLConvertFunction($name);
-    var_dump($function);
     return call_user_func(array('FormControl', $function), $form_control);
   }
 
@@ -173,7 +172,26 @@ class FormControl {
    * @param type $element 
    */
   public static function convertSimpleXMLToMixed(SimpleXMLElement $element) {
-    
+    $type = $element['type'];
+    switch ($type) {
+      case 'string':
+        return self::convertSimpleXMLToString($element);
+        break;
+      case 'integer':
+        return self::convertSimpleXMLToInteger($element);
+        break;
+      case 'float':
+        return self::convertSimpleXMLToFloat($element);
+        break;
+      case 'boolean':
+        return self::convertSimpleXMLToBoolean($element);
+        break;
+      case 'array':
+        return self::convertSimpleXMLToArray($element->array);
+        break;
+      default:
+        throw new Exception('Invalid type: ' . $type);
+    }
   }
 
   /**

@@ -92,6 +92,7 @@ function xml_form(&$form_state) {
                 <element key="c">
                     <type>textfield</type>
                     <title>title</title>
+                    <default_value type="string">c</default_value>
                     <xml_properties>
                         <create>
                             <parent_path>/mods:mods</parent_path>
@@ -126,7 +127,8 @@ EOT;
     $xml_document_properties = $definition->getDocumentProperties();
     $xml_document = new XMLDocument($xml_document_properties);
     $form->initialize($definition, $xml_document); // Hidden Params for extra, but at very least we need the definition.
-    var_dump($form->toDrupalForm());
+    $v = $form->toDrupalForm();
+    var_dump($v[Form::ROOT]['a']);
     return $form->toDrupalForm();
   }
 }
@@ -138,7 +140,6 @@ function xml_form_validate($form, &$form_state) {
 }
 
 function xml_form_submit($form, &$form_state) {
-  var_dump($form_state['storage']['test']->documentElement->tagName);
   $storage = new FormStorage($form_state);
   $form = new Form($storage);
   //$form->submit($form, $form_state);
