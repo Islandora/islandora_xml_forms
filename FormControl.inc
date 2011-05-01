@@ -274,10 +274,8 @@ class FormControls extends ArrayObject {
    * @param string $index 
    */
   public function offsetGet($index) {
-    if (parent::offsetExists($index)) {
-      return parent::offsetGet($index)->value;
-    }
-    return NULL;
+    $value = parent::offsetGet($index);
+    return isset($value) ? $value->value : NULL;
   }
 
   /**

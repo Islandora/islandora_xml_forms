@@ -114,7 +114,7 @@ class FormElement extends ArrayObject {
    *
    * @var XMLProperties 
    */
-  public $xmlProperties;
+  public $properties;
   /**
    * 
    * @var string 
@@ -137,7 +137,7 @@ class FormElement extends ArrayObject {
   public static function createFromSimpleXML(SimpleXMLElement $element) {
     $form_element = new FormElement();
     $form_element->name = isset($element['key']) ? (string) $element['key'] : NULL;
-    $form_element->xmlProperties = isset($element->xml_properties) ? new XMLProperties($element->xml_properties) : NULL;
+    $form_element->properties = isset($element->xml_properties) ? new XMLProperties($element->xml_properties) : NULL;
     $form_element->controls = FormControls::createFromSimpleXML($element);
     $children = $element->xpath('child::children/element');
     foreach ($children as $child) {
@@ -193,7 +193,7 @@ class FormElement extends ArrayObject {
       return true;
     }
     else {
-      return isset($this->contols[$offset]);
+      return isset($this->controls[$offset]);
     }
   }
 
@@ -244,11 +244,28 @@ class FormElement extends ArrayObject {
     }
   }
 
+  public function getKey() {
+    if ($this->name) {
+      return $this->name;
+    }
+    else {
+      foreach ($this->parent as $key => $sibling) {
+        if ($sibling === $this) {
+          return $key;
+        }
+      }
+    }
+    return NULL;
+  }
+
   /**
    *
    * @param string $name 
    */
   public function __get($name) {
+    if ($name == 'key') {
+      return $this->getKey();
+    }
     if ($this->offsetExists($name)) {
       return $this->offsetGet($name);
     }

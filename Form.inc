@@ -113,14 +113,13 @@ class Form {
 
   /**
    *
-   * @param array $form
-   * @param array $form_state 
-   * @return XMLDocument
+   * @return type 
    */
-  public function submit(array &$form, array &$form_state) {
+  public function submit(array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'FormProcessor');
-    $processor = new FormProcessor($form_state, $this->storage);
-    return $processor->process();
+    $form_values = new FormValues($form_state);
+    $processor = new FormProcessor($form_values);
+    return $processor->process($this->definition->elements);
   }
 
 }

@@ -44,7 +44,6 @@ function xml_form_api_test() {
 }
 
 function xml_form(&$form_state) {
-
   $xml = <<<EOT
   <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://localhost/FormDefinition.xsd">
@@ -58,6 +57,11 @@ function xml_form(&$form_state) {
         </document_properties>
     </properties>
     <elements>
+        <element key="z">
+          <title>asdf</title>
+          <tree>false</tree>
+          <type>fieldset</type>
+        </element>        
         <element key="a">
             <type>fieldset</type>
             <title>test</title>
@@ -127,20 +131,18 @@ EOT;
     $xml_document_properties = $definition->getDocumentProperties();
     $xml_document = new XMLDocument($xml_document_properties);
     $form->initialize($definition, $xml_document); // Hidden Params for extra, but at very least we need the definition.
-    $v = $form->toDrupalForm();
-    var_dump($v[Form::ROOT]['a']);
     return $form->toDrupalForm();
   }
 }
 
 function xml_form_validate($form, &$form_state) {
-  $storage = new FormStorage($form_state);
-  $_form = new Form($storage);
+  //$storage = new FormStorage($form_state);
+  //$_form = new Form($storage);
   //$_form->validate($form, $form_state);
 }
 
-function xml_form_submit($form, &$form_state) {
+function xml_form_submit($_form, &$form_state) {
   $storage = new FormStorage($form_state);
   $form = new Form($storage);
-  //$form->submit($form, $form_state);
+  var_dump($form->submit($form_state));
 }

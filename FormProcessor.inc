@@ -7,21 +7,22 @@
  *
  */
 
-
 /**
- * This class might be confusing but it simplifies the process. 
+ * This class utilizes scope and a reference pointer to track where 
+ * the current value for a given element is. 
  */
 class FormValues {
 
   /**
-   *
+   * Submitted values from the form.
+   * 
    * @var array 
    */
-  protected $values;
+  public $values;
   /**
-   * A reference to the current element in the $values array.
+   * A reference to a position in $values.
    * 
-   * @var mixed 
+   * @var mixed
    */
   protected $current;
   /**
@@ -32,13 +33,11 @@ class FormValues {
   protected $track;
 
   /**
-   *
+   * Creates a FormValues object.
+   * 
    * @param array $form_state 
    */
   public function __construct(array &$form_state) {
-    if (!isset($form_state['values'])) {
-      throw new Exception('Failed to create FormValues, the given form_state was invalid.');
-    }
     $this->values = &$form_state['values'];
     $this->current = &$this->values;
     $this->track = false; // Default value is false.
@@ -47,11 +46,11 @@ class FormValues {
   /**
    *
    * @param FormElement $element
-   * @return type 
+   * @return mixed 
    */
   public function getValue(FormElement $element) {
-    $this->track($element);
-    return is_array($this->current) ? NULL : $this->current; // Array's are roots of #tree branchs
+    $value = $this->track($element);
+    return is_array($value) ? null : $value; // Array's are roots of #tree branchs
   }
 
   /**
@@ -62,13 +61,14 @@ class FormValues {
     if ($this->shouldStartTracking($element)) {
       $this->track = true;
     }
-    else if ($this->shouldStopTracking($element)) {
+    if ($this->shouldStopTracking($element)) {
       $this->track = false;
       $this->reset();
     }
     if ($this->track && isset($this->current[$element->key])) {
       $this->current = &$this->current[$element->key];
     }
+    return $this->current;
   }
 
   /**
@@ -109,7 +109,11 @@ class FormProcessActionType {
   const Delete = 3;
 }
 
-class FormProcessAction {
+/**
+ * 
+ */
+class FormProcessAction extends ArrayObject {
+
   /**
    * The form value associated with this action. Actions do not require form values.
    * 
@@ -122,9 +126,17 @@ class FormProcessAction {
    */
   protected $properties;
 
-  public function __construct(FormValues $form_values, FormElement $element) { 
+  /**
+   *
+   * @param FormValues $form_values
+   * @param FormElement $element 
+   */
+  public function __construct(mixed $value, XMLProperties $properties, FormProcessAction $parent = NULL) {
+    $this->value = $value;
+    $this->properties = $properties;
+    $this->parent = $parent;
   }
-  
+
 }
 
 /**
@@ -138,32 +150,57 @@ class FormProcessor {
    * @var FormValues 
    */
   protected $values;
-  
+  protected $actions;
 
   /**
    *
    * @param type $form_state
    * @param type $definition 
    */
-  public function __construct(FormValues $values, XMLDocument $document) {
+  public function __construct(FormValues $values) {
     $this->values = $values;
   }
-  
-  /**
-   *
-   * @param XMLDocument $document 
-   */
-  public function createDocument(XMLDocument $document) {
-    
-  }
-  
+
   /**
    *
    * @param FormElement $element 
    */
-  public function process(FormElement $element) {
-    $element->setValue($this->values);
-    $this->processElement($element);
+  public function process(FormElements $elements) {
+    $this->actions = $this->createProcessActions($this->values, $elements->root);
+    return $this->actions;
+  }
+
+  /**
+   *
+   * @param FormElement $element
+   * @param FormValues $form_value
+   * @return type 
+   */
+  public function createProcessActions(FormValues $form_value, FormElement $element, FormProcessAction $parent = NULL) {
+
+    /**
+     * Traverse elements match values to elements.
+     * 
+     * Find the nodes as we traverse the graph.
+     * 
+     * Have the document contain the process actions.
+     * When we add a new process action it returns the parent selection...
+     * 
+     * 
+     */
+    $value = $form_value->getValue($element);
+    $action = isset($element->properties) ?
+        new FormProcessAction($value, $element->properties, $parent) :
+        $parent;
+    foreach ($element as $child) {
+      if (isset($action)) {
+        $action[] = $this->createProcessActions(clone $form_value, $child, $action);
+      }
+      else {
+        $action = $this->createProcessActions(clone $form_value, $child, $action);
+      }
+    }
+    return $action;
   }
 
 }
