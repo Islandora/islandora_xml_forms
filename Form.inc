@@ -43,11 +43,10 @@ class Form {
    * Construct the form class.
    * 
    * @param array $form_state
-   * @param FormDefinition $form_definition 
    */
-  public function __construct(FormStorage $storage) {
+  public function __construct(array &$form_state) {
     $this->initialized = false;
-    $this->storage = &$storage;
+    $this->storage = new FormStorage($form_state);
     if ($this->storage->isInitialized()) {
       $this->initializeFromStorage();
     }
@@ -58,6 +57,7 @@ class Form {
    */
   private function initializeFromStorage() {
     $this->definition = $this->storage->getDefinition();
+    $this->document = $this->storage->getDocument();
     $this->initialized = true;
   }
 
@@ -111,6 +111,7 @@ class Form {
    * @param array $form_state 
    */
   public function validate(array &$form_state) {
+    module_load_include('inc', 'xml_form_api', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'FormValidator');
     $form_values = new FormValues($form_state, $this->definition->elements);
     $validator = new FormValidator($form_values);
@@ -119,12 +120,14 @@ class Form {
 
   /**
    *
+   * @param array $form_state
    * @return type 
    */
   public function submit(array &$form_state) {
+    module_load_include('inc', 'xml_form_api', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'FormProcessor');
     $form_values = new FormValues($form_state, $this->definition->elements);
-    $processor = new FormProcessor($form_values);
+    $processor = new FormProcessor($form_values, $this->document);
     return $processor->process($this->definition->elements);
   }
 

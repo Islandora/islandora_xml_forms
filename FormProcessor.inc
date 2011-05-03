@@ -8,162 +8,6 @@
  */
 
 /**
- * This class utilizes scope and a reference pointer to track where 
- * the current value for a given element is. 
- */
-class FormValueTracker {
-
-  /**
-   * Submitted values from the form.
-   * 
-   * @var array 
-   */
-  public $values;
-  /**
-   * A reference to a position in $values.
-   * 
-   * @var mixed
-   */
-  protected $current;
-  /**
-   * TRUE if we are tracking a location in the values array.
-   * 
-   * @var boolean 
-   */
-  protected $track;
-
-  /**
-   * Creates a FormValues object.
-   * 
-   * @param array $values 
-   */
-  public function __construct(array &$values) {
-    $this->values = &$values;
-    $this->current = &$this->values;
-    $this->track = false; // Default value is false.
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @return mixed 
-   */
-  public function getValue(FormElement $element) {
-    $value = $this->track($element);
-    return is_array($value) ? $value : $value; // Array's are roots of #tree branchs
-  }
-
-  /**
-   *
-   * @param FormElement $element 
-   */
-  private function track(FormElement $element) {
-    if ($this->shouldStartTracking($element)) {
-      $this->track = true;
-    }
-    if ($this->shouldStopTracking($element)) {
-      $this->track = false;
-      $this->reset();
-    }
-    if ($this->track && isset($this->current[$element->key])) {
-      $this->current = &$this->current[$element->key];
-    }
-    return $this->current;
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @return boolean 
-   */
-  private function shouldStartTracking(FormElement $element) {
-    return $element->tree === TRUE && !$this->track;
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @return boolean 
-   */
-  private function shouldStopTracking(FormElement $element) {
-    return $element->tree === FALSE && $this->track;
-  }
-
-  /**
-   * 
-   */
-  private function reset() {
-    $this->current = &$this->values;
-  }
-
-}
-
-/**
- * 
- */
-class FormValues {
-
-  /**
-   * The submitted form values.
-   * 
-   * @var array
-   */
-  protected $values;
-  /**
-   * A helper class that helps determine what values are associated with what elements.
-   * 
-   * @var FormValueTracker 
-   */
-  protected $tracker;
-
-  /**
-   *
-   * @param array $form_state
-   * @param FormElements $elements 
-   */
-  public function __construct(array &$form_state, FormElements $elements) {
-    var_dump($form_state['values']);
-    $this->tracker = new FormValueTracker($form_state['values']);
-    $this->setValues($elements->root, $this->tracker);
-    var_dump($this->values);
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @param FormValueTracker $tracker 
-   */
-  private function setValues(FormElement $element, FormValueTracker $tracker) {
-    $this->setValue($element, $tracker);
-    foreach ($element as $child) {
-      $this->setValues($child, clone $tracker);
-    }
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @param FormValueTracker $tracker 
-   */
-  private function setValue(FormElement $element, FormValueTracker $tracker) {
-    $value = $tracker->getValue($element);
-    $this->values[$element->key] = $value;
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   */
-  public function getValue(FormElement $element) {
-    if (isset($this->values[$element->hash])) {
-      return $this->values[$element->hash];
-    }
-    return NULL;
-  }
-
-}
-
-/**
  * Types of FormProcessActions.
  */
 class FormProcessActionType {
@@ -215,8 +59,15 @@ class FormProcessor {
    * @var FormValues 
    */
   protected $values;
-  protected $element_to_value_map; // TODO Rename...
-  /// blahs
+  /**
+   *
+   * @var Document 
+   */
+  protected $document;
+  /**
+   *
+   * @var type 
+   */
   protected $actions;
 
   /**
@@ -224,8 +75,9 @@ class FormProcessor {
    * @param type $form_state
    * @param type $definition 
    */
-  public function __construct(FormValues $values) {
+  public function __construct(FormValues $values, Document $document) {
     $this->values = $values;
+    $this->document = $document;
   }
 
   /**
@@ -233,49 +85,9 @@ class FormProcessor {
    * @param FormElement $element 
    */
   public function process(FormElements $elements) {
-    $this->mapValuesToElements($elements);
-    var_dump($this->element_to_value_map);
-    exit();
-  }
-
-  /**
-   * 
-   */
-  private function mapValuesToElements(FormElements $elements) {
     
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @param FormValues $form_value
-   * @return type 
-   */
-  public function createProcessActions(FormValues $form_value, FormElement $element, FormProcessAction $parent = NULL) {
-
-    /**
-     * Traverse elements match values to elements.
-     * 
-     * Find the nodes as we traverse the graph.
-     * 
-     * Have the document contain the process actions.
-     * When we add a new process action it returns the parent selection...
-     * 
-     * 
-     */
-    $value = $form_value->getValue($element);
-    $action = isset($element->properties) ?
-        new FormProcessAction($value, $element->properties, $parent) :
-        $parent;
-    foreach ($element as $child) {
-      if (isset($action)) {
-        $action[] = $this->createProcessActions(clone $form_value, $child, $action);
-      }
-      else {
-        $action = $this->createProcessActions(clone $form_value, $child, $action);
-      }
-    }
-    return $action;
+    
+    var_dump($this->document->asXML());
   }
 
 }

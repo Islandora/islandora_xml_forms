@@ -64,6 +64,7 @@ class DocumentPath {
    *
    * @var FormElement
    */
+
   public $element;
   /**
    *
@@ -199,10 +200,25 @@ class Document {
     $this->nodes_in_the_form = array();
     $this->properties = $document_properties;
     $this->xml = $xml;
-    $this->document = $this->createDocument();
-    $this->xpath = new DOMXPath($this->document);
-    $this->registerNamespaces();
+    //$this->document = $this->createDocument();
+    //$this->xpath = new DOMXPath($this->document);
+    //$this->registerNamespaces();
   }
+  
+  //public function __sleep() {
+    /* TODO: Make sure this is required... */
+    //$this->xml = $this->document->saveXML();
+    //unset($this->xpath);
+    //unset($this->document);
+  //}
+  
+  //public function __wakeup() {
+    /* TODO: Make sure this is required... */
+    //$this->document = new DOMDocument();
+    //$this->document->loadXML($this->xml);
+    //$this->xpath = new DOMXPath($this->document);
+    //$this->registerNamespaces();
+  //}
 
   /**
    *
@@ -225,7 +241,6 @@ class Document {
   private function createFromExistingDocument() {
     $doc = new DOMDocument();
     $doc->loadXML($this->xml);
-    var_dump($this->xml);
     $schema = $this->properties->schema;
     if ($schema) {
       if (!$doc->schemaValidate($schema)) {
@@ -250,9 +265,7 @@ class Document {
    */
   private function registerNamespaces() {
     $namespaces = $this->properties->namespaces;
-    var_dump($namespaces);
     foreach ($namespaces as $prefix => $uri) {
-      var_dump($prefix);
       $this->xpath->registerNamespace($prefix, $uri);
     }
   }
@@ -263,6 +276,15 @@ class Document {
    */
   public function exists() {
     return isset($this->xml);
+  }
+
+  /**
+   *
+   * @return string 
+   */
+  public function asXML() {
+    //return $this->document->saveXML();
+    return '';
   }
 
   /**
@@ -279,22 +301,18 @@ class Document {
    * @return type 
    */
   public function query($path, $context = NULL) {
-    if ($context) {
+    return new DOMNodeList();
+    /*if ($context) {
       return $this->xpath->query($path, $context);
     }
     else {
       return $this->xpath->query($path);
-    }
-  }
-
-  public function find(DocumentPath $path) {
-    $context = $path->getContext($this);
-    return $this->query($path->path, $context);
+    }*/
   }
 
   // TODO rename this to something that makes sense.
   public function register(DOMNode $node, FormElement $form_element) {
-    $this->nodes_in_the_form[$form_element->hash] = $node;
+    //$this->nodes_in_the_form[$form_element->hash] = $node;
   }
 
   public function getRegisteredNode(FormElement $element) {

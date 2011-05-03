@@ -103,7 +103,7 @@ class XMLReadProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $read) {
     $this->element = $element;
-    $this->path = new DocumentPath($element, $read->path, $read->path['context']);
+    $this->path = new DocumentPath($element, (string)$read->path, (string)$read->path['context']);
   }
 
   /**
@@ -112,6 +112,7 @@ class XMLReadProperties {
    * @return array
    */
   public function read(Document $document) {
+    return;
     $results = $this->path->query($document);
     if ($results) {
       $count = $results->length;
