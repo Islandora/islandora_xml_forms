@@ -88,6 +88,7 @@ class FormControl {
       foreach ($form_controls as $form_control) {
         self::$convertSimpleXMLFunctions[(string) $form_control['name']] = $type_function_map[(string) $form_control['type']];
       }
+      self::$convertSimpleXMLFunctions['user_data'] = 'convertSimpleXMLToUserData';
     }
     return self::$convertSimpleXMLFunctions[$name];
   }
@@ -193,6 +194,14 @@ class FormControl {
         throw new Exception('Invalid type: ' . $type);
     }
   }
+  
+  /**
+   *
+   * @param SimpleXMLElement $element 
+   */
+  public static function convertSimpleXMLToUserData(SimpleXMLElement $element) {
+    return module_invoke_all('convert_form_control_user_data');
+  }
 
   /**
    *
@@ -272,11 +281,11 @@ class FormControls extends ArrayObject {
   /**
    *
    * @param string $index 
-   */
+   *
   public function offsetGet($index) {
     $value = parent::offsetGet($index);
     return isset($value) ? $value->value : NULL;
-  }
+  }*/
 
   /**
    *

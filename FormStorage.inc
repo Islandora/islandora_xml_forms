@@ -88,7 +88,7 @@ class FormStorage {
    *
    * @param XMLDocument $document 
    */
-  public function setDocument(XMLDocument $document) {
+  public function setDocument(Document $document) {
     $this->storage[self::DOCUMENT] = $document;
   }
   

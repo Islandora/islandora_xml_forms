@@ -23,6 +23,10 @@ class XMLCreateType {
 class XMLCreateProperties {
 
   /**
+   * 
+   */
+  public $element;
+  /**
    * The xpath to this elements parent element. The newly created xml node will be appended to this 
    * element if specified. If it is not specified a xml node will be expected to be this elements parent.
    * 
@@ -43,11 +47,6 @@ class XMLCreateProperties {
    *
    * @var string 
    */
-  protected $element;
-  /**
-   *
-   * @var string 
-   */
   protected $attribute;
   /**
    *
@@ -57,9 +56,11 @@ class XMLCreateProperties {
 
   /**
    *
+   * @param FormElement $element
    * @param SimpleXMLElement $create 
    */
-  public function __construct(SimpleXMLElement $create) {
+  public function __construct(FormElement $element, SimpleXMLElement $create) {
+    $this->element = $element;
     $this->parentPath = isset($create->parent_path) ? (string) $create->parent_path : null;
     $this->schemaPath = isset($create->schema_path) ? (string) $create->schema_path : null;
     if (isset($create->element)) {
@@ -88,14 +89,34 @@ class XMLReadProperties {
    * 
    * @var string 
    */
-  protected $path;
+  public $element;
+  public $path;
 
   /**
    *
+   * @param FormElement $element
    * @param SimpleXMLElement $read 
    */
-  public function __construct(SimpleXMLElement $read) {
-    
+  public function __construct(FormElement $element, SimpleXMLElement $read) {
+    $this->element = $element;
+    $this->path = new DocumentPath($element, $read->path, $read->path['context']);
+  }
+
+  /**
+   * 
+   */
+  public function read(Document $document) {
+    $results = $this->path->query($document);
+    if ($results) {
+      $count = $results->length;
+      for ($i = 0; $i < $count; $i++) {
+        $node = $results->item($i);
+        $contains_elements = $document->query('child::*', $node)->length > 0;
+        $value = $contains_elements ? NULL : $node->nodeValue;
+        $output[] = array($node, $value);
+      }
+    }
+    return isset($output) ? $output : NULL;
   }
 
 }
@@ -111,12 +132,14 @@ class XMLUpdateProperties {
    * @var string 
    */
   protected $path;
+  public $element;
 
   /**
    *
    * @param SimpleXMLElement $update 
    */
-  public function __construct(SimpleXMLElement $update) {
+  public function __construct(FormElement $element, SimpleXMLElement $update) {
+    $this->element = $element;
     $this->path = (string) $update->path;
   }
 
@@ -134,13 +157,14 @@ class XMLDeleteProperties {
    * @param DOMElement $delete_properties 
    */
   protected $parentPath;
+  public $element;
 
   /**
    *
    * @param SimpleXMLElement $delete 
    */
-  public function __construct(SimpleXMLElement $delete) {
-    
+  public function __construct(FormElement $element, SimpleXMLElement $delete) {
+    $this->element = $element;
   }
 
 }
@@ -150,6 +174,11 @@ class XMLDeleteProperties {
  */
 class XMLProperties {
 
+  /**
+   *
+   * @var FormElement 
+   */
+  public $element;
   /**
    *
    * @var XMLCreateProperties 
@@ -175,18 +204,23 @@ class XMLProperties {
    *
    * @param SimpleXMLElement $xml_properties 
    */
-  public function __construct(SimpleXMLElement $xml_properties) {
-    if (isset($xml_properties->create)) {
-      $this->create = new XMLCreateProperties($xml_properties->create);
+  public function __construct(FormElement $element, SimpleXMLElement $xml_properties) {
+    $this->element = $element;
+    $create = $xml_properties->create;
+    if (isset($create)) {
+      $this->create = new XMLCreateProperties($element, $create);
     }
-    if (isset($xml_properties->read)) {
-      $this->read = new XMLReadProperties($xml_properties->read);
+    $read = $xml_properties->read;
+    if (isset($read)) {
+      $this->read = new XMLReadProperties($element, $read);
     }
-    if (isset($xml_properties->update)) {
-      $this->update = new XMLUpdateProperties($xml_properties->update);
+    $update = $xml_properties->update;
+    if (isset($update)) {
+      $this->update = new XMLUpdateProperties($element, $update);
     }
-    if (isset($xml_properties->delete)) {
-      $this->delete = new XMLDeleteProperties($xml_properties->delete);
+    $delete = $xml_properties->delete;
+    if (isset($delete)) {
+      $this->delete = new XMLDeleteProperties($element, $delete);
     }
   }
 

@@ -10,7 +10,7 @@
  * classes.
  */
 module_load_include('inc', 'xml_form_api', 'FormElement');
-module_load_include('inc', 'xml_form_api', 'XMLDocument');
+module_load_include('inc', 'xml_form_api', 'Document');
 
 /**
  * Describes a form
@@ -82,7 +82,7 @@ class FormDefinition {
     $definition = new DOMDocument();
     $definition->loadXML($this->xml);
     if (!self::isValid($definition)) {
-      throw new Exception('Could not create FormDefintion object, the XML provided was not valid.');
+      throw new Exception('Could not create FormDefinition object, the XML provided was not valid.');
     }
     return $definition;
   }
@@ -102,7 +102,7 @@ class FormDefinition {
    * @param DOMElement $properties 
    */
   private function initializeProperties(SimpleXMLElement $properties) {
-    $this->documentProperties = new XMLDocumentProperties($properties->document_properties);
+    $this->documentProperties = new DocumentProperties($properties->document_properties);
   }
 
   /**

@@ -2,7 +2,11 @@
     xsi:noNamespaceSchemaLocation="http://localhost/FormDefinition.xsd">
     <properties>
         <document_properties>
-            <root>mods:mods</root>
+            <root>
+                <local_name>mods</local_name>
+                <prefix>mods</prefix>
+                <uri>http://www.loc.gov/mods/v3</uri>
+            </root>
             <namespaces>
                 <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
             </namespaces>
@@ -18,7 +22,6 @@
                 <element key="b">
                     <type>fieldset</type>
                     <tree>false</tree>
-                    <redirect></redirect>
                     <children>
                         <element key="d">
                             <type>fieldset</type>
@@ -26,7 +29,7 @@
                             <children>
                                 <element key="e">
                                     <type>textfield</type>
-                                    <default_value>0ne</default_value>
+                                    <default_value type="string">one</default_value>
                                 </element>
                                 <element key="f">
                                     <type>fieldset</type>
@@ -34,7 +37,7 @@
                                     <children>
                                         <element key="g">
                                             <type>textfield</type>
-                                            <default_value>bluene</default_value>
+                                            <default_value type="string">two</default_value>
                                         </element>
                                     </children>
                                 </element>
@@ -47,15 +50,15 @@
                     <title>title</title>
                     <xml_properties>
                         <create>
-                            <parent_path>/mods:mods</parent_path>
+                            <path context="document">/mods:mods</path>
                             <schema_path name="mods">/xs:schema/xs:element[@key='title']</schema_path>
                             <element>mods:title</element>
                         </create>
+                        <read>
+                            <path context="document">/mods:mods/mods:titleInfo/mods:title</path>
+                        </read>
                     </xml_properties>
-                    <user_data>
-                        <tab_index>1</tab_index>
-                        asdf
-                    </user_data>
+                    <user_data>asdf</user_data>
                 </element>
                 <element>
                     <type>submit</type>

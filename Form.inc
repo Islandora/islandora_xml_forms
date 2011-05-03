@@ -35,7 +35,7 @@ class Form {
   protected $definition;
   /**
    *
-   * @var XMLDocument 
+   * @var Document 
    */
   protected $document;
 
@@ -69,14 +69,14 @@ class Form {
    * called.
    * 
    * @param FormDefinition $form_definition 
-   * @param XMLDocument $xml_document
+   * @param Document $xml_document
    */
-  public function initialize(FormDefinition $form_definition, XMLDocument $xml_document) {
+  public function initialize(FormDefinition $form_definition, Document $document) {
     if (!$this->initialized) {
       $this->definition = $form_definition;
       $this->storage->setDefinition($form_definition);
-      $this->document = $xml_document;
-      $this->storage->setDocument($xml_document);
+      $this->document = $document;
+      $this->storage->setDocument($document);
       $this->initialized = true;
     }
     else {
@@ -98,6 +98,11 @@ class Form {
    * @return array 
    */
   public function toDrupalForm() {
+    if ($this->document->exists()) {
+      module_load_include('inc', 'xml_form_api', 'FormPopulator');
+      $populator = new FormPopulator($this->document);
+      $populator->setDefaultValues($this->definition);
+    }
     return $this->definition->toDrupalForm();
   }
 
@@ -108,7 +113,9 @@ class Form {
    */
   public function validate(array &$form, array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'FormValidator');
-    $validator = new FormValidator($form_state, $this->storage);
+    $values = new FormValues($form_state);
+    $validator = new FormValidator($form_values);
+    return $validator->validate($this->definition->elements);
   }
 
   /**

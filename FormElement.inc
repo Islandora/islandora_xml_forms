@@ -31,6 +31,12 @@ class FormElements implements IteratorAggregate {
    * @var RecursiveIteratorIterator
    */
   protected $iterator;
+  /**
+   * A flat array that stores references to FormElements via the #hash value.
+   * 
+   * @var array 
+   */
+  protected $elements;
 
   /**
    *
@@ -48,12 +54,13 @@ class FormElements implements IteratorAggregate {
    * @param SimpleXMLElement $elements 
    */
   public static function createFromSimpleXML($root_name, SimpleXMLElement $elements) {
-    $form_elements = new FormElements($root_name);
+    $form_elements = array();
     $children = $elements->children();
     foreach ($children as $child) {
       $child = FormElement::createFromSimpleXML($child);
-      $form_elements->root[$child->name] = $child;
+      $form_elements[] = $child;
     }
+    $form_elements = new FormElements($root_name, $form_elements);
     return $form_elements;
   }
 
@@ -61,8 +68,40 @@ class FormElements implements IteratorAggregate {
    *
    * @param string $root_name 
    */
-  public function __construct($root_name) {
+  public function __construct($root_name, array $elements) {
     $this->createRoot($root_name);
+    $this->appendElementsToRoot($elements);
+    $this->createHashTable();
+  }
+
+  /**
+   *
+   * @param array $elements 
+   */
+  private function appendElementsToRoot(array $elements) {
+    foreach ($elements as $element) {
+      $this->root[$element->name] = $element;
+    }
+  }
+
+  /**
+   * 
+   */
+  private function createHashTable() {
+    foreach ($this as $element) {
+      $hash = $this->getHash($element);
+      $element->hash = $hash;
+      $this->elements[$hash] = $element;
+    }
+  }
+
+  /**
+   * 
+   */
+  private function getHash(FormElement $element) {
+    static $hash = 0; // Unique...
+    $hash++;
+    return $hash;
   }
 
   /**
@@ -90,6 +129,54 @@ class FormElements implements IteratorAggregate {
    */
   public function toDrupalForm() {
     return array($this->root->name => $this->root->toDrupalForm());
+  }
+
+  /**
+   *
+   * @param type $hash 
+   */
+  public function duplicateElement($hash) {
+    $element = $this->findElement($hash);
+    if ($element) {
+      $new_element = clone $element;
+      $element->parent[] = $new_element;
+      $this->registerElement($new_element);
+    }
+    else {
+      throw new Exception('Failed to duplicate element.');
+    }
+  }
+
+  /**
+   *
+   * @param type $hash 
+   */
+  public function removeElement($hash) {
+    $element = $this->findElement($hash);
+    if ($element) {
+      unset($this->elements[$hash]);
+      unset($element->parent[$element->key]);
+    }
+    else {
+      throw new Exception('Failed to remove element.');
+    }
+  }
+
+  /**
+   *
+   * @param FormElement $element 
+   */
+  public function registerElement(FormElement $element) {
+    $hash = $this->getHash($element);
+    $element->hash = $hash;
+    $this->elements[$hash] = $element;
+  }
+
+  /**
+   * 
+   */
+  public function findElement($hash) {
+    return isset($this->elements[$hash]) ? $this->elements[$hash] : null;
   }
 
 }
@@ -120,6 +207,11 @@ class FormElement extends ArrayObject {
    * @var string 
    */
   public $name;
+  /**
+   * Id for this element.
+   * @var type 
+   */
+  public $hash;
 
   /**
    *
@@ -137,12 +229,11 @@ class FormElement extends ArrayObject {
   public static function createFromSimpleXML(SimpleXMLElement $element) {
     $form_element = new FormElement();
     $form_element->name = isset($element['key']) ? (string) $element['key'] : NULL;
-    $form_element->properties = isset($element->xml_properties) ? new XMLProperties($element->xml_properties) : NULL;
+    $form_element ->properties = isset($element->xml_properties) ? new XMLProperties($form_element, $element->xml_properties) : NULL;
     $form_element->controls = FormControls::createFromSimpleXML($element);
     $children = $element->xpath('child::children/element');
     foreach ($children as $child) {
       $child = self::createFromSimpleXML($child);
-      $child->parent = $form_element;
       $form_element[$child->name] = $child;
     }
     return $form_element;
@@ -168,6 +259,7 @@ class FormElement extends ArrayObject {
     foreach ($this as $key => $child) {
       $output[$key] = $child->toDrupalForm();
     }
+    $output['#hash'] = $this->hash;
     return $output;
   }
 
@@ -222,6 +314,7 @@ class FormElement extends ArrayObject {
    */
   public function offsetSet($offset, $value) {
     if (isset($value) && is_object($value) && get_class($value) == 'FormElement') {
+      $value->parent = $this;
       parent::offsetSet($offset, $value);
     }
     else {
