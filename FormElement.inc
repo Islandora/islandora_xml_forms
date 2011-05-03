@@ -89,9 +89,7 @@ class FormElements implements IteratorAggregate {
    */
   private function createHashTable() {
     foreach ($this as $element) {
-      $hash = $this->getHash($element);
-      $element->hash = $hash;
-      $this->elements[$hash] = $element;
+      $this->elements[$element->hash] = $element;
     }
   }
 
@@ -99,9 +97,7 @@ class FormElements implements IteratorAggregate {
    * 
    */
   private function getHash(FormElement $element) {
-    static $hash = 0; // Unique...
-    $hash++;
-    return $hash;
+    return spl_object_hash($element);
   }
 
   /**
@@ -167,9 +163,7 @@ class FormElements implements IteratorAggregate {
    * @param FormElement $element 
    */
   public function registerElement(FormElement $element) {
-    $hash = $this->getHash($element);
-    $element->hash = $hash;
-    $this->elements[$hash] = $element;
+    $this->elements[$element->hash] = $element;
   }
 
   /**
@@ -211,7 +205,7 @@ class FormElement extends ArrayObject {
    * Id for this element.
    * @var type 
    */
-  public $hash;
+  protected $_hash;
 
   /**
    *
@@ -229,7 +223,7 @@ class FormElement extends ArrayObject {
   public static function createFromSimpleXML(SimpleXMLElement $element) {
     $form_element = new FormElement();
     $form_element->name = isset($element['key']) ? (string) $element['key'] : NULL;
-    $form_element ->properties = isset($element->xml_properties) ? new XMLProperties($form_element, $element->xml_properties) : NULL;
+    $form_element->properties = isset($element->xml_properties) ? new XMLProperties($form_element, $element->xml_properties) : NULL;
     $form_element->controls = FormControls::createFromSimpleXML($element);
     $children = $element->xpath('child::children/element');
     foreach ($children as $child) {
@@ -245,7 +239,16 @@ class FormElement extends ArrayObject {
    * By default it won't have any form controls or children.
    */
   public function __construct() {
+    $this->_hash = spl_object_hash($this);
     $this->controls = new FormControls();
+  }
+  
+  /**
+   * 
+   */
+  public function __clone() {
+    unset($this->name);
+    $this->_hash = spl_object_hash($this);
   }
 
   /**
@@ -356,13 +359,17 @@ class FormElement extends ArrayObject {
    * @param string $name 
    */
   public function __get($name) {
-    if ($name == 'key') {
-      return $this->getKey();
+    switch ($name) {
+      case 'key':
+        return $this->getKey();
+      case 'hash':
+        return $this->_hash;
+      default:
+        if ($this->offsetExists($name)) {
+          return $this->offsetGet($name);
+        }
+        return $this->controls->$name;
     }
-    if ($this->offsetExists($name)) {
-      return $this->offsetGet($name);
-    }
-    return $this->controls->$name;
   }
 
   /**

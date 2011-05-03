@@ -11,7 +11,7 @@
  * This class utilizes scope and a reference pointer to track where 
  * the current value for a given element is. 
  */
-class FormValues {
+class FormValueTracker {
 
   /**
    * Submitted values from the form.
@@ -35,10 +35,10 @@ class FormValues {
   /**
    * Creates a FormValues object.
    * 
-   * @param array $form_state 
+   * @param array $values 
    */
-  public function __construct(array &$form_state) {
-    $this->values = &$form_state['values'];
+  public function __construct(array &$values) {
+    $this->values = &$values;
     $this->current = &$this->values;
     $this->track = false; // Default value is false.
   }
@@ -50,7 +50,7 @@ class FormValues {
    */
   public function getValue(FormElement $element) {
     $value = $this->track($element);
-    return is_array($value) ? null : $value; // Array's are roots of #tree branchs
+    return is_array($value) ? $value : $value; // Array's are roots of #tree branchs
   }
 
   /**
@@ -94,6 +94,71 @@ class FormValues {
    */
   private function reset() {
     $this->current = &$this->values;
+  }
+
+}
+
+/**
+ * 
+ */
+class FormValues {
+
+  /**
+   * The submitted form values.
+   * 
+   * @var array
+   */
+  protected $values;
+  /**
+   * A helper class that helps determine what values are associated with what elements.
+   * 
+   * @var FormValueTracker 
+   */
+  protected $tracker;
+
+  /**
+   *
+   * @param array $form_state
+   * @param FormElements $elements 
+   */
+  public function __construct(array &$form_state, FormElements $elements) {
+    var_dump($form_state['values']);
+    $this->tracker = new FormValueTracker($form_state['values']);
+    $this->setValues($elements->root, $this->tracker);
+    var_dump($this->values);
+  }
+
+  /**
+   *
+   * @param FormElement $element
+   * @param FormValueTracker $tracker 
+   */
+  private function setValues(FormElement $element, FormValueTracker $tracker) {
+    $this->setValue($element, $tracker);
+    foreach ($element as $child) {
+      $this->setValues($child, clone $tracker);
+    }
+  }
+
+  /**
+   *
+   * @param FormElement $element
+   * @param FormValueTracker $tracker 
+   */
+  private function setValue(FormElement $element, FormValueTracker $tracker) {
+    $value = $tracker->getValue($element);
+    $this->values[$element->key] = $value;
+  }
+
+  /**
+   *
+   * @param FormElement $element
+   */
+  public function getValue(FormElement $element) {
+    if (isset($this->values[$element->hash])) {
+      return $this->values[$element->hash];
+    }
+    return NULL;
   }
 
 }
@@ -150,6 +215,8 @@ class FormProcessor {
    * @var FormValues 
    */
   protected $values;
+  protected $element_to_value_map; // TODO Rename...
+  /// blahs
   protected $actions;
 
   /**
@@ -166,8 +233,16 @@ class FormProcessor {
    * @param FormElement $element 
    */
   public function process(FormElements $elements) {
-    $this->actions = $this->createProcessActions($this->values, $elements->root);
-    return $this->actions;
+    $this->mapValuesToElements($elements);
+    var_dump($this->element_to_value_map);
+    exit();
+  }
+
+  /**
+   * 
+   */
+  private function mapValuesToElements(FormElements $elements) {
+    
   }
 
   /**

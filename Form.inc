@@ -97,23 +97,22 @@ class Form {
    *
    * @return array 
    */
-  public function toDrupalForm() {
+  public function generate() {
     if ($this->document->exists()) {
       module_load_include('inc', 'xml_form_api', 'FormPopulator');
       $populator = new FormPopulator($this->document);
-      $populator->setDefaultValues($this->definition);
+      $populator->populate($this->definition->elements);
     }
     return $this->definition->toDrupalForm();
   }
 
   /**
    *
-   * @param array $form
    * @param array $form_state 
    */
-  public function validate(array &$form, array &$form_state) {
+  public function validate(array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'FormValidator');
-    $values = new FormValues($form_state);
+    $form_values = new FormValues($form_state, $this->definition->elements);
     $validator = new FormValidator($form_values);
     return $validator->validate($this->definition->elements);
   }
@@ -124,7 +123,7 @@ class Form {
    */
   public function submit(array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'FormProcessor');
-    $form_values = new FormValues($form_state);
+    $form_values = new FormValues($form_state, $this->definition->elements);
     $processor = new FormProcessor($form_values);
     return $processor->process($this->definition->elements);
   }

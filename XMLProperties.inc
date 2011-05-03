@@ -90,6 +90,10 @@ class XMLReadProperties {
    * @var string 
    */
   public $element;
+  /**
+   * 
+   * @var DocumentPath 
+   */
   public $path;
 
   /**
@@ -103,7 +107,9 @@ class XMLReadProperties {
   }
 
   /**
-   * 
+   *
+   * @param Document $document
+   * @return array
    */
   public function read(Document $document) {
     $results = $this->path->query($document);
@@ -132,6 +138,10 @@ class XMLUpdateProperties {
    * @var string 
    */
   protected $path;
+  /**
+   *
+   * @var FormElement
+   */
   public $element;
 
   /**
@@ -140,7 +150,40 @@ class XMLUpdateProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $update) {
     $this->element = $element;
-    $this->path = (string) $update->path;
+    $this->path = new DocumentPath($element, $update->path, $update->path['context']);
+  }
+
+  /**
+   *
+   * @param Document $document
+   * @return array
+   */
+  public function update(Document $document, $value) {
+    $results = $this->path->query($document);
+    if ($results) {
+      $count = $results->length;
+      for ($i = 0; $i < $count; $i++) {
+        $node = $results->item($i);
+        $this->updateNode($node, $value);
+      }
+    }
+  }
+
+  /**
+   *
+   * @param DOMNode $node
+   * @param type $value 
+   */
+  private function updateNode(DOMNode $node, $value) {
+    $class = get_class($node);
+    switch ($class) {
+      case 'DOMElement':
+        break;
+      case 'DOMNode':
+        break;
+      default:
+        throw new Exception('Invalid DOMNode Type. ' . $class);
+    }
   }
 
 }

@@ -194,7 +194,7 @@ class FormControl {
         throw new Exception('Invalid type: ' . $type);
     }
   }
-  
+
   /**
    *
    * @param SimpleXMLElement $element 
@@ -280,12 +280,13 @@ class FormControls extends ArrayObject {
 
   /**
    *
-   * @param string $index 
-   *
-  public function offsetGet($index) {
-    $value = parent::offsetGet($index);
+   * @param mixed $offset
+   * @return mixed 
+   */
+  public function offsetGet($offset) {
+    $value = parent::offsetGet($offset);
     return isset($value) ? $value->value : NULL;
-  }*/
+  }
 
   /**
    *
@@ -313,7 +314,11 @@ class FormControls extends ArrayObject {
    * @return type 
    */
   public function __get($name) {
-    return $this->offsetGet("#$name");
+    $name = "#$name";
+    if ($this->offsetExists($name)) {
+      return $this->offsetGet($name);
+    }
+    return NULL;
   }
 
 }
