@@ -61,6 +61,9 @@
                             <path context="self">self::node()</path>
                             <schema_path name="mods">/xs:schema/xs:element[@name='title']</schema_path>
                         </update>
+                        <delete>
+                            <path context="self">self::node()</path>
+                        </delete>
                     </xml_properties>
                     <user_data>asdf</user_data>
                 </element>
@@ -73,13 +76,6 @@
                             <schema_path name="mods">/xs:schema/xs:element[@key='subTitle']</schema_path>
                             <element prefix="mods">subTitle</element>
                         </create>
-                        <read>
-                            <path context="document">/mods:mods/mods:titleInfo/mods:subTitle</path>
-                        </read>
-                        <update>
-                            <path context="self">self::node()</path>
-                            <schema_path name="mods">/xs:schema/xs:element[@name='subTitle']</schema_path>
-                        </update>
                     </xml_properties>
                 </element>
                 <element>

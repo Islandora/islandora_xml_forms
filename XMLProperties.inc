@@ -106,24 +106,14 @@ class XMLCreateProperties {
   }
 
   private function createElement(Document $document, $value) {
-    $name = isset($this->prefix) ? "{$this->prefix}:{$this->create}" : $this->create;
-    $name = $this->create;
     $namespace = $document->getNamespace($this->prefix);
+    $name = isset($namespace) ? "{$this->prefix}:{$this->create}" : $this->create;
     return isset($namespace) ?
         new DOMElement($name, $value, $namespace) :
         new DOMElement($name, $value);
   }
 
-  private function appendElement(DOMNode $node) {
-
-    $node->appendChild($element);
-  }
-
   private function createAttribute() {
-    
-  }
-
-  private function appendAttribute(DOMNode $node) {
     
   }
 
@@ -285,6 +275,21 @@ class XMLDeleteProperties {
    */
   public function shouldDelete($value) {
     return $value == NULL || $value == '';
+  }
+
+  /**
+   *
+   * @param DOMNode $node 
+   */
+  public function delete(Document $document) {
+    $results = $this->path->query($document);
+    if ($results) {
+      $count = $results->length;
+      for ($i = 0; $i < $count; $i++) {
+        $node = $results->item($i);
+        $node->parentNode->removeChild($node);
+      }
+    }
   }
 
 }

@@ -109,7 +109,7 @@ class FormProcessAction extends ArrayObject {
   }
 
   private function delete(Document $document) {
-    $this->properties->delete->delete($document, $this->value);
+    $this->properties->delete->delete($document);
   }
 
   public function __get($name) {
