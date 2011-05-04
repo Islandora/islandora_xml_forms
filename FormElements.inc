@@ -17,7 +17,7 @@ class FormElements implements IteratorAggregate {
    * 
    * @var FormElement
    */
-  public $_root;
+  protected $_root;
   /**
    * The root of this set of elements.
    * 
@@ -30,7 +30,12 @@ class FormElements implements IteratorAggregate {
    */
   protected $iterator;
   /**
-   * A flat array that stores references to FormElements via the #hash value.
+   * A flat array that stores references to FormElements via the #hash value. 
+   * This array will include references to elements that are not part of the collection, 
+   * but were at one time. This gets populated when this object is created, and every time 
+   * FormElements::toDrupalArray() is called. FormElement's are never removed from this array.
+   * 
+   * Users of this class should be aware in some cases they may need to manually register elements.
    * 
    * @var array 
    */
@@ -99,7 +104,9 @@ class FormElements implements IteratorAggregate {
     $this->root = new FormElement();
     $this->root->name = $root_name;
     $this->root->tree = new FormControl('#tree', true);
-    $this->_root = new ArrayObject(array($root_name => $this->root));
+    $this->root->collection = $this;
+    $this->_root = new FormElement();
+    $this->_root[$root_name] = $this->root;
     return $this->_root;
   }
 
@@ -115,6 +122,7 @@ class FormElements implements IteratorAggregate {
    * 
    */
   public function toDrupalForm() {
+    $this->registerElements();
     return array($this->root->name => $this->root->toDrupalForm());
   }
 
@@ -141,7 +149,6 @@ class FormElements implements IteratorAggregate {
   public function removeElement($hash) {
     $element = $this->findElement($hash);
     if ($element) {
-      unset($this->elements[$hash]);
       unset($element->parent[$element->key]);
     }
     else {
@@ -149,6 +156,14 @@ class FormElements implements IteratorAggregate {
     }
   }
 
+  public function findElement($hash) {
+    foreach($this as $element) {
+      if($element->hash == $hash) {
+        return $element;
+      }
+    }
+    return NULL;
+  }
   /**
    *
    * @param FormElement $element 
@@ -160,8 +175,27 @@ class FormElements implements IteratorAggregate {
   /**
    * 
    */
-  public function findElement($hash) {
+  public function registerElements() {
+    foreach ($this as $element) {
+      $this->registerElement($element);
+    }
+  }
+
+  /**
+   *
+   * @param hash $hash
+   * @return FormElement 
+   */
+  public function getRegisteredElement($hash) {
     return isset($this->elements[$hash]) ? $this->elements[$hash] : null;
+  }
+
+  /**
+   *
+   * @return array 
+   */
+  public function getRegisteredElements() {
+    return $this->elements;
   }
 
 }

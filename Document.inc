@@ -189,6 +189,12 @@ class Document {
    * @var DocumentActions
    */
   protected $actions;
+  
+  /**
+   *
+   * @var array 
+   */
+  protected $registered;
   protected $nodes_in_the_form;
 
   /**
@@ -303,8 +309,12 @@ class Document {
       return $this->nodes_in_the_form[$element->hash];
     }
     else {
-      return FALSE;
+      return NULL;
     }
+  }
+  
+  public function isRegistered(FormElement $element) {
+    return $this->getRegisteredNode($element) === NULL;
   }
 
 }

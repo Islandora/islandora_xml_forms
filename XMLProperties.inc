@@ -76,6 +76,10 @@ class XMLCreateProperties {
       $this->type = XMLCreateType::XML;
     }
   }
+  
+  public function shouldCreate($value) {
+    
+  }
 
 }
 
@@ -208,6 +212,14 @@ class XMLDeleteProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $delete) {
     $this->element = $element;
+  }
+  
+  /**
+   *
+   * @param mixed $value 
+   */
+  public function shouldDelete($value) {
+    
   }
 
 }

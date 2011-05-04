@@ -77,7 +77,8 @@ class FormElement extends FormElementArrayObject {
    * 
    */
   public function __clone() {
-    unset($this->name);
+    parent::__clone();
+    $this->name = NULL;
     $this->_hash = spl_object_hash($this);
   }
 
@@ -92,7 +93,7 @@ class FormElement extends FormElementArrayObject {
     foreach ($this as $key => $child) {
       $output[$key] = $child->toDrupalForm();
     }
-    $output['#hash'] = $this->hash;
+    $output['#hash'] = $this->hash; // This can be used with ajax events to determine what FormElement should be changed.
     return $output;
   }
 
@@ -105,6 +106,16 @@ class FormElement extends FormElementArrayObject {
     
   }
 
+  /**
+   * Get an element's property, child, or FormControl.
+   * 
+   * Defined properties: hash, key, parent, collection
+   * 
+   * @param string $name
+   *   The name of the property, child or FormControl to get.
+   * @return mixed 
+   *   The property, child, or FormControl requested. NULL if not found.
+   */
   public function __get($name) {
     switch ($name) {
       case 'hash':
@@ -114,6 +125,15 @@ class FormElement extends FormElementArrayObject {
     }
   }
 
+  /**
+   * Set this element's property, child, or FormControl.
+   * 
+   * Defined properties: hash, key, parent, collection
+   * 
+   * @param string $name
+   *   The name of the property, child or FormControl to set.
+   * @param mixed $value 
+   */
   public function __set($name, $value) {
     parent::__set($name, $value);
   }

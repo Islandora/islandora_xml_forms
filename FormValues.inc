@@ -63,7 +63,7 @@ class FormValues {
    */
   private function setValue(FormElement $element, FormValueTracker $tracker) {
     $value = $tracker->getValue($element);
-    $this->values[$element->hash] = $value;
+    $this->values[$element->key] = $value;
   }
 
   /**
@@ -74,10 +74,18 @@ class FormValues {
    *   The submitted value for the given FormElement if found otherwise NULL.
    */
   public function getValue(FormElement $element) {
-    if (isset($this->values[$element->hash])) {
-      return $this->values[$element->hash];
+    if (isset($this->values[$element->key])) {
+      return $this->values[$element->key];
     }
     return NULL;
+  }
+
+  /**
+   *
+   * @return array 
+   */
+  public function getValues() {
+    return $this->values;
   }
 
 }

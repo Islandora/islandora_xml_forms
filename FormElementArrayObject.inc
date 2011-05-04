@@ -25,11 +25,6 @@ abstract class FormElementArrayObject extends ArrayObject {
    */
   protected $_parent;
   /**
-   * The collection this element belongs to.
-   * @var FormElements 
-   */
-  protected $_collection;
-  /**
    * The form controls that define this element.
    * 
    * @var FormControls
@@ -44,6 +39,13 @@ abstract class FormElementArrayObject extends ArrayObject {
     $this->controls = new FormControls();
   }
 
+  /**
+   * 
+   */
+  public function __clone() {
+    $this->orphan();
+  }
+  
   /**
    * Check to see if a FormControl or child FormElement exists.
    * 
@@ -123,8 +125,6 @@ abstract class FormElementArrayObject extends ArrayObject {
         return $this->getKey();
       case 'parent':
         return $this->_parent;
-      case 'collection':
-        return $this->_collection;
       default:
         return $this->getDefault($name);
     }
@@ -139,8 +139,6 @@ abstract class FormElementArrayObject extends ArrayObject {
     switch ($name) {
       case 'parent':
         $this->setParent($value);
-      case 'collection':
-        break;
       default:
         $this->setDefault($name, $value);
     }
