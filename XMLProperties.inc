@@ -76,7 +76,7 @@ class XMLCreateProperties {
       $this->type = XMLCreateType::XML;
     }
   }
-  
+
   public function shouldCreate($value) {
     
   }
@@ -107,7 +107,7 @@ class XMLReadProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $read) {
     $this->element = $element;
-    $this->path = new DocumentPath($element, (string)$read->path, (string)$read->path['context']);
+    $this->path = new DocumentPath($element, (string) $read->path, (string) $read->path['context']);
   }
 
   /**
@@ -154,7 +154,7 @@ class XMLUpdateProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $update) {
     $this->element = $element;
-    $this->path = new DocumentPath($element, $update->path, $update->path['context']);
+    $this->path = new DocumentPath($element, (string) $update->path, (string) $update->path['context']);
   }
 
   /**
@@ -190,6 +190,10 @@ class XMLUpdateProperties {
     }
   }
 
+  public function shouldUpdate() {
+    return TRUE;
+  }
+
 }
 
 /**
@@ -212,14 +216,15 @@ class XMLDeleteProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $delete) {
     $this->element = $element;
+    $this->path = new DocumentPath($element, (string) $delete->path, (string) $delete->path['context']);
   }
-  
+
   /**
    *
    * @param mixed $value 
    */
   public function shouldDelete($value) {
-    
+    return $value == NULL || $value == '';
   }
 
 }
@@ -259,23 +264,19 @@ class XMLProperties {
    *
    * @param SimpleXMLElement $xml_properties 
    */
-  public function __construct(FormElement $element, SimpleXMLElement $xml_properties) {
+  public function __construct(FormElement $element, SimpleXMLElement $properties) {
     $this->element = $element;
-    $create = $xml_properties->create;
-    if (isset($create)) {
-      $this->create = new XMLCreateProperties($element, $create);
+    if (isset($properties->create)) {
+      $this->create = new XMLCreateProperties($element, $properties->create);
     }
-    $read = $xml_properties->read;
-    if (isset($read)) {
-      $this->read = new XMLReadProperties($element, $read);
+    if (isset($properties->read)) {
+      $this->read = new XMLReadProperties($element, $properties->read);
     }
-    $update = $xml_properties->update;
-    if (isset($update)) {
-      $this->update = new XMLUpdateProperties($element, $update);
+    if (isset($properties->update)) {
+      $this->update = new XMLUpdateProperties($element, $properties->update);
     }
-    $delete = $xml_properties->delete;
-    if (isset($delete)) {
-      $this->delete = new XMLDeleteProperties($element, $delete);
+    if (isset($properties->delete)) {
+      $this->delete = new XMLDeleteProperties($element, $properties->delete);
     }
   }
 

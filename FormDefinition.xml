@@ -57,6 +57,10 @@
                         <read>
                             <path context="document">/mods:mods/mods:titleInfo/mods:title</path>
                         </read>
+                        <update>
+                            <path context="self">self::node()</path>
+                            <schema_path name="mods">/xs:schema/xs:element[@name='title']</schema_path>
+                        </update>
                     </xml_properties>
                     <user_data>asdf</user_data>
                 </element>

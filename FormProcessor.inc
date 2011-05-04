@@ -69,7 +69,7 @@ class FormProcessAction extends ArrayObject {
         if ($delete && $delete->shouldDelete($this->value)) {
           return self::Delete;
         }
-        else if ($update) {
+        else if ($update && $update->shouldUpdate($this->value)) {
           return self::Update;
         }
       }
