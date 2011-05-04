@@ -181,15 +181,21 @@ class XMLUpdateProperties {
   private function updateNode(DOMNode $node, $value) {
     $class = get_class($node);
     switch ($class) {
-      case 'DOMElement':
+      case 'DOMAttr':
+        $node->value = (string) $value;
         break;
-      case 'DOMNode':
+      case 'DOMElement':
+        $node->nodeValue = (string) $value;
         break;
       default:
-        throw new Exception('Invalid DOMNode Type. ' . $class);
+        throw new Exception('Unknown Node Type');
     }
   }
 
+  /**
+   *
+   * @return type 
+   */
   public function shouldUpdate() {
     return TRUE;
   }

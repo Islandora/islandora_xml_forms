@@ -101,25 +101,15 @@ class FormProcessAction extends ArrayObject {
   }
 
   private function create(Document $document) {
-    
+    $this->properties->create->create($document, $this->value);
   }
 
   private function update(Document $document) {
-    $class = get_class($this->node);
-    switch ($class) {
-      case 'DOMAttr':
-        $this->node->value = (string) $this->value;
-        break;
-      case 'DOMElement':
-        $this->node->nodeValue = (string) $this->value;
-        break;
-      default:
-        throw new Exception('Unknown Node Type');
-    }
+    $this->properties->update->update($document, $this->value);
   }
 
   private function delete(Document $document) {
-    
+    $this->properties->delete->delete($document, $this->value);
   }
 
   public function __get($name) {

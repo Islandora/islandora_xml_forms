@@ -128,7 +128,7 @@ class DocumentPath {
    * @return DOMNode 
    */
   private function getSelf(Document $document) {
-    $node = $document->getRegisteredNode($element);
+    $node = $document->getRegisteredNode($this->element);
     if ($node) {
       return $node;
     }
