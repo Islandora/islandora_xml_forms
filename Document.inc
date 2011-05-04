@@ -50,6 +50,14 @@ class DocumentProperties {
       }
     }
   }
+  
+  public function getNamespaces() {
+    
+  }
+  
+  public function getNamespace($prefix) {
+    
+  }
 
 }
 
@@ -269,6 +277,15 @@ class Document {
     return isset($this->xml);
   }
 
+  /**
+   *
+   * @param string $prefix 
+   * @return string
+   */
+  public function getNamespace($prefix) {
+    $this->properties->namespaces[$prefix];
+  }
+  
   /**
    *
    * @return string 

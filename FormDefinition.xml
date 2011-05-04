@@ -52,7 +52,7 @@
                         <create>
                             <path context="document">/mods:mods</path>
                             <schema_path name="mods">/xs:schema/xs:element[@key='title']</schema_path>
-                            <element>mods:title</element>
+                            <element prefix="mods">title</element>
                         </create>
                         <read>
                             <path context="document">/mods:mods/mods:titleInfo/mods:title</path>
@@ -63,6 +63,24 @@
                         </update>
                     </xml_properties>
                     <user_data>asdf</user_data>
+                </element>
+                <element key="r">
+                    <type>textfield</type>
+                    <title>Sub title</title>
+                    <xml_properties>
+                        <create>
+                            <path context="document">/mods:mods/mods:titleInfo</path>
+                            <schema_path name="mods">/xs:schema/xs:element[@key='subTitle']</schema_path>
+                            <element prefix="mods">subTitle</element>
+                        </create>
+                        <read>
+                            <path context="document">/mods:mods/mods:titleInfo/mods:subTitle</path>
+                        </read>
+                        <update>
+                            <path context="self">self::node()</path>
+                            <schema_path name="mods">/xs:schema/xs:element[@name='subTitle']</schema_path>
+                        </update>
+                    </xml_properties>
                 </element>
                 <element>
                     <type>submit</type>

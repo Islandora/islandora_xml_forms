@@ -75,7 +75,7 @@ class FormProcessAction extends ArrayObject {
       }
       else {
         $create = $properties->create;
-        if ($create && $create->shouldCreate($this->$value)) {
+        if ($create && $create->shouldCreate($this->value)) {
           return self::Create;
         }
       }

@@ -8,36 +8,28 @@
  */
 
 /**
- * XML Create type, enum for action.
- */
-class XMLCreateType {
-  const __default = 0;
-  const Element = 0;
-  const Attribute = 1;
-  const XML = 2;
-}
-
-/**
  * Defines the set of properties that allow us to create an XML element.
  */
 class XMLCreateProperties {
-
+  /**
+   * Create types.
+   */
+  const Element = 0;
+  const Attribute = 1;
+  const XML = 2;
   /**
    * 
    */
   public $element;
   /**
-   * The xpath to this elements parent element. The newly created xml node will be appended to this 
-   * element if specified. If it is not specified a xml node will be expected to be this elements parent.
    * 
-   * @var string
+   * @var DocumentPath
    */
-  protected $parentPath;
+  protected $path;
   /**
-   * The xpath for selecting this elements definition from a Schema, if defined.
-   * @var string
+   * 
    */
-  protected $schemaPath;
+  protected $schema;
   /**
    *
    * @var type 
@@ -45,14 +37,14 @@ class XMLCreateProperties {
   protected $type;
   /**
    *
-   * @var string 
+   * @var string
    */
-  protected $attribute;
+  protected $create;
   /**
    *
    * @var string 
    */
-  protected $xml;
+  protected $prefix;
 
   /**
    *
@@ -61,23 +53,85 @@ class XMLCreateProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $create) {
     $this->element = $element;
-    $this->parentPath = isset($create->parent_path) ? (string) $create->parent_path : null;
-    $this->schemaPath = isset($create->schema_path) ? (string) $create->schema_path : null;
+    $this->path = new DocumentPath($element, (string) $create->path, (string) $create->path['context']);
+    $this->schema = isset($create->schema_path) ? (string) $create->schema_path : null;
+    $this->setCreateType($create);
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $element 
+   */
+  private function setCreateType(SimpleXMLElement $create) {
     if (isset($create->element)) {
-      $this->element = (string) $create->element;
-      $this->type = XMLCreateType::Element;
+      $this->create = (string) $create->element;
+      $this->prefix = (string) $create->element['prefix'];
+      $this->type = self::Element;
     }
     else if (isset($create->attribute)) {
-      $this->attribute = (string) $create->attribute;
-      $this->type = XMLCreateType::Attribute;
+      $this->create = (string) $create->attribute;
+      $this->prefix = (string) $create->attribute['prefix'];
+      $this->type = self::Attribute;
     }
     else {
-      $this->xml = (string) $create->xml;
-      $this->type = XMLCreateType::XML;
+      $this->create = (string) $create->xml;
+      $this->type = self::XML;
     }
   }
 
   public function shouldCreate($value) {
+    return TRUE;
+  }
+
+  public function create(Document $document, $value) {
+    switch ($this->type) {
+      case self::Element:
+        $results = $this->path->query($document);
+        if ($results) {
+          $count = $results->length;
+          for ($i = 0; $i < $count; $i++) {
+            $node = $results->item($i);
+            $element = $this->createElement($document, $value);
+            $node->appendChild($element);
+          }
+        }
+        break;
+      case self::Attribute:
+
+        break;
+      case self::XML:
+
+        break;
+    }
+  }
+
+  private function createElement(Document $document, $value) {
+    $name = isset($this->prefix) ? "{$this->prefix}:{$this->create}" : $this->create;
+    $name = $this->create;
+    $namespace = $document->getNamespace($this->prefix);
+    return isset($namespace) ?
+        new DOMElement($name, $value, $namespace) :
+        new DOMElement($name, $value);
+  }
+
+  private function appendElement(DOMNode $node) {
+
+    $node->appendChild($element);
+  }
+
+  private function createAttribute() {
+    
+  }
+
+  private function appendAttribute(DOMNode $node) {
+    
+  }
+
+  private function createXML() {
+    
+  }
+
+  private function appendXML(Document $document, DOMNode $node) {
     
   }
 
