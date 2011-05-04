@@ -112,7 +112,6 @@ class XMLReadProperties {
    * @return array
    */
   public function read(Document $document) {
-    return;
     $results = $this->path->query($document);
     if ($results) {
       $count = $results->length;

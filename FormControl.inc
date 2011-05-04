@@ -284,7 +284,9 @@ class FormControls extends ArrayObject {
    * @return mixed 
    */
   public function offsetGet($offset) {
-    $value = parent::offsetGet($offset);
+    if (parent::offsetExists($offset)) {
+      $value = parent::offsetGet($offset);
+    }
     return isset($value) ? $value->value : NULL;
   }
 

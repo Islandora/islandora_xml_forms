@@ -10,6 +10,7 @@
  * classes.
  */
 module_load_include('inc', 'xml_form_api', 'FormElement');
+module_load_include('inc', 'xml_form_api', 'FormElements');
 module_load_include('inc', 'xml_form_api', 'Document');
 
 /**

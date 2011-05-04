@@ -200,25 +200,10 @@ class Document {
     $this->nodes_in_the_form = array();
     $this->properties = $document_properties;
     $this->xml = $xml;
-    //$this->document = $this->createDocument();
-    //$this->xpath = new DOMXPath($this->document);
-    //$this->registerNamespaces();
+    $this->document = $this->createDocument();
+    $this->xpath = new DOMXPath($this->document);
+    $this->registerNamespaces();
   }
-  
-  //public function __sleep() {
-    /* TODO: Make sure this is required... */
-    //$this->xml = $this->document->saveXML();
-    //unset($this->xpath);
-    //unset($this->document);
-  //}
-  
-  //public function __wakeup() {
-    /* TODO: Make sure this is required... */
-    //$this->document = new DOMDocument();
-    //$this->document->loadXML($this->xml);
-    //$this->xpath = new DOMXPath($this->document);
-    //$this->registerNamespaces();
-  //}
 
   /**
    *
@@ -283,8 +268,7 @@ class Document {
    * @return string 
    */
   public function asXML() {
-    //return $this->document->saveXML();
-    return '';
+    return $this->document->saveXML();
   }
 
   /**
@@ -301,18 +285,17 @@ class Document {
    * @return type 
    */
   public function query($path, $context = NULL) {
-    return new DOMNodeList();
-    /*if ($context) {
+    if ($context) {
       return $this->xpath->query($path, $context);
     }
     else {
       return $this->xpath->query($path);
-    }*/
+    }
   }
 
   // TODO rename this to something that makes sense.
   public function register(DOMNode $node, FormElement $form_element) {
-    //$this->nodes_in_the_form[$form_element->hash] = $node;
+    $this->nodes_in_the_form[$form_element->hash] = $node;
   }
 
   public function getRegisteredNode(FormElement $element) {
