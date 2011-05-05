@@ -6,11 +6,12 @@
  *
  *  Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
-
+module_load_include('inc', 'xml_form_elements', 'Utils');
+module_load_include('inc', 'xml_form_api', 'Form');
 
 class TabPanel {
 
-  public static function Process(array $element, $edit, array &$form_state, array $complete_form) {
+  public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $tabpanel = self::findTabPanel($element['#hash'], $form_state);
     $add = self::createAddButton($tabpanel);
     $element['add-tabpanel'] = $add->toDrupalForm();
@@ -30,6 +31,8 @@ class TabPanel {
     $add->weight = 4;
     $add->size = 30;
     $add->value = 'Add';
+    $add->prefix = '<div class="ui-tabpanel-add-button">';
+    $add->suffix = '</div>';
     $add->ahah = array(
       'path' => 'xml_form_elements/ahah/tabpanel/duplicate/' . $tabpanel->hash,
       'wrapper' => $tabs->hash, // The parents wrapper is set to the parents hash.
@@ -43,33 +46,84 @@ class TabPanel {
   public static function Theme($element) {
     return "<div id='{$element['#hash']}'>{$element['#children']}</div>";
   }
-/*
-  private function themeTabHeader(&$form, $name, $title, $collapsible, $collapsed) {
+
+  public static function Duplicate($hash) {
+    if (!isset($_REQUEST['form_build_id']))
+      return;
+    $form_build_id = $_REQUEST['form_build_id'];
+    list($drupal_form, $form_state) = get_form_and_form_state($form_build_id);
+    $form_id = $drupal_form['#parameters'][0];
+    // Apply changes.
+    $form = new Form($form_state);
+    $form->duplicateElement($hash);
+    $drupal_form = $form->generate();
+    // Store Changes
+    cache_form_and_form_state($form_build_id, $drupal_form, $form_state);
+    // Render the changed bit.
+    $drupal_form = form_builder($form_id, $drupal_form, $form_state);
+    $tabs = self::getTabs($form, $drupal_form, $hash);
+    ahah_return_html_via_json($tabs);
+  }
+  
+  private static function getTabs(Form $form, array &$drupal_form, $hash) {
+    $tabpanel = $form->findElement($hash);
+    $tabs_hash = $tabpanel->parent->hash;
+    $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($drupal_form), RecursiveIteratorIterator::SELF_FIRST);
+    foreach ($iterator as $element) {
+      if ($element['#hash'] == $tabs_hash) {
+        return $element;
+      }
+    }
+  }
+
+  /**
+   *
+   * @param hash $hash 
+   */
+  public static function Remove($hash) {
+    if (!isset($_REQUEST['form_build_id']))
+      return;
+    $form_build_id = $_REQUEST['form_build_id'];
+    list($form, $form_state) = get_form_and_form_state($form_build_id);
+    // Apply changes.
+    $form = new Form($form_state);
+    $form->definition->elements->removeElement($hash);
+    $drupal_form = $form->generate();
+    cache_form_and_form_state($form_build_id, $drupal_form, $form_state);
+    $element = $form->definition->elements->findElement($hash);
+    // Render the changed bit.
+    $drupal_form = $element->toDrupalForm();
+    $drupal_form = form_builder($drupal_form);
+    ahah_return_html_via_json($drupal_form);
+  }
+
+  /*
+    private function themeTabHeader(&$form, $name, $title, $collapsible, $collapsed) {
     $output = '<ul>';
     $output .= '<li>';
     $output .= "<a href='#$name-0'>";
     $output .= "<span style='float:left; vertical-align: middle; text-align: center;'>$title</span>";
     if ($collapsible) {
-      $icon = ($collapsed) ? 'ui-icon-circle-triangle-e' : 'ui-icon-circle-triangle-s';
-      $output .= "<span class='expand-tabpanel-icon ui-icon $icon' style='float: right; vertical-align: middle; margin-left:0.2em;'></span>";
+    $icon = ($collapsed) ? 'ui-icon-circle-triangle-e' : 'ui-icon-circle-triangle-s';
+    $output .= "<span class='expand-tabpanel-icon ui-icon $icon' style='float: right; vertical-align: middle; margin-left:0.2em;'></span>";
     }
     $output .= '</a>';
     $output .= '</li>';
     foreach ($form as $key => $panel) {
-      if (is_numeric($key) && $key > 0) {
-        $output .= '<li>';
-        $output .= "<a href='#$name-$key'>$key</a>";
-        $output .= "<span id='remove-$name-$key' class='ui-icon ui-icon-close' style='float: left; margin: 0.4em 0.2em 0 0; cursor: pointer;'>";
-        $output .= $panel['remove-tab']['#id'];
-        $output .= '</span>';
-        $output .= '</li>';
-      }
+    if (is_numeric($key) && $key > 0) {
+    $output .= '<li>';
+    $output .= "<a href='#$name-$key'>$key</a>";
+    $output .= "<span id='remove-$name-$key' class='ui-icon ui-icon-close' style='float: left; margin: 0.4em 0.2em 0 0; cursor: pointer;'>";
+    $output .= $panel['remove-tab']['#id'];
+    $output .= '</span>';
+    $output .= '</li>';
+    }
     }
     $output .= '</ul>';
     return $output;
-  }
+    }
 
-  /*
+    /*
     public function theme(&$element) {
     global $base_url;
     $path = drupal_get_path('module', 'islandora_form_builder_elements');
@@ -391,18 +445,6 @@ class TabPanel {
     ));
     } */
 }
-
-/**
- * Menu hook for ahah callbacks.
- *
- * Depending on the button clicked this will remove a panel or add one.
- *
-  function islandora_form_builder_elements_ahah_tabpanel() {
-  if (!isset($_POST['form_build_id']))
-  return;
-  $tab_panel = new TabPanel();
-  $tab_panel->ahah($_POST['form_build_id']);
-  } */
 
 /**
  * Theme hook for a tabpanel

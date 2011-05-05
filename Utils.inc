@@ -16,7 +16,8 @@
 function get_form_and_form_state($form_build_id) {
   $form_state = array('storage' => NULL, 'submitted' => FALSE, 'post' => $_POST);
   if (!$form = form_get_cache($form_build_id, $form_state)) {
-    throw new Exception('Failed to get the $form, and $form_state for form ' . $form_build_id);
+    header("HTTP/1.0 200 OK", false, 200);
+    exit();
   }
   return array(&$form, &$form_state);
 }

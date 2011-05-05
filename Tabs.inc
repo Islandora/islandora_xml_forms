@@ -15,7 +15,7 @@ class Tabs {
    * @param array $form_state
    * @param array $complete_form 
    */
-  public static function Process(array $element, $edit, array &$form_state, array $complete_form) {
+  public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
     return $element;
@@ -46,6 +46,7 @@ function xml_form_elements_preprocess_tabs(&$vars) {
   $vars['scripts'] = drupal_get_js();
   // CSS
   drupal_add_css("$path/stylesheets/custom-theme/jquery-ui-1.8.11.custom.css");
+  drupal_add_css("$path/stylesheets/Tabs.css");
   // Header Info
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
   $vars['collapsed'] = $tabs['#collapsed'] == TRUE;
@@ -63,7 +64,7 @@ function xml_form_elements_preprocess_tabs(&$vars) {
   // Remaining tabpanels.
   $count = 2;
   foreach ($children as $child) {
-    $vars['tabpanels'][$count] = $child['#id'];
+    $vars['tabpanels'][$count] = $child['#hash'];
     $count++;
   }
   // Content Info

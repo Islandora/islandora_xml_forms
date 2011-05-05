@@ -57,7 +57,7 @@ function xml_form_elements_menu() {
     'description' => 'AHAH callback',
     'page callback' => 'Element::Duplicate',
     'page arguments' => array(3),
-    'access arguments' => TRUE,
+    'access arguments' => array('access content'),
     'file' => 'Element.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
@@ -67,7 +67,7 @@ function xml_form_elements_menu() {
     'description' => 'AHAH callback',
     'page callback' => 'Element::Remove',
     'page arguments' => array(3),
-    'access arguments' => TRUE,
+    'access arguments' => array('access content'),
     'file' => 'Element.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
@@ -77,8 +77,8 @@ function xml_form_elements_menu() {
     'description' => 'AHAH callback',
     'page callback' => 'TabPanel::Duplicate',
     'page arguments' => array(4),
-    'access arguments' => TRUE,
-    'file' => 'Element.inc',
+    'access arguments' => array('access content'),
+    'file' => 'TabPanel.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
@@ -87,8 +87,8 @@ function xml_form_elements_menu() {
     'description' => 'AHAH callback',
     'page callback' => 'TabPanel::Remove',
     'page arguments' => array(4),
-    'access arguments' => TRUE,
-    'file' => 'Element.inc',
+    'access arguments' => array('access content'),
+    'file' => 'TabPanel.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
@@ -116,7 +116,7 @@ function xml_form_elements_menu() {
  * @param array $form
  * @param array $form_state 
  */
-function xml_form_elements_process_tabs(array $element, $edit, array &$form_state, array $complete_form) {
+function xml_form_elements_process_tabs(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'Tabs');
   return Tabs::Process($element, $edit, $form_state, $complete_form);
 }
@@ -126,7 +126,7 @@ function xml_form_elements_process_tabs(array $element, $edit, array &$form_stat
  * @param array $form
  * @param array $form_state 
  */
-function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form) {
+function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'TabPanel');
   return TabPanel::Process($element, $edit, $form_state, $complete_form);
 }
