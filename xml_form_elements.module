@@ -7,3 +7,126 @@
  *
  */
 
+/**
+ * Implements hook_elements. Registers Elements.
+ * 
+ * @return array
+ */
+function xml_form_elements_elements() {
+  $type = array();
+  $type['tabs'] = array(
+    '#input' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#process' => array('xml_form_elements_process_tabs'),
+  );
+  $type['tabpanel'] = array(
+    '#input' => TRUE,
+    '#process' => array('xml_form_elements_process_tabpanel'),
+  );
+  return $type;
+}
+
+/**
+ * Implements hook_theme. Register themes.
+ *
+ * @return array
+ */
+function xml_form_elements_theme() {
+  return array(
+    'tabs' => array(
+      'arguments' => array('tabs' => NULL),
+      'template' => 'Tabs',
+      'file' => 'Tabs.inc'
+    ),
+    'tabpanel' => array(
+      'arguments' => array('element'),
+      'file' => 'TabPanel.inc'
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu. Register menus.
+ *
+ * @return array 
+ */
+function xml_form_elements_menu() {
+  $items['xml_form_elements/ahah/duplicate/%'] = array(
+    'title' => 'Duplicate a Form Element',
+    'description' => 'AHAH callback',
+    'page callback' => 'Element::Duplicate',
+    'page arguments' => array(3),
+    'access arguments' => TRUE,
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['xml_form_elements/ahah/delete/%'] = array(
+    'title' => 'Remove a Form Element',
+    'description' => 'AHAH callback',
+    'page callback' => 'Element::Remove',
+    'page arguments' => array(3),
+    'access arguments' => TRUE,
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['xml_form_elements/ahah/tabpanel/duplicate/%'] = array(
+    'title' => 'Duplicate a TabPanel',
+    'description' => 'AHAH callback',
+    'page callback' => 'TabPanel::Duplicate',
+    'page arguments' => array(4),
+    'access arguments' => TRUE,
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['xml_form_elements/ahah/tabpanel/delete/%'] = array(
+    'title' => 'Remove a TabPanel',
+    'description' => 'AHAH callback',
+    'page callback' => 'TabPanel::Remove',
+    'page arguments' => array(4),
+    'access arguments' => TRUE,
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+
+
+  /* $items['xml_form_elements/auto_complete/marcrelator'] = array(
+    'title' => 'autocomplete',
+    'page callback' => '',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array(ObjectHelper::$INGEST_FEDORA_OBJECTS),
+    'file' => 'includes/AutoComplete.inc'
+    );
+    $items['xml_form_elements/auto_complete/gacs'] = array(
+    'title' => 'autocomplete',
+    'page callback' => '',
+    'type' => MENU_CALLBACK,
+    'access arguments' => array(ObjectHelper::$INGEST_FEDORA_OBJECTS),
+    'file' => 'includes/AutoComplete.inc'
+    ); */
+  return $items;
+}
+
+/**
+ *
+ * @param array $form
+ * @param array $form_state 
+ */
+function xml_form_elements_process_tabs(array $element, $edit, array &$form_state, array $complete_form) {
+  module_load_include('inc', 'xml_form_elements', 'Tabs');
+  return Tabs::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ *
+ * @param array $form
+ * @param array $form_state 
+ */
+function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form) {
+  module_load_include('inc', 'xml_form_elements', 'TabPanel');
+  return TabPanel::Process($element, $edit, $form_state, $complete_form);
+}

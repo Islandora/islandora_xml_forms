@@ -1,0 +1,72 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ *
+ */
+class Tabs {
+
+  /**
+   *
+   * @param array $element
+   * @param type $edit
+   * @param array $form_state
+   * @param array $complete_form 
+   */
+  public static function Process(array $element, $edit, array &$form_state, array $complete_form) {
+    $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
+    $element['#suffix'] = '</div>';
+    return $element;
+  }
+
+  /**
+   *
+   * @param array $children 
+   */
+  public static function FilterChildren(array $child) {
+    $ret = ($child['#type'] == 'tabpanel') ? TRUE : FALSE;
+    return $ret;
+  }
+
+}
+
+/**
+ * Preprocess tabs theme hook.
+ * 
+ * @param array $vars 
+ */
+function xml_form_elements_preprocess_tabs(&$vars) {
+  $tabs = $vars['tabs'];
+  $path = drupal_get_path('module', 'xml_form_elements');
+  // Javascript
+  drupal_add_js("$path/js/jquery-ui-1.8.7.custom.min.js");
+  drupal_add_js("$path/js/Tabs.js");
+  $vars['scripts'] = drupal_get_js();
+  // CSS
+  drupal_add_css("$path/stylesheets/custom-theme/jquery-ui-1.8.11.custom.css");
+  // Header Info
+  $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
+  $vars['collapsed'] = $tabs['#collapsed'] == TRUE;
+  // Get Tabpanels
+  $keys = element_children($tabs);
+  $children = array();
+  foreach ($keys as $key) {
+    $children[$key] = &$tabs[$key];
+  }
+  $children = array_filter($children, array('Tabs', 'FilterChildren'));
+  // First element has different icons, and title.
+  $first = array_shift($children);
+  $vars['title'] = $tabs['#title'];
+  $vars['link'] = $first['#hash'];
+  // Remaining tabpanels.
+  $count = 2;
+  foreach ($children as $child) {
+    $vars['tabpanels'][$count] = $child['#id'];
+    $count++;
+  }
+  // Content Info
+  $vars['content'] = $tabs['#children'];
+}
+
