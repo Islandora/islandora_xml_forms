@@ -92,7 +92,7 @@
             <xs:element minOccurs="0" name="validate" type="array"/>
             <xs:element minOccurs="0" name="value" type="string"/>
             <xs:element minOccurs="0" name="weight" type="float"/>
-            <xs:element minOccurs="0" name="xml_properties" type="xmlProperties"/>
+            <xs:element minOccurs="0" name="actions" type="actionsType"/>
             <xs:element minOccurs="0" name="user_data"> </xs:element>
         </xs:all>
         <xs:attribute name="key" type="xs:string"/>
@@ -158,7 +158,7 @@
             <xs:element minOccurs="0" name="wrapper" type="xs:normalizedString"/>
         </xs:all>
     </xs:complexType>
-    <xs:complexType name="xmlProperties">
+    <xs:complexType name="actionsType">
         <xs:all>
             <xs:element minOccurs="0" name="create">
                 <xs:complexType>

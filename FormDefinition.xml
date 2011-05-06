@@ -25,18 +25,18 @@
                         <element key="e">
                             <type>textfield</type>
                             <default_value type="string">one</default_value>
-                            <xml_properties>
+                            <actions>
                                 <read>
                                     <path context="parent">mods:title</path>
                                 </read>
-                            </xml_properties>
+                            </actions>
                         </element>
                     </children>
-                    <xml_properties>
+                    <actions>
                         <read>
                             <path context="document">/mods:mods/mods:titleInfo</path>
                         </read>
-                    </xml_properties>
+                    </actions>
                 </element>
             </children>
         </element>

@@ -6,12 +6,13 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'Actions');
+module_load_include('inc', 'xml_form_api', 'ActionInterface');
+module_load_include('inc', 'xml_form_api', 'Path');
 
 /**
  * 
  */
-class Create implements Action {
+class Create implements ActionInterface {
   /**
    * Create types.
    */
@@ -129,7 +130,7 @@ class Create implements Action {
    * @param FormElement $element
    * @param mixed $value 
    */
-  public function execute(NodeRegistry $registry, FormElement $element, $value) {
+  public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
     $results = $this->path->query($registry, $element);
     if ($results) {
       $parent = $results->item(0);

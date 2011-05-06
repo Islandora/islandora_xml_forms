@@ -248,7 +248,7 @@ class FormControls extends ArrayObject {
    */
   public static function createFromSimpleXML($element) {
     $form_controls = new FormControls();
-    $controls = $element->xpath("child::*[local-name() != 'children' and local-name() != 'xml_properties']");
+    $controls = $element->xpath("child::*[local-name() != 'children' and local-name() != 'actions']");
     foreach ($controls as $name => $control) {
       $form_controls['#' . $control->getName()] = FormControl::createFromSimpleXML($control);
     }

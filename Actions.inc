@@ -6,21 +6,10 @@
  * @file
  *
  */
-
-/**
- * Interface that all actions support.
- */
-interface Action {
-
-  /**
-   * Perform the designated action.
-   * 
-   * @param NodeRegistry $registry
-   * @param FormElement $element
-   * @param mixed $value
-   */
-  public function execute(NodeRegistry $registry, FormElement $element, $value = NULL);
-}
+module_load_include('inc', 'xml_form_api', 'Create');
+module_load_include('inc', 'xml_form_api', 'Read');
+module_load_include('inc', 'xml_form_api', 'Update');
+module_load_include('inc', 'xml_form_api', 'Delete');
 
 /**
  * Container Class for all actions.

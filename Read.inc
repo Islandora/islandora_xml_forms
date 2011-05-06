@@ -6,13 +6,13 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'Actions');
-
+module_load_include('inc', 'xml_form_api', 'ActionInterface');
+module_load_include('inc', 'xml_form_api', 'Path');
 
 /**
  * 
  */
-class Read implements Action {
+class Read implements ActionInterface {
 
   /**
    * Path to the parent element, where the DOMNode will be created.

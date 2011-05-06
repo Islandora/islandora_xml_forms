@@ -6,13 +6,14 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'Actions');
+module_load_include('inc', 'xml_form_api', 'ActionInterface');
+module_load_include('inc', 'xml_form_api', 'Path');
 module_load_include('inc', 'xml_form_api', 'Utils');
 
 /**
  * 
  */
-class Update implements Action {
+class Update implements ActionInterface {
 
   /**
    *
