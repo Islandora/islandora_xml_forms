@@ -10,7 +10,7 @@ module_load_include('inc', 'xml_form_api', 'FormStorage');
 module_load_include('inc', 'xml_form_api', 'FormDefinition');
 module_load_include('inc', 'xml_form_api', 'FormElement');
 module_load_include('inc', 'xml_form_api', 'FormControl');
-module_load_include('inc', 'xml_form_api', 'Document');
+module_load_include('inc', 'xml_form_api', 'NodeRegistry');
 
 class Form {
   /**
@@ -41,7 +41,7 @@ class Form {
    *
    * @var Document 
    */
-  protected $document;
+  protected $nodeRegistry;
 
   /**
    * Construct the form class.
@@ -61,7 +61,7 @@ class Form {
    */
   private function initializeFromStorage() {
     $this->definition = $this->storage->getDefinition();
-    $this->document = $this->storage->getDocument();
+    $this->nodeRegistry = $this->storage->getNodeRegistry();
     $this->initialized = true;
   }
 
@@ -75,12 +75,12 @@ class Form {
    * @param FormDefinition $form_definition 
    * @param Document $xml_document
    */
-  public function initialize(FormDefinition $form_definition, Document $document) {
+  public function initialize(FormDefinition $form_definition, NodeRegistry $node_registry) {
     if (!$this->initialized) {
       $this->definition = $form_definition;
       $this->storage->setDefinition($form_definition);
-      $this->document = $document;
-      $this->storage->setDocument($document);
+      $this->nodeRegistry = $node_registry;
+      $this->storage->setNodeRegistry($node_registry);
       $this->initialized = true;
     }
     else {
@@ -102,12 +102,21 @@ class Form {
    * @return array 
    */
   public function generate() {
-    if ($this->document->exists()) {
-      module_load_include('inc', 'xml_form_api', 'FormPopulator');
-      $populator = new FormPopulator($this->document);
-      $populator->populate($this->definition->elements);
-    }
-    return $this->definition->toDrupalForm();
+    module_load_include('inc', 'xml_form_api', 'FormGenerator');
+    $generator = new FormGenerator($this->nodeRegistry);
+    return $generator->generate($this->definition->elements);
+  }
+  
+  /**
+   * Note this clones the existing set of elements, these elements will not be saved in the storage.
+   * 
+   * @param FormElements $elements
+   * @return type 
+   */
+  public function populate(FormElements $elements) {
+    module_load_include('inc', 'xml_form_api', 'FormPopulator');
+    $populator = new FormPopulator($this->nodeRegistry);
+    return $populator->populate(clone $elements);
   }
 
   /**
@@ -117,9 +126,10 @@ class Form {
   public function validate(array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'FormValidator');
-    $form_values = new FormValues($form_state, $this->definition->elements);
+    $elements = $this->definition->elements;
+    $form_values = new FormValues($form_state, $elements);
     $validator = new FormValidator($form_values);
-    return $validator->validate($this->definition->elements);
+    return $validator->validate($elements);
   }
 
   /**
@@ -130,20 +140,21 @@ class Form {
   public function submit(array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'FormProcessor');
-    $form_values = new FormValues($form_state, $this->definition->elements);
-    $processor = new FormProcessor($form_values, $this->document);
-    return $processor->process($this->definition->elements);
+    $elements = $this->definition->elements;
+    $form_values = new FormValues($form_state, $elements);
+    $processor = new FormProcessor($form_values, $this->nodeRegistry);
+    return $processor->process($elements);
   }
-  
+
   /**
    *
    * @param type $hash
    * @return type 
    */
   public function findElement($hash) {
-    return $this->definition->elements->findElement($hash);
+    return $this->definition->elements->getRegisteredElement($hash);
   }
-  
+
   /**
    *
    * @param type $hash
@@ -152,7 +163,7 @@ class Form {
   public function duplicateElement($hash) {
     return $this->definition->elements->duplicateElement($hash);
   }
-  
+
   /**
    *
    * @param type $hash

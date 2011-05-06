@@ -88,7 +88,7 @@ class FormStorage {
    *
    * @param XMLDocument $document 
    */
-  public function setDocument(Document $document) {
+  public function setNodeRegistry(NodeRegistry $document) {
     $this->storage[self::DOCUMENT] = $document;
   }
   
@@ -96,7 +96,7 @@ class FormStorage {
    *
    * @return XMLDocument 
    */
-  public function getDocument() {
+  public function getNodeRegistry() {
     return $this->storage[self::DOCUMENT];
   }
 

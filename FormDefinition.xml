@@ -10,7 +10,7 @@
             <namespaces>
                 <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
             </namespaces>
-            <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>
+            <!-- <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema> -->
         </document_properties>
     </properties>
     <elements>
@@ -27,11 +27,16 @@
                             <default_value type="string">one</default_value>
                             <xml_properties>
                                 <read>
-                                    <path context="document">/mods:mods/mods:titleInfo/mods:title</path>
+                                    <path context="parent">mods:title</path>
                                 </read>
                             </xml_properties>
                         </element>
                     </children>
+                    <xml_properties>
+                        <read>
+                            <path context="document">/mods:mods/mods:titleInfo</path>
+                        </read>
+                    </xml_properties>
                 </element>
             </children>
         </element>

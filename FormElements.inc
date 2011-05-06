@@ -136,6 +136,7 @@ class FormElements implements IteratorAggregate {
       $new_element = clone $element;
       $element->parent[] = $new_element;
       $this->registerElement($new_element);
+      return $new_element;
     }
     else {
       throw new Exception('Failed to duplicate element.');

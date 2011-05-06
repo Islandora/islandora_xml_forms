@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mods xmlns="http://www.loc.gov/mods/v3">
-    <titleInfo>
-        <title>Testing 123</title>
-    </titleInfo>
-</mods>
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+    <mods:titleInfo>
+        <mods:title>Testing 123</mods:title>
+        <mods:title>Testing 321</mods:title>
+        <mods:title>Testing 321</mods:title>
+    </mods:titleInfo>
+    <mods:titleInfo>
+        <mods:title>Testing 123</mods:title>
+        <mods:title>Testing 321</mods:title>
+    </mods:titleInfo>
+    <mods:titleInfo>
+        <mods:title>Testing 123</mods:title>
+        <mods:title>Testing 321</mods:title>
+        <mods:title>Testing 321</mods:title>
+    </mods:titleInfo>
+</mods:mods>

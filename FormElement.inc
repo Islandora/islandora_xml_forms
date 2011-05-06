@@ -77,9 +77,9 @@ class FormElement extends FormElementArrayObject {
    * 
    */
   public function __clone() {
-    parent::__clone();
-    $this->name = NULL;
     $this->_hash = spl_object_hash($this);
+    $this->name = NULL;
+    parent::__clone();
   }
 
   /**

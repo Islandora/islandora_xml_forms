@@ -7,6 +7,8 @@
  *
  */
 
+module_load_include('inc', 'xml_form_api', 'Path');
+
 /**
  * Defines the set of properties that allow us to create an XML element.
  */
@@ -23,7 +25,7 @@ class XMLCreateProperties {
   public $element;
   /**
    * 
-   * @var DocumentPath
+   * @var Path
    */
   protected $path;
   /**
@@ -53,7 +55,7 @@ class XMLCreateProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $create) {
     $this->element = $element;
-    $this->path = new DocumentPath($element, (string) $create->path, (string) $create->path['context']);
+    $this->path = new Path($element, (string) $create->path, (string) $create->path['context']);
     $this->schema = isset($create->schema_path) ? (string) $create->schema_path : null;
     $this->setCreateType($create);
   }
@@ -140,7 +142,7 @@ class XMLReadProperties {
   public $element;
   /**
    * 
-   * @var DocumentPath 
+   * @var Path 
    */
   public $path;
 
@@ -151,7 +153,7 @@ class XMLReadProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $read) {
     $this->element = $element;
-    $this->path = new DocumentPath($element, (string) $read->path, (string) $read->path['context']);
+    $this->path = new Path($element, (string) $read->path, (string) $read->path['context']);
   }
 
   /**
@@ -159,18 +161,8 @@ class XMLReadProperties {
    * @param Document $document
    * @return array
    */
-  public function read(Document $document) {
-    $results = $this->path->query($document);
-    if ($results) {
-      $count = $results->length;
-      for ($i = 0; $i < $count; $i++) {
-        $node = $results->item($i);
-        $contains_elements = $document->query('child::*', $node)->length > 0;
-        $value = $contains_elements ? NULL : $node->nodeValue;
-        $output[] = array($node, $value);
-      }
-    }
-    return isset($output) ? $output : NULL;
+  public function read(NodeRegistry $registry) {
+    return $this->path->query($registry);
   }
 
 }
@@ -198,7 +190,7 @@ class XMLUpdateProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $update) {
     $this->element = $element;
-    $this->path = new DocumentPath($element, (string) $update->path, (string) $update->path['context']);
+    $this->path = new Path($element, (string) $update->path, (string) $update->path['context']);
   }
 
   /**
@@ -266,7 +258,7 @@ class XMLDeleteProperties {
    */
   public function __construct(FormElement $element, SimpleXMLElement $delete) {
     $this->element = $element;
-    $this->path = new DocumentPath($element, (string) $delete->path, (string) $delete->path['context']);
+    $this->path = new Path($element, (string) $delete->path, (string) $delete->path['context']);
   }
 
   /**

@@ -45,7 +45,7 @@ abstract class FormElementArrayObject extends ArrayObject {
   public function __clone() {
     $this->orphan();
   }
-  
+
   /**
    * Check to see if a FormControl or child FormElement exists.
    * 
@@ -193,7 +193,9 @@ abstract class FormElementArrayObject extends ArrayObject {
    */
   private function orphan() {
     if (FormElement::isFormElement($this->_parent)) {
-      unset($this->_parent[$this->key]);
+      if ($this->key) {
+        unset($this->_parent[$this->key]);
+      }
       $this->_parent = NULL;
     }
   }

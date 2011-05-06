@@ -63,102 +63,6 @@ class DocumentProperties {
 
 }
 
-class DocumentPath {
-  /**
-   * Constants that define the possible contexts for this path to be executed in.
-   */
-  const DocumentContext = 'document';
-  const ParentContext = 'parent'; // Only works if this element is nested within an element that has a full path.
-  const SelfContext = 'self'; // Only works if a node is registered, with the given element.
-  /**
-   *
-   * @var FormElement
-   */
-
-  public $element;
-  /**
-   *
-   * @var string
-   */
-  public $path;
-  /**
-   *
-   * @var string 
-   */
-  public $context;
-
-  /**
-   *
-   * @param FormElement $element
-   * @param type $path
-   * @param type $context 
-   */
-  public function __construct(FormElement $element, $path, $context) {
-    $this->element = $element;
-    $this->path = $path;
-    $this->context = $context;
-  }
-
-  /**
-   *
-   * @param Document $document
-   * @return DOMNode
-   */
-  private function getContext(Document $document) {
-    switch ($this->context) {
-      case self::DocumentContext:
-        return NULL;
-      case self::ParentContext:
-        return $this->getParent($document);
-      case self::SelfContext:
-        return $this->getSelf($document);
-      default:
-        throw new Exception('Invalid Context.');
-    }
-  }
-
-  /**
-   *
-   * @param Document $document
-   * @return DOMNode
-   */
-  private function getParent(Document $document) {
-    $element = $this->element->parent;
-    while ($element) {
-      $node = $document->getRegisteredNode($element);
-      if ($node) {
-        return $node;
-      }
-    }
-  }
-
-  /**
-   *
-   * @param Document $document
-   * @return DOMNode 
-   */
-  private function getSelf(Document $document) {
-    $node = $document->getRegisteredNode($this->element);
-    if ($node) {
-      return $node;
-    }
-    else {
-      throw new Exception('Failed to get self this element path is not registered');
-    }
-  }
-
-  /**
-   *
-   * @param Document $document
-   * @return DOMNodeList 
-   */
-  public function query(Document $document) {
-    $context = $this->getContext($document);
-    return $document->query($this->path, $context);
-  }
-
-}
-
 /**
  * 
  */
@@ -184,18 +88,6 @@ class Document {
    * @var DOMXPath 
    */
   protected $xpath;
-  /**
-   * Only valid when we serialize this object. It stores the paths to registered nodes so they can be properly reinitialized on unserialize.
-   * 
-   * @var array 
-   */
-  protected $paths;
-  /**
-   *
-   * @var array 
-   */
-  protected $registered;
-  
 
   /**
    *
@@ -203,7 +95,6 @@ class Document {
    * @param string $xml 
    */
   public function __construct(DocumentProperties $document_properties, &$xml = NULL) {
-    $this->registered = array();
     $this->properties = $document_properties;
     $this->xml = $xml;
     $this->document = $this->createDocument();
@@ -212,27 +103,23 @@ class Document {
   }
 
   /**
-   *
-   * @return array 
+   * Determine what member variables to serialize. 
+   * 
+   * DOMDocument's and DOMNodes can not be serialized.
+   * 
+   * @return array
    */
   public function __sleep() {
-    $this->paths = $this->registered;
-    array_walk($this->paths, array('Utils', 'convertNodeToPath'));
-    return array('properties', 'xml', 'paths');
+    return array('properties', 'xml');
   }
 
   /**
-   * 
+   * Reinitialize this object after it has be unserialized.
    */
   public function __wakeup() {
     $this->document = $this->createDocument();
     $this->xpath = new DOMXPath($this->document);
     $this->registerNamespaces();
-    $this->registered = array();
-    foreach ($this->paths as $key => $path) {
-      $result = $this->query($path);
-      $this->registered[$key] = $result->item(0);
-    }
   }
 
   /**
@@ -311,43 +198,20 @@ class Document {
   }
 
   /**
+   * Query the document.
    * 
+   * @param string $path
+   *   XPath string.
+   * @param DOMNode $context
+   *   Context node, if NULL the context of the path will be the entire document.
+   * 
+   * @return DOMNodeList 
    */
-  public function addAction() {
-    
-  }
-
-  /**
-   *
-   * @param type $path
-   * @param type $context
-   * @return type 
-   */
-  public function query($path, $context = NULL) {
-    if ($context) {
-      return $this->xpath->query($path, $context);
-    }
-    else {
-      return $this->xpath->query($path);
-    }
-  }
-
-  // TODO rename this to something that makes sense.
-  public function register(DOMNode $node, FormElement $form_element) {
-    $this->registered[$form_element->hash] = $node;
-  }
-
-  public function getRegisteredNode(FormElement $element) {
-    if (isset($this->registered[$element->hash])) {
-      return $this->registered[$element->hash];
-    }
-    else {
-      return NULL;
-    }
-  }
-
-  public function isRegistered(FormElement $element) {
-    return $this->getRegisteredNode($element) === NULL;
+  public function query($path, DOMNode $context = NULL) {
+    $results = $context ?
+        $this->xpath->query($path, $context) :
+        $this->xpath->query($path);
+    return $results;
   }
 
 }

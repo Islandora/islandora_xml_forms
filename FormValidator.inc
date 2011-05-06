@@ -6,6 +6,10 @@
  * @file
  *
  */
+
+module_load_include('inc', 'xml_form_api', 'FormValues');
+module_load_include('inc', 'xml_form_api', 'FormElements');
+
 class FormValidator {
 
   /**

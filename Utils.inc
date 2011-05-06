@@ -50,4 +50,35 @@ class Utils {
     }
   }
 
+  public static function &getDrupalFormElement($hash, array &$form) {
+    $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($form), RecursiveIteratorIterator::SELF_FIRST);
+    foreach ($iterator as $element) {
+      if ($element['#hash'] == $hash) {
+        return $element;
+      }
+    }
+    return NULL;
+  }
+
+  /**
+   * Gets the value of an DOMNode.
+   *
+   * @param DOMNode $node
+   * @return mixed
+   *   The node's value if the node does not have any children. NULL otherwise.
+   */
+  public static function getNodeValue(DOMNode $node) {
+    $contains_elements = $document->query('child::*', $node)->length > 0;
+    $value = $contains_elements ? NULL : $node->nodeValue;
+  }
+
+  public static function DOMNodelistToArray(DOMNodeList $list) {
+    $count = $list->length;
+    $output = array();
+    for ($i = 0; $i < $count; $i++) {
+      $output[] = $list->item($i);
+    }
+    return $output;
+  }
+
 }

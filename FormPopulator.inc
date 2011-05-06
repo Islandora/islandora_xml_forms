@@ -40,7 +40,11 @@ class FormPopulator {
   public function populate(FormElements $elements) {
     $this->elements = $elements;
     foreach ($elements as $element) {
-      $this->process($element);
+      $count = $this->process($element);
+      while($count) {
+        next($elements);
+        $count--;
+      }
     }
   }
 
@@ -50,17 +54,20 @@ class FormPopulator {
    */
   public function process(FormElement $element) {
     $values = $this->getDefaultValues($element);
+    $count = 0;
     if ($values) {
       list($node, $value) = array_shift($values);
       $this->setDefaultValue($element, $value);
       $this->document->register($node, $element);
       foreach ($values as $result) {
         list($node, $value) = $result;
-        $twin = $this->elements->duplicate($element->hash);
+        $twin = $this->elements->duplicateElement($element->hash);
         $this->setDefaultValue($twin, $value);
         $this->document->register($node, $element);
+        $count++;
       }
     }
+    return $count;
   }
 
   private function getDefaultValues(FormElement $element) { //Need a better name
