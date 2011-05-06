@@ -14,75 +14,30 @@
         </document_properties>
     </properties>
     <elements>
-        <element key="a">
-            <type>fieldset</type>
-            <title>test</title>
+        <element key="d">
+            <type>tabs</type>
+            <title>d</title>
             <tree>true</tree>
             <children>
-                <element key="b">
-                    <type>fieldset</type>
-                    <tree>false</tree>
+                <element>
+                    <type>tabpanel</type>
                     <children>
-                        <element key="d">
-                            <type>fieldset</type>
-                            <tree>true</tree>
-                            <children>
-                                <element key="e">
-                                    <type>textfield</type>
-                                    <default_value type="string">one</default_value>
-                                </element>
-                                <element key="f">
-                                    <type>fieldset</type>
-                                    <tree>true</tree>
-                                    <children>
-                                        <element key="g">
-                                            <type>textfield</type>
-                                            <default_value type="string">two</default_value>
-                                        </element>
-                                    </children>
-                                </element>
-                            </children>
+                        <element key="e">
+                            <type>textfield</type>
+                            <default_value type="string">one</default_value>
+                            <xml_properties>
+                                <read>
+                                    <path context="document">/mods:mods/mods:titleInfo/mods:title</path>
+                                </read>
+                            </xml_properties>
                         </element>
                     </children>
                 </element>
-                <element key="c">
-                    <type>textfield</type>
-                    <title>title</title>
-                    <xml_properties>
-                        <create>
-                            <path context="document">/mods:mods</path>
-                            <schema_path name="mods">/xs:schema/xs:element[@key='title']</schema_path>
-                            <element prefix="mods">title</element>
-                        </create>
-                        <read>
-                            <path context="document">/mods:mods/mods:titleInfo/mods:title</path>
-                        </read>
-                        <update>
-                            <path context="self">self::node()</path>
-                            <schema_path name="mods">/xs:schema/xs:element[@name='title']</schema_path>
-                        </update>
-                        <delete>
-                            <path context="self">self::node()</path>
-                        </delete>
-                    </xml_properties>
-                    <user_data>asdf</user_data>
-                </element>
-                <element key="r">
-                    <type>textfield</type>
-                    <title>Sub title</title>
-                    <xml_properties>
-                        <create>
-                            <path context="document">/mods:mods/mods:titleInfo</path>
-                            <schema_path name="mods">/xs:schema/xs:element[@key='subTitle']</schema_path>
-                            <element prefix="mods">subTitle</element>
-                        </create>
-                    </xml_properties>
-                </element>
-                <element>
-                    <type>submit</type>
-                    <value>submit</value>
-                </element>
             </children>
+        </element>
+        <element>
+            <type>submit</type>
+            <value>submit</value>
         </element>
     </elements>
 </form>

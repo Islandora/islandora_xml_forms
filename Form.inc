@@ -7,6 +7,10 @@
  *
  */
 module_load_include('inc', 'xml_form_api', 'FormStorage');
+module_load_include('inc', 'xml_form_api', 'FormDefinition');
+module_load_include('inc', 'xml_form_api', 'FormElement');
+module_load_include('inc', 'xml_form_api', 'FormControl');
+module_load_include('inc', 'xml_form_api', 'Document');
 
 class Form {
   /**
@@ -129,6 +133,33 @@ class Form {
     $form_values = new FormValues($form_state, $this->definition->elements);
     $processor = new FormProcessor($form_values, $this->document);
     return $processor->process($this->definition->elements);
+  }
+  
+  /**
+   *
+   * @param type $hash
+   * @return type 
+   */
+  public function findElement($hash) {
+    return $this->definition->elements->findElement($hash);
+  }
+  
+  /**
+   *
+   * @param type $hash
+   * @return type 
+   */
+  public function duplicateElement($hash) {
+    return $this->definition->elements->duplicateElement($hash);
+  }
+  
+  /**
+   *
+   * @param type $hash
+   * @return type 
+   */
+  public function removeElement($hash) {
+    return $this->definition->elements->removeElement($hash);
   }
 
 }

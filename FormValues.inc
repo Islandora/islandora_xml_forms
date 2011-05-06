@@ -7,6 +7,7 @@
  *
  * Associates submitted form values with FormElements.
  */
+module_load_include('inc', 'xml_form_api', 'FormValueTracker');
 
 /**
  * This class stores all submitted values. It provides a mechanism for 
@@ -36,7 +37,6 @@ class FormValues {
    *   The elements to associate with submitted values.
    */
   public function __construct(array &$form_state, FormElements $elements) {
-    module_load_include('inc', 'xml_form_api', 'FormValueTracker');
     $this->tracker = new FormValueTracker($form_state['values']);
     $this->setValues($elements->root, $this->tracker);
   }

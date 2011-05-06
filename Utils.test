@@ -1,0 +1,123 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ *
+ */
+class XMLFormAPIUtilsTestCase extends DrupalUnitTestCase {
+
+  /**
+   * Get Test info.
+   * 
+   * @return array
+   *   Properties that are displayed in the test selection form.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Utils Unit Tests.',
+      'description' => 'Unit tests for Utils.inc',
+      'group' => 'XML Form API',
+    );
+  }
+
+  /**
+   * setUp() performs any pre-requisite tasks that need to happen. 
+   */
+  public function setUp() {
+    // Enable any modules required for the test.
+    parent::setUp('xml_form_api');
+    module_load_include('inc', 'xml_form_api', 'Utils');
+  }
+
+  /**
+   *
+   */
+  public function testGetXPathFromNode() {
+    /* local name only */
+    $xml = <<<EOT
+    <mods>
+      <titleInfo>
+        <title>test</title>
+      </titleInfo>
+    </mods>
+EOT;
+    $doc = new DOMDocument();
+    $doc->loadXML($xml);
+    $xpath = new DOMXPath($doc);
+    $result = $xpath->query('/mods/titleInfo/title');
+    $node = $result->item(0);
+    $path = Utils::getXPathToNode($node);
+    $this->assertEqual('/mods[1]/titleInfo[1]/title[1]', $path, 'Using local names Utils::getPathToNode, returns the correct path.');
+    /* Namespaces */
+    $xml = <<<EOT
+    <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+      <mods:titleInfo>
+        <mods:title>test</mods:title>
+      </mods:titleInfo>
+    </mods:mods>
+EOT;
+    $doc = new DOMDocument();
+    $doc->loadXML($xml);
+    $xpath = new DOMXPath($doc);
+    $result = $xpath->query('/mods:mods/mods:titleInfo/mods:title');
+    $node = $result->item(0);
+    $path = Utils::getXPathToNode($node);
+    $this->assertEqual('/mods:mods[1]/mods:titleInfo[1]/mods:title[1]', $path, 'Using prefixed names Utils::getPathToNode, returns the correct path.');
+    /* local name Multiple Values */
+    $xml = <<<EOT
+    <mods>
+      <titleInfo>
+        <title>test</title>
+        <title>test</title>
+        <title>test</title>
+      </titleInfo>
+    </mods>
+EOT;
+    $doc = new DOMDocument();
+    $doc->loadXML($xml);
+    $xpath = new DOMXPath($doc);
+    $result = $xpath->query('/mods/titleInfo/title');
+    $node = $result->item(1);
+    $path = Utils::getXPathToNode($node);
+    $this->assertEqual('/mods[1]/titleInfo[1]/title[2]', $path, 'Using local names Utils::getPathToNode, returns the correct path.');
+    /* Namespaces */
+    $xml = <<<EOT
+    <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+      <mods:titleInfo>
+        <mods:title>test</mods:title>
+        <mods:title>test</mods:title>
+        <mods:title>test</mods:title>
+      </mods:titleInfo>
+    </mods:mods>
+EOT;
+    $doc = new DOMDocument();
+    $doc->loadXML($xml);
+    $xpath = new DOMXPath($doc);
+    $result = $xpath->query('/mods:mods/mods:titleInfo/mods:title');
+    $node = $result->item(2);
+    $path = Utils::getXPathToNode($node);
+    $this->assertEqual('/mods:mods[1]/mods:titleInfo[1]/mods:title[3]', $path, 'Using prefixed names Utils::getPathToNode, returns the correct path.');
+    /* local name Attribute */
+    $xml = <<<EOT
+    <mods>
+      <titleInfo type="alternative">
+        <title>test</title>
+      </titleInfo>
+      <titleInfo type="translated">
+        <title>test</title>
+      </titleInfo>
+    </mods>
+EOT;
+    $doc = new DOMDocument();
+    $doc->loadXML($xml);
+    $xpath = new DOMXPath($doc);
+    $result = $xpath->query('/mods/titleInfo/@type');
+    $node = $result->item(1);
+    $path = Utils::getXPathToNode($node);
+    $this->assertEqual('/mods[1]/titleInfo[2]/@type', $path, 'Using local names Utils::getPathToNode, returns the correct path.');
+    /* prefix Attribute */
+  }
+
+}

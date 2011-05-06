@@ -6,6 +6,7 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_api', 'FormElement');
 
 /**
  * 
@@ -104,7 +105,6 @@ class FormElements implements IteratorAggregate {
     $this->root = new FormElement();
     $this->root->name = $root_name;
     $this->root->tree = new FormControl('#tree', true);
-    $this->root->collection = $this;
     $this->_root = new FormElement();
     $this->_root[$root_name] = $this->root;
     return $this->_root;

@@ -6,6 +6,8 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_api', 'Utils');
+
 class DocumentProperties {
 
   /**
@@ -50,11 +52,11 @@ class DocumentProperties {
       }
     }
   }
-  
+
   public function getNamespaces() {
     
   }
-  
+
   public function getNamespace($prefix) {
     
   }
@@ -160,17 +162,6 @@ class DocumentPath {
 /**
  * 
  */
-class DocumentAction {
-
-  public function __construct() {
-    
-  }
-
-}
-
-/**
- * 
- */
 class Document {
 
   /**
@@ -182,7 +173,7 @@ class Document {
    *
    * @var string 
    */
-  protected $xml; // Existing document in string form from which this document is built
+  protected $xml;
   /**
    * 
    * @var DOMDocument 
@@ -194,16 +185,17 @@ class Document {
    */
   protected $xpath;
   /**
-   * @var DocumentActions
+   * Only valid when we serialize this object. It stores the paths to registered nodes so they can be properly reinitialized on unserialize.
+   * 
+   * @var array 
    */
-  protected $actions;
-  
+  protected $paths;
   /**
    *
    * @var array 
    */
   protected $registered;
-  protected $nodes_in_the_form;
+  
 
   /**
    *
@@ -211,12 +203,36 @@ class Document {
    * @param string $xml 
    */
   public function __construct(DocumentProperties $document_properties, &$xml = NULL) {
-    $this->nodes_in_the_form = array();
+    $this->registered = array();
     $this->properties = $document_properties;
     $this->xml = $xml;
     $this->document = $this->createDocument();
     $this->xpath = new DOMXPath($this->document);
     $this->registerNamespaces();
+  }
+
+  /**
+   *
+   * @return array 
+   */
+  public function __sleep() {
+    $this->paths = $this->registered;
+    array_walk($this->paths, array('Utils', 'convertNodeToPath'));
+    return array('properties', 'xml', 'paths');
+  }
+
+  /**
+   * 
+   */
+  public function __wakeup() {
+    $this->document = $this->createDocument();
+    $this->xpath = new DOMXPath($this->document);
+    $this->registerNamespaces();
+    $this->registered = array();
+    foreach ($this->paths as $key => $path) {
+      $result = $this->query($path);
+      $this->registered[$key] = $result->item(0);
+    }
   }
 
   /**
@@ -285,7 +301,7 @@ class Document {
   public function getNamespace($prefix) {
     $this->properties->namespaces[$prefix];
   }
-  
+
   /**
    *
    * @return string 
@@ -318,18 +334,18 @@ class Document {
 
   // TODO rename this to something that makes sense.
   public function register(DOMNode $node, FormElement $form_element) {
-    $this->nodes_in_the_form[$form_element->hash] = $node;
+    $this->registered[$form_element->hash] = $node;
   }
 
   public function getRegisteredNode(FormElement $element) {
-    if (isset($this->nodes_in_the_form[$element->hash])) {
-      return $this->nodes_in_the_form[$element->hash];
+    if (isset($this->registered[$element->hash])) {
+      return $this->registered[$element->hash];
     }
     else {
       return NULL;
     }
   }
-  
+
   public function isRegistered(FormElement $element) {
     return $this->getRegisteredNode($element) === NULL;
   }
