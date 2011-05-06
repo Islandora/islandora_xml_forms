@@ -19,7 +19,7 @@
             <title>d</title>
             <tree>true</tree>
             <children>
-                <element>
+                <element key="t">
                     <type>tabpanel</type>
                     <children>
                         <element key="e">

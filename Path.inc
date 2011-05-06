@@ -17,13 +17,7 @@ class Path {
   const DocumentContext = 'document';
   const ParentContext = 'parent'; // Only works if this element is nested within an element that has a full path.
   const SelfContext = 'self'; // Only works if a node is registered, with the given element.
-
-  /**
-   * The FormElement this path belongs to... @todo Needs better description.
-   * 
-   * @var FormElement
-   */
-  public $element;
+  
   /**
    * XPath to query with.
    * 
@@ -37,27 +31,26 @@ class Path {
    */
   public $context;
 
-  public function __construct(FormElement $element, $path, $context) {
-    $this->element = $element;
+  public function __construct($path, $context) {
     $this->path = $path;
     $this->context = $context;
   }
 
-  private function getContext(NodeRegistry $registry) {
+  private function getContext(NodeRegistry $registry, FormElement $element) {
     switch ($this->context) {
       case self::DocumentContext:
         return NULL;
       case self::ParentContext:
-        return $this->getParent($registry);
+        return $this->getParent($registry, $element);
       case self::SelfContext:
-        return $this->getSelf($registry);
+        return $this->getSelf($registry, $element);
       default:
         throw new Exception('Invalid Context.');
     }
   }
 
-  private function getParent(NodeRegistry $registry) {
-    $element = $this->element->parent;
+  private function getParent(NodeRegistry $registry, FormElement $element) {
+    $element = $element->parent;
     while ($element) {
       $node = $registry->getNode($element);
       if ($node) {
@@ -67,16 +60,16 @@ class Path {
     throw new Exception('Context Parent is not defined.');
   }
 
-  private function getSelf(NodeRegistry $registry) {
-    $node = $registry->getNode($this->element);
+  private function getSelf(NodeRegistry $registry, FormElement $element) {
+    $node = $registry->getNode($element);
     if ($node) {
       return $node;
     }
     throw new Exception('Context Self is not defined.');
   }
 
-  public function query(NodeRegistry $registry) {
-    $context = $this->getContext($registry);
+  public function query(NodeRegistry $registry, FormElement $element) {
+    $context = $this->getContext($registry, $element);
     return $registry->document->query($this->path, $context);
   }
 

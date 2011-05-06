@@ -60,10 +60,10 @@ class FormGenerator {
    * @return array 
    */
   private function findNodes(FormElement $element) {
-    $properties = $element->properties;
-    $reader = $properties ? $properties->read : null;
+    $actions = $element->actions;
+    $reader = $actions ? $actions->read : NULL;
     if ($reader) {
-      $results = $reader->read($this->registry);
+      $results = $reader->execute($this->registry, $element);
       return Utils::DOMNodelistToArray($results);
     }
     return array();
@@ -97,21 +97,4 @@ class FormGenerator {
     }
   }
 
-  /**
-   * Elements.
-   * 
-   * Duplicate elements where more than one is selected
-   * Store the value for the selected element. Don't overwrite the default_value...
-   * Generate the form using the selected values instead of the default values. 
-   * Subsequent calls don't need to populate the form.
-   * 
-   */
-  /**
-   * For the purpose of associating nodes with form elements, we can do a first come first serve basis.
-   * 
-   * That is for a particular query we return all matching elements. But before we associate a node with a form element,
-   * we check if it has already been associated with an existing form element. If so we try the next availible node from the list, repeating the
-   * process until we found a free node which we can associate or we run out of nodes to associate.
-   * 
-   */
 }

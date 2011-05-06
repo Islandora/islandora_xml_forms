@@ -43,6 +43,7 @@ abstract class FormElementArrayObject extends ArrayObject {
    * 
    */
   public function __clone() {
+    $this->name = NULL;
     $this->orphan();
   }
 

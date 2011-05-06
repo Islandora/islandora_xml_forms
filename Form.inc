@@ -113,10 +113,10 @@ class Form {
    * @param FormElements $elements
    * @return type 
    */
-  public function populate(FormElements $elements) {
+  public function populate() {
     module_load_include('inc', 'xml_form_api', 'FormPopulator');
     $populator = new FormPopulator($this->nodeRegistry);
-    return $populator->populate(clone $elements);
+    return $populator->populate(clone $this->definition->elements);
   }
 
   /**

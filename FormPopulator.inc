@@ -8,27 +8,24 @@
  */
 
 /**
- * I think this class is more or less complete.
+ * 
  */
 class FormPopulator {
 
   /**
-   *
-   * @var Document 
+   * Node Registry.
+   * 
+   * @var NodeRegistry
    */
-  protected $document;
-  /**
-   *
-   * @var FormElements
-   */
-  protected $elements;
+  protected $registry;
 
   /**
+   * Create FormPopulater.
    * 
-   * @param Document $document 
+   * @param NodeRegistry $registry 
    */
-  public function __construct(Document $document) {
-    $this->document = $document;
+  public function __construct(NodeRegistry $registry) {
+    $this->registry = $registry;
   }
 
   /**
@@ -38,51 +35,38 @@ class FormPopulator {
    *   Elements to set the default value for.
    */
   public function populate(FormElements $elements) {
-    $this->elements = $elements;
     foreach ($elements as $element) {
-      $count = $this->process($element);
-      while($count) {
-        next($elements);
-        $count--;
+      $this->setDefaultValue($element);
+    }
+    return $elements;
+  }
+
+  /**
+   * Set the FormElements default value if appropriate.
+   * 
+   * @param FormElement $element 
+   */
+  private function setDefaultValue(FormElement $element) {
+    $node = $this->registry->getNode($element);
+    if ($node) {
+      $value = $this->getNodeValue($node);
+      if (isset($value)) {
+        $element->default_value = (string) $value;
       }
     }
   }
 
   /**
-   *
-   * @param FormElement $element 
+   * Get the value of the node.
+   * 
+   * Only return values for DOMAttr and DOMElements that only contain character data.
+   * 
+   * @param DOMNode $node
+   * @return string
+   *   The DOMNode's value if appropriate, otherwise return NULL.
    */
-  public function process(FormElement $element) {
-    $values = $this->getDefaultValues($element);
-    $count = 0;
-    if ($values) {
-      list($node, $value) = array_shift($values);
-      $this->setDefaultValue($element, $value);
-      $this->document->register($node, $element);
-      foreach ($values as $result) {
-        list($node, $value) = $result;
-        $twin = $this->elements->duplicateElement($element->hash);
-        $this->setDefaultValue($twin, $value);
-        $this->document->register($node, $element);
-        $count++;
-      }
-    }
-    return $count;
-  }
-
-  private function getDefaultValues(FormElement $element) { //Need a better name
-    $properties = $element->properties;
-    $read = $properties ? $properties->read : null;
-    if ($read) {
-      return $read->read($this->document);
-    }
-    return NULL;
-  }
-
-  public function setDefaultValue(FormElement $element, $value) {
-    if ($value) {
-      $element->default_value = (string) $value;
-    }
+  private function getNodeValue(DOMNode $node) {
+    return $node->nodeValue; // May not be good...
   }
 
 }

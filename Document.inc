@@ -82,7 +82,7 @@ class Document {
    * 
    * @var DOMDocument 
    */
-  protected $document;
+  public $document;
   /**
    *
    * @var DOMXPath 

@@ -7,7 +7,7 @@
  *
  */
 module_load_include('inc', 'xml_form_api', 'FormElementArrayObject');
-module_load_include('inc', 'xml_form_api', 'XMLProperties');
+module_load_include('inc', 'xml_form_api', 'Actions');
 
 /**
  * 
@@ -15,15 +15,15 @@ module_load_include('inc', 'xml_form_api', 'XMLProperties');
 class FormElement extends FormElementArrayObject {
 
   /**
-   *
-   * @var XMLProperties 
-   */
-  public $properties;
-  /**
    * Id for this element.
    * @var type 
    */
   protected $_hash;
+  /**
+   *
+   * @var Actions 
+   */
+  public $actions;
 
   /**
    *
@@ -41,7 +41,7 @@ class FormElement extends FormElementArrayObject {
   public static function createFromSimpleXML(SimpleXMLElement $element) {
     $form_element = new FormElement();
     $form_element->name = isset($element['key']) ? (string) $element['key'] : NULL;
-    $form_element->properties = isset($element->xml_properties) ? new XMLProperties($form_element, $element->xml_properties) : NULL;
+    $form_element->actions = Actions::createFromSimpleXML($element->actions);
     $form_element->controls = FormControls::createFromSimpleXML($element);
     $children = $element->xpath('child::children/element');
     foreach ($children as $child) {
@@ -74,12 +74,16 @@ class FormElement extends FormElementArrayObject {
   }
 
   /**
-   * 
+   * Create a Copy of this Object. It will be unnamed and the 
+   * new object won't be attached to a Parent.
    */
   public function __clone() {
-    $this->_hash = spl_object_hash($this);
-    $this->name = NULL;
     parent::__clone();
+    $this->_hash = spl_object_hash($this);
+    foreach ($this as $child) { // Clone Children.
+      $key = $child->key;
+      $this[$key] = clone $child;
+    }
   }
 
   /**

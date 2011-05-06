@@ -6,7 +6,6 @@
  * @file
  *
  */
-
 module_load_include('inc', 'xml_form_api', 'Path');
 
 /**
@@ -249,16 +248,18 @@ class XMLDeleteProperties {
    * 
    * @param DOMElement $delete_properties 
    */
-  protected $parentPath;
-  public $element;
+  public $path;
 
   /**
    *
    * @param SimpleXMLElement $delete 
    */
   public function __construct(FormElement $element, SimpleXMLElement $delete) {
-    $this->element = $element;
     $this->path = new Path($element, (string) $delete->path, (string) $delete->path['context']);
+  }
+
+  public function __clone() {
+    $this->path = clone $this->path;
   }
 
   /**
@@ -335,6 +336,14 @@ class XMLProperties {
     if (isset($properties->delete)) {
       $this->delete = new XMLDeleteProperties($element, $properties->delete);
     }
+  }
+
+  public function __clone() {
+    $this->element = NULL;
+    $this->create = clone $this->create;
+    $this->update = clone $this->update;
+    $this->read = clone $this->read;
+    $this->delete = clone $this->delete;
   }
 
 }

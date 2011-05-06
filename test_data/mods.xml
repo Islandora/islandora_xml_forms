@@ -3,7 +3,6 @@
     <mods:titleInfo>
         <mods:title>Testing 123</mods:title>
         <mods:title>Testing 321</mods:title>
-        <mods:title>Testing 321</mods:title>
     </mods:titleInfo>
     <mods:titleInfo>
         <mods:title>Testing 123</mods:title>
@@ -11,7 +10,11 @@
     </mods:titleInfo>
     <mods:titleInfo>
         <mods:title>Testing 123</mods:title>
-        <mods:title>Testing 321</mods:title>
-        <mods:title>Testing 321</mods:title>
+    </mods:titleInfo>
+    <mods:titleInfo>
+        <mods:title>Testing 123</mods:title>
+        <mods:title>Testing 123</mods:title>
+        <mods:title>Testing 123</mods:title>
+        <mods:title>Testing 123</mods:title>
     </mods:titleInfo>
 </mods:mods>

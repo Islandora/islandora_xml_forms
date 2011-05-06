@@ -37,6 +37,7 @@ class NodeRegistry implements IteratorAggregate {
    */
   public function __construct(Document $document) {
     $this->document = $document;
+    $this->registered = array();
   }
 
   /**

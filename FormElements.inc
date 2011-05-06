@@ -135,11 +135,18 @@ class FormElements implements IteratorAggregate {
     if ($element) {
       $new_element = clone $element;
       $element->parent[] = $new_element;
-      $this->registerElement($new_element);
+      $this->registerElements($new_element);
       return $new_element;
     }
     else {
       throw new Exception('Failed to duplicate element.');
+    }
+  }
+
+  private function duplicate(FormElement $element) {
+
+    foreach ($element as $element) {
+      
     }
   }
 
@@ -158,13 +165,14 @@ class FormElements implements IteratorAggregate {
   }
 
   public function findElement($hash) {
-    foreach($this as $element) {
-      if($element->hash == $hash) {
+    foreach ($this as $element) {
+      if ($element->hash == $hash) {
         return $element;
       }
     }
     return NULL;
   }
+
   /**
    *
    * @param FormElement $element 
@@ -174,11 +182,20 @@ class FormElements implements IteratorAggregate {
   }
 
   /**
-   * 
+   *
+   * @param FormElements $element 
    */
-  public function registerElements() {
-    foreach ($this as $element) {
+  public function registerElements(FormElement $element = NULL) {
+    if ($element) {
       $this->registerElement($element);
+      foreach ($element as $child) {
+        $this->registerElement($child);
+      }
+    }
+    else {
+      foreach ($this as $element) {
+        $this->registerElement($element);
+      }
     }
   }
 

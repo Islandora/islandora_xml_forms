@@ -57,14 +57,17 @@ function xml_form(&$form_state) {
     $definition = new FormDefinition($xml);
     
     $properties = $definition->getDocumentProperties();
+    
     $document = new DOMDocument();
     $document->load(drupal_get_path('module', 'xml_form_api') . '/test_data/mods.xml');
     $xml = $document->saveXML();
+    
     $document = new Document($properties, $xml);
     $registry = new NodeRegistry($document);
-    
     $form->initialize($definition, $registry); // Hidden Params for extra, but at very least we need the definition.
-    return $form->generate()->toDrupalForm();
+    $elements = $form->generate();
+    //$elements = $form->populate();
+    return $elements->toDrupalForm();
   }
 }
 
