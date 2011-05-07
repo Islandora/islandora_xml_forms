@@ -16,15 +16,16 @@
     <elements>
         <element key="d">
             <type>tabs</type>
-            <title>d</title>
+            <title>Tab Title</title>
             <tree>true</tree>
             <children>
                 <element key="t">
                     <type>tabpanel</type>
+                    <title>Foo</title>
                     <children>
                         <element key="e">
                             <type>textfield</type>
-                            <default_value type="string">one</default_value>
+                            <default_value type="string">Default</default_value>
                             <actions>
                                 <read>
                                     <path context="parent">mods:title</path>
@@ -32,12 +33,42 @@
                             </actions>
                         </element>
                     </children>
+                    <user_data>
+                        <key>
+                            <value type="string">foobar</value>
+                        </key>
+                    </user_data>
                     <actions>
                         <read>
                             <path context="document">/mods:mods/mods:titleInfo</path>
                         </read>
                     </actions>
                 </element>
+            </children>
+        </element>
+        <element key="w">
+            <title>w</title>
+            <tree>false</tree>
+            <type>textfield</type>
+            <default_value type="string">w</default_value>
+        </element>
+        <element key="p">
+            <title>p</title>
+            <type>fieldset</type>
+            <tree>true</tree>
+            <children>
+                <element key="z">
+                    <title>z</title>
+                    <tree>false</tree>
+                    <type>textfield</type>
+                    <default_value type="string">w</default_value>
+                </element>  
+                <element key="k">
+                    <title>k</title>
+                    <tree>true</tree>
+                    <type>textfield</type>
+                    <default_value type="string">w</default_value>
+                </element>  
             </children>
         </element>
         <element>

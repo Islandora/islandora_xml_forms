@@ -37,8 +37,11 @@ class FormValues {
    *   The elements to associate with submitted values.
    */
   public function __construct(array &$form_state, FormElements $elements) {
-    $this->tracker = new FormValueTracker($form_state['values']);
-    $this->setValues($elements->root, $this->tracker);
+    $this->values = array();
+    if (isset($form_state['post'])) {
+      $this->tracker = new FormValueTracker($form_state['post']);
+      $this->setValues($elements->root, $this->tracker);
+    }
   }
 
   /**
@@ -63,7 +66,7 @@ class FormValues {
    */
   private function setValue(FormElement $element, FormValueTracker $tracker) {
     $value = $tracker->getValue($element);
-    $this->values[$element->key] = $value;
+    $this->values[$element->hash] = $value;
   }
 
   /**
@@ -74,8 +77,8 @@ class FormValues {
    *   The submitted value for the given FormElement if found otherwise NULL.
    */
   public function getValue(FormElement $element) {
-    if (isset($this->values[$element->key])) {
-      return $this->values[$element->key];
+    if (isset($this->values[$element->hash])) {
+      return $this->values[$element->hash];
     }
     return NULL;
   }

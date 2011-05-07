@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
     <mods:titleInfo>
-        <mods:title>Testing 123</mods:title>
-        <mods:title>Testing 321</mods:title>
+        <mods:title>One</mods:title>
+        <mods:title>Two</mods:title>
     </mods:titleInfo>
     <mods:titleInfo>
-        <mods:title>Testing 123</mods:title>
-        <mods:title>Testing 321</mods:title>
+        <mods:title>Three</mods:title>
+        <mods:title>Four</mods:title>
     </mods:titleInfo>
     <mods:titleInfo>
-        <mods:title>Testing 123</mods:title>
+        <mods:title>Five</mods:title>
     </mods:titleInfo>
     <mods:titleInfo>
-        <mods:title>Testing 123</mods:title>
-        <mods:title>Testing 123</mods:title>
-        <mods:title>Testing 123</mods:title>
-        <mods:title>Testing 123</mods:title>
+        <mods:title>Six</mods:title>
+        <mods:title>Seven</mods:title>
+        <mods:title>Eight</mods:title>
+        <mods:title>Nine</mods:title>
     </mods:titleInfo>
 </mods:mods>

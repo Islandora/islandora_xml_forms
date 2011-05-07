@@ -50,7 +50,7 @@ class Utils {
     }
   }
 
-  public static function &getDrupalFormElement($hash, array &$form) {
+  public static function getDrupalFormElement($hash, array &$form) {
     $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($form), RecursiveIteratorIterator::SELF_FIRST);
     foreach ($iterator as $element) {
       if ($element['#hash'] == $hash) {
@@ -79,6 +79,12 @@ class Utils {
       $output[] = $list->item($i);
     }
     return $output;
+  }
+
+  public static function hasChildDOMElements(DOMNode $node) {
+    $xpath = new DOMXPath($node->ownerDocument);
+    $result = $xpath->query('child::*', $node);
+    return $result->length > 0;
   }
 
 }

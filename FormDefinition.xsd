@@ -93,7 +93,7 @@
             <xs:element minOccurs="0" name="value" type="string"/>
             <xs:element minOccurs="0" name="weight" type="float"/>
             <xs:element minOccurs="0" name="actions" type="actionsType"/>
-            <xs:element minOccurs="0" name="user_data"> </xs:element>
+            <xs:element minOccurs="0" name="user_data" type="array"> </xs:element>
         </xs:all>
         <xs:attribute name="key" type="xs:string"/>
     </xs:complexType>
@@ -106,15 +106,19 @@
         <xs:choice>
             <xs:element name="value">
                 <xs:complexType>
-                    <xs:attribute name="type" use="required">
-                        <xs:simpleType>
-                            <xs:restriction base="xs:string">
-                                <xs:enumeration value="string"/>
-                                <xs:enumeration value="integer"/>
-                                <xs:enumeration value="boolean"/>
-                            </xs:restriction>
-                        </xs:simpleType>
-                    </xs:attribute>
+                    <xs:simpleContent>
+                        <xs:extension base="string">
+                            <xs:attribute name="type" use="required">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="string"/>
+                                        <xs:enumeration value="integer"/>
+                                        <xs:enumeration value="boolean"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                        </xs:extension>
+                    </xs:simpleContent>
                 </xs:complexType>
             </xs:element>
             <xs:element name="key" type="arrayKey" maxOccurs="unbounded"/>

@@ -106,17 +106,20 @@ class Form {
     $generator = new FormGenerator($this->nodeRegistry);
     return $generator->generate($this->definition->elements);
   }
-  
+
   /**
    * Note this clones the existing set of elements, these elements will not be saved in the storage.
    * 
    * @param FormElements $elements
    * @return type 
    */
-  public function populate() {
+  public function &populate(array &$form, array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'FormPopulator');
-    $populator = new FormPopulator($this->nodeRegistry);
-    return $populator->populate(clone $this->definition->elements);
+    $elements = $this->definition->elements;
+    $form_values = new FormValues($form_state, $elements);
+    $populator = new FormPopulator($this->nodeRegistry, $elements, $form_values);
+    $populator->populate($form);
+    return $form;
   }
 
   /**
@@ -144,6 +147,10 @@ class Form {
     $form_values = new FormValues($form_state, $elements);
     $processor = new FormProcessor($form_values, $this->nodeRegistry);
     return $processor->process($elements);
+  }
+  
+  public function toDrupalForm() {
+    return $this->definition->toDrupalForm();
   }
 
   /**

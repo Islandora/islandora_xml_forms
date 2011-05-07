@@ -87,7 +87,6 @@ class FormControl {
       foreach ($form_controls as $form_control) {
         self::$convertSimpleXMLFunctions[(string) $form_control['name']] = $type_function_map[(string) $form_control['type']];
       }
-      self::$convertSimpleXMLFunctions['user_data'] = 'convertSimpleXMLToUserData';
     }
     return self::$convertSimpleXMLFunctions[$name];
   }

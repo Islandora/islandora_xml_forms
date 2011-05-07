@@ -65,9 +65,10 @@ function xml_form(&$form_state) {
     $document = new Document($properties, $xml);
     $registry = new NodeRegistry($document);
     $form->initialize($definition, $registry); // Hidden Params for extra, but at very least we need the definition.
-    $elements = $form->generate();
-    //$elements = $form->populate();
-    return $elements->toDrupalForm();
+    $drupal_form = $form->generate();
+    $form->populate($drupal_form, $form_state);
+    //var_dump($drupal_form['xml_form_root']['d']);
+    return $drupal_form;
   }
 }
 

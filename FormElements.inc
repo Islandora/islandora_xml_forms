@@ -26,11 +26,6 @@ class FormElements implements IteratorAggregate {
    */
   public $root;
   /**
-   *
-   * @var RecursiveIteratorIterator
-   */
-  protected $iterator;
-  /**
    * A flat array that stores references to FormElements via the #hash value. 
    * This array will include references to elements that are not part of the collection, 
    * but were at one time. This gets populated when this object is created, and every time 
@@ -76,6 +71,16 @@ class FormElements implements IteratorAggregate {
     $this->createRoot($root_name);
     $this->appendElementsToRoot($elements);
     $this->createHashTable();
+  }
+
+  public function __clone() {
+    $form_name = $this->root->key;
+    $root = clone $this->root; // Will recursively clone all children.
+    $this->createRoot($form_name);
+    $this->root = $root;
+    $this->_root[$form_name] = $this->root;
+    $this->elements = NULL;
+    $this->registerElements();
   }
 
   /**
@@ -140,13 +145,6 @@ class FormElements implements IteratorAggregate {
     }
     else {
       throw new Exception('Failed to duplicate element.');
-    }
-  }
-
-  private function duplicate(FormElement $element) {
-
-    foreach ($element as $element) {
-      
     }
   }
 
