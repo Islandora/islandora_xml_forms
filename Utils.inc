@@ -10,6 +10,25 @@
 
 /**
  *
+ * @param type $form_build_id 
+ */
+function get_form_info($form_build_id) {
+  if (!isset($_REQUEST['form_build_id'])) {
+    header("HTTP/1.0 200 OK", false, 200);
+    exit();
+  }
+  $form_build_id = $_REQUEST['form_build_id'];
+  $form_state = array('storage' => NULL, 'submitted' => FALSE, 'post' => $_POST);
+  if (!$form = form_get_cache($form_build_id, $form_state)) {
+    header("HTTP/1.0 200 OK", false, 200);
+    exit();
+  }
+  $form_id = $form['#parameters'][0];
+  return array($form_id, $form_build_id, &$form, &$form_state);
+}
+
+/**
+ *
  * @param type $form_build_id
  * @return array 
  */

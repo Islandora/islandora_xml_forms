@@ -6,6 +6,9 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_elements', 'TabPanel');
+
+
 class Tabs {
 
   /**
@@ -64,7 +67,7 @@ function xml_form_elements_preprocess_tabs(&$vars) {
   // Remaining tabpanels.
   $count = 2;
   foreach ($children as $child) {
-    $vars['tabpanels'][$count] = $child['#hash'];
+    $vars['tabpanels'][$count] = array($child['#hash'], $child[TabPanel::DeleteButton]['#id']);
     $count++;
   }
   // Content Info

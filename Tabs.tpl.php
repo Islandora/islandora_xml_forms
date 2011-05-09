@@ -18,10 +18,12 @@ $classes .= ( $collapsed) ? 'xml-form-elements-tabs-collapsed' : '';
     </li>
     <!-- All other Tab Panels -->
     <?php if (isset($tabpanels)): ?>
-      <?php foreach ($tabpanels as $title => $link): ?>
+      <?php foreach ($tabpanels as $title => $vars):
+        list($link, $remove_button) = $vars;
+        ?>
         <li>
           <a href='<?php print "#$link" ?>'><?php print $title ?></a>
-          <span class='ui-icon ui-icon-close' style='float: left; margin: 0.4em 0.2em 0 0; cursor: pointer;'></span>
+          <span class='ui-icon ui-icon-close' style='float: left; margin: 0.4em 0.2em 0 0; cursor: pointer;'><?php print $remove_button ?></span>
         </li>
       <?php endforeach; ?>
     <?php endif; ?>
