@@ -48,7 +48,7 @@ function xml_form_api_test() {
 function xml_form(&$form_state) {
   $form = new Form($form_state);
   if ($form->isInitialized()) { // Was initialized from storage.
-    return $form->generate();
+    return $form->toDrupalForm();
   }
   else {
     $document = new DOMDocument();

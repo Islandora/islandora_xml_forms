@@ -133,7 +133,7 @@ class FormProcessor {
    *
    * @var Document 
    */
-  protected $document;
+  protected $registry;
   /**
    *
    * @var type 
@@ -145,9 +145,10 @@ class FormProcessor {
    * @param type $form_state
    * @param type $definition 
    */
-  public function __construct(FormValues $values, Document $document) {
+  public function __construct(FormValues $values, NodeRegistry $registry) {
     $this->values = $values;
-    $this->document = $document;
+    $this->registry = $registry;
+    $this->document = $registry->document;
   }
 
   /**
@@ -155,10 +156,10 @@ class FormProcessor {
    * @param FormElement $element 
    */
   public function process(FormElements $elements) {
-    $this->createActions($elements);
+    /*$this->createActions($elements);
     $this->sortActions();
     $this->performActions();
-    var_dump($this->document->asXML());
+    var_dump($this->document->asXML());*/
   }
 
   /**
