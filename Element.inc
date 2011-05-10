@@ -24,7 +24,7 @@ class Element {
    */
   public static function find($hash, array &$form_state) {
     $form = new Form($form_state);
-    return $form->findElement($hash);
+    return $form->registry->findElement($hash);
   }
 
   /**
