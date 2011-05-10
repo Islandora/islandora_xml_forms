@@ -22,7 +22,10 @@ class FormPopulator {
    * @var NodeRegistry
    */
   protected $registry;
-  protected $elements;
+  /**
+   *
+   * @var FormValues
+   */
   protected $values;
 
   /**
@@ -30,9 +33,8 @@ class FormPopulator {
    * 
    * @param NodeRegistry $registry 
    */
-  public function __construct(NodeRegistry $registry, FormElements $elements, FormValues $values) {
+  public function __construct(NodeRegistry $registry, FormValues $values) {
     $this->registry = $registry;
-    $this->elements = $elements;
     $this->values = $values;
   }
 
@@ -41,49 +43,42 @@ class FormPopulator {
    * 
    * @param array $form
    */
-  public function populate(array &$form) {
-    $children = element_children($form);
-    foreach ($children as $child) {
-      $element = &$form[$child];
-      $value = $this->getDefaultValue($element['#hash']);
+  public function populate(FormElements $elements) {
+    foreach ($elements as $element) {
+      $value = $this->getDefaultValue($element);
       $this->setDefaultValue($element, $value);
-      $this->populate($element);
     }
   }
 
   /**
-   * Get the default value from the Document.
+   * Get the default value for the given element.
    * 
-   * @param hash $hash 
+   * @param FormElement $element
    */
-  private function getDefaultValue($hash) {
-    $value = $this->getSubmittedValue($hash);
+  private function getDefaultValue(FormElement $element) {
+    $value = $this->getSubmittedValue($element);
     if (empty($value)) {
-      $value = $this->getRegisteredValue($hash);
+      $value = $this->getRegisteredValue($element);
     }
     return $value;
   }
 
   /**
    *
-   * @param hash $hash
+   * @param FormElement $element
    * @return mixed 
    */
-  private function getSubmittedValue($hash) {
-    $element = $this->elements->findElement($hash);
-    if ($element) {
-      return $this->values->getValue($element);
-    }
-    return NULL;
+  private function getSubmittedValue(FormElement $element) {
+    return $this->values->getValue($element);
   }
 
   /**
    *
-   * @param hash $hash
+   * @param FormElement $element
    * @return mixed 
    */
-  private function getRegisteredValue($hash) {
-    $node = $this->registry->getNode($hash);
+  private function getRegisteredValue(FormElement $element) {
+    $node = $this->registry->getNode($element->hash);
     if ($node) {
       return $this->getNodeValue($node);
     }
@@ -95,13 +90,10 @@ class FormPopulator {
    * 
    * @param FormElement $element 
    */
-  private function setDefaultValue(array &$form, $value) {
+  private function setDefaultValue(FormElement $element, $value) {
     if (isset($value)) {
-      $form['#default_value'] = $value;
+      $element->default_value = $value;
     }
-    /*else if (isset($form['#default_value'])) {
-      $form['#value'] = $form['#default_value'];
-    }*/
   }
 
   /**

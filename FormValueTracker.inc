@@ -70,6 +70,7 @@ class FormValueTracker {
       $this->track = false;
       $this->reset();
     }
+    var_dump($element->key);
     if ($this->track && isset($this->current[$element->key])) {
       $this->current = &$this->current[$element->key];
     }

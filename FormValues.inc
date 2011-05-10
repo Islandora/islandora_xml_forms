@@ -38,27 +38,10 @@ class FormValues {
    */
   public function __construct(array &$form_state, FormElements $elements) {
     $this->values = array();
-    $values = $this->getValuesFromFormState($form_state);
-    if (isset($values)) {
-      $this->tracker = new FormValueTracker($values);
+    if (isset($form_state['values'])) {
+      $this->tracker = new FormValueTracker($form_state['values']);
       $this->setValues($elements->root, $this->tracker);
     }
-  }
-
-  /**
-   * Gets the post data that stores the submited values.
-   * 
-   * @param array $form_state 
-   * @return array
-   */
-  private function getValuesFromFormState(array &$form_state) {
-    if(isset($form_state['values'])) {
-      return $form_state['values'];
-    }
-    else if(isset($form_state['post']) && count($form_state['post']) > 0) {
-      return $form_state['post'];
-    }
-    return NULL;
   }
 
   /**

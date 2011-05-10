@@ -13,7 +13,17 @@ module_load_include('inc', 'xml_form_api', 'FormElement');
  */
 class FormElements implements IteratorAggregate {
 
+  /**
+   *
+   * @var string
+   */
   private $name;
+  /**
+   * Dummy root.
+   * 
+   * @var FormElement
+   */
+  protected $_root;
   /**
    * The root of this set of elements.
    * 
@@ -73,7 +83,8 @@ class FormElements implements IteratorAggregate {
    * 
    */
   public function __clone() {
-    $this->root = clone $this->root; // Will recursively clone all children.
+    $this->_root = clone $this->_root; // Will recursively clone all children.
+    $this->root = $this->_root[$this->name];
     $this->elements = NULL;
     $this->registerElements();
   }
@@ -105,6 +116,8 @@ class FormElements implements IteratorAggregate {
     $this->root = new FormElement();
     $this->root->name = $this->name;
     $this->root->tree = new FormControl('#tree', true);
+    $this->_root = new FormElement();
+    $this->_root[$this->name] = $this->root;
   }
 
   /**
@@ -112,7 +125,8 @@ class FormElements implements IteratorAggregate {
    * @return RecursiveIteratorIterator
    */
   public function getIterator() {
-    return new RecursiveIteratorIterator(new RecursiveArrayIterator(array($this->name => $this->root)), RecursiveIteratorIterator::SELF_FIRST);
+
+    return new RecursiveIteratorIterator(new RecursiveArrayIterator($this->_root), RecursiveIteratorIterator::SELF_FIRST);
   }
 
   /**
@@ -131,10 +145,9 @@ class FormElements implements IteratorAggregate {
     }
     return NULL;
   }
-  
+
   public function duplicate($element) {
     $hash = FormElement::isFormElement($element) ? $element->hash : $element;
-    
   }
 
   /**

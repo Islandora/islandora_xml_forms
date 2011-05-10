@@ -22,11 +22,6 @@ class FormElement extends FormElementArrayObject {
   protected $_hash;
   /**
    *
-   * @var string
-   */
-  public $name;
-  /**
-   *
    * @var Actions 
    */
   public $actions;

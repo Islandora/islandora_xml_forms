@@ -54,6 +54,7 @@ class Form {
    * @var FormElements
    */
   protected $elements;
+  protected $form_state;
 
   /**
    * Construct the form class.
@@ -62,6 +63,7 @@ class Form {
    */
   public function __construct(array &$form_state) {
     $this->initialized = false;
+    $this->form_state = &$form_state;
     $this->storage = new FormStorage($form_state);
     if ($this->storage->isInitialized()) {
       $this->initializeFromStorage();
@@ -140,13 +142,12 @@ class Form {
    * @param FormElements $elements
    * @return type 
    */
-  public function &populate(array &$form, array &$form_state) {
+  public function populate(array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'FormPopulator');
     $elements = $this->elements;
     $form_values = new FormValues($form_state, $elements);
-    $populator = new FormPopulator($this->registry, $elements, $form_values);
-    $populator->populate($form);
-    return $form;
+    $populator = new FormPopulator($this->registry->nodes, $form_values);
+    $populator->populate($elements);
   }
 
   /**
@@ -181,6 +182,7 @@ class Form {
    * @return type 
    */
   public function toDrupalForm() {
+    $this->populate($this->form_state);
     return $this->elements->toDrupalForm();
   }
 
