@@ -8,6 +8,7 @@
  */
 module_load_include('inc', 'xml_form_api', 'FormElementArrayObject');
 module_load_include('inc', 'xml_form_api', 'Actions');
+module_load_include('inc', 'xml_form_api', 'Registry');
 
 /**
  * 
@@ -19,6 +20,11 @@ class FormElement extends FormElementArrayObject {
    * @var type 
    */
   protected $_hash;
+  /**
+   *
+   * @var string
+   */
+  public $name;
   /**
    *
    * @var Actions 
@@ -71,6 +77,7 @@ class FormElement extends FormElementArrayObject {
   public function __construct() {
     parent::__construct();
     $this->_hash = spl_object_hash($this);
+    Registry::registerElement($this);
   }
 
   /**
@@ -79,7 +86,9 @@ class FormElement extends FormElementArrayObject {
    */
   public function __clone() {
     parent::__clone();
+    $original_hash = $this->_hash;
     $this->_hash = spl_object_hash($this);
+    Registry::registerElement($this, $original_hash);
     foreach ($this as $child) { // Clone Children.
       $key = $child->key;
       $this[$key] = clone $child;

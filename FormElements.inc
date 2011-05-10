@@ -12,7 +12,7 @@ module_load_include('inc', 'xml_form_api', 'FormElement');
  * 
  */
 class FormElements implements IteratorAggregate {
-  
+
   private $name;
   /**
    * The root of this set of elements.
@@ -130,6 +130,21 @@ class FormElements implements IteratorAggregate {
       }
     }
     return NULL;
+  }
+  
+  public function duplicate($element) {
+    $hash = FormElement::isFormElement($element) ? $element->hash : $element;
+    
+  }
+
+  /**
+   * @param hash $hash
+   */
+  public function remove($hash) {
+    $element = $this->findElement($hash);
+    if ($element) {
+      unset($element->parent[$element->key]);
+    }
   }
 
   /**

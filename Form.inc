@@ -46,20 +46,14 @@ class Form {
   protected $document;
   /**
    *
-   * @var NodeRegistry
+   * @var Registry
    */
-  protected $registry;
+  public $registry;
   /**
    * 
    * @var FormElements
    */
   protected $elements;
-  /**
-   * A map of current elements to thier original definition. For the purpose of duplicating the originals.
-   * 
-   * @var array
-   */
-  protected $original;
 
   /**
    * Construct the form class.
@@ -80,10 +74,19 @@ class Form {
   private function initializeFromStorage() {
     $this->definition = $this->storage->definition;
     $this->document = $this->storage->document;
-    $this->original = $this->storage->original;
     $this->registry = $this->storage->registry;
     $this->elements = $this->storage->elements;
     $this->initialized = true;
+  }
+
+  /**
+   * Stores information required to rebuild this object.
+   */
+  private function initializeStorage() {
+    $this->storage->definition = $this->definition;
+    $this->storage->document = $this->document;
+    $this->storage->registry = $this->registry;
+    $this->storage->elements = $this->elements;
   }
 
   /**
@@ -100,35 +103,16 @@ class Form {
     if (!$this->initialized) {
       $this->definition = $form_definition;
       $this->document = $document;
-      $this->registry = new NodeRegistry($document);
-      $this->initializeElements($form_definition->elements);
-      $this->store();
+      $this->registry = Registry::getInstance();
+      $this->registry->nodes = new NodeRegistry($document);
+      $this->elements = clone $form_definition->elements;
+      $this->generate(); // Register nodes and generate new elements.
+      $this->initializeStorage();
       $this->initialized = true;
     }
     else {
       throw new Exception('Attempted to intialized the Form after it has already been intialized.');
     }
-  }
-
-  private function initializeElements(FormElements $elements) {
-    $this->elements = clone $elements;
-    $iterator = new MultipleIterator();
-    $iterator->attachIterator($this->elements->getIterator());
-    $iterator->attachIterator($elements->getIterator());
-    foreach ($iterator as $result) {
-      list($element, $definition) = $result;
-      $this->original[$element->hash] = $definition;
-      var_dump($element->hash);
-    }
-    $this->generate();
-  }
-
-  private function store() {
-    $this->storage->definition = $this->definition;
-    $this->storage->document = $this->document;
-    $this->storage->original = $this->original;
-    $this->storage->registry = $this->registry;
-    $this->storage->elements = $this->elements;
   }
 
   /**
@@ -146,7 +130,7 @@ class Form {
    */
   private function generate() {
     module_load_include('inc', 'xml_form_api', 'FormGenerator');
-    $generator = new FormGenerator($this, $this->registry);
+    $generator = new FormGenerator($this, $this->registry->nodes);
     $generator->generate($this->elements);
   }
 
@@ -201,22 +185,6 @@ class Form {
   }
 
   /**
-   *
-   * @param type $hash
-   * @return type 
-   */
-  public function findElement($hash) {
-    return $this->elements->getRegisteredElement($hash);
-  }
-
-  public function findOriginalElementDefinition($hash) {
-    if (isset($this->original[$hash])) {
-      return $this->original[$hash];
-    }
-    return NULL;
-  }
-
-  /**
    * Duplicate an existing FormElement from it's original definition.
    * 
    * @param FormElement $element
@@ -226,33 +194,16 @@ class Form {
    */
   public function duplicate($element) {
     $hash = FormElement::isFormElement($element) ? $element->hash : $element;
-    if (isset($this->original[$hash])) {
-      $original = $this->original[$hash];
-      // Copy
-      $new = clone $original;
-      $this->original[$new->hash] = $original;
-      // Store reference to original
-      $iterator1 = new RecursiveIteratorIterator(new RecursiveArrayIterator($new), RecursiveIteratorIterator::SELF_FIRST);
-      $iterator2 = new RecursiveIteratorIterator(new RecursiveArrayIterator($original), RecursiveIteratorIterator::SELF_FIRST);
-      $iterator = new MultipleIterator();
-      $iterator->attachIterator($iterator1);
-      $iterator->attachIterator($iterator2);
-      foreach($iterator as $item) {
-        list($duplicate, $orig) = $item;
-        $this->original[$duplicate->hash] = $orig;
+    $element = $this->registry->findElement($hash);
+    $original = $this->registry->findOriginal($hash);
+    if ($element) {
+      $duplicate = clone $original;
+      if ($element->parent) {
+        $element->parent[] = $duplicate;
       }
-      // Find element
-      $element = $this->elements->findElement($hash);
-      // Add to parent
-      $element->parent[] = $new;
-      $this->elements->registerElement($new); // blah...
-      return $new;
+      return $duplicate;
     }
-    echo ('//---</br>');
-    var_dump($element->hash);
-    echo ('//---</br>');
-    var_dump(array_keys($this->original));
-    return null;
+    return NULL;
   }
 
   /**
@@ -263,7 +214,7 @@ class Form {
    */
   public function remove($element) {
     $hash = FormElement::isFormElement($element) ? $element->hash : $element;
-    $this->elements->removeElement($hash);
+    $this->elements->remove($hash);
   }
 
 }

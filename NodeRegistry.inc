@@ -27,6 +27,7 @@ class NodeRegistry implements IteratorAggregate {
    * @var array
    */
   protected $registered;
+  protected $elements; // @todo implement.
   /**
    * The document that the registered nodes come from.
    * 
