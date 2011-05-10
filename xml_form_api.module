@@ -38,6 +38,20 @@ function xml_form_api_get_form_defintion() {
   
 }
 
+function createTestDefinition() {
+  $document = new DOMDocument();
+  $document->load(drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xml');
+  $xml = $document->saveXML();
+  return FormDefinition::createFromXMLDefiniton($xml);
+}
+
+function createTestDocument($document_properties) {
+  $document = new DOMDocument();
+  $document->load(drupal_get_path('module', 'xml_form_api') . '/test_data/mods.xml');
+  $xml = $document->saveXML();
+  return new Document($document_properties, $xml);
+}
+
 /**
  * 
  */
@@ -47,30 +61,17 @@ function xml_form_api_test() {
 
 function xml_form(&$form_state) {
   $form = new Form($form_state);
-  if ($form->isInitialized()) { // Was initialized from storage.
-    $drupal_form = $form->toDrupalForm();
-    $form->populate($drupal_form, $form_state);
-    return $drupal_form;
+  if (!$form->isInitialized()) { // Was initialized from storage.
+    // Create Definition.
+    $definition = createTestDefinition();
+    // Create Document.
+    $properties = $definition->properties;
+    $document_properties = $properties->document;
+    $document = createTestDocument($document_properties);
+    // Intialize form.
+    $form->initialize($definition, $document); // Hidden Params for extra, but at very least we need the definition.
   }
-  else {
-    $document = new DOMDocument();
-    $document->load(drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xml');
-    $xml = $document->saveXML();
-    $definition = new FormDefinition($xml);
-
-    $properties = $definition->getDocumentProperties();
-
-    $document = new DOMDocument();
-    $document->load(drupal_get_path('module', 'xml_form_api') . '/test_data/mods.xml');
-    $xml = $document->saveXML();
-
-    $document = new Document($properties, $xml);
-    $registry = new NodeRegistry($document);
-    $form->initialize($definition, $registry); // Hidden Params for extra, but at very least we need the definition.
-    $drupal_form = $form->toDrupalForm();
-    $form->populate($drupal_form, $form_state);
-    return $drupal_form;
-  }
+  return $form->toDrupalForm();
 }
 
 function xml_form_validate($form, &$form_state) {
@@ -79,6 +80,7 @@ function xml_form_validate($form, &$form_state) {
 }
 
 function xml_form_submit($form, &$form_state) {
+//  Requires some check to make sure its not a ahah callback...
 //  $form = new Form($form_state);
 //  $document = $form->submit($form_state);
 //  Utils::prettyPrintDocument($document);

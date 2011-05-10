@@ -9,9 +9,8 @@
  * Defines a FormDefinition class that allows XML form defintions to be processed by the FormGenerator, and other
  * classes.
  */
-module_load_include('inc', 'xml_form_api', 'FormElement');
+module_load_include('inc', 'xml_form_api', 'FormProperties');
 module_load_include('inc', 'xml_form_api', 'FormElements');
-module_load_include('inc', 'xml_form_api', 'Document');
 
 /**
  * Describes a form
@@ -19,99 +18,77 @@ module_load_include('inc', 'xml_form_api', 'Document');
 class FormDefinition {
 
   /**
-   * The XML form definiton.
-   * @var string 
+   * @var FormProperties
    */
-  protected $xml;
-  /**
-   * The Schema used for validating/generating the XML document.
-   * 
-   * @var Schema
-   */
-  protected $schema;
+  public $properties;
   /**
    * A Depth first iterator containing all the elements in the form definition, plus a default root element.
    * 
    * @var FormElements
    */
   public $elements;
-  /**
-   *
-   * @var XMLDocumentProperties 
-   */
-  protected $documentProperties;
 
   /**
-   * Creates a form defintion object from an XML form definition.
-   *
-   * @param string $form_definition
-   *   XML form definition, it should be valid according to FormDefiniton.xsd, if it is not an exception will be thrown.
+   * Create a FormDefinition from an XML String.
+   * 
+   * @param string $xml_definition
+   * @return FormDefinition
    */
-  public function __construct($form_definition) {
-    if (!is_string($form_definition) || trim($form_definition) == '') {
-      throw new Exception('The argument $form_definition must be a non-empty string.');
+  public static function createFromXMLDefiniton($xml_definition) {
+
+    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
+  }
+
+  /**
+   *
+   * @param type $root_name
+   * @param SimpleXMLElement $elements 
+   */
+  public static function createFromSimpleXML(SimpleXMLElement $form) {
+    if (self::isValid($form)) {
+      $properties = FormProperties::createFromSimpleXML($form->properties);
+      $elements = FormElements::createFromSimpleXML(Form::ROOT, $form->elements);
+      return new self($properties, $elements);
     }
-    $this->xml = $form_definition;
-    $this->initialize();
+    else {
+      throw new Exception('Failed to create FormDefinition from SimpleXML, the definition was invalid.');
+    }
   }
 
   /**
    * Checks to see if a xml form definition is valid.
    * 
-   * @param string or DOMDocument
-   *   The xml form definition to validated.
+   * @param mixed $definition
+   *   The xml form definition to validated. Can be a string a DOMDocument or a SimpleXMLElement
    * @return boolean
    *   TRUE if $definition is a valid form definition, FALSE otherwise.
    */
   public static function isValid($definition) {
     $path = drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xsd';
     if (is_string($definition)) {
-      $doc = new DOMDocument();
-      $doc->loadXML($definition);
-      return $doc->schemaValidate($path);
+      $document = new DOMDocument();
+      $document->loadXML($definition);
+      return $document->schemaValidate($path);
     }
     else if (get_class($definition) == 'DOMDocument') {
       return $definition->schemaValidate($path);
+    }
+    else if (get_class($definition) == 'SimpleXMLElement') {
+      $form = dom_import_simplexml($definition);
+      $document = new DOMDocument('1.0');
+      $form = $document->importNode($form, true);
+      $form = $document->appendChild($form);
+      return $document->schemaValidate($path);
     }
     return FALSE;
   }
 
   /**
-   * 
+   * Creates a FormDefintion.
    */
-  private function validate() {
-    $definition = new DOMDocument();
-    $definition->loadXML($this->xml);
-    if (!self::isValid($definition)) {
-      throw new Exception('Could not create FormDefinition object, the XML provided was not valid.');
-    }
-    return $definition;
-  }
-
-  /**
-   * 
-   */
-  private function initialize() {
-    $document = $this->validate();
-    $form = simplexml_import_dom($document);
-    $this->initializeProperties($form->properties);
-    $this->elements = FormElements::createFromSimpleXML(Form::ROOT, $form->elements);
-  }
-
-  /**
-   * @TODO Implement this function.
-   * @param DOMElement $properties 
-   */
-  private function initializeProperties(SimpleXMLElement $properties) {
-    $this->documentProperties = new DocumentProperties($properties->document_properties);
-  }
-
-  /**
-   *
-   * @return XMLDocumentProperties 
-   */
-  public function getDocumentProperties() {
-    return $this->documentProperties;
+  public function __construct(FormProperties $properties, FormElements $elements) {
+    $this->properties = $properties;
+    $this->elements = $elements;
   }
 
 }

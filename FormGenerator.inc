@@ -8,23 +8,24 @@
  */
 module_load_include('inc', 'xml_form_api', 'FormDefinition');
 module_load_include('inc', 'xml_form_api', 'FormPopulator');
-module_load_include('inc', 'xml_form_api', 'Document');
 
 /**
- * The purpose of this class is to generate a Drupal Form from a FormDefinition.
+ * The purpose of this class is to register DOMNodes to FormElements and to generate additional FormElements for
+ * FormElements that repersent several DOMNodes.
  */
 class FormGenerator {
 
+  /**
+   * Reference to the form were, generating.
+   * 
+   * @var Form
+   */
+  protected $form;
   /**
    *
    * @var NodeRegistry
    */
   protected $registry;
-  /**
-   *
-   * @var Document
-   */
-  protected $document;
 
   /**
    * Create a FormGenerator
@@ -32,9 +33,9 @@ class FormGenerator {
    * @param FormDefinition $definition
    * @param NodeRegistry $registry 
    */
-  public function __construct(NodeRegistry $registry) {
+  public function __construct(Form $form, NodeRegistry $registry) {
+    $this->form = $form;
     $this->registry = $registry;
-    $this->document = $registry->document;
   }
 
   /**
@@ -76,7 +77,7 @@ class FormGenerator {
   private function createDuplicates(FormElements $elements, FormElement $element, $count) {
     $output = array($element);
     for ($i = 1; $i < $count; $i++) {
-      $output[] = $elements->duplicateElement($element->hash);
+      $output[] = $this->form->duplicate($element);
     }
     return $output;
   }

@@ -7,62 +7,7 @@
  *
  */
 module_load_include('inc', 'xml_form_api', 'Utils');
-
-class DocumentProperties {
-
-  /**
-   *
-   * @var string 
-   */
-  public $root_name;
-  public $root_prefix;
-  public $root_uri;
-  /**
-   * A map of the namespaces used in the generated XML document. In the form of:
-   *  array('prefix' => 'uri');
-   * 
-   * @var array 
-   */
-  public $namespaces;
-  /**
-   * URI to the schema.
-   * 
-   * @var string
-   */
-  public $schema;
-
-  /**
-   *
-   * @param SimpleXMLElement $properties 
-   */
-  public function __construct(SimpleXMLElement $properties) {
-    $this->root_name = (string) $properties->root['local_name'];
-    $this->root_prefix = (string) $properties->root['prefix'];
-    $this->root_uri = (string) $properties->root['uri'];
-    if (isset($properties->schema)) {
-      $this->schema = (string) $properties->schema;
-    }
-    if (isset($properties->namespaces)) {
-      $namespaces = $properties->namespaces->children();
-      foreach ($namespaces as $namespace) {
-        $prefix = (string) $namespace['prefix'];
-        $uri = (string) $namespace;
-        $prefix = $prefix == '' ? 'default' : $prefix;
-        $this->namespaces[$prefix] = $uri;
-      }
-    }
-  }
-
-  public function getNamespaces() {
-    
-  }
-
-  public function getNamespace($prefix) {
-    
-  }
-
-}
-
+module_load_include('inc', 'xml_form_api', 'DocumentProperties');
 /**
  * 
  */
@@ -131,9 +76,9 @@ class Document {
       return $this->createFromExistingDocument();
     }
     else {
-      $doc = new DOMDocument();
-      $doc->appendChild($this->createRootElement());
-      return $doc;
+      $document = new DOMDocument();
+      $document->appendChild($this->createRootElement());
+      return $document;
     }
   }
 

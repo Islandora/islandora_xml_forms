@@ -8,8 +8,8 @@
  */
 module_load_include('inc', 'xml_form_api', 'FormStorage');
 module_load_include('inc', 'xml_form_api', 'FormDefinition');
-module_load_include('inc', 'xml_form_api', 'FormElement');
-module_load_include('inc', 'xml_form_api', 'FormControl');
+module_load_include('inc', 'xml_form_api', 'FormElements');
+module_load_include('inc', 'xml_form_api', 'Document');
 module_load_include('inc', 'xml_form_api', 'NodeRegistry');
 
 class Form {
@@ -40,10 +40,15 @@ class Form {
    */
   protected $definition;
   /**
-   *
-   * @var 
+   * 
+   * @var Document
    */
-  protected $nodeRegistry;
+  protected $document;
+  /**
+   *
+   * @var NodeRegistry
+   */
+  protected $registry;
   /**
    * 
    * @var FormElements
@@ -73,9 +78,11 @@ class Form {
    * Initialize this object from values in storage.
    */
   private function initializeFromStorage() {
-    $this->definition = $this->storage->getDefinition();
-    $this->nodeRegistry = $this->storage->getNodeRegistry();
-    $this->elements = $this->storage->getElements();
+    $this->definition = $this->storage->definition;
+    $this->document = $this->storage->document;
+    $this->original = $this->storage->original;
+    $this->registry = $this->storage->registry;
+    $this->elements = $this->storage->elements;
     $this->initialized = true;
   }
 
@@ -89,10 +96,11 @@ class Form {
    * @param FormDefinition $form_definition 
    * @param Document $xml_document
    */
-  public function initialize(FormDefinition $form_definition, NodeRegistry $node_registry) {
+  public function initialize(FormDefinition $form_definition, Document $document) {
     if (!$this->initialized) {
       $this->definition = $form_definition;
-      $this->nodeRegistry = $node_registry;
+      $this->document = $document;
+      $this->registry = new NodeRegistry($document);
       $this->initializeElements($form_definition->elements);
       $this->store();
       $this->initialized = true;
@@ -104,14 +112,23 @@ class Form {
 
   private function initializeElements(FormElements $elements) {
     $this->elements = clone $elements;
-    $this->mapElementsToOriginalDefinitions($elements);
+    $iterator = new MultipleIterator();
+    $iterator->attachIterator($this->elements->getIterator());
+    $iterator->attachIterator($elements->getIterator());
+    foreach ($iterator as $result) {
+      list($element, $definition) = $result;
+      $this->original[$element->hash] = $definition;
+      var_dump($element->hash);
+    }
     $this->generate();
   }
 
   private function store() {
-    $this->storage->setDefinition($this->definition);
-    $this->storage->setNodeRegistry($this->nodeRegistry);
-    $this->storage->setElements($this->elements);
+    $this->storage->definition = $this->definition;
+    $this->storage->document = $this->document;
+    $this->storage->original = $this->original;
+    $this->storage->registry = $this->registry;
+    $this->storage->elements = $this->elements;
   }
 
   /**
@@ -125,25 +142,11 @@ class Form {
 
   /**
    *
-   * @param FormElements $elements 
-   */
-  private function mapElementsToOriginalDefinitions(FormElements $elements) {
-    $iterator = new MultipleIterator();
-    $iterator->attachIterator($this->elements->getIterator());
-    $iterator->attachIterator($elements->getIterator());
-    foreach ($iterator as $result) {
-      list($element, $definition) = $result;
-      $this->original[$element->hash] = $definition;
-    }
-  }
-
-  /**
-   *
    * @return array 
    */
   private function generate() {
     module_load_include('inc', 'xml_form_api', 'FormGenerator');
-    $generator = new FormGenerator($this->nodeRegistry);
+    $generator = new FormGenerator($this, $this->registry);
     $generator->generate($this->elements);
   }
 
@@ -157,7 +160,7 @@ class Form {
     module_load_include('inc', 'xml_form_api', 'FormPopulator');
     $elements = $this->elements;
     $form_values = new FormValues($form_state, $elements);
-    $populator = new FormPopulator($this->nodeRegistry, $elements, $form_values);
+    $populator = new FormPopulator($this->registry, $elements, $form_values);
     $populator->populate($form);
     return $form;
   }
@@ -185,7 +188,7 @@ class Form {
     module_load_include('inc', 'xml_form_api', 'FormProcessor');
     $elements = $this->elements;
     $form_values = new FormValues($form_state, $elements);
-    $processor = new FormProcessor($form_values, $this->nodeRegistry);
+    $processor = new FormProcessor($form_values, $this->registry);
     return $processor->process($elements);
   }
 
@@ -214,21 +217,53 @@ class Form {
   }
 
   /**
-   *
-   * @param type $hash
-   * @return type 
+   * Duplicate an existing FormElement from it's original definition.
+   * 
+   * @param FormElement $element
+   *   Either a FormElement or a FormElement's hash.
+   * @return FormElement
+   *   The newly created FormElement.
    */
-  public function duplicateElement($hash) {
-    return $this->elements->duplicateElement($hash);
+  public function duplicate($element) {
+    $hash = FormElement::isFormElement($element) ? $element->hash : $element;
+    if (isset($this->original[$hash])) {
+      $original = $this->original[$hash];
+      // Copy
+      $new = clone $original;
+      $this->original[$new->hash] = $original;
+      // Store reference to original
+      $iterator1 = new RecursiveIteratorIterator(new RecursiveArrayIterator($new), RecursiveIteratorIterator::SELF_FIRST);
+      $iterator2 = new RecursiveIteratorIterator(new RecursiveArrayIterator($original), RecursiveIteratorIterator::SELF_FIRST);
+      $iterator = new MultipleIterator();
+      $iterator->attachIterator($iterator1);
+      $iterator->attachIterator($iterator2);
+      foreach($iterator as $item) {
+        list($duplicate, $orig) = $item;
+        $this->original[$duplicate->hash] = $orig;
+      }
+      // Find element
+      $element = $this->elements->findElement($hash);
+      // Add to parent
+      $element->parent[] = $new;
+      $this->elements->registerElement($new); // blah...
+      return $new;
+    }
+    echo ('//---</br>');
+    var_dump($element->hash);
+    echo ('//---</br>');
+    var_dump(array_keys($this->original));
+    return null;
   }
 
   /**
-   *
-   * @param type $hash
-   * @return type 
+   * Remove an existing FormElement.
+   * 
+   * @param FormElement $element
+   *   Either a FormElement or a FormElement's hash.
    */
-  public function removeElement($hash) {
-    return $this->elements->removeElement($hash);
+  public function remove($element) {
+    $hash = FormElement::isFormElement($element) ? $element->hash : $element;
+    $this->elements->removeElement($hash);
   }
 
 }

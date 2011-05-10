@@ -8,16 +8,13 @@
  */
 
 /**
- * 
+ * Class for controling persistant data for the form.
  */
 class FormStorage {
   /**
    * The root element where we store all the required info.
    */
   const STORAGE_ROOT = 'xml_form_storage';
-  const ELEMENTS = 'elements';
-  const DEFINITION = 'definition';
-  const DOCUMENT = 'document';
 
   /**
    *
@@ -31,7 +28,7 @@ class FormStorage {
   protected $initialized;
 
   /**
-   *
+   * Create FormStorage.
    * @param array $form_state 
    */
   public function __construct(array &$form_state) {
@@ -70,51 +67,26 @@ class FormStorage {
   }
 
   /**
-   *
-   * @param FormDefinition $definition 
+   * Get a value from storage.
+   * 
+   * @param mixed $name
+   * @return mixed 
    */
-  public function setDefinition(FormDefinition $definition) {
-    $this->storage[self::DEFINITION] = $definition;
+  public function __get($name) {
+    if (isset($this->storage[$name])) {
+      return $this->storage[$name];
+    }
+    return NULL;
   }
 
   /**
-   *
-   * @return FormDefinition
+   * Store a value.
+   * 
+   * @param mixed $name
+   * @param mixed $value 
    */
-  public function getDefinition() {
-    return $this->storage[self::DEFINITION];
-  }
-
-  /**
-   *
-   * @param FormDefinition $definition 
-   */
-  public function setElements(FormElements $elements) {
-    $this->storage[self::ELEMENTS] = $elements;
-  }
-
-  /**
-   *
-   * @return FormDefinition
-   */
-  public function getElements() {
-    return $this->storage[self::ELEMENTS];
-  }
-
-  /**
-   *
-   * @param XMLDocument $document 
-   */
-  public function setNodeRegistry(NodeRegistry $document) {
-    $this->storage[self::DOCUMENT] = $document;
-  }
-
-  /**
-   *
-   * @return XMLDocument 
-   */
-  public function getNodeRegistry() {
-    return $this->storage[self::DOCUMENT];
+  public function __set($name, $value) {
+    $this->storage[$name] = $value;
   }
 
 }

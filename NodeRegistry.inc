@@ -6,6 +6,7 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_api', 'Document');
 
 /**
  * Tracks the nodes FormElements repersent.
@@ -15,17 +16,20 @@ class NodeRegistry implements IteratorAggregate {
   /**
    * Only valid when we serialize this object. It stores the paths to registered nodes 
    * so they can be properly reinitialized on unserialize.
+   * 
    * @var array
    */
   protected $paths;
   /**
    * A map of FormElements to the DOMNodes the repersent. These nodes are used for populating the form elements
    * as well as a reference to what DOMNodes need to be modified/removed on submit.
+   * 
    * @var array
    */
   protected $registered;
   /**
    * The document that the registered nodes come from.
+   * 
    * @var document
    */
   public $document;

@@ -123,37 +123,6 @@ class FormElements implements IteratorAggregate {
     return array($this->name => $this->root->toDrupalForm());
   }
 
-  /**
-   *
-   * @param type $hash 
-   */
-  public function duplicateElement($hash) {
-    $element = $this->findElement($hash);
-    if ($element) {
-      $new_element = clone $element;
-      $element->parent[] = $new_element;
-      $this->registerElements($new_element);
-      return $new_element;
-    }
-    else {
-      throw new Exception('Failed to duplicate element.');
-    }
-  }
-
-  /**
-   *
-   * @param type $hash 
-   */
-  public function removeElement($hash) {
-    $element = $this->findElement($hash);
-    if ($element) {
-      unset($element->parent[$element->key]);
-    }
-    else {
-      throw new Exception('Failed to remove element.');
-    }
-  }
-
   public function findElement($hash) {
     foreach ($this as $element) {
       if ($element->hash == $hash) {
