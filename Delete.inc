@@ -13,7 +13,7 @@ module_load_include('inc', 'xml_form_api', 'Utils');
 /**
  * 
  */
-class Delete implements ActionInterface {
+class Delete implements Action {
 
   /**
    *
@@ -63,6 +63,18 @@ class Delete implements ActionInterface {
    */
   public function valid() {
     return isset($this->path);
+  }
+
+  /**
+   * 
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * @param type $value
+   * 
+   * @return boolean
+   */
+  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    return TRUE;
   }
 
   /**

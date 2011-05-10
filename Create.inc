@@ -12,7 +12,7 @@ module_load_include('inc', 'xml_form_api', 'Path');
 /**
  * 
  */
-class Create implements ActionInterface {
+class Create implements Action {
   /**
    * Create types.
    */
@@ -122,6 +122,17 @@ class Create implements ActionInterface {
    */
   public function valid() {
     return!(empty($this->path) || empty($this->type));
+  }
+  
+  /**
+   *
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * @param mixed $value
+   * @return boolean 
+   */
+  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    return TRUE;
   }
 
   /**

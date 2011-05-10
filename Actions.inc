@@ -17,22 +17,25 @@ module_load_include('inc', 'xml_form_api', 'Delete');
 class Actions {
 
   /**
-   *
+   * If executed this object will create one or more DOMNodes in the Document.
+   * 
    * @var Create
    */
   public $create;
   /**
-   *
+   * If executed this object will read one or more DOMNodes in the Document. It is used to populate the form.
+   * 
    * @var Read
    */
   public $read;
   /**
-   *
+   * If executed this object will update one or more DOMNodes values in the Document.
+   * 
    * @var Update
    */
   public $update;
   /**
-   *
+   * If executed this object will delete one or more DOMNodes in the Document.
    * @var Delete
    */
   public $delete;
@@ -57,7 +60,7 @@ class Actions {
     $create = isset($actions->create) ? Create::createFromSimpleXML($actions->create) : NULL;
     $read = isset($actions->read) ? Read::createFromSimpleXML($actions->read) : NULL;
     $update = isset($actions->update) ? Update::createFromSimpleXML($actions->update) : NULL;
-    $delete = isset($actions->update) ? Delete::createFromSimpleXML($actions->delete) : NULL;
+    $delete = isset($actions->delete) ? Delete::createFromSimpleXML($actions->delete) : NULL;
     return new self($create, $read, $update, $delete);
   }
 
@@ -92,10 +95,71 @@ class Actions {
    * Delete
    *  The FormElement in question, no longer exists in the form and it has a registered DOMNode.
    * 
-   * @return Action
+   * @param FormElement $element
+   * @param DOMNode $node
+   * @param mixed $value
+   * 
+   * @return Action type and Action
    */
-  public function getAppropriateAction() {
-    
+  public function getAppropriateAction(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    $node = $registry->getNode($element);
+    $modify_or_delete = isset($node);
+    if ($modify_or_delete) {
+      if ($this->shouldDelete($registry, $element, $value)) {
+        return array(Action::Delete, $this->delete);
+      }
+      else if ($this->shouldUpdate($registry, $element, $value)) {
+        return array(Action::Update, $this->update);
+      }
+    }
+    else if ($this->shouldCreate($registry, $element, $value)) {
+      return array(Action::Create, $this->create);
+    }
+  }
+
+  /**
+   * Check the Delete Action's properties to determine if we should remove this FormElement.
+   * 
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * @param mixed $value
+   * @return boolean
+   */
+  private function shouldDelete(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    if (isset($this->delete)) {
+      return $this->delete->shouldExecute($registry, $element, $value);
+    }
+    return FALSE;
+  }
+
+  /**
+   * Check the Update Action's properties to determine if we should update this FormElement.
+   * 
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * @param mixed $value
+   * @return boolean
+   */
+  private function shouldUpdate(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    if (isset($this->update)) {
+      return $this->update->shouldExecute($registry, $element, $value);
+    }
+    return FALSE;
+  }
+
+  /**
+   * Check the Create Action's properties to determine if we should create this FormElement.
+   * 
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * @param mixed $value
+   * @return boolean
+   */
+  private function shouldCreate(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    if (isset($this->create)) {
+      return $this->create->shouldExecute($registry, $element, $value);
+    }
+    return FALSE;
   }
 
 }

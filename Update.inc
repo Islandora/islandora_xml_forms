@@ -13,7 +13,7 @@ module_load_include('inc', 'xml_form_api', 'Utils');
 /**
  * 
  */
-class Update implements ActionInterface {
+class Update implements Action {
 
   /**
    *
@@ -78,7 +78,19 @@ class Update implements ActionInterface {
    *   TRUE if this object is valid FALSE otherwise.
    */
   public function valid() {
-    return isset($path);
+    return isset($this->path);
+  }
+  
+  /**
+   *
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * @param mixed $value
+   * 
+   * @return boolean
+   */
+  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    return TRUE;
   }
 
   /**

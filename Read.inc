@@ -12,7 +12,7 @@ module_load_include('inc', 'xml_form_api', 'Path');
 /**
  * 
  */
-class Read implements ActionInterface {
+class Read implements Action {
 
   /**
    * Path to the parent element, where the DOMNode will be created.
@@ -65,6 +65,17 @@ class Read implements ActionInterface {
    */
   public function valid() {
     return isset($this->path);
+  }
+
+  /**
+   *
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * @param mixed $value
+   * @return boolean 
+   */
+  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    return TRUE;
   }
 
   /**

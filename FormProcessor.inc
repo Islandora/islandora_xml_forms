@@ -10,116 +10,78 @@
 /**
  * 
  */
-class FormProcessAction extends ArrayObject {
+class FormProcessAction {
+
   /**
-   * Type of action determines how this object will behave.
+   *
+   * @var NodeRegistry
    */
-  const Undefined = 0; // Do Nothing.
-  const Create = 1;    // Create a DOMNode
-  const Read = 2;      // Not used
-  const Update = 3;    // Update a DOMNode
-  const Delete = 4;    // Delete a DOMNode
+  public $registry;
   /**
+   * FormElement to be processed.
    * 
    * @var FormElement 
    */
-
-  protected $element;
+  public $element;
   /**
-   *
-   * @var XMLProperties 
-   */
-  protected $properties;
-  /**
-   * The form value associated with this action. Actions do not require form values.
+   * Submitted Form Value.
    * 
    * @var mixed 
    */
-  protected $value;
+  public $value;
   /**
+   * Action to perform.
+   * 
+   * @var Action
+   */
+  protected $action;
+  /**
+   * Type of action defined by Action::CONST.
    * 
    * @var mixed 
    */
-  protected $_type;
+  public $type;
 
   /**
    *
+   * @param NodeRegistry $registry
    * @param FormElement $element
    * @param mixed $value
-   * @param DOMNode $node 
    */
-  public function __construct(FormElement $element, $value = NULL, DOMNode $node = NULL) {
+  public function __construct(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    $this->registry = $registry;
     $this->element = $element;
-    $this->properties = $element->properties;
     $this->value = $value;
-    $this->node = $node;
-    $this->_type = $this->determineType();
+    list($this->type, $this->action) = $this->getTypeAndAction($registry, $element, $value);
   }
 
   /**
    *
-   * @return integer
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * @param mixed $value
+   * @return array
    */
-  private function determineType() {
-    $properties = $this->properties;
-    if ($properties) {
-      if ($this->node) { // Node already existed, either we are going to update or delete it.
-        $delete = $properties->delete;
-        $update = $properties->update;
-        if ($delete && $delete->shouldDelete($this->value)) {
-          return self::Delete;
-        }
-        else if ($update && $update->shouldUpdate($this->value)) {
-          return self::Update;
-        }
-      }
-      else {
-        $create = $properties->create;
-        if ($create && $create->shouldCreate($this->value)) {
-          return self::Create;
-        }
-      }
+  private function getTypeAndAction(NodeRegistry $registry, FormElement $element, $value = NULL) {
+    if (isset($element->actions)) {
+      return $element->actions->getAppropriateAction($registry, $element, $value);
     }
-    return self::Undefined;
+    return array(Action::Undefined, NULL);
   }
 
   /**
    * 
    */
-  public function execute(Document $document) {
-    switch ($this->_type) {
-      case self::Create:
-        $this->create($document);
-        break;
-      case self::Update:
-        $this->update($document);
-        break;
-      case self::Delete:
-        $this->delete($document);
-        break;
+  public function execute() {
+    if ($this->action) {
+      $this->action->execute($this->registry, $this->element, $this->value);
     }
-  }
-
-  private function create(Document $document) {
-    $this->properties->create->create($document, $this->value);
-  }
-
-  private function update(Document $document) {
-    $this->properties->update->update($document, $this->value);
-  }
-
-  private function delete(Document $document) {
-    $this->properties->delete->delete($document);
-  }
-
-  public function __get($name) {
-    return ($name == 'type') ? $this->_type : NULL;
   }
 
 }
 
 /**
- * 
+ * Process the form generate a Document.
  */
 class FormProcessor {
 
@@ -134,11 +96,6 @@ class FormProcessor {
    * @var Document 
    */
   protected $registry;
-  /**
-   *
-   * @var type 
-   */
-  protected $actions;
 
   /**
    *
@@ -148,7 +105,6 @@ class FormProcessor {
   public function __construct(FormValues $values, NodeRegistry $registry) {
     $this->values = $values;
     $this->registry = $registry;
-    $this->document = $registry->document;
   }
 
   /**
@@ -156,62 +112,70 @@ class FormProcessor {
    * @param FormElement $element 
    */
   public function process(FormElements $elements) {
-    /*$this->createActions($elements);
-    $this->sortActions();
-    $this->performActions();
-    var_dump($this->document->asXML());*/
+    $actions = &$this->createActions($elements);
+    $actions = &$this->sortActions($actions);
+    return $this->performActions($actions);
   }
 
   /**
    *
-   * @param FormElements $elements 
+   * @param FormElements $elements
+   * @return array
    */
-  private function createActions(FormElements $elements) {
+  private function &createActions(FormElements $elements) {
+    $actions = array();
     foreach ($elements as $element) {
-      $this->createAction($element);
+      $actions[] = $this->createAction($element);
     }
+    return $actions;
   }
 
   /**
    *
    * @param FormElement $element
+   * @return FormProcessAction 
    */
   private function createAction(FormElement $element) {
-    $node = $this->document->getRegisteredNode($element);
     $value = $this->values->getValue($element);
-    $this->actions[] = new FormProcessAction($element, $value, $node);
+    return new FormProcessAction($this->registry, $element, $value);
   }
 
   /**
-   * 
+   *
+   * @param array $actions
+   * @return array
    */
-  private function sortActions() {
+  private function &sortActions(array &$actions) {
     $delete = array();
     $update = array();
     $create = array();
-    foreach ($this->actions as $action) {
+    foreach ($actions as $action) {
       switch ($action->type) {
-        case FormProcessAction::Create:
+        case Action::Create:
           $create[] = $action;
           break;
-        case FormProcessAction::Update:
+        case Action::Update:
           $update[] = $action;
           break;
-        case FormProcessAction::Delete:
+        case Action::Delete:
           $delete[] = $action;
           break;
       }
     }
-    $this->actions = array_merge($update, $delete, $create);
+    $actions = array_merge($update, $delete, $create);
+    return $actions;
   }
 
   /**
-   * 
+   *
+   * @param array $actions
+   * @return Document
    */
-  private function performActions() {
-    foreach ($this->actions as $action) {
-      $action->execute($this->document);
+  private function performActions(array &$actions) {
+    foreach ($actions as $action) {
+      $action->execute();
     }
+    return $this->registry->document;
   }
 
 }

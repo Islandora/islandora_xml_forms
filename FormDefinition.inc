@@ -114,13 +114,5 @@ class FormDefinition {
     return $this->documentProperties;
   }
 
-  /**
-   *
-   * @return array 
-   */
-  public function toDrupalForm() {
-    return $this->elements->toDrupalForm();
-  }
-
 }
 

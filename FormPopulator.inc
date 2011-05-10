@@ -57,7 +57,7 @@ class FormPopulator {
    * @param hash $hash 
    */
   private function getDefaultValue($hash) {
-    $value = $this->getSubmitedValue($hash);
+    $value = $this->getSubmittedValue($hash);
     if (empty($value)) {
       $value = $this->getRegisteredValue($hash);
     }
@@ -69,11 +69,10 @@ class FormPopulator {
    * @param hash $hash
    * @return mixed 
    */
-  private function getSubmitedValue($hash) {
+  private function getSubmittedValue($hash) {
     $element = $this->elements->findElement($hash);
     if ($element) {
       return $this->values->getValue($element);
-      ;
     }
     return NULL;
   }
@@ -98,11 +97,11 @@ class FormPopulator {
    */
   private function setDefaultValue(array &$form, $value) {
     if (isset($value)) {
-      $form['#value'] = $value;
+      $form['#default_value'] = $value;
     }
-    else if (isset($form['#default_value'])) {
+    /*else if (isset($form['#default_value'])) {
       $form['#value'] = $form['#default_value'];
-    }
+    }*/
   }
 
   /**

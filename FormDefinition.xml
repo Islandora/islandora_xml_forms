@@ -23,6 +23,11 @@
                     <type>tabpanel</type>
                     <title>Foo</title>
                     <children>
+                        <element key="test">
+                            <type>textfield</type>
+                            <tree>false</tree>
+                            <default_value type="string">testing 123</default_value>
+                        </element>
                         <element key="e">
                             <type>textfield</type>
                             <default_value type="string">Default</default_value>
@@ -30,6 +35,9 @@
                                 <read>
                                     <path context="parent">mods:title</path>
                                 </read>
+                                <update>
+                                    <path context="self">self::node()</path>
+                                </update>
                             </actions>
                         </element>
                     </children>

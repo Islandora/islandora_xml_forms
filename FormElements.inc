@@ -12,13 +12,8 @@ module_load_include('inc', 'xml_form_api', 'FormElement');
  * 
  */
 class FormElements implements IteratorAggregate {
-
-  /**
-   * Dummy root element, doesn't get used.
-   * 
-   * @var FormElement
-   */
-  protected $_root;
+  
+  private $name;
   /**
    * The root of this set of elements.
    * 
@@ -68,17 +63,17 @@ class FormElements implements IteratorAggregate {
    * @param string $root_name 
    */
   public function __construct($root_name, array $elements) {
-    $this->createRoot($root_name);
+    $this->name = $root_name;
+    $this->createRoot();
     $this->appendElementsToRoot($elements);
     $this->createHashTable();
   }
 
+  /**
+   * 
+   */
   public function __clone() {
-    $form_name = $this->root->key;
-    $root = clone $this->root; // Will recursively clone all children.
-    $this->createRoot($form_name);
-    $this->root = $root;
-    $this->_root[$form_name] = $this->root;
+    $this->root = clone $this->root; // Will recursively clone all children.
     $this->elements = NULL;
     $this->registerElements();
   }
@@ -106,13 +101,10 @@ class FormElements implements IteratorAggregate {
    *
    * @param string $root_name 
    */
-  private function createRoot($root_name) {
+  private function createRoot() {
     $this->root = new FormElement();
-    $this->root->name = $root_name;
+    $this->root->name = $this->name;
     $this->root->tree = new FormControl('#tree', true);
-    $this->_root = new FormElement();
-    $this->_root[$root_name] = $this->root;
-    return $this->_root;
   }
 
   /**
@@ -120,7 +112,7 @@ class FormElements implements IteratorAggregate {
    * @return RecursiveIteratorIterator
    */
   public function getIterator() {
-    return new RecursiveIteratorIterator(new RecursiveArrayIterator($this->_root), RecursiveIteratorIterator::SELF_FIRST);
+    return new RecursiveIteratorIterator(new RecursiveArrayIterator(array($this->name => $this->root)), RecursiveIteratorIterator::SELF_FIRST);
   }
 
   /**
@@ -128,7 +120,7 @@ class FormElements implements IteratorAggregate {
    */
   public function toDrupalForm() {
     $this->registerElements();
-    return array($this->root->name => $this->root->toDrupalForm());
+    return array($this->name => $this->root->toDrupalForm());
   }
 
   /**

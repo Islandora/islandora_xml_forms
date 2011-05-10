@@ -15,6 +15,7 @@ class FormStorage {
    * The root element where we store all the required info.
    */
   const STORAGE_ROOT = 'xml_form_storage';
+  const ELEMENTS = 'elements';
   const DEFINITION = 'definition';
   const DOCUMENT = 'document';
 
@@ -34,7 +35,7 @@ class FormStorage {
    * @param array $form_state 
    */
   public function __construct(array &$form_state) {
-    if(empty($form_state['storage'])) {
+    if (empty($form_state['storage'])) {
       $form_state['storage'] = array();
     }
     $this->setStorage($form_state['storage']);
@@ -58,7 +59,7 @@ class FormStorage {
       $this->initialized = true; // Created for the nth time.
     }
   }
-  
+
   /**
    * Has the FormStorage been initialized?
    * 
@@ -67,7 +68,7 @@ class FormStorage {
   public function isInitialized() {
     return $this->initialized;
   }
-  
+
   /**
    *
    * @param FormDefinition $definition 
@@ -75,7 +76,7 @@ class FormStorage {
   public function setDefinition(FormDefinition $definition) {
     $this->storage[self::DEFINITION] = $definition;
   }
-  
+
   /**
    *
    * @return FormDefinition
@@ -83,7 +84,23 @@ class FormStorage {
   public function getDefinition() {
     return $this->storage[self::DEFINITION];
   }
-  
+
+  /**
+   *
+   * @param FormDefinition $definition 
+   */
+  public function setElements(FormElements $elements) {
+    $this->storage[self::ELEMENTS] = $elements;
+  }
+
+  /**
+   *
+   * @return FormDefinition
+   */
+  public function getElements() {
+    return $this->storage[self::ELEMENTS];
+  }
+
   /**
    *
    * @param XMLDocument $document 
@@ -91,7 +108,7 @@ class FormStorage {
   public function setNodeRegistry(NodeRegistry $document) {
     $this->storage[self::DOCUMENT] = $document;
   }
-  
+
   /**
    *
    * @return XMLDocument 

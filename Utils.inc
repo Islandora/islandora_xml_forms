@@ -50,10 +50,10 @@ class Utils {
     }
   }
 
-  public static function getDrupalFormElement($hash, array &$form) {
+  public static function getDrupalFormElement($hash = NULL, array &$form) {
     $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($form), RecursiveIteratorIterator::SELF_FIRST);
     foreach ($iterator as $element) {
-      if ($element['#hash'] == $hash) {
+      if (is_array($element) && isset($element['#hash']) && $element['#hash'] == $hash) {
         return $element;
       }
     }
@@ -85,6 +85,28 @@ class Utils {
     $xpath = new DOMXPath($node->ownerDocument);
     $result = $xpath->query('child::*', $node);
     return $result->length > 0;
+  }
+
+  public static function prettyPrintDocument(Document $document) {
+    $path = drupal_get_path('module', 'xml_form_api');
+    $filename = drupal_get_path('module', 'xml_form_api') . '/pretty-print/PrettyPrint.xsl';
+    $xsl = new DOMDocument();
+    $xsl->load($filename);
+    $doc = new DOMDocument();
+    $doc->loadXML($document->asXML());
+    $proc = new XSLTProcessor();
+    $proc->importStylesheet($xsl);
+    $content = $proc->transformToXml($doc);
+    $content = htmlentities($content);
+    $output = '';
+    foreach (preg_split("/(\r?\n)/", $content) as $line) {
+      $output .= $line . '<br/>';
+    }
+    echo("<script type='text/javascript' src='$path/pretty-print/prettify.js'></script>");
+    echo("<link type='text/css' rel='stylesheet' media='all' href='$path/pretty-print/prettify.css'>");
+    echo("<script type='text/javascript' src='$path/pretty-print/prettify.js'></script>");
+    echo("<code class='prettyprint xml' style='overflow: scroll; position: relative;'>$output</code>");
+    echo("<script type='text/javascript'>prettyPrint();</script>");
   }
 
 }

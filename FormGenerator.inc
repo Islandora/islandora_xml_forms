@@ -51,7 +51,6 @@ class FormGenerator {
         $this->registerNodes($form_elements, $nodes);
       }
     }
-    return $elements->toDrupalForm();
   }
 
   /**
