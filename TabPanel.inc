@@ -6,6 +6,8 @@
  *
  *  Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
+module_load_include('inc', 'xml_form_elements', 'Ahah');
+module_load_include('inc', 'xml_form_elements', 'Element');
 module_load_include('inc', 'xml_form_elements', 'Utils');
 module_load_include('inc', 'xml_form_api', 'Form');
 module_load_include('inc', 'xml_form_api', 'Utils');
@@ -18,18 +20,12 @@ class TabPanel {
   const DeleteButton = 'delete-tabpanel';
 
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    $tabpanel = self::findTabPanel($element['#hash'], $form_state);
+    $tabpanel = Element::find($element['#hash'], $form_state);
     $add = self::createAddButton($tabpanel);
     $delete = self::createRemoveButton($tabpanel);
     $element[self::AddButton] = $add->toDrupalForm();
     $element[self::DeleteButton] = $delete->toDrupalForm();
     return $element;
-  }
-
-  private static function findTabPanel($hash, array &$form_state) {
-    $form = new Form($form_state);
-    $tabpanel = $form->findElement($hash);
-    return $tabpanel;
   }
 
   private static function createAddButton(FormElement $tabpanel) {
@@ -42,7 +38,7 @@ class TabPanel {
     $add->prefix = '<div class="ui-tabpanel-add-button">';
     $add->suffix = '</div>';
     $add->ahah = array(
-      'path' => 'xml_form_elements/ahah/tabpanel/duplicate/' . $tabpanel->hash,
+      'path' => "xml_form_elements/ahah/duplicate/{$tabpanel->hash}/{$tabs->hash}",
       'wrapper' => $tabs->hash, // The parents wrapper is set to the parents hash.
       'method' => 'replace',
       'effect' => 'fade'
@@ -64,7 +60,7 @@ class TabPanel {
     $delete->prefix = '<div class="ui-tabpanel-delete-button">';
     $delete->suffix = '</div>';
     $delete->ahah = array(
-      'path' => 'xml_form_elements/ahah/tabpanel/delete/' . $tabpanel->hash,
+      'path' => "xml_form_elements/ahah/remove/{$tabpanel->hash}/{$tabs->hash}",
       'wrapper' => $tabs->hash, // The parents wrapper is set to the parents hash.
       'method' => 'replace',
       'effect' => 'fade'
@@ -74,26 +70,32 @@ class TabPanel {
   }
 
   public static function Duplicate($hash) {
-    if (!isset($_REQUEST['form_build_id']))
+    module_load_include('inc', 'xml_form_api', 'Post');
+    $post = new Post();
+    if (!$post->isValid()) {
       return;
-    $form_build_id = $_REQUEST['form_build_id'];
-    list($drupal_form, $form_state) = get_form_and_form_state($form_build_id);
-    $form_id = $drupal_form['#parameters'][0];
+    }
+    list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     // Find the tabpanel in question.
     $form = new Form($form_state);
     $tabpanel = $form->findElement($hash);
     // Duplicate the tabpanel.
     $tabs = $tabpanel->parent;
-    $form->duplicateElement($hash);    
-    // Store Changes
-    cache_form_and_form_state($form_build_id, $drupal_form, $form_state);
-    // Populate the form
-    $drupal_form = $form->toDrupalForm();
-    $drupal_form = $form->populate($drupal_form, $form_state);
+    $form->duplicateElement($hash);
+
+    // Store Changes ????
+    $args = $drupal_form['#parameters'];
+    $drupal_form['#post'] = $_POST;
+    $drupal_form['#redirect'] = FALSE;
+    $drupal_form['#programmed'] = FALSE;
+    $form_state['post'] = $_POST;
+
     // Render the changed bit.
-    $drupal_form = form_builder($form_id, $drupal_form, $form_state); // Runs process functions and other needed bits.
-    $tabs = Utils::getDrupalFormElement($tabs->hash, $drupal_form);
-    ahah_return_html_via_json($tabs);
+    // $drupal_form = form_builder($form_id, $drupal_form, $form_state); // Runs process functions and other needed bits.
+    drupal_process_form($form_id, $drupal_form, $form_state);
+    $drupal_form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
+    //$tabs = Utils::getDrupalFormElement($tabs->hash, $drupal_form);
+    ahah_return_html_via_json($drupal_form['xml_form_root']['d']);
   }
 
   /**
@@ -107,7 +109,7 @@ class TabPanel {
     $tabpanel = $form->findElement($hash);
     // Remove the tabpanel.
     $tabs = $tabpanel->parent;
-    $form->removeElement($hash);    
+    $form->removeElement($hash);
     // Store Changes
     cache_form_and_form_state($form_build_id, $drupal_form, $form_state);
     // Populate the form

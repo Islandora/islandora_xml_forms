@@ -6,48 +6,69 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_elements', 'Ahah');
+
 class Element {
 
   /**
-   *
-   * @param hash $hash 
+   * Find the element identified by $hash.
+   * 
+   * @param hash $hash
+   * @param array $form_state
+   * @return FormElement 
    */
-  public static function Duplicate($hash) {
-    if (!isset($_REQUEST['form_build_id']))
-      return;
-    $form_build_id = $_REQUEST['form_build_id'];
-    list($form, $form_state) = get_form_and_form_state($form_build_id);
-    // Apply changes.
+  public static function find($hash, array &$form_state) {
     $form = new Form($form_state);
-    $form->definition->elements->duplicateElement($hash);
-    $drupal_form = $form->generate();
-    cache_form_and_form_state($form_build_id, $drupal_form, $form_state);
-    $element = $form->definition->elements->findElement($hash);
-    // Render the changed bit.
-    $drupal_form = $element->toDrupalForm();
-    $drupal_form = form_builder($drupal_form);
-    ahah_return_html_via_json($drupal_form);
+    return $form->findElement($hash);
   }
 
   /**
-   *
-   * @param hash $hash 
+   * AHAH callback to duplicate an existing element.
+   * 
+   * @param hash $duplicate
+   * @param hash $render 
    */
-  public static function Remove($hash) {
-    if (!isset($_REQUEST['form_build_id']))
-      return;
-    $form_build_id = $_REQUEST['form_build_id'];
-    list($form, $form_state) = get_form_and_form_state($form_build_id);
-    // Apply changes.
+  public static function Duplicate($duplicate, $render = NULL) {
+    list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
+    // Duplicate Element
     $form = new Form($form_state);
-    $form->definition->elements->removeElement($hash);
-    $drupal_form = $form->generate();
-    cache_form_and_form_state($form_build_id, $drupal_form, $form_state);
-    $element = $form->definition->elements->findElement($hash);
-    // Render the changed bit.
-    $drupal_form = $element->toDrupalForm();
-    $drupal_form = form_builder($drupal_form);
-    ahah_return_html_via_json($drupal_form);
+    $hash = $form->duplicateElement($duplicate);
+    // Rebuild the form, validation and submit callbacks will be called.
+    $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
+    // Find the element to render.
+    $render = isset($render) ? $render : $hash; // Render the new element if no render value is supplied.
+    $element = Utils::getDrupalFormElement($render, $drupal_form);
+    // Respond to the request with JSON.
+    Ahah::respond($element);
+  }
+
+  /**
+   * AHAH callback to remove an existing element.
+   * 
+   * @param hash $remove
+   * @param hash $render
+   */
+  public static function Remove($remove, $render = NULL) {
+    list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
+    // Remove Element
+    $form = new Form($form_state);
+    $form->removeElement($remove);
+    // Rebuild the form, validation and submit callbacks will be called.
+    $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
+    // Find the element to render.
+    $element = Utils::getDrupalFormElement($render, $drupal_form);
+    // Respond to the request with JSON.
+    Ahah::respond($element);
+  }
+
+  public static function Validate($render) {
+    list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
+    // Rebuild the form, validation and submit callbacks will be called.
+    $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);
+    // Find the element to render.
+    $element = Utils::getDrupalFormElement($render, $form);
+    // Respond to the request with JSON.
+    Ahah::respond($element);
   }
 
 }

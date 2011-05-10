@@ -52,48 +52,52 @@ function xml_form_elements_theme() {
  * @return array 
  */
 function xml_form_elements_menu() {
+  /**
+   * Duplicate a form element. Takes two parameters.
+   * The first parameter is the #hash of the element to duplicate. The second
+   * is the #hash of the element to render. If the second parameter is not given
+   * the newly duplicated element will be rendered.
+   */
   $items['xml_form_elements/ahah/duplicate/%'] = array(
     'title' => 'Duplicate a Form Element',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Duplicate',
-    'page arguments' => array(3),
+    'page arguments' => array(3, 4),
     'access arguments' => array('access content'),
     'file' => 'Element.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
-  $items['xml_form_elements/ahah/delete/%'] = array(
+  /**
+   * Remove's a form element. Takes two parameters.
+   * The first parameter is the #hash of the element to remove. The second
+   * is the #hash of the element to render. If the second parameter is not given
+   * an empty div will be rendered.
+   */
+  $items['xml_form_elements/ahah/remove/%'] = array(
     'title' => 'Remove a Form Element',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Remove',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('access content'),
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * Validate's a form element. Takes one parameter.
+   * The first parameter is the #hash of the element to render.
+   */
+  $items['xml_form_elements/ahah/validate/%'] = array(
+    'title' => 'Remove a Form Element',
+    'description' => 'AHAH callback',
+    'page callback' => 'Element::Validate',
     'page arguments' => array(3),
     'access arguments' => array('access content'),
     'file' => 'Element.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
-  $items['xml_form_elements/ahah/tabpanel/duplicate/%'] = array(
-    'title' => 'Duplicate a TabPanel',
-    'description' => 'AHAH callback',
-    'page callback' => 'TabPanel::Duplicate',
-    'page arguments' => array(4),
-    'access arguments' => array('access content'),
-    'file' => 'TabPanel.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
-    'type' => MENU_CALLBACK,
-  );
-  $items['xml_form_elements/ahah/tabpanel/delete/%'] = array(
-    'title' => 'Remove a TabPanel',
-    'description' => 'AHAH callback',
-    'page callback' => 'TabPanel::Remove',
-    'page arguments' => array(4),
-    'access arguments' => array('access content'),
-    'file' => 'TabPanel.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
-    'type' => MENU_CALLBACK,
-  );
-
-
   /* $items['xml_form_elements/auto_complete/marcrelator'] = array(
     'title' => 'autocomplete',
     'page callback' => '',
@@ -113,8 +117,11 @@ function xml_form_elements_menu() {
 
 /**
  *
- * @param array $form
- * @param array $form_state 
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
  */
 function xml_form_elements_process_tabs(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'Tabs');
@@ -123,8 +130,11 @@ function xml_form_elements_process_tabs(array $element, $edit, array &$form_stat
 
 /**
  *
- * @param array $form
- * @param array $form_state 
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
  */
 function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'TabPanel');
