@@ -7,7 +7,12 @@
  *
  */
 module_load_include('inc', 'xml_form_elements', 'Ahah');
+module_load_include('inc', 'xml_form_api', 'Utils');
+module_load_include('inc', 'xml_form_api', 'Form');
 
+/**
+ * A collection of generic static functions that can be used for AHAH callbacks.
+ */
 class Element {
 
   /**
@@ -32,11 +37,11 @@ class Element {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     // Duplicate Element
     $form = new Form($form_state);
-    $hash = $form->duplicateElement($duplicate);
+    $new_element = $form->duplicate($duplicate);
     // Rebuild the form, validation and submit callbacks will be called.
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
-    $render = isset($render) ? $render : $hash; // Render the new element if no render value is supplied.
+    $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
     $element = Utils::getDrupalFormElement($render, $drupal_form);
     // Respond to the request with JSON.
     Ahah::respond($element);
@@ -52,7 +57,7 @@ class Element {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     // Remove Element
     $form = new Form($form_state);
-    $form->removeElement($remove);
+    $form->remove($remove);
     // Rebuild the form, validation and submit callbacks will be called.
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
@@ -61,6 +66,11 @@ class Element {
     Ahah::respond($element);
   }
 
+  /**
+   * AHAH callback to validate an existing element.
+   * 
+   * @param hash $render 
+   */
   public static function Validate($render) {
     list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
     // Rebuild the form, validation and submit callbacks will be called.

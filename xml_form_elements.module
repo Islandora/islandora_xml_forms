@@ -98,20 +98,6 @@ function xml_form_elements_menu() {
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
-  /* $items['xml_form_elements/auto_complete/marcrelator'] = array(
-    'title' => 'autocomplete',
-    'page callback' => '',
-    'type' => MENU_CALLBACK,
-    'access arguments' => array(ObjectHelper::$INGEST_FEDORA_OBJECTS),
-    'file' => 'includes/AutoComplete.inc'
-    );
-    $items['xml_form_elements/auto_complete/gacs'] = array(
-    'title' => 'autocomplete',
-    'page callback' => '',
-    'type' => MENU_CALLBACK,
-    'access arguments' => array(ObjectHelper::$INGEST_FEDORA_OBJECTS),
-    'file' => 'includes/AutoComplete.inc'
-    ); */
   return $items;
 }
 

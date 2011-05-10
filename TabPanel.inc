@@ -2,23 +2,46 @@
 
 // $Id$
 
-/* @file
+/**
+ * @file
  *
  *  Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
-module_load_include('inc', 'xml_form_elements', 'Ahah');
 module_load_include('inc', 'xml_form_elements', 'Element');
-module_load_include('inc', 'xml_form_elements', 'Utils');
 module_load_include('inc', 'xml_form_api', 'Form');
-module_load_include('inc', 'xml_form_api', 'Utils');
 
+
+/**
+ * A collection of static functions that allow for theming and processing tabpanels.
+ */
 class TabPanel {
   /**
-   * 
+   * Constants
    */
   const AddButton = 'add-tabpanel';
   const DeleteButton = 'delete-tabpanel';
 
+  /**
+   * TabPanel's theme hook.
+   * 
+   * @param array $element
+   * @return string 
+   */
+  public static function Theme($element) {
+    return "<div id='{$element['#hash']}'>{$element['#children']}</div>";
+  }
+
+  /**
+   * The default #process function for tabpanel's.
+   * 
+   * Adds elements that allow for adding/remove form elements.
+   * 
+   * @param array $element
+   * @param mixed $edit
+   * @param array $form_state
+   * @param array $complete_form
+   * @return array 
+   */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $tabpanel = Element::find($element['#hash'], $form_state);
     $add = self::createAddButton($tabpanel);
@@ -28,6 +51,12 @@ class TabPanel {
     return $element;
   }
 
+  /**
+   * Creates a button that allows tabpanels to duplicate.
+   * 
+   * @param FormElement $tabpanel
+   * @return FormElement 
+   */
   private static function createAddButton(FormElement $tabpanel) {
     $tabs = $tabpanel->parent;
     $add = new FormElement();
@@ -47,6 +76,12 @@ class TabPanel {
     return $add;
   }
 
+  /**
+   * Creates a remove button that allows the user to remove this tabpanel.
+   * 
+   * @param FormElement $tabpanel
+   * @return FormElement 
+   */
   private static function createRemoveButton(FormElement $tabpanel) {
     $tabs = $tabpanel->parent;
     $delete = new FormElement();
@@ -67,62 +102,6 @@ class TabPanel {
     );
     $tabpanel[self::DeleteButton] = $delete; // Add to the definition.
     return $delete;
-  }
-
-  public static function Duplicate($hash) {
-    module_load_include('inc', 'xml_form_api', 'Post');
-    $post = new Post();
-    if (!$post->isValid()) {
-      return;
-    }
-    list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
-    // Find the tabpanel in question.
-    $form = new Form($form_state);
-    $tabpanel = $form->findElement($hash);
-    // Duplicate the tabpanel.
-    $tabs = $tabpanel->parent;
-    $form->duplicateElement($hash);
-
-    // Store Changes ????
-    $args = $drupal_form['#parameters'];
-    $drupal_form['#post'] = $_POST;
-    $drupal_form['#redirect'] = FALSE;
-    $drupal_form['#programmed'] = FALSE;
-    $form_state['post'] = $_POST;
-
-    // Render the changed bit.
-    // $drupal_form = form_builder($form_id, $drupal_form, $form_state); // Runs process functions and other needed bits.
-    drupal_process_form($form_id, $drupal_form, $form_state);
-    $drupal_form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
-    //$tabs = Utils::getDrupalFormElement($tabs->hash, $drupal_form);
-    ahah_return_html_via_json($drupal_form['xml_form_root']['d']);
-  }
-
-  /**
-   *
-   * @param hash $hash 
-   */
-  public static function Remove($hash) {
-    list($form_id, $form_build_id, $drupal_form, $form_state) = get_form_info($form_build_id);
-    // Find the tabpanel in question.
-    $form = new Form($form_state);
-    $tabpanel = $form->findElement($hash);
-    // Remove the tabpanel.
-    $tabs = $tabpanel->parent;
-    $form->removeElement($hash);
-    // Store Changes
-    cache_form_and_form_state($form_build_id, $drupal_form, $form_state);
-    // Populate the form
-    $drupal_form = $form->toDrupalForm();
-    $drupal_form = $form->populate($drupal_form, $form_state);
-    // Render the changed bit.
-    $drupal_form = form_builder($form_id, $drupal_form, $form_state); // Runs process functions and other needed bits.
-    $tabs = Utils::getDrupalFormElement($tabs->hash, $drupal_form);
-    ahah_return_html_via_json($tabs);
-  }
-
-  public static function Theme($element) {
-    return "<div id='{$element['#hash']}'>{$element['#children']}</div>";
   }
 
 }
