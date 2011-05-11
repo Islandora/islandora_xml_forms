@@ -1,0 +1,53 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ *
+ */
+
+/**
+ * Implementation of hook_install.
+ */
+function xml_form_builder_install() {
+  drupal_install_schema('xml_form_builder');
+}
+
+/**
+ * Implementation of hook_uninstall.
+ */
+function xml_form_builder_uninstall() {
+  drupal_uninstall_schema('xml_form_builder');
+}
+
+/**
+ * Implementation of hook_schema.
+ * 
+ * @return array
+ */
+function xml_form_builder_schema() {
+  $schema['xml_forms'] = array(
+    'description' => t('This table is used to store XML Form API style form definitions.'),
+    'fields' => array(
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => t('The name of the stored form.'),
+        'type' => 'varchar',
+        'length' =>128,
+        'not null' => TRUE
+      ),
+      'form' => array(
+        'description' => t('The xml based form definition.'),
+        'type' => 'text',
+        'size' => 'medium',
+      ),
+    ),
+    'unique keys' => array('name' => array('name')),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}

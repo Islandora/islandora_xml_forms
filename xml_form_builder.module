@@ -7,3 +7,112 @@
  *
  */
 
+/**
+ * Implements hook_menu. Register menus.
+ *
+ * @return array 
+ */
+function xml_form_builder_menu() {
+  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
+  /**
+   * Inital page. Lists the existing forms showing a preview of each. The user is provided with links for 
+   * creating, editing, deleting, or copying forms.
+   */
+  $items['xml/form/list'] = array(
+    'title' => 'List Forms',
+    'description' => 'List existing forms.',
+    'file' => 'List.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_list'),
+    'access arguments' => array(FormBuilder::PERM_LIST_FORMS),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * View a form.
+   */
+  $items['xml/form/%/view'] = array(
+    'title' => 'Preview Form',
+    'description' => 'Preview a form.',
+    'file' => 'Preview.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_preview'),
+    'access arguments' => array(FormBuilder::PERM_LIST_FORMS),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * Presents a form that allows the user to create a new form.
+   */
+  $items['xml/form/create'] = array(
+    'title' => 'Create Form',
+    'description' => 'Create a new Form.',
+    'file' => 'Create.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_create'),
+    'access arguments' => array(FormBuilder::PERM_CREATE_FORMS),
+    'type' => MENU_CALLBACK,
+  );
+  $items['xml/form/%/copy'] = array(
+    'title' => 'Copy Form',
+    'description' => 'Copy an existing Form.',
+    'file' => 'Copy.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_copy', 2),
+    'access arguments' => array(FormBuilder::PERM_CREATE_FORMS),
+    'type' => MENU_CALLBACK,
+  );
+  $items['xml/form/%/edit'] = array(
+    'title' => 'Edit Form',
+    'description' => 'Edit a Form.',
+    'file' => 'Edit.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_edit', 2),
+    'access arguments' => array(FormBuilder::PERM_EDIT_FORMS),
+    'type' => MENU_CALLBACK,
+  );
+  $items['xml/form/%/delete'] = array(
+    'title' => 'Delete Form',
+    'description' => 'Delete a Form.',
+    'file' => 'Delete.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_delete', 2),
+    'access arguments' => array(FormBuilder::PERM_DELETE_FORMS),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme. Register themes.
+ *
+ * @return array
+ */
+function xml_form_builder_theme() {
+  return array(
+    'xml_form_editor' => array(
+      'arguments' => array('element'),
+      'template' => 'Formbuilder',
+      'file' => 'FormBuilder.inc'
+    ),
+  );
+}
+
+/**
+ * Implements hook_perm. Register permissions.
+ * 
+ * @return array
+ */
+function xml_form_builder_perm() {
+  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
+  return array(
+    FormBuilder::PERM_LIST_FORMS,
+    FormBuilder::PERM_CREATE_FORMS,
+    FormBuilder::PERM_EDIT_FORMS,
+    FormBuilder::PERM_DELETE_FORMS,
+  );
+}
