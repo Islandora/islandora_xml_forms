@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://localhost/FormDefinition.xsd">
+    <properties>
+        <document_properties>
+            <root>
+                <local_name>form</local_name>
+            </root>
+        </document_properties>
+    </properties>
+    <elements>
+        <element key="element">
+            <type>fieldset</type>
+            <title>Create Element</title>
+            <actions>
+                <read>
+                    <path context="document">/element</path>
+                </read>
+                <create>
+                    <element>element</element>
+                </create>
+            </actions>
+            <children>
+                <element key="type">
+                    <title>Type</title>
+                    <type>select</type>
+                    <options>
+                        <key>
+                            <value type="string">Gets Replace by Hook Form Alter</value>
+                        </key>
+                    </options>
+                    <description>Used to determine the type of form element.</description>
+                </element>
+                <element key="title">
+                    <title>Title</title>
+                    <type>textfield</type>
+                    <description>The title of the form element</description>
+                </element>
+            </children>
+        </element>
+    </elements>
+</form>

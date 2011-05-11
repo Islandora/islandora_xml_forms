@@ -89,16 +89,17 @@ function xml_form_builder_list(array &$form_state) {
  * @param array $form_state 
  */
 function xml_form_builder_list_submit(array $form, array &$form_state) {
+  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   $clicked = $form_state['clicked_button']['#value'];
-  if ($clicked == 'Create') {
-    $form_state['redirect'] = 'xml/form/create';
+  if ($clicked == t('Create')) {
+    $form_state['redirect'] = FormBuilder::CreatePath();
   }
   else {
     $form_name = $form_state['values']['form_name'];
     $redirect = array(
-      'Copy' => "xml/form/$form_name/copy",
-      'Edit' => "xml/form/$form_name/edit",
-      'Delete' => "xml/form/$form_name/delete",
+      t('Copy') => FormBuilder::CopyPath($form_name),
+      t('Edit') => FormBuilder::EditPath($form_name),
+      t('Delete') => FormBuilder::DeletePath($form_name),
     );
     $form_state['redirect'] = isset($redirect[$clicked]) ? $redirect[$clicked] : FALSE;
   }

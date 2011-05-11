@@ -15,6 +15,45 @@ class FormBuilder {
   const PERM_CREATE_FORMS = 'Create Forms';
   const PERM_EDIT_FORMS = 'Edit Forms';
   const PERM_DELETE_FORMS = 'Delete Forms';
+  const BASE_PATH = 'admin/content/xml/form';
+
+  /**
+   * Get the path to the create form.
+   * 
+   * @return string
+   */
+  public static function CreatePath() {
+    return self::BASE_PATH . '/create';
+  }
+
+  /**
+   * Get the path to the create form.
+   * 
+   * @return string
+   */
+  public static function CopyPath($form_name) {
+    return self::BASE_PATH . "/$form_name/copy";
+  }
+
+  /**
+   * Get the path to the edit form.
+   * 
+   * @param string $form_name 
+   * @return string
+   */
+  public static function EditPath($form_name) {
+    return self::BASE_PATH . "/$form_name/edit";
+  }
+
+  /**
+   * Get the path to the edit form.
+   * 
+   * @param string $form_name 
+   * @return string
+   */
+  public static function DeletePath($form_name) {
+    return self::BASE_PATH . "/$form_name/delete";
+  }
 
   /**
    * Get all existing form names.
@@ -120,6 +159,26 @@ class FormBuilder {
   public static function IsValidFormName($form_name) {
     $result = preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/', $form_name);
     return $result != FALSE && $result > 0;
+  }
+
+  /**
+   * Gets a list of all allowed form elements.
+   * 
+   * @staticvar array $cache
+   * @return array
+   */
+  public static function GetElementTypes() {
+    static $cache;
+    if (!isset($cache)) {
+      $cache = array();
+      foreach (module_implements('elements') as $module) {
+        $elements = module_invoke($module, 'elements');
+        if (isset($elements) && is_array($elements)) {
+          $cache = array_merge_recursive($cache, $elements);
+        }
+      }
+    }
+    return array_keys($cache);
   }
 
 }

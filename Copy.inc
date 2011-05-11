@@ -15,7 +15,10 @@
  * @return array
  */
 function xml_form_builder_copy(array &$form_state, $original) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
+  if (isset($_POST['op']) && $_POST['op'] == t('Cancel')) {
+    module_load_include('inc', 'xml_form_builder', 'FormBuilder');
+    drupal_goto(FormBuilder::BASE_PATH);
+  }
   return array(
     'original' => array(
       '#type' => 'hidden',
@@ -23,7 +26,7 @@ function xml_form_builder_copy(array &$form_state, $original) {
     ),
     'form_name' => array(
       '#type' => 'textfield',
-      '#title' => 'Form Name',
+      '#title' => t('Form Name'),
       '#required' => TRUE,
     ),
     'copy' => array(
@@ -69,11 +72,11 @@ function xml_form_builder_copy_submit(array $form, array &$form_state) {
     $original = $form_state['values']['original'];
     $form_name = $form_state['values']['form_name'];
     if (FormBuilder::CopyForm($original, $form_name)) {
-      $form_state['redirect'] = "xml/form/$form_name/edit";
+      $form_state['redirect'] = FormBuilder::EditPath($form_name);
       drupal_set_message("Successfully copied form: $form_name.");
       return;
     }
     drupal_set_message("Failed to copy form: $form_name.", 'error');
   }
-  $form_state['redirect'] = "xml/form/list";
+  $form_state['redirect'] = FormBuilder::BASE_PATH;
 }

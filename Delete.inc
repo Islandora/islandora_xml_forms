@@ -58,5 +58,5 @@ function xml_form_builder_delete_submit(array $form, array &$form_state) {
       drupal_set_message("Failed to deleted form '$form_name'.", 'error');
     }
   }
-  $form_state['redirect'] = "xml/form/list";
+  $form_state['redirect'] = FormBuilder::BASE_PATH;
 }
