@@ -16,11 +16,11 @@
  */
 function xml_form_builder_edit($form_name) {
   $path = drupal_get_path('module', 'xml_form_builder');
-  //drupal_add_js("$path/js/jsTree/_lib/jquery.js");
-  drupal_add_js("$path/js/jsTree/jquery.jstree.js");
+  drupal_add_css("$path/js/ext-4.0.0/resources/css/ext-all.css");
+  drupal_add_js("$path/js/ext-4.0.0/ext-all-debug-w-comments.js");
   drupal_add_js("$path/js/EditForm.js");
-  $output = drupal_get_form('create_element');
-  return theme('edit_form_page', $output);
+  //$output = drupal_get_form('create_element');
+  return '<div id="xml-form-builder-editor"></div>';//theme('edit_form_page', $output);
 }
 
 /**
@@ -59,7 +59,7 @@ function create_element(array &$form_state) {
  */
 function xml_form_builder_form_create_element_alter(array &$form, array &$form_state) {
   module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-  $type = $form[Form::ROOT]['element']['type']['#default_value'];
+  //$type = $form[Form::ROOT]['element']['type']['#default_value'];
   // TODO call some hook function for modifying the advanced form controls.
 }
 

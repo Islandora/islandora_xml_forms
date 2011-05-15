@@ -35,12 +35,6 @@ function xml_form_builder_list(array &$form_state) {
     );
   }
   else {
-    $preview = 'Preview is not availible.';
-    $preview_form_name = current($names);
-    if (FormBuilder::HasFormDefinition('stuff')) {// $preview_form_name)) {
-      module_load_include('inc', 'xml_form_builder', 'Preview');
-      $preview = drupal_get_form('xml_form_builder_preview', 'stuff');//$preview_form_name);
-    }
     $path = drupal_get_path('module', 'xml_form_builder');
     drupal_add_js($path.'/js/Export.js');
     return array(
@@ -65,6 +59,10 @@ function xml_form_builder_list(array &$form_state) {
           '#type' => 'submit',
           '#value' => t('Edit'),
         ),
+        'view' => array(
+          '#type' => 'submit',
+          '#value' => t('View'),
+        ),
         'export' => array(
           '#type' => 'button',
           '#attributes' => array(
@@ -77,15 +75,6 @@ function xml_form_builder_list(array &$form_state) {
           '#value' => t('Delete'),
         ),
       ),
-      array(
-        '#type' => 'fieldset',
-        '#title' => 'Preview',
-        '#tree' => FALSE,
-        'preview' => array(
-          '#type' => 'markup',
-          '#value' => $preview,
-        )
-      )
     );
   }
 }
@@ -107,6 +96,7 @@ function xml_form_builder_list_submit(array $form, array &$form_state) {
     $redirect = array(
       t('Copy') => FormBuilder::CopyPath($form_name),
       t('Edit') => FormBuilder::EditPath($form_name),
+      t('View') => FormBuilder::ViewPath($form_name),
       t('Delete') => FormBuilder::DeletePath($form_name),
     );
     $form_state['redirect'] = isset($redirect[$clicked]) ? $redirect[$clicked] : FALSE;

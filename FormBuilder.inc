@@ -46,6 +46,16 @@ class FormBuilder {
   }
 
   /**
+   * Get the path to view the form.
+   *
+   * @param string $form_name
+   * @return string
+   */
+  public static function ViewPath($form_name) {
+    return self::BASE_PATH . "/$form_name/view";
+  }
+
+  /**
    * Get the path to the edit form.
    * 
    * @param string $form_name 
@@ -201,11 +211,8 @@ class FormBuilder {
   public static function Export($form_name) {
     if (self::FormExists($form_name)) {
       header('Content-Type: text/xml', true);
-      //header('Content-Encoding: none');
       header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
-      //header('Cache-Control: private');
-      //header('Connection: close');
-      echo '<form></form>'; // self::GetFormDefinition($form_name);
+      echo self::GetFormDefinition($form_name);
       exit();
     }
     else {

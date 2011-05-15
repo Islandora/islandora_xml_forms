@@ -15,8 +15,8 @@
  */
 function xml_form_builder_preview(array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-  if (!FormBuilder::FormExists($form_name)) {
-    drupal_set_message(t("Form '$form_name' does not exist."));
+  if (!FormBuilder::FormExists($form_name) || !FormBuilder::HasFormDefinition($form_name)) {
+    drupal_set_message(t("Form '$form_name' does not exist, or it does not have a complete definition."));
     drupal_not_found();
     exit();
   }
