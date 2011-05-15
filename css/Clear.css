@@ -36,4 +36,6 @@
 #xml-form-builder-editor form tbody, #xml-form-builder-editor form tbody th, .x-window th, .x-window td {
     border: 0;
 }
-
+#xml-form-builder-editor fieldset {
+    background: none;
+}
