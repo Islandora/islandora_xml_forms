@@ -101,6 +101,18 @@ class FormBuilder {
   /**
    *
    * @param string $form_name
+   * @param DOMDocument $definition 
+   */
+  public static function SetFormDefinition($form_name, DOMDocument $definition) {
+    if (self::FormExists($form_name)) {
+      return db_query("UPDATE {xml_forms} set form = '%s' WHERE name = '%s'", $definition->saveXML(), $form_name);
+    }
+    return FALSE;
+  }
+
+  /**
+   *
+   * @param string $form_name
    * @return boolean
    */
   public static function CreateForm($form_name) {
@@ -178,7 +190,27 @@ class FormBuilder {
         }
       }
     }
-    return array_keys($cache);
+    $types = array_keys($cache);
+    foreach ($types as $type) {
+      unset($types[key($types)]);
+      $types[$type] = $type;
+    }
+    return $types;
+  }
+
+  public static function Export($form_name) {
+    if (self::FormExists($form_name)) {
+      header('Content-Type: text/xml', true);
+      //header('Content-Encoding: none');
+      header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
+      //header('Cache-Control: private');
+      //header('Connection: close');
+      echo '<form></form>'; // self::GetFormDefinition($form_name);
+      exit();
+    }
+    else {
+      drupal_not_found();
+    }
   }
 
 }

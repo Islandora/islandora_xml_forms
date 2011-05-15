@@ -6,6 +6,7 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_builder', 'Edit'); // Needed to make use of AHAH functions...
 
 /**
  * Implements hook_menu. Register menus.
@@ -38,6 +39,17 @@ function xml_form_builder_menu() {
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_preview', 4),
+    'access arguments' => array(FormBuilder::PERM_LIST_FORMS),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * Export the form.
+   */
+  $items['admin/content/xml/form/%/export'] = array(
+    'title' => 'Export Form',
+    'description' => 'Export a form.',
+    'page callback' => 'xml_form_builder_export',
+    'page arguments' => array(4),
     'access arguments' => array(FormBuilder::PERM_LIST_FORMS),
     'type' => MENU_CALLBACK,
   );
@@ -84,6 +96,15 @@ function xml_form_builder_menu() {
     'access arguments' => array(FormBuilder::PERM_DELETE_FORMS),
     'type' => MENU_CALLBACK,
   );
+  $items['admin/content/xml/form/ahah/controls'] = array(
+    'title' => 'Advanced Form Contols',
+    'description' => 'Returns the advanced controls for a given form element type.',
+    'file' => 'Edit.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'xml_form_builder_ahah_controls',
+    'access arguments' => array(FormBuilder::PERM_EDIT_FORMS),
+    'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 
@@ -115,4 +136,14 @@ function xml_form_builder_perm() {
     FormBuilder::PERM_EDIT_FORMS,
     FormBuilder::PERM_DELETE_FORMS,
   );
+}
+
+/**
+ *
+ * @param string $form_name 
+ */
+function xml_form_builder_export($form_name) {
+  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
+  FormBuilder::Export($form_name);
+  exit();
 }

@@ -20,10 +20,19 @@ function xml_form_builder_create(array &$form_state) {
     drupal_goto(FormBuilder::BASE_PATH);
   }
   return array(
+    '#attributes' => array(
+      'enctype' => "multipart/form-data"
+    ),
     'form_name' => array(
       '#type' => 'textfield',
       '#title' => 'Form Name',
       '#required' => TRUE,
+    ),
+    'file' => array(
+      '#type' => 'file',
+      '#title' => t('Form Definition'),
+      '#size' => 64,
+      '#description' => t('An XML Form Definition, to associate with this file.'),
     ),
     'create' => array(
       '#type' => 'submit',
@@ -53,6 +62,19 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
   else if (FormBuilder::FormExists($form_name)) {
     form_set_error('form_name', "The given form name '$form_name' is already in use. Form names must be unique.");
   }
+  if (isset($_FILES['files'])) {
+    if ($_FILES['files']['type']['file'] == 'text/xml') {
+      module_load_include('inc', 'xml_form_api', 'FormDefinition');
+      $definition = new DOMDocument();
+      $definition->load($_FILES['files']['tmp_name']['file']);
+      if (!FormDefinition::isValid($definition)) {
+        form_set_error('files', "The given form definition is not valid.");
+      }
+    }
+    else {
+      form_set_error('files', "Form definitions must have a type of text/xml.");
+    }
+  }
 }
 
 /**
@@ -68,6 +90,11 @@ function xml_form_builder_create_submit(array $form, array &$form_state) {
   if ($clicked == t('Create')) {
     if (FormBuilder::CreateForm($form_name)) {
       drupal_set_message("Successfully created form: $form_name.");
+      if (isset($_FILES['files'])) {
+        $definition = new DOMDocument();
+        $definition->load($_FILES['files']['tmp_name']['file']);
+        FormBuilder::SetFormDefinition($form_name, $definition);
+      }
       $form_state['redirect'] = FormBuilder::EditPath($form_name);
       return;
     }

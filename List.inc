@@ -36,12 +36,13 @@ function xml_form_builder_list(array &$form_state) {
   }
   else {
     $preview = 'Preview is not availible.';
-    $preview_form_name = array_shift($names);
-    $names[$preview_form_name] = $preview_form_name;
-    if (FormBuilder::HasFormDefinition($preview_form_name)) {
+    $preview_form_name = current($names);
+    if (FormBuilder::HasFormDefinition('stuff')) {// $preview_form_name)) {
       module_load_include('inc', 'xml_form_builder', 'Preview');
-      $preview = drupal_get_form('xml_form_builder_preview', $preview_form_name);
+      $preview = drupal_get_form('xml_form_builder_preview', 'stuff');//$preview_form_name);
     }
+    $path = drupal_get_path('module', 'xml_form_builder');
+    drupal_add_js($path.'/js/Export.js');
     return array(
       array(
         '#type' => 'fieldset',
@@ -63,6 +64,13 @@ function xml_form_builder_list(array &$form_state) {
         'edit' => array(
           '#type' => 'submit',
           '#value' => t('Edit'),
+        ),
+        'export' => array(
+          '#type' => 'button',
+          '#attributes' => array(
+            'onclick' => 'return false;'
+          ),
+          '#value' => 'Export',
         ),
         'delete' => array(
           '#type' => 'submit',

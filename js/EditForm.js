@@ -5,5 +5,5 @@
 
 // 
 $(document).ready(function() {
-   jQuery('#xml-form-builder-edit-tree').jstree({ "plugins" : [ "themes", "html_data" ] }); 
+   
 });
