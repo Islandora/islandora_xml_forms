@@ -25,7 +25,7 @@
                     <children>
                         <element key="test">
                             <type>textfield</type>
-                            <tree>false</tree>
+                            <tree>true</tree>
                             <default_value type="string">testing 123</default_value>
                         </element>
                         <element key="e">
@@ -41,11 +41,6 @@
                             </actions>
                         </element>
                     </children>
-                    <user_data>
-                        <key>
-                            <value type="string">foobar</value>
-                        </key>
-                    </user_data>
                     <actions>
                         <read>
                             <path context="document">/mods:mods/mods:titleInfo</path>

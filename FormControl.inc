@@ -130,7 +130,7 @@ class FormControl {
   public static function convertSimpleXMLToArray(SimpleXMLElement $element) {
     $keys = $element->xpath('key');
     foreach ($keys as $key) {
-      if (($name = $key['name']) != null) {
+      if (($name = (string)$key['name']) != null) {
         $output[$name] = self::convertSimpleXMLArrayKey($key);
       }
       else {

@@ -53,7 +53,7 @@ class Form {
    * 
    * @var FormElements
    */
-  protected $elements;
+  public $elements;
   protected $form_state;
 
   /**

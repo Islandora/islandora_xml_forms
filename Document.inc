@@ -103,8 +103,8 @@ class Document {
    */
   private function createRootElement() {
     $properties = $this->properties;
-    $name = $properties->root_prefix ? "{$properties->root_prefix}:{$properties->root_name}" : $properties->root_name;
-    return new DOMElement($name, NULL, $properties->root_uri);
+    $name = isset($properties->prefix) ? "{$properties->prefix}:{$properties->name}" : $properties->name;
+    return new DOMElement($name, NULL, $properties->uri);
   }
 
   /**

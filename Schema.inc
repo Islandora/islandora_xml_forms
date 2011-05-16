@@ -153,7 +153,7 @@ class Schema {
     $this->namespace = $this->getNamespace($namespace);
     self::$schemas[$this->filename] = $this;
     $this->loadSchema();
-    var_dump($filename);
+    //var_dump($filename);
   }
 
   private function getSchemaLocation() {
@@ -256,7 +256,7 @@ class Schema {
   public function getAllElements() {
     $results = $this->query('/xs:schema/xs:element[@name]');
     array_walk($results, array($this, 'foo'));
-    var_dump($results);
+    //var_dump($results);
   }
 
 

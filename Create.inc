@@ -96,6 +96,22 @@ class Create implements Action {
     }
     return NULL;
   }
+  
+  /**
+   * Get the type of DOMNode to create.
+   * 
+   * @param SimpleXMLElement $create
+   * @return integer
+   *   Either Create::Element, Create::Attribute, Create::XML, or NULL if $create is not valid. 
+   */
+  public static function getPrefix(SimpleXMLElement $create, $type) {
+    $types = array(self::Element => 'element', self::Element => 'attribute', self::XML => 'xml');
+    if(isset($types[$type])) {
+      $type = $types[$type];
+      return isset($create->$type['prefix']) ? (string) $create->$type['prefix'] : NULL; 
+    }
+    return NULL;
+  }
 
   /**
    * Construct Create Action.
@@ -106,7 +122,6 @@ class Create implements Action {
   public function __construct(array &$params) {
     $this->path = $params['path'];
     $this->type = $params['type'];
-    $this->context = $params['context'];
     $this->schemaName = isset($params['schema_name']) ? $params['schema_name'] : null;
     $this->schamePath = isset($params['schema_path']) ? $params['schema_path'] : null;
     if ($this->valid()) {
