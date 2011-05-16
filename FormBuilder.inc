@@ -220,4 +220,51 @@ class FormBuilder {
     }
   }
 
+  public static function TransformToJSON($form_name) {
+    if (self::HasFormDefinition($form_name)) {
+      module_load_include('inc', 'xml_form_api', 'FormDefinition');
+      $form_definition = FormDefinition::createFromXMLDefiniton(self::GetFormDefinition($form_name));
+      $root = $form_definition->elements->root;
+      $elements = array(
+        'text' => 'Elements',
+        'id' => 'elements',
+        'expanded' => TRUE,
+        'children' => array()
+      );
+      foreach ($root as $element) {
+        $elements['children'][] = self::TransformElement($element);
+      }
+      return json_encode(array('properties' => NULL, 'elements' => $elements));
+    }
+    else {
+      return json_encode(array('properties' => NULL, 'elements' => NULL));
+    }
+  }
+
+  private static function TransformElement(FormElement $element) {
+    $output = array();
+    // Form Controls.
+    foreach ($element->controls as $name => $control) {
+      $name = str_replace('#', '', $name); // Remove the Hash.
+      $value = $control->value;
+      $output[$name] = $value;
+    } 
+    // Children
+    foreach ($element as $child) {
+      $output['children'][] = self::TransformElement($child);
+    }
+    // Tree properties
+    if (isset($output['children']) && count($output['children']) > 0) {
+      $output['leaf'] = false;
+    }
+    else {
+      $output['leaf'] = true;
+    }
+    $key = $element->key;
+    $type = $element['#type'];
+    $output['key'] = $key; 
+    $output['text'] = "{$key} ({$type})";
+    return $output;
+  }
+
 }

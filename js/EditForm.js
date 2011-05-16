@@ -14,7 +14,7 @@ Ext.app = (function() {
             this.createTypes();
             return Ext.create('Ext.panel.Panel', {
                 width: 960,
-                height: 800,
+                height: 3000,
                 title: 'Form Editor',
                 layout: 'border',
                 renderTo: 'xml-form-builder-editor',
@@ -105,18 +105,38 @@ Ext.app = (function() {
             });*/
             Ext.define('Element', {
                 extend: 'Ext.data.Model',
-                fields: ['id', 'parent_id', 'name', 'text'],
+                fields: [{
+                    name: 'key', 
+                    type: 'string'
+                }, {
+                    name: 'text', 
+                    type: 'string'
+                }, {
+                    name: 'type', 
+                    type: 'string'
+                }, {
+                    name: 'access', 
+                    type: 'boolean'
+                }, {
+                    name: 'after_build',
+                    type: 'array'
+                }, {
+                    name: 'ahah',
+                    type: 'array'
+                }, {
+                    name: 'attributes',
+                    type: 'array'
+                }, {
+                    name: 'autocomplete_path',
+                    type: 'string'
+                }],
                 associations: [{
                     type: 'hasMany',
                     model: 'Element',
-                    primaryKey: 'id',
-                    foreignKey: 'parent_id',
                     associationKey: 'children'
                 }, {
                     type: 'belongsTo',
                     model: 'Element',
-                    primaryKey: 'id',
-                    foreignKey: 'parent_id',
                     associatedKey: 'parent'
                 }]
             });
@@ -164,6 +184,14 @@ Ext.app = (function() {
                         text: 'Delete'
                     }
                     ]
+                },
+                listeners: {
+                    itemclick: function(view, record, item, index, event) {
+                        var display = Ext.getCmp('xml-form-builder-display').layout;
+                        display.setActiveItem(2);
+                        var form = Ext.getCmp('xml-form-builder-element-form').getForm();
+                        form.loadRecord(record);
+                    }
                 }
             });
         },
@@ -187,6 +215,7 @@ Ext.app = (function() {
         },
         createElementForm: function() {
             return Ext.create('Ext.form.Panel', {
+                id: 'xml-form-builder-element-form',
                 title: 'Element Form',
                 region: 'center',
                 frame: true,
@@ -194,10 +223,12 @@ Ext.app = (function() {
                 items: [{
                     xtype: 'fieldset',
                     title: 'Common Form Controls',
+                    collapsible: true,
                     items: [{
                         xtype: 'textfield',
-                        name: 'name',
-                        fieldLabel: 'Name'
+                        name: 'key',
+                        fieldLabel: 'Name',
+                        width: 500
                     }, {
                         xtype: 'combobox',
                         name: 'type',
@@ -207,10 +238,417 @@ Ext.app = (function() {
                         fieldLabel: 'Type',
                         queryMode: 'local'
                     },{
+                        xtype: 'checkbox',
+                        name: 'access',
+                        fieldLabel: 'Access',
+                        checked: true
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'After Build',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            func: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'func',
+                            header: 'Function',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'fieldset',
+                        title: 'Ahah',
+                        name: 'ahah',
+                        collapsible: true,
+                        items: [{
+                            xtype: 'textfield',
+                            name: 'effect',
+                            fieldLabel: 'Effect'
+                        },{
+                            xtype: 'textfield',
+                            name: 'event',
+                            fieldLabel: 'Event'
+                        },{
+                            xtype: 'checkbox',
+                            name: 'keypress',
+                            fieldLabel: 'Keypress'
+                        },{
+                            xtype: 'textfield',
+                            name: 'method',
+                            fieldLabel: 'Method'
+                        },{
+                            xtype: 'textfield',
+                            name: 'path',
+                            fieldLabel: 'Path'
+                        },{
+                            xtype: 'textfield',
+                            name: 'progress',
+                            fieldLabel: 'Progress'
+                        },{
+                            xtype: 'textfield',
+                            name: 'wrapper',
+                            fieldLabel: 'Wrapper'
+                        }]
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'Attributes',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            key: '',
+                            value: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'key',
+                            header: 'Key',
+                            sortable: true,
+                            width: 200,
+                            field: {
+                                type: 'textfield'
+                            }
+                        },{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'value',
+                            header: 'Value',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'textfield',
+                        name: 'autocomplete_path',
+                        fieldLabel: 'Autocomplete Path'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'button_type',
+                        fieldLabel: 'Button Type'
+                    }, {
+                        xtype: 'checkbox',
+                        name: 'collapsed',
+                        fieldLabel: 'Collapsed'
+                    },  {
+                        xtype: 'numberfield',
+                        name: 'cols',
+                        fieldLabel: 'Cols'
+                    }, {
+                        xtype: 'checkbox',
+                        name: 'collapsed',
+                        fieldLabel: 'Collapsed'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'default_value',
+                        fieldLabel: 'Default Value'
+                    },  {
+                        xtype: 'numberfield',
+                        name: 'delta',
+                        fieldLabel: 'Delta'
+                    }, {
                         xtype: 'textarea',
                         name: 'description',
-                        fieldLabel: 'Description'
+                        fieldLabel: 'Description',
+                        width: 500
+                    }, {
+                        xtype: 'checkbox',
+                        name: 'disabled',
+                        fieldLabel: 'Disabled'
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'Element Validation',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            func: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'func',
+                            header: 'Function',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'checkbox',
+                        name: 'executes_submit_callback',
+                        fieldLabel: 'Executes Submit Callback'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'field_prefix',
+                        fieldLabel: 'Field Prefix'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'field_suffix',
+                        fieldLabel: 'Field Suffix'
+                    }, {
+                        xtype: 'numberfield',
+                        name: 'maxlength',
+                        fieldLabel: 'Max Length'
+                    }, {
+                        xtype: 'combobox',
+                        name: 'method',
+                        fieldLabel: 'Method',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: true,
+                        store: new Ext.data.Store({
+                            fields: ['display', 'value'],
+                            data: [{
+                                display: 'Post', 
+                                value: 'post'
+                            },{
+                                display: 'Get', 
+                                value: 'get'
+                            }]
+                        })
+                    }, {
+                        xtype: 'checkbox',
+                        name: 'multiple',
+                        fieldLabel: 'Multiple'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'name',
+                        fieldLabel: 'Name'
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'Options',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            key: '',
+                            value: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'key',
+                            header: 'Key',
+                            sortable: true,
+                            width: 100,
+                            field: {
+                                type: 'textfield'
+                            }
+                        },{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'value',
+                            header: 'Value',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'Post Render',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            func: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'func',
+                            header: 'Functions',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'textfield',
+                        name: 'prefix',
+                        title: 'Prefix'
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'Pre Render',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            func: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'func',
+                            header: 'Functions',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'Process',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            func: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'func',
+                            header: 'Functions',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'checkbox',
+                        name: 'required',
+                        fieldLabel: 'Required'
+                    }, {
+                        xtype: 'checkbox',
+                        name: 'resizable',
+                        fieldLabel: 'Resizable'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'return_value',
+                        fieldLabel: 'Return Value'
+                    }, {
+                        xtype: 'numberfield',
+                        name: 'rows',
+                        fieldLabel: 'Rows'
+                    }, {
+                        xtype: 'numberfield',
+                        name: 'size',
+                        fieldLabel: 'Size'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'src',
+                        fieldLabel: 'Src'
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'Submit',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            func: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'func',
+                            header: 'Functions',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'textfield',
+                        name: 'suffix',
+                        fieldLabel: 'Suffix'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'theme',
+                        fieldLabel: 'Theme'
+                    }, {
+                        xtype: 'textfield',
+                        name: 'title',
+                        fieldLabel: 'Title'
+                    }, {
+                        xtype: 'checkbox',
+                        name: 'tree',
+                        fieldLabel: 'Tree'
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'Validate',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            func: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'func',
+                            header: 'Functions',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
+                    }, {
+                        xtype: 'textfield',
+                        name: 'value',
+                        fieldLabel: 'Value'
+                    }, {
+                        xtype: 'numberfield',
+                        name: 'weight',
+                        fieldLabel: 'Weight'
+                    }, {
+                        xtype: 'editablegrid',
+                        title: 'User Data',
+                        height: 150,
+                        collapsible: true,
+                        store: this.createNamespaceStorage(),
+                        modelInitTmpl: {
+                            key: '',
+                            value: ''
+                        },
+                        columns: [{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'key',
+                            header: 'Key',
+                            sortable: true,
+                            width: 150,
+                            field: {
+                                type: 'textfield'
+                            }
+                        },{
+                            xtype: 'gridcolumn',
+                            dataIndex: 'value',
+                            header: 'Value',
+                            sortable: true,
+                            flex: 1,
+                            field: {
+                                type: 'textfield'
+                            }
+                        }]
                     }]
+                }],
+                buttons: [{
+                    text: 'Reset',
+                    handler: function() {
+                        this.up('form').getForm().reset();
+                    }
+                }, {
+                    text: 'Submit',
+                    formBind: true, //only enabled once the form is valid
+                    disabled: true,
+                    handler: function() {
+                        var form = this.up('form').getForm();
+                        if (form.isValid()) {
+                            var record = form.getRecord();
+                            record.beginEdit();
+                            var values = form.getValues();
+                            for(var i in values) {
+                                record.set(i, values[i]);
+                            }
+                            record.endEdit();
+                        }
+                    }
                 }]
             });
         },
@@ -351,7 +789,7 @@ Ext.app = (function() {
                 model: 'Element',
                 proxy: {
                     type: 'memory',
-                    data: data,
+                    data: Ext.app.FormDefinition.elements,
                     reader: {
                         type: 'json'
                     }
@@ -363,7 +801,7 @@ Ext.app = (function() {
                 }
             });
         },
-        defineGridWriter: function() {
+        defineEditiableGrid: function() {
             Ext.define('Editable.Grid', {
                 extend: 'Ext.grid.Panel',
                 alias: 'widget.editablegrid',
@@ -420,7 +858,7 @@ Ext.app = (function() {
             });
         },
         createTypes: function() {
-            this.defineGridWriter();
+            this.defineEditiableGrid();
         }
         
     }

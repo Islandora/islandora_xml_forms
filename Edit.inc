@@ -15,14 +15,25 @@
  * @return array
  */
 function xml_form_builder_edit($form_name) {
+  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   $path = drupal_get_path('module', 'xml_form_builder');
   drupal_add_css("$path/css/Clear.css");
   drupal_add_css("$path/css/EditForm.css");
   drupal_add_css("$path/js/ext-4.0.0/resources/css/ext-all.css");
   drupal_add_js("$path/js/ext-4.0.0/ext-all-debug-w-comments.js");
   drupal_add_js("$path/js/EditForm.js");
+  foobar($form_name);
   //$output = drupal_get_form('create_element');
-  return '<div id="xml-form-builder-editor"></div>';//theme('edit_form_page', $output);
+  return '<div id="xml-form-builder-editor"></div>'; //theme('edit_form_page', $output);
+}
+
+function foobar($form_name) {
+  $form_definition = Formbuilder::TransformToJSON($form_name);
+  $js = <<<EOT
+  Ext.ns('Ext.app.FormDefinition');
+  Ext.app.FormDefinition = $form_definition;
+EOT;
+  drupal_add_js($js, 'inline');
 }
 
 /**
