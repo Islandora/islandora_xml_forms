@@ -173,7 +173,7 @@ Ext.app = (function() {
                 region: 'center',
                 layout: 'card',
                 margin: '1 1 1 0',
-                activeItem: 1,
+                activeItem: 2,
                 unstyled: true,
                 defaults: {
                     bodyStyle: 'padding:15px'
@@ -189,12 +189,28 @@ Ext.app = (function() {
             return Ext.create('Ext.form.Panel', {
                 title: 'Element Form',
                 region: 'center',
+                frame: true,
                 margin: '1 1 1 0',
                 items: [{
-                    xtype: 'textfield',
-                    name: 'name',
-                    fieldLabel: 'Name',
-                    allowBlank: false
+                    xtype: 'fieldset',
+                    title: 'Common Form Controls',
+                    items: [{
+                        xtype: 'textfield',
+                        name: 'name',
+                        fieldLabel: 'Name'
+                    }, {
+                        xtype: 'combobox',
+                        name: 'type',
+                        store: this.createTypeStorage(),
+                        displayField: 'display',
+                        valueField: 'value',
+                        fieldLabel: 'Type',
+                        queryMode: 'local'
+                    },{
+                        xtype: 'textarea',
+                        name: 'description',
+                        fieldLabel: 'Description'
+                    }]
                 }]
             });
         },
@@ -268,6 +284,26 @@ Ext.app = (function() {
                         }
                     }]
                 }]
+            });
+        },
+        createTypeStorage: function() {
+            Ext.define('Type', {
+                extend: 'Ext.data.Model',
+                fields: ['display', 'value']
+            });
+            return Ext.create('Ext.data.Store', {
+                storeId: 'TypeStore',
+                model: 'Type',
+                proxy: {
+                    type: 'memory',
+                    reader: {
+                        type: 'json'
+                    },
+                    data: [{
+                        display: 'Textfield',
+                        value: 'textfield'
+                    }]
+                }
             });
         },
         createNamespaceStorage: function() {
