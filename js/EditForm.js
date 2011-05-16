@@ -11,6 +11,7 @@ Ext.app = (function() {
         /* Create the App object and render it. */
         create: function () {
             this.createModels();
+            this.createTypes();
             return Ext.create('Ext.panel.Panel', {
                 width: 960,
                 height: 800,
@@ -123,15 +124,6 @@ Ext.app = (function() {
                 extend: 'Ext.data.Model',
                 fields: ['prefix', 'uri']
             });
-        //            element = new Element({
-        //                id: 0,
-        //                parent_id: null,
-        //                name: "root"
-        //            });
-        //var children = element.children();
-        //children.add(new Element({
-        //                name: 'child'
-        //  /          }));
         },
         createTree: function () {
             return Ext.create('Ext.tree.Panel', {
@@ -248,22 +240,32 @@ Ext.app = (function() {
                         anchor: '100%'
                     }]
                 },{
-                    xtype: 'grid',
+                    xtype: 'editablegrid',
                     title: 'Namespaces',
                     height: 300,
-                    //width: 454,
                     store: this.createNamespaceStorage(),
+                    modelInitTmpl: {
+                        prefix: '', 
+                        uri: ''
+                    },
                     columns: [{
                         xtype: 'gridcolumn',
-                        dataIndex: 'string',
+                        dataIndex: 'prefix',
                         header: 'Prefix',
                         sortable: true,
-                        width: 150
+                        width: 150,
+                        field: {
+                            type: 'textfield'
+                        }
                     },{
                         xtype: 'gridcolumn',
+                        dataIndex: 'uri',
                         header: 'URI',
                         sortable: true,
-                        flex: 1
+                        flex: 1,
+                        field: {
+                            type: 'textfield'
+                        }
                     }]
                 }]
             });
@@ -324,7 +326,67 @@ Ext.app = (function() {
                     expanded: true
                 }
             });
+        },
+        defineGridWriter: function() {
+            Ext.define('Editable.Grid', {
+                extend: 'Ext.grid.Panel',
+                alias: 'widget.editablegrid',
+                requires: [
+                'Ext.grid.plugin.CellEditing',
+                'Ext.form.field.Text',
+                'Ext.toolbar.TextItem'
+                ],
+                initComponent: function() {
+                    this.editing = Ext.create('Ext.grid.plugin.CellEditing');
+                    Ext.apply(this, {
+                        iconCls: 'icon-grid',
+                        frame: true,
+                        plugins: [this.editing],
+                        dockedItems: [{
+                            xtype: 'toolbar',
+                            items: [{
+                                iconCls: 'icon-add',
+                                text: 'Add',
+                                scope: this,
+                                handler: this.onAddClick
+                            }, {
+                                iconCls: 'icon-delete',
+                                text: 'Delete',
+                                disabled: true,
+                                itemId: 'delete',
+                                scope: this,
+                                handler: this.onDeleteClick
+                            }]
+                        }]
+                    });
+                    this.callParent();
+                    this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
+                },
+                onSelectChange: function(selModel, selections){
+                    this.down('#delete').setDisabled(selections.length === 0);
+                },
+                onDeleteClick: function(){
+                    var selection = this.getView().getSelectionModel().getSelection()[0];
+                    if (selection) {
+                        this.store.remove(selection);
+                    }
+                },
+                onAddClick: function(){
+                    var rec = Ext.ModelManager.create(this.modelInitTmpl, this.store.model.modelName);
+                    var edit = this.editing;
+                    edit.cancelEdit();
+                    this.store.insert(0, rec);
+                    edit.startEditByPosition({
+                        row: 0,
+                        column: 0
+                    });
+                }
+            });
+        },
+        createTypes: function() {
+            this.defineGridWriter();
         }
+        
     }
     return that;
 })();
