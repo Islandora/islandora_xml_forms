@@ -55,7 +55,8 @@ class Ahah {
     $form['#programmed'] = FALSE;
     $form_state['post'] = $_POST;
     drupal_process_form($form_id, $form, $form_state);
-    return drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
+    $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
+    return $form;
   }
 
   /**
@@ -67,7 +68,7 @@ class Ahah {
     $data = theme('status_messages');
     if(isset($form)) {
       unset($form['#prefix'], $form['#suffix']);
-      $data .= drupal_render($form);
+      $data .= '<div></div>';//drupal_render($form);
     }
     $javascript = drupal_add_js(NULL, NULL, 'header');
     $settings = call_user_func_array('array_merge_recursive', $javascript['setting']);

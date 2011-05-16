@@ -8,7 +8,6 @@
  */
 module_load_include('inc', 'xml_form_elements', 'TabPanel');
 
-
 class Tabs {
 
   /**
@@ -62,12 +61,14 @@ function xml_form_elements_preprocess_tabs(&$vars) {
   $children = array_filter($children, array('Tabs', 'FilterChildren'));
   // First element has different icons, and title.
   $first = array_shift($children);
-  $vars['title'] = $tabs['#title'];
+  $vars['title'] = isset($first['#title']) ? $first['#title'] : $tabs['#title'];
   $vars['link'] = $first['#hash'];
   // Remaining tabpanels.
   $count = 2;
   foreach ($children as $child) {
-    $vars['tabpanels'][$count] = array($child['#hash'], $child[TabPanel::DeleteButton]['#id']);
+    $title = isset($child['#title']) ? $child['#title'] : $count;
+    $delete = isset($child[TabPanel::DeleteButton]) ? $child[TabPanel::DeleteButton]['#id'] : FALSE;
+    $vars['tabpanels'][] = array($title, $child['#hash'], $delete);
     $count++;
   }
   // Content Info

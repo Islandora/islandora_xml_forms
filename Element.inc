@@ -39,6 +39,7 @@ class Element {
     $form = new Form($form_state);
     $new_element = $form->duplicate($duplicate);
     // Rebuild the form, validation and submit callbacks will be called.
+    module_load_include('inc', 'xml_form_builder', 'Edit');
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
@@ -72,6 +73,21 @@ class Element {
    * @param hash $render 
    */
   public static function Validate($render) {
+    list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
+    // Rebuild the form, validation and submit callbacks will be called.
+    $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);
+    // Find the element to render.
+    $element = Utils::getDrupalFormElement($render, $form);
+    // Respond to the request with JSON.
+    Ahah::respond($element);
+  }
+  
+  /**
+   * AHAH callback to rebuild an existing element.
+   * 
+   * @param hash $render 
+   */
+  public static function Rebuild($render) {
     list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
     // Rebuild the form, validation and submit callbacks will be called.
     $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);

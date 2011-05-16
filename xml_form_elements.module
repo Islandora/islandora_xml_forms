@@ -23,6 +23,10 @@ function xml_form_elements_elements() {
   $type['tabpanel'] = array(
     '#input' => TRUE,
     '#process' => array('xml_form_elements_process_tabpanel'),
+    '#user_data' => array(
+      'add' => TRUE,
+      'delete' => TRUE,
+    )
   );
   return $type;
 }
@@ -58,11 +62,11 @@ function xml_form_elements_menu() {
    * is the #hash of the element to render. If the second parameter is not given
    * the newly duplicated element will be rendered.
    */
-  $items['xml_form_elements/ahah/duplicate/%'] = array(
+  $items['xml/form/elements/ahah/duplicate/%'] = array(
     'title' => 'Duplicate a Form Element',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Duplicate',
-    'page arguments' => array(3, 4),
+    'page arguments' => array(5, 6),
     'access arguments' => array('access content'),
     'file' => 'Element.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
@@ -74,11 +78,11 @@ function xml_form_elements_menu() {
    * is the #hash of the element to render. If the second parameter is not given
    * an empty div will be rendered.
    */
-  $items['xml_form_elements/ahah/remove/%'] = array(
+  $items['xml/form/elements/ahah/remove/%'] = array(
     'title' => 'Remove a Form Element',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Remove',
-    'page arguments' => array(3, 4),
+    'page arguments' => array(5, 6),
     'access arguments' => array('access content'),
     'file' => 'Element.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
@@ -88,16 +92,31 @@ function xml_form_elements_menu() {
    * Validate's a form element. Takes one parameter.
    * The first parameter is the #hash of the element to render.
    */
-  $items['xml_form_elements/ahah/validate/%'] = array(
-    'title' => 'Remove a Form Element',
+  $items['xml/form/elements/ahah/validate/%'] = array(
+    'title' => 'Validate a Element',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Validate',
-    'page arguments' => array(3),
+    'page arguments' => array(5),
     'access arguments' => array('access content'),
     'file' => 'Element.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
+  /**
+   * Rebuild the form and re-render a chunk of it. Takes one parameter.
+   * The first parameter is the #hash of the element to render.
+   */
+  $items['xml/form/elements/ahah/rebuild/%'] = array(
+    'title' => 'Rebuild the form.',
+    'description' => 'AHAH callback',
+    'page callback' => 'Element::Rebuild',
+    'page arguments' => array(5),
+    'access arguments' => array('access content'),
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
