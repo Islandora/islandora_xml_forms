@@ -103,6 +103,18 @@ Ext.app = (function() {
                 }
                 ]
             });*/
+            
+            var types = Ext.data.Types; 
+            Ext.data.Types.ARRAY = {
+                type: 'ARRAY'
+            };
+            Ext.define('AfterBuild', {
+                extend: 'Ext.data.Model',
+                fields: [{
+                    name: 'func', 
+                    type: 'string'
+                }]
+            });
             Ext.define('Element', {
                 extend: 'Ext.data.Model',
                 fields: [{
@@ -119,13 +131,13 @@ Ext.app = (function() {
                     type: 'boolean'
                 }, {
                     name: 'after_build',
-                    type: 'array'
+                    type: types.ARRAY
                 }, {
                     name: 'ahah',
                     type: 'array'
                 }, {
                     name: 'attributes',
-                    type: 'array'
+                    //type: 'array'
                 }, {
                     name: 'autocomplete_path',
                     type: 'string'
@@ -191,6 +203,11 @@ Ext.app = (function() {
                         display.setActiveItem(2);
                         var form = Ext.getCmp('xml-form-builder-element-form').getForm();
                         form.loadRecord(record);
+                        // Custom stuff...
+                        var after_build = Ext.getCmp('after_build');
+                        after_build.store.loadData(record.data['after_build'], false);
+                        var attributes = Ext.getCmp('attributes');
+                        attributes.store.loadData(record.data['attributes'], false);
                     }
                 }
             });
@@ -245,15 +262,25 @@ Ext.app = (function() {
                     }, {
                         xtype: 'editablegrid',
                         title: 'After Build',
+                        id: 'after_build',
                         height: 150,
                         collapsible: true,
-                        store: this.createNamespaceStorage(),
+                        store: new Ext.data.Store({
+                            fields: ['function'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'array'
+                                }
+                            },
+                            data: [["testing dummy data"], ['asdf']]
+                        }),
                         modelInitTmpl: {
                             func: ''
                         },
                         columns: [{
                             xtype: 'gridcolumn',
-                            dataIndex: 'func',
+                            dataIndex: 'function',
                             header: 'Function',
                             sortable: true,
                             flex: 1,
@@ -297,10 +324,20 @@ Ext.app = (function() {
                         }]
                     }, {
                         xtype: 'editablegrid',
+                        id: 'attributes',
                         title: 'Attributes',
                         height: 150,
                         collapsible: true,
-                        store: this.createNamespaceStorage(),
+                        store: new Ext.data.Store({
+                            fields: ['key', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{key: 'test', value:'testing'}]
+                        }),
                         modelInitTmpl: {
                             key: '',
                             value: ''
@@ -736,12 +773,14 @@ Ext.app = (function() {
                     type: 'memory',
                     reader: {
                         type: 'json'
-                    },
-                    data: [{
-                        display: 'Textfield',
-                        value: 'textfield'
-                    }]
-                }
+                    }
+                },
+                data: [{
+                    display: 'Textfield',
+                    value: 'textfield',
+                    display: 'Fieldset',
+                    value: 'fieldset'
+                }]
             });
         },
         createNamespaceStorage: function() {
@@ -802,6 +841,63 @@ Ext.app = (function() {
             });
         },
         defineEditiableGrid: function() {
+            Ext.define('Ext.form.Grid', {
+                extend: 'Ext.form.field.Base',
+                mixins: {
+                    gridPanel: 'Ext.grid.Panel'
+                },
+                alias: 'widget.formgrid',
+                requires: [
+                'Ext.grid.plugin.CellEditing',
+                'Ext.form.field.Text',
+                'Ext.toolbar.TextItem'
+                ],
+                initComponent: function() {
+                    this.editing = Ext.create('Ext.grid.plugin.CellEditing');
+                    Ext.apply(this, {
+                        iconCls: 'icon-grid',
+                        frame: true,
+                        plugins: [this.editing],
+                        dockedItems: [{
+                            xtype: 'toolbar',
+                            items: [{
+                                iconCls: 'icon-add',
+                                text: 'Add',
+                                scope: this,
+                                handler: this.onAddClick
+                            }, {
+                                iconCls: 'icon-delete',
+                                text: 'Delete',
+                                disabled: true,
+                                itemId: 'delete',
+                                scope: this,
+                                handler: this.onDeleteClick
+                            }]
+                        }]
+                    });
+                    this.callParent();
+                    this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
+                },
+                onSelectChange: function(selModel, selections){
+                    this.down('#delete').setDisabled(selections.length === 0);
+                },
+                onDeleteClick: function(){
+                    var selection = this.getView().getSelectionModel().getSelection()[0];
+                    if (selection) {
+                        this.store.remove(selection);
+                    }
+                },
+                onAddClick: function(){
+                    var rec = Ext.ModelManager.create(this.modelInitTmpl, this.store.model.modelName);
+                    var edit = this.editing;
+                    edit.cancelEdit();
+                    this.store.insert(0, rec);
+                    edit.startEditByPosition({
+                        row: 0,
+                        column: 0
+                    });
+                }
+            });
             Ext.define('Editable.Grid', {
                 extend: 'Ext.grid.Panel',
                 alias: 'widget.editablegrid',

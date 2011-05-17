@@ -247,8 +247,11 @@ class FormBuilder {
     foreach ($element->controls as $name => $control) {
       $name = str_replace('#', '', $name); // Remove the Hash.
       $value = $control->value;
+      if (is_array($value)) {
+        $value = self::TransformArray($value);
+      }
       $output[$name] = $value;
-    } 
+    }
     // Children
     foreach ($element as $child) {
       $output['children'][] = self::TransformElement($child);
@@ -262,8 +265,36 @@ class FormBuilder {
     }
     $key = $element->key;
     $type = $element['#type'];
-    $output['key'] = $key; 
+    $output['key'] = $key;
     $output['text'] = "{$key} ({$type})";
+    return $output;
+  }
+
+  private static function TransformArray(array $original) {
+    $keys = array_keys($original);
+    $numeric_keys = array_filter($keys, 'is_numeric');
+    $array_is_numerically_keyed = (count($keys) == count($numeric_keys));
+    if ($array_is_numerically_keyed) {
+      return self::TransformArrayExtJSFriendlyArray($original);
+    }
+    else {
+      return self::TransformArrayExtJSFriendlyObject($original);
+    }
+  }
+
+  private static function TransformArrayExtJSFriendlyArray(array $original) {
+    $output = array();
+    foreach ($original as $key => $value) {
+      $output[$key] = array($value);
+    }
+    return $output;
+  }
+  
+   private static function TransformArrayExtJSFriendlyObject(array $original) {
+    $output = array();
+    foreach ($original as $key => $value) {
+      $output[] = array('key' => $key, 'value' => $value);
+    }
     return $output;
   }
 
