@@ -201,11 +201,11 @@ class FormBuilder {
       }
     }
     $types = array_keys($cache);
+    $output = array();
     foreach ($types as $type) {
-      unset($types[key($types)]);
-      $types[$type] = $type;
+      $output[$type] = $type;
     }
-    return $types;
+    return $output;
   }
 
   public static function Export($form_name) {
@@ -238,6 +238,27 @@ class FormBuilder {
     }
     else {
       return json_encode(array('properties' => NULL, 'elements' => NULL));
+    }
+  }
+
+  public static function TransformElementsToJSON($form_name) {
+    if (self::HasFormDefinition($form_name)) {
+      module_load_include('inc', 'xml_form_api', 'FormDefinition');
+      $form_definition = FormDefinition::createFromXMLDefiniton(self::GetFormDefinition($form_name));
+      $root = $form_definition->elements->root;
+      $elements = array(
+        'text' => 'Elements',
+        'id' => 'elements',
+        'expanded' => TRUE,
+        'children' => array()
+      );
+      foreach ($root as $element) {
+        $elements['children'][] = self::TransformElement($element);
+      }
+      return json_encode($elements);
+    }
+    else {
+      return json_encode(array());
     }
   }
 
@@ -289,8 +310,8 @@ class FormBuilder {
     }
     return $output;
   }
-  
-   private static function TransformArrayExtJSFriendlyObject(array $original) {
+
+  private static function TransformArrayExtJSFriendlyObject(array $original) {
     $output = array();
     foreach ($original as $key => $value) {
       $output[] = array('key' => $key, 'value' => $value);

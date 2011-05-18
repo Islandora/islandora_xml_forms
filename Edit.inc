@@ -20,18 +20,77 @@ function xml_form_builder_edit($form_name) {
   drupal_add_css("$path/css/Clear.css");
   drupal_add_css("$path/css/EditForm.css");
   drupal_add_css("$path/js/ext-4.0.0/resources/css/ext-all.css");
+  // Ext JS 4.0
   drupal_add_js("$path/js/ext-4.0.0/ext-all-debug-w-comments.js");
-  drupal_add_js("$path/js/EditForm.js");
-  foobar($form_name);
-  //$output = drupal_get_form('create_element');
+  // Main Application
+  drupal_add_js("$path/js/Formbuilder.js");
+  // Custom Types
+  drupal_add_js("$path/js/FormGrid.js");
+  drupal_add_js("$path/js/Tooltips.js");
+  // Custom Models
+  drupal_add_js("$path/js/ElementModel.js");
+  // Actual Panels that make up the editor.
+  drupal_add_js("$path/js/MainPanel.js");
+  drupal_add_js("$path/js/DisplayPanel.js");
+  drupal_add_js("$path/js/TreePanel.js");
+  drupal_add_js("$path/js/ElementForm.js");
+  drupal_add_js("$path/js/PropertiesForm.js");
+  drupal_add_js("$path/js/PreviewPanel.js");
+  xml_form_builder_create_element_type_store();
+  xml_form_builder_create_element_store($form_name);
   return '<div id="xml-form-builder-editor"></div>'; //theme('edit_form_page', $output);
 }
 
-function foobar($form_name) {
-  $form_definition = Formbuilder::TransformToJSON($form_name);
+/**
+ * Create store to be used in Element Type Combo Box.
+ */
+function xml_form_builder_create_element_type_store() {
+  $types = Formbuilder::GetElementTypes();
+  $data = array();
+  foreach ($types as $type) {
+    $data[] = array('display' => $type, 'value' => $type);
+  }
+  $data = json_encode($data);
   $js = <<<EOT
-  Ext.ns('Ext.app.FormDefinition');
-  Ext.app.FormDefinition = $form_definition;
+  Ext.formbuilder.elementTypeStore = Ext.data.Store({
+    storeId: 'ElementTypes',
+    fields: ['display', 'value'],
+    proxy: {
+      type: 'memory',
+      reader: {
+        type: 'json'
+      }
+    },
+    data: $data
+  });
+EOT;
+  drupal_add_js($js, 'inline');
+}
+
+/**
+ * Create a element store.
+ * 
+ * @param string $form_name 
+ */
+function xml_form_builder_create_element_store($form_name) {
+  $data = Formbuilder::TransformElementsToJSON($form_name);
+  $js = <<<EOT
+  Ext.formbuilder.elementStore = Ext.create('Ext.data.TreeStore', {
+    storeId: 'ElementStore',
+    model: 'Element',
+    proxy: {
+      type: 'memory',
+      data: $data,
+      reader: {
+        type: 'json'
+      }
+    },
+    root: {
+      text: 'Elements',
+      id: 'elements',
+      expanded: true
+    }
+ });
 EOT;
   drupal_add_js($js, 'inline');
 }
