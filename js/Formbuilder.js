@@ -26,7 +26,9 @@ Ext.formbuilder = (function() {
             this.treePanel = this.createTreePanel(); // Defined in TreePanel.js
             /* Create Main Panel */
             this.mainPanel = this.createMainPanel([this.treePanel, this.displayPanel]); // Defined in MainPanel.js
-            this.createToolTips(); // Defined in Tooltips.js
+            //this.mainPanel.addListener('render', function() {
+                this.createToolTips(); // Defined in Tooltips.js
+            //});
         },
         /**
          * Creates an array based store.
