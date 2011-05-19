@@ -22,13 +22,12 @@ Ext.formbuilder = (function() {
             this.elementForm = this.createElementForm(); // Defined in ElementForm.js
             this.previewPanel = this.createPreviewPanel(url); // Defined in PreviewPanel.js
             this.displayPanel = this.createDisplayPanel([this.previewPanel, this.elementForm, this.propertiesForm]); // Defined in DisplayPanel.js
+            this.displayPanel.activeItem = 1;// TODO: remove.
             /* Create Tree Panel */
             this.treePanel = this.createTreePanel(); // Defined in TreePanel.js
             /* Create Main Panel */
             this.mainPanel = this.createMainPanel([this.treePanel, this.displayPanel]); // Defined in MainPanel.js
-            //this.mainPanel.addListener('render', function() {
-                this.createToolTips(); // Defined in Tooltips.js
-            //});
+            this.createToolTips(); // Defined in Tooltips.js
         },
         /**
          * Creates an array based store.
