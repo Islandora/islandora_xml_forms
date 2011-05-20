@@ -23,17 +23,21 @@ Ext.formbuilder.createPropertiesForm = function() {
             title: 'Root Element',
             items: [{
                 xtype: 'textfield',
-                id: 'local_name',
-                name: 'local_name',
+                id: 'name',
+                name: 'name',
                 fieldLabel: 'Local Name',
                 anchor: '100%',
                 allowBlank: false
             },{
                 xtype: 'textfield',
+                id: 'prefix',
+                name: 'prefix',
                 fieldLabel: 'Namespace Prefix',
                 anchor: '100%'
             },{
                 xtype: 'textfield',
+                id: 'uri',
+                name: 'uri',
                 fieldLabel: 'Namespace URI',
                 anchor: '100%'
             }]
@@ -42,6 +46,8 @@ Ext.formbuilder.createPropertiesForm = function() {
             title: 'Schema',
             items: [{
                 xtype: 'textfield',
+                id: 'schema',
+                name: 'schema',
                 fieldLabel: 'Name',
                 anchor: '100%'
             },{
@@ -52,6 +58,7 @@ Ext.formbuilder.createPropertiesForm = function() {
         },{
             xtype: 'formgrid',
             title: 'Namespaces',
+            id: 'namespaces',
             height: 300,
             store: new Ext.data.Store({
                 fields: ['prefix', 'uri'],

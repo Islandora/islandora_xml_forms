@@ -220,24 +220,23 @@ class FormBuilder {
     }
   }
 
-  public static function TransformToJSON($form_name) {
+  public static function TransformPropertiesToJSON($form_name) {
     if (self::HasFormDefinition($form_name)) {
       module_load_include('inc', 'xml_form_api', 'FormDefinition');
       $form_definition = FormDefinition::createFromXMLDefiniton(self::GetFormDefinition($form_name));
-      $root = $form_definition->elements->root;
-      $elements = array(
-        'text' => 'Elements',
-        'id' => 'elements',
-        'expanded' => TRUE,
-        'children' => array()
+      $document_properties = $form_definition->properties->document;
+      $namespaces = isset($document_properties->namespaces) ? $document_properties->namespaces : array();
+      $properties = array(
+        'name' => $document_properties->name,
+        'prefix' => $document_properties->prefix,
+        'uri' => $document_properties->uri,
+        'namespaces' => $namespaces,
+        'schema' => $document_properties->schema,
       );
-      foreach ($root as $element) {
-        $elements['children'][] = self::TransformElement($element);
-      }
-      return json_encode(array('properties' => NULL, 'elements' => $elements));
+      return json_encode(array($properties));
     }
     else {
-      return json_encode(array('properties' => NULL, 'elements' => NULL));
+      return json_encode(array('properties' => NULL));
     }
   }
 
@@ -274,15 +273,9 @@ class FormBuilder {
       $output[$name] = $value;
     }
     // Children
+    $output['children'] = array();
     foreach ($element as $child) {
       $output['children'][] = self::TransformElement($child);
-    }
-    // Tree properties
-    if (isset($output['children']) && count($output['children']) > 0) {
-      $output['leaf'] = false;
-    }
-    else {
-      $output['leaf'] = true;
     }
     $key = $element->key;
     $type = $element['#type'];
@@ -314,7 +307,7 @@ class FormBuilder {
   private static function TransformArrayExtJSFriendlyObject(array $original) {
     $output = array();
     foreach ($original as $key => $value) {
-      $output[] = array('key' => $key, 'value' => $value);
+      $output[$key] = $value;
     }
     return $output;
   }

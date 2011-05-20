@@ -30,7 +30,7 @@ Ext.formbuilder.createMainPanel = function(children){
                 xtype: 'tbfill'
             },{
                 xtype: 'button',
-                text: 'Preview',
+                text: 'Save & Preview',
                 handler: function() {
                     Ext.formbuilder.showPreview();
                 }

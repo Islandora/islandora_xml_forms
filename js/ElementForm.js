@@ -49,6 +49,7 @@ Ext.formbuilder.createElementForm = function () {
                     valueField: 'value',
                     fieldLabel: 'Type',
                     queryMode: 'local',
+                    allowBlank: false,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -294,9 +295,9 @@ Ext.formbuilder.createElementForm = function () {
                     }
                 }, {
                     xtype: 'formgrid',
-                    id: 'element_validation',
-                    name: 'element_validation',
-                    title: 'Element Validation',
+                    id: 'element_validate',
+                    name: 'element_validate',
+                    title: 'Element Validate',
                     height: 150,
                     collapsible: true,
                     store: this.createArrayStore(),
@@ -316,7 +317,7 @@ Ext.formbuilder.createElementForm = function () {
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
-                                target: 'element_validation',
+                                target: 'element_validate',
                                 anchor: 'left',
                                 html: '<h3><a name="element_validate" id="element_validate"></a>#element_validate</h3>' +
                             '<p class="help"><strong>Used by</strong>: any element</p>' +
@@ -466,7 +467,6 @@ Ext.formbuilder.createElementForm = function () {
                 }]
             }, {
                 title: 'Advanced Form Controls',
-                collapsible: true,
                 items: [{
                     xtype: 'textfield',
                     id: 'autocomplete_path',
@@ -593,6 +593,7 @@ Ext.formbuilder.createElementForm = function () {
                     displayField: 'display',
                     valueField: 'value',
                     editable: false,
+                    queryMode: 'local',
                     store: new Ext.data.Store({
                         fields: ['display', 'value'],
                         data: [{
@@ -803,15 +804,15 @@ Ext.formbuilder.createElementForm = function () {
                         }
                     }
                 }, {
-                    xtype: 'fieldset',
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    checkboxName: 'ahah',
                     title: 'Ahah',
                     id: 'ahah',
-                    name: 'ahah',
-                    collapsible: true,
                     items: [{
                         xtype: 'textfield',
                         id: 'ahah-effect',
-                        name: 'effect',
+                        name: 'ahah_effect',
                         fieldLabel: 'Effect',
                         listeners: {
                             render: function() {
@@ -827,7 +828,7 @@ Ext.formbuilder.createElementForm = function () {
                     },{
                         xtype: 'textfield',
                         id: 'ahah-event',
-                        name: 'event',
+                        name: 'ahah_event',
                         fieldLabel: 'Event',
                         listeners: {
                             render: function() {
@@ -844,7 +845,7 @@ Ext.formbuilder.createElementForm = function () {
                     }, {
                         xtype: 'textfield',
                         id: 'ahah-method',
-                        name: 'method',
+                        name: 'ahah_method',
                         fieldLabel: 'Method',
                         listeners: {
                             render: function() {
@@ -860,7 +861,7 @@ Ext.formbuilder.createElementForm = function () {
                     },{
                         xtype: 'textfield',
                         id: 'ahah-path',
-                        name: 'path',
+                        name: 'ahah_path',
                         fieldLabel: 'Path',
                         listeners: {
                             render: function() {
@@ -876,7 +877,7 @@ Ext.formbuilder.createElementForm = function () {
                     }, {
                         xtype: 'textfield',
                         id: 'ahah-wrapper',
-                        name: 'wrapper',
+                        name: 'ahah_wrapper',
                         fieldLabel: 'Wrapper',
                         listeners: {
                             render: function() {
@@ -892,7 +893,7 @@ Ext.formbuilder.createElementForm = function () {
                     }, {
                         xtype: 'checkbox',
                         id: 'ahah-keypress',
-                        name: 'keypress',
+                        name: 'ahah_keypress',
                         fieldLabel: 'Keypress',
                         listeners: {
                             render: function() {
@@ -905,15 +906,15 @@ Ext.formbuilder.createElementForm = function () {
                             }
                         }
                     }, {
-                        xtype: 'fieldset',
-                        id: 'ahah-progress',
-                        name: 'progress',
+                        xtype:'fieldset',
+                        checkboxToggle: true,
+                        checkboxName: 'ahah_progress',
+                        id: 'ahah_progress',
                         title: 'Progress',
-                        collapsible: true,
                         items: [{
                             xtype: 'textfield',
                             id: 'ahah-progress-type',
-                            name: 'type',
+                            name: 'ahah_progress_type',
                             fieldLabel: 'Type',
                             listeners: {
                                 render: function() {
@@ -928,7 +929,7 @@ Ext.formbuilder.createElementForm = function () {
                         }, {
                             xtype: 'textfield',
                             id: 'ahah-progress-message',
-                            name: 'message',
+                            name: 'ahah_progress_message',
                             fieldLabel: 'Message',
                             listeners: {
                                 render: function() {
@@ -943,7 +944,7 @@ Ext.formbuilder.createElementForm = function () {
                         }, {
                             xtype: 'textfield',
                             id: 'ahah-progress-url',
-                            name: 'url',
+                            name: 'ahah_progress_url',
                             fieldLabel: 'Url',
                             listeners: {
                                 render: function() {
@@ -958,7 +959,7 @@ Ext.formbuilder.createElementForm = function () {
                         }, {
                             xtype: 'textfield',
                             id: 'ahah-progress-interval',
-                            name: 'interval',
+                            name: 'ahah_progress_interval',
                             fieldLabel: 'Interval',
                             listeners: {
                                 render: function() {
@@ -1160,21 +1161,216 @@ Ext.formbuilder.createElementForm = function () {
             }, {
                 title: 'Actions',
                 collapsible: true,
+                id: 'actions',
                 items: [{
-                    xtype: 'tabpanel',
-                    plain: true,
-                    activeTab: 0,
-                    defaults:{
-                        bodyStyle:'padding:10px'
-                    },
-                    items:[{
-                        title:'Create'
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    title:'Create',
+                    id: 'actions_create',
+                    checkboxName: 'actions_create',
+                    items: [{
+                        xtype: 'combobox',
+                        fieldLabel: 'Path Context',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'document',
+                        name: 'actions_create_context',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'document', 
+                                value:'document'
+                            },{
+                                display:'parent', 
+                                value:'parent'
+                            }]
+                        }),
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-context',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Context</h3>' +
+                                '<p class="help">The context in which the path will be executed in.</p>'
+                                });
+                            }
+                        }
                     }, {
-                        title:'Read'
+                        xtype: 'textfield',
+                        fieldLabel: 'Path',
+                        name: 'actions_create_path',
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }]
+                }, {
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    title:'Read',
+                    id: 'actions_read',
+                    checkboxName: 'actions_read',
+                    items: [{
+                        xtype: 'combobox',
+                        fieldLabel: 'Path Context',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'document',
+                        name: 'actions_read_context',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'document', 
+                                value:'document'
+                            },{
+                                display:'parent', 
+                                value:'parent'
+                            }]
+                        })
                     }, {
-                        title:'Update'
+                        xtype: 'textfield',
+                        fieldLabel: 'Path',
+                        name: 'actions_read_path',
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }]
+                }, {
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    title:'Update',
+                    id: 'actions_update',
+                    checkboxName: 'actions_update',
+                    items: [{
+                        xtype: 'combobox',
+                        fieldLabel: 'Path Context',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'self',
+                        name: 'actions_update_context',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'document', 
+                                value:'document'
+                            },{
+                                display:'parent', 
+                                value:'parent'
+                            },{
+                                display:'self', 
+                                value:'self'
+                            }]
+                        })
                     }, {
-                        title:'Delete'
+                        xtype: 'textfield',
+                        fieldLabel: 'Path',
+                        value: 'self::node()',
+                        name: 'actions_update_path',
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }]
+                }, {
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    title:'Delete',
+                    id: 'actions_delete',
+                    checkboxName: 'actions_delete',
+                    items: [{
+                        xtype: 'combobox',
+                        fieldLabel: 'Path Context',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'self',
+                        name: 'actions_delete_context',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'document', 
+                                value:'document'
+                            },{
+                                display:'parent', 
+                                value:'parent'
+                            },{
+                                display:'self', 
+                                value:'self'
+                            }]
+                        })
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Path',
+                        value: 'self::node()',
+                        name: 'actions_delete_path',
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
                     }]
                 }]
             }]
@@ -1193,11 +1389,90 @@ Ext.formbuilder.createElementForm = function () {
                 if (form.isValid()) {
                     var record = form.getRecord();
                     record.beginEdit();
+                    // Normal Form Fields
                     var values = form.getValues();
                     for(var i in values) {
-                        record.set(i, values[i]);
+                        if(record.data[i] != undefined) {
+                            record.set(i, values[i]);
+                        }
                     }
-                    record.endEdit();
+                    /* Form Grids */
+                    var toArray = function(store) {
+                        var output = [];
+                        store.each(function(item){
+                            item = item.data;
+                            if(item.key) {
+                                output.push({
+                                    key: item.key, 
+                                    value: item.value
+                                });
+                            }
+                            else {
+                                output.push([item.value]);
+                            }
+
+                        });
+                        return output;
+                    }
+                    //attributes
+                    var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];
+                    form_grids.forEach(function(name) {
+                        var store = Ext.getCmp(name).store;
+                        record.set(name, toArray(store));
+                    });
+                    /* Ahah */
+                    if(values['ahah'] == "on") {
+                        var ahah = {
+                            effect: values['ahah_effect'],
+                            event: values['ahah_event'],
+                            method: values['ahah_method'],
+                            path: values['ahah_path'],
+                            wrapper: values['ahah_wrapper'],
+                            keypress: values['ahah_keypress']
+                        };
+                        if(values['ahah_progress'] == "on") {
+                            ahah.progress = {
+                                type: values['ahah_progress_type'],
+                                message: values['ahah_progress_message'],
+                                url: values['ahah_progress_url'],
+                                interval: values['ahah_progress_interval']
+                            };
+                        }
+                        record.set('ahah', ahah);
+                    }
+                    var actions = {};
+                    var has_actions = false;
+                    if(values['actions_create'] == "on") {
+                        has_actions = true;
+                        actions.create = {
+                            context: values['actions_create_context'],
+                            path: values['actions_create_path']
+                        };
+                    }
+                    if(values['actions_read'] == "on") {
+                        has_actions = true;
+                        actions.read = {
+                            context: values['actions_read_context'],
+                            path: values['actions_read_path']
+                        };
+                    }
+                    if(values['actions_update'] == "on") {
+                        has_actions = true;
+                        actions.update = {
+                            context: values['actions_update_context'],
+                            path: values['actions_update_path']
+                        };
+                    }
+                    if(values['actions_delete'] == "on") {
+                        has_actions = true;
+                        actions['delete'] = {
+                            context: values['actions_delete_context'],
+                            path: values['actions_delete_path']
+                        };
+                    }
+                    if(has_actions) {
+                        record.set('actions', actions);
+                    }
                 }
             }
         }]

@@ -25,23 +25,17 @@ Ext.formbuilder = (function() {
             this.displayPanel.activeItem = 1;// TODO: remove.
             /* Create Tree Panel */
             this.treePanel = this.createTreePanel(); // Defined in TreePanel.js
+            this.treePanel.expandAll();
             /* Create Main Panel */
             this.mainPanel = this.createMainPanel([this.treePanel, this.displayPanel]); // Defined in MainPanel.js
-            this.createToolTips(); // Defined in Tooltips.js
+        //this.createToolTips(); // Defined in Tooltips.js
         },
         /**
          * Creates an array based store.
          */
         createArrayStore: function () {
             return new Ext.data.Store({
-                fields: ['value'],
-                proxy: {
-                    type: 'memory',
-                    reader: {
-                        type: 'array'
-                    }
-                },
-                data: [["dummy value."]]
+                model: 'ArrayModel'
             });
         },
         /**
@@ -49,17 +43,7 @@ Ext.formbuilder = (function() {
          */
         createMapStore: function () {
             return new Ext.data.Store({
-                fields: ['key', 'value'],
-                proxy: {
-                    type: 'memory',
-                    reader: {
-                        type: 'json'
-                    }
-                },
-                data: [{
-                    key: 'dummy key', 
-                    value:'dummy value'
-                }]
+                model: 'MapModel'
             });
         },
         /**
@@ -82,6 +66,10 @@ Ext.formbuilder = (function() {
         showPropertiesForm: function () {
             var display = this.displayPanel.layout;
             display.setActiveItem(2);
+            var record = Ext.formbuilder.propertiesStore.getAt(0);
+            var form = this.propertiesForm.getForm();
+            form.loadRecord(record);
+            Ext.getCmp('namespaces').store.loadData(record.data['namespaces'], false);
         }
     };
     return that;

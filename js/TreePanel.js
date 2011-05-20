@@ -22,31 +22,170 @@ Ext.formbuilder.createTreePanel = function() {
             xtype: 'toolbar',
             items: [{
                 xtype: 'button',
-                text: 'Add'
+                text: 'Add',
+                handler: function() {
+                    var tree = Ext.formbuilder.treePanel;
+                    var selectionModel = tree.getSelectionModel();
+                    var selection = selectionModel.getSelection();
+                    if(selection.length > 0) {
+                        var element = new Element({
+                            text: 'new element',
+                            children: []
+                        });
+                        var selected = selection[0];
+                        var node = selected.createNode(element);
+                        selected.appendChild(node);
+                        selected.expand();
+                        selectionModel.select(node);
+                    }
+                }
             }, {
                 xtype: 'button',
-                text: 'Edit'
+                text: 'Copy',
+                handler: function() {
+                    var tree = Ext.formbuilder.treePanel;
+                    var selectionModel = tree.getSelectionModel();
+                    var selection = selectionModel.getSelection();
+                    if(selection.length > 0) {
+                        Ext.formbuilder.treePanel.clipboard = selection[0];
+                    }
+                }
             }, {
                 xtype: 'button',
-                text: 'Copy'
+                text: 'Paste',
+                handler: function() {
+                    var tree = Ext.formbuilder.treePanel;
+                    var selectionModel = tree.getSelectionModel();
+                    var selection = selectionModel.getSelection();
+                    var source = Ext.formbuilder.treePanel.clipboard;
+                    if(selection.length > 0 && source) {
+                        var selected = selection[0];
+                        var node = source.copy();
+                        Ext.data.Model.id(node);
+                        selected.appendChild(node);
+                        selected.expand();
+                        selectionModel.select(node);
+                    }
+                }
             }, {
                 xtype: 'button',
-                text: 'Paste'
-            }, {
-                xtype: 'button',
-                text: 'Delete'
+                text: 'Delete',
+                handler: function() {
+                    var tree = Ext.formbuilder.treePanel;
+                    var selectionModel = tree.getSelectionModel();
+                    var selection = selectionModel.getSelection();
+                    if(selection.length > 0) {
+                        var selected = selection[0];
+                        selected.remove(true);
+                    }
+                }
             }]
         },
         listeners: {
-            itemclick: function(view, record, item, index, event) {
-                Ext.formbuilder.showElementForm();
-                var form = Ext.formbuilder.elementForm.getForm();
-                form.loadRecord(record);
-                // Custom stuff...
-                var after_build = Ext.getCmp('after_build');
-                after_build.store.loadData(record.data['after_build'], false);
-                var attributes = Ext.getCmp('attributes');
-                attributes.store.loadData(record.data['attributes'], false);
+            selectionchange: function(view, selections) {
+                if(selections.length > 0) {
+                    var record = selections[0];
+                    if(record.isRoot()) {
+                        Ext.formbuilder.showPropertiesForm();
+                    }
+                    else {
+                        // Load by name...
+                        Ext.formbuilder.showElementForm();
+                        var form = Ext.formbuilder.elementForm.getForm();
+                        form.loadRecord(record);
+                        //attributes
+                        var data = Ext.clone(record.data);
+                        var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];
+                        form_grids.forEach(function(name) {
+                            Ext.getCmp(name).store.loadData(data[name], false);
+                        });
+                        /* Ahah */
+                        if(data.ahah !== undefined && data.ahah != "") {
+                            var ahah = data.ahah;
+                            var values = {
+                                ahah: "on",
+                                ahah_effect: ahah.effect,
+                                ahah_event: ahah.event,
+                                ahah_method: ahah.method,
+                                ahah_path: ahah.path,
+                                ahah_wrapper: ahah.wrapper,
+                                ahah_keypress: ahah.keypress
+                            };
+                            if(data.ahah.progress !== undefined && data.ahah.progress != "") {
+                                var progress = ahah.progress;
+                                values.ahah_progress = "on";
+                                values.ahah_progress_type = progress.type;
+                                values.ahah_progress_message = progress.message;
+                                values.ahah_progress_url = progress.url;
+                                values.ahah_progress_interval = progress.interval;
+                            }
+                            else {
+                                Ext.getCmp('ahah_progress').collapse();
+                            }
+                            form.setValues(values);
+                        }
+                        else {
+                            Ext.getCmp('ahah').collapse();
+                            Ext.getCmp('ahah_progress').collapse();
+                        }
+                        if(data.actions !== undefined && data.actions != "") {
+                            if(data.actions.create !== undefined && data.actions.create != "") {
+                                var create = data.actions.create;
+                                var values = {
+                                    actions_create: "on",
+                                    actions_create_context: create.context,
+                                    actions_create_path: create.path
+                                };
+                                form.setValues(values);
+                            }
+                            else {
+                                Ext.getCmp('actions_create').collapse();
+                            }
+                            if(data.actions.read !== undefined && data.actions.read != "") {
+                                var read = data.actions.read;
+                                var values = {
+                                    actions_read: "on",
+                                    actions_read_context: read.context,
+                                    actions_read_path: read.path
+                                };
+                                form.setValues(values);
+                            }
+                            else {
+                                Ext.getCmp('actions_read').collapse();
+                            }
+                            if(data.actions.update !== undefined && data.actions.update != "") {
+                                var update = data.actions.update;
+                                var values = {
+                                    actions_update: "on",
+                                    actions_update_context: update.context,
+                                    actions_update_path: update.path
+                                };
+                                form.setValues(values);
+                            }
+                            else {
+                                Ext.getCmp('actions_update').collapse();
+                            }
+                            if(data.actions['delete'] !== undefined && data.actions['delete'] != "") {
+                                var remove = data.actions['delete'];
+                                var values = {
+                                    actions_delete: "on",
+                                    actions_delete_context: remove.context,
+                                    actions_delete_path: remove.path
+                                };
+                                form.setValues(values);
+                            }
+                            else {
+                                Ext.getCmp('actions_delete').collapse();
+                            }
+                        }
+                        else {
+                            Ext.getCmp('actions_create').collapse();
+                            Ext.getCmp('actions_read').collapse();
+                            Ext.getCmp('actions_update').collapse();
+                            Ext.getCmp('actions_delete').collapse();
+                        }
+                    }
+                }
             }
         }
     });

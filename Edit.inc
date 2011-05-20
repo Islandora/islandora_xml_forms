@@ -21,7 +21,7 @@ function xml_form_builder_edit($form_name) {
   drupal_add_css("$path/css/EditForm.css");
   drupal_add_css("$path/js/ext-4.0.0/resources/css/ext-all.css");
   // Ext JS 4.0
-  drupal_add_js("$path/js/ext-4.0.0/ext-all.js");
+  drupal_add_js("$path/js/ext-4.0.0/ext-all-debug-w-comments.js");
   // Main Application
   drupal_add_js("$path/js/Formbuilder.js");
   // Custom Types
@@ -29,6 +29,7 @@ function xml_form_builder_edit($form_name) {
   drupal_add_js("$path/js/Tooltips.js");
   // Custom Models
   drupal_add_js("$path/js/ElementModel.js");
+  drupal_add_js("$path/js/PropertiesModel.js");
   // Actual Panels that make up the editor.
   drupal_add_js("$path/js/MainPanel.js");
   drupal_add_js("$path/js/DisplayPanel.js");
@@ -38,6 +39,7 @@ function xml_form_builder_edit($form_name) {
   drupal_add_js("$path/js/PreviewPanel.js");
   xml_form_builder_create_element_type_store();
   xml_form_builder_create_element_store($form_name);
+  xml_form_builder_create_properties_store($form_name);
   return '<div id="xml-form-builder-editor"></div>'; //theme('edit_form_page', $output);
 }
 
@@ -63,6 +65,32 @@ function xml_form_builder_create_element_type_store() {
     },
     data: $data
   });
+EOT;
+  drupal_add_js($js, 'inline');
+}
+
+/**
+ * Create a properties store.
+ * 
+ * @param string $form_name 
+ */
+function xml_form_builder_create_properties_store($form_name) {
+  $data = Formbuilder::TransformPropertiesToJSON($form_name);
+  $js = <<<EOT
+  Ext.formbuilder.propertiesStore = Ext.create('Ext.data.Store', {
+    storeId: 'PropertiesStore',
+    model: 'Properties',
+    autoLoad: true,
+    autoSync: true,
+    proxy: {
+      type: 'memory',
+      data: $data,
+      reader: {
+        type: 'json'
+      }
+    }
+ });
+ Ext.formbuilder.propertiesStore.sync();
 EOT;
   drupal_add_js($js, 'inline');
 }
