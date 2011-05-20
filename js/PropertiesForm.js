@@ -30,7 +30,6 @@ Ext.formbuilder.createPropertiesForm = function() {
                 allowBlank: false
             },{
                 xtype: 'textfield',
-                id: 'prefix',
                 name: 'prefix',
                 fieldLabel: 'Namespace Prefix',
                 anchor: '100%'

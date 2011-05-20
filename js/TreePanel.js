@@ -16,7 +16,7 @@ Ext.formbuilder.createTreePanel = function() {
         width: 230,
         margin: '1 0 1 1',
         autoScroll: true,
-        rootVisible: true,
+        rootVisible: false,
         split: true,
         tbar: {
             xtype: 'toolbar',
@@ -85,8 +85,9 @@ Ext.formbuilder.createTreePanel = function() {
             selectionchange: function(view, selections) {
                 if(selections.length > 0) {
                     var record = selections[0];
-                    if(record.isRoot()) {
+                    if(record.isRoot() || record.parentNode.isRoot()) {
                         Ext.formbuilder.showPropertiesForm();
+                        return;
                     }
                     else {
                         // Load by name...

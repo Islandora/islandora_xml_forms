@@ -40,7 +40,22 @@ Ext.formbuilder.createMainPanel = function(children){
                 xtype: 'button',
                 text: 'Save',
                 handler: function() {
-                    alert('Saving is not implemented yet!');
+                    var url = window.location.pathname + '/save';
+                    var data = {
+                        properties: {}, 
+                        elements: []
+                    };
+                    var root = Ext.formbuilder.elementStore.getRootNode().getChildAt(0);
+                    data.elements = root.getAssociatedData();
+                    Ext.Ajax.request({
+                        url: url,
+                        params: {
+                            data: Ext.encode(data)
+                        },
+                        success: function(response){
+                            alert('Fuck ya!');
+                        }
+                    });
                 }
             }]
         }

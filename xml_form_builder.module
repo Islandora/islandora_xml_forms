@@ -86,6 +86,16 @@ function xml_form_builder_menu() {
     'access arguments' => array(FormBuilder::PERM_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
+  $items['admin/content/xml/form/%/edit/save'] = array(
+    'title' => 'Edit Form',
+    'description' => 'Edit a Form.',
+    'file' => 'Edit.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'xml_form_builder_edit_save',
+    'page arguments' => array(4),
+    'access arguments' => array(FormBuilder::PERM_EDIT_FORMS),
+    'type' => MENU_CALLBACK,
+  );
   $items['admin/content/xml/form/%/delete'] = array(
     'title' => 'Delete Form',
     'description' => 'Delete a Form.',

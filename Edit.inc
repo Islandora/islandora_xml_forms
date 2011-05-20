@@ -44,6 +44,17 @@ function xml_form_builder_edit($form_name) {
 }
 
 /**
+ * Save edits!
+ */
+function xml_form_builder_edit_save($form_name) {
+  $data = json_decode($_POST['data']);
+  $properties = $data->properties;
+  $elements = $data->elements;
+  // Convert into xml? or objects??? XML has better support at the moment.
+  
+}
+
+/**
  * Create store to be used in Element Type Combo Box.
  */
 function xml_form_builder_create_element_type_store() {
@@ -103,21 +114,10 @@ EOT;
 function xml_form_builder_create_element_store($form_name) {
   $data = Formbuilder::TransformElementsToJSON($form_name);
   $js = <<<EOT
+  //Ext.formbuilder.foobar = $data;
   Ext.formbuilder.elementStore = Ext.create('Ext.data.TreeStore', {
-    storeId: 'ElementStore',
     model: 'Element',
-    proxy: {
-      type: 'memory',
-      data: $data,
-      reader: {
-        type: 'json'
-      }
-    },
-    root: {
-      text: 'Elements',
-      id: 'elements',
-      expanded: true
-    }
+    root: $data
  });
 EOT;
   drupal_add_js($js, 'inline');

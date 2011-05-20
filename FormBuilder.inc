@@ -246,15 +246,14 @@ class FormBuilder {
       $form_definition = FormDefinition::createFromXMLDefiniton(self::GetFormDefinition($form_name));
       $root = $form_definition->elements->root;
       $elements = array(
+        'key' => 'elements',
         'text' => 'Elements',
-        'id' => 'elements',
-        'expanded' => TRUE,
         'children' => array()
       );
       foreach ($root as $element) {
         $elements['children'][] = self::TransformElement($element);
       }
-      return json_encode($elements);
+      return json_encode(array('expanded' => true, 'children' => $elements));
     }
     else {
       return json_encode(array());
