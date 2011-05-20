@@ -93,16 +93,17 @@ Ext.formbuilder.createTreePanel = function() {
                         // Load by name...
                         Ext.formbuilder.showElementForm();
                         var form = Ext.formbuilder.elementForm.getForm();
+                        // record = Ext.clone(record);
+                        var data = Ext.clone(record.data);
                         form.loadRecord(record);
                         //attributes
-                        var data = Ext.clone(record.data);
                         var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];
                         form_grids.forEach(function(name) {
                             Ext.getCmp(name).store.loadData(data[name], false);
                         });
                         /* Ahah */
-                        if(data.ahah !== undefined && data.ahah != "") {
-                            var ahah = data.ahah;
+                        var ahah = data.ahah;
+                        if(ahah !== undefined && ahah != "") {
                             var values = {
                                 ahah: "on",
                                 ahah_effect: ahah.effect,
@@ -112,7 +113,7 @@ Ext.formbuilder.createTreePanel = function() {
                                 ahah_wrapper: ahah.wrapper,
                                 ahah_keypress: ahah.keypress
                             };
-                            if(data.ahah.progress !== undefined && data.ahah.progress != "") {
+                            if(ahah.progress !== undefined && ahah.progress != "") {
                                 var progress = ahah.progress;
                                 values.ahah_progress = "on";
                                 values.ahah_progress_type = progress.type;
@@ -129,9 +130,10 @@ Ext.formbuilder.createTreePanel = function() {
                             Ext.getCmp('ahah').collapse();
                             Ext.getCmp('ahah_progress').collapse();
                         }
-                        if(data.actions !== undefined && data.actions != "") {
-                            if(data.actions.create !== undefined && data.actions.create != "") {
-                                var create = data.actions.create;
+                        var actions = data.actions;
+                        if(actions !== undefined && actions != "") {
+                            if(actions.create !== undefined && actions.create != "") {
+                                var create = actions.create;
                                 var values = {
                                     actions_create: "on",
                                     actions_create_context: create.context,
@@ -142,8 +144,8 @@ Ext.formbuilder.createTreePanel = function() {
                             else {
                                 Ext.getCmp('actions_create').collapse();
                             }
-                            if(data.actions.read !== undefined && data.actions.read != "") {
-                                var read = data.actions.read;
+                            if(actions.read !== undefined && actions.read != "") {
+                                var read = actions.read;
                                 var values = {
                                     actions_read: "on",
                                     actions_read_context: read.context,
@@ -154,8 +156,8 @@ Ext.formbuilder.createTreePanel = function() {
                             else {
                                 Ext.getCmp('actions_read').collapse();
                             }
-                            if(data.actions.update !== undefined && data.actions.update != "") {
-                                var update = data.actions.update;
+                            if(actions.update !== undefined && actions.update != "") {
+                                var update = actions.update;
                                 var values = {
                                     actions_update: "on",
                                     actions_update_context: update.context,
@@ -166,8 +168,8 @@ Ext.formbuilder.createTreePanel = function() {
                             else {
                                 Ext.getCmp('actions_update').collapse();
                             }
-                            if(data.actions['delete'] !== undefined && data.actions['delete'] != "") {
-                                var remove = data.actions['delete'];
+                            if(actions['delete'] !== undefined && actions['delete'] != "") {
+                                var remove = actions['delete'];
                                 var values = {
                                     actions_delete: "on",
                                     actions_delete_context: remove.context,

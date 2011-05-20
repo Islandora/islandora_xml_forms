@@ -53,7 +53,7 @@ Ext.formbuilder.createMainPanel = function(children){
                             data: Ext.encode(data)
                         },
                         success: function(response){
-                            alert('Fuck ya!');
+                            
                         }
                     });
                 }

@@ -807,8 +807,13 @@ Ext.formbuilder.createElementForm = function () {
                     xtype:'fieldset',
                     checkboxToggle: true,
                     checkboxName: 'ahah',
+                    collapsed: true,
                     title: 'Ahah',
                     id: 'ahah',
+                    layout: 'anchor',
+                    defaults: {
+                        anchor: '100%'
+                    },
                     items: [{
                         xtype: 'textfield',
                         id: 'ahah-effect',
@@ -908,6 +913,7 @@ Ext.formbuilder.createElementForm = function () {
                     }, {
                         xtype:'fieldset',
                         checkboxToggle: true,
+                        collapsed: true,
                         checkboxName: 'ahah_progress',
                         id: 'ahah_progress',
                         title: 'Progress',
@@ -1160,11 +1166,11 @@ Ext.formbuilder.createElementForm = function () {
                 }]
             }, {
                 title: 'Actions',
-                collapsible: true,
                 id: 'actions',
                 items: [{
                     xtype:'fieldset',
                     checkboxToggle: true,
+                    collapsed: true,
                     title:'Create',
                     id: 'actions_create',
                     checkboxName: 'actions_create',
@@ -1223,6 +1229,7 @@ Ext.formbuilder.createElementForm = function () {
                 }, {
                     xtype:'fieldset',
                     checkboxToggle: true,
+                    collapsed: true,
                     title:'Read',
                     id: 'actions_read',
                     checkboxName: 'actions_read',
@@ -1271,6 +1278,7 @@ Ext.formbuilder.createElementForm = function () {
                 }, {
                     xtype:'fieldset',
                     checkboxToggle: true,
+                    collapsed: true,
                     title:'Update',
                     id: 'actions_update',
                     checkboxName: 'actions_update',
@@ -1323,6 +1331,7 @@ Ext.formbuilder.createElementForm = function () {
                 }, {
                     xtype:'fieldset',
                     checkboxToggle: true,
+                    collapsed: true,
                     title:'Delete',
                     id: 'actions_delete',
                     checkboxName: 'actions_delete',

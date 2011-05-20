@@ -19,9 +19,9 @@ function xml_form_builder_edit($form_name) {
   $path = drupal_get_path('module', 'xml_form_builder');
   drupal_add_css("$path/css/Clear.css");
   drupal_add_css("$path/css/EditForm.css");
-  drupal_add_css("$path/js/ext-4.0.0/resources/css/ext-all.css");
+  drupal_add_css("$path/js/ext-4.0.1/resources/css/ext-all.css");
   // Ext JS 4.0
-  drupal_add_js("$path/js/ext-4.0.0/ext-all-debug-w-comments.js");
+  drupal_add_js("$path/js/ext-4.0.1/ext-all-debug-w-comments.js");
   // Main Application
   drupal_add_js("$path/js/Formbuilder.js");
   // Custom Types
