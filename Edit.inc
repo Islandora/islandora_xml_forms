@@ -40,18 +40,19 @@ function xml_form_builder_edit($form_name) {
   xml_form_builder_create_element_type_store();
   xml_form_builder_create_element_store($form_name);
   xml_form_builder_create_properties_store($form_name);
-  return '<div id="xml-form-builder-editor"></div>'; //theme('edit_form_page', $output);
+  return '<div id="xml-form-builder-editor"></div>';
 }
 
 /**
  * Save edits!
  */
 function xml_form_builder_edit_save($form_name) {
-  $data = json_decode($_POST['data']);
-  $properties = $data->properties;
-  $elements = $data->elements;
-  // Convert into xml? or objects??? XML has better support at the moment.
-  
+  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
+  module_load_include('inc', 'xml_form_builder', 'JSONForm');
+  $json_form = new JSONForm($form_name);
+  $def = $json_form->getFormDefinition();
+  echo $def->saveXML();
+  //FormBuilder::SetFormDefinition($form_name, $json_form->getFormDefinition());
 }
 
 /**
@@ -121,63 +122,4 @@ function xml_form_builder_create_element_store($form_name) {
  });
 EOT;
   drupal_add_js($js, 'inline');
-}
-
-/**
- *
- * @param array $form
- * @param array $form_state 
- */
-function create_element(array &$form_state) {
-  module_load_include('inc', 'xml_form_api', 'Form');
-  $form = new Form($form_state);
-  if (!$form->isInitialized()) {
-    module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-    $path = drupal_get_path('module', 'xml_form_builder');
-    $doc = new DOMDocument();
-    $doc->load("$path/xml/Element.xml");
-    $form_definition = FormDefinition::createFromXMLDefiniton($doc->saveXML());
-    $document = new Document($form_definition->properties->document);
-    $form->initialize($form_definition, $document);
-    // Custom changes...
-    $types = FormBuilder::GetElementTypes();
-    $type = $form->elements->root['element']['type'];
-    $advanced = $form->elements->root['element']['advanced'];
-    $ahah = $type['#ahah'];
-    $ahah['path'] = "xml/form/elements/ahah/rebuild/{$advanced->hash}";
-    $type['#ahah'] = $ahah;
-    $type['#options'] = $types;
-    $type['#default_value'] = array_shift($types);
-  }
-  return $form->toDrupalForm();
-}
-
-/**
- *
- * @param array $form
- * @param array $form_state 
- */
-function xml_form_builder_form_create_element_alter(array &$form, array &$form_state) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-  //$type = $form[Form::ROOT]['element']['type']['#default_value'];
-  // TODO call some hook function for modifying the advanced form controls.
-}
-
-/**
- * Preprocess tabs theme hook.
- * 
- * @param array $vars 
- */
-function xml_form_elements_preprocess_edit_form_page(array &$vars) {
-  $vars['element_form'] = $vars[0];
-}
-
-/**
- * 
- */
-function xml_form_builder_ahah_controls() {
-  module_load_include('inc', 'xml_form_elements', 'Ahah');
-  list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
-  $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);
-  Ahah::respond($form[FORM::ROOT]['element']['advanced']);
 }
