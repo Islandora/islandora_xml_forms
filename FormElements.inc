@@ -203,4 +203,16 @@ class FormElements implements IteratorAggregate {
     return $this->elements;
   }
 
+  /**
+   * 
+   */
+  public function asXML() {
+    $elements = new SimpleXMLElement('<elements></elements>');
+    foreach ($this->root as $element) {
+      $element = simplexml_load_string($element->asXML());
+      $elements->addChild($element->getName(), (string) $element);
+    }
+    return $element->asXML();
+  }
+
 }

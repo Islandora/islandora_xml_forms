@@ -13,11 +13,6 @@
 class FormControl {
 
   /**
-   * 
-   * @var array
-   */
-  protected static $convertSimpleXMLFunctions;
-  /**
    *
    * @var string 
    */
@@ -67,11 +62,44 @@ class FormControl {
   }
 
   /**
+   * Get a map of form controls as keys, and thier types as values.
+   * 
+   * @return array
+   */
+  public static function getTypeMap() {
+    static $type_map;
+    if (empty($type_map)) {
+      $filename = drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xsd';
+      $form_definition = simplexml_load_file($filename);
+      $filter_types = "@type='string' or @type = 'boolean' or @type = 'integer' or @type = 'float' or @type = 'array' or @type = 'mixed'";
+      $form_controls = $form_definition->xpath("/xs:schema/xs:complexType/xs:all/xs:element[$filter_types]");
+      foreach ($form_controls as $form_control) {
+        $name = (string) $form_control['name'];
+        $type = (string) $form_control['type'];
+        $type_map[$name] = $type;
+      }
+    }
+    return $type_map;
+  }
+
+  /**
+   * Get the type of value this form control has.
+   * 
+   * @param string $name
+   * @return string
+   */
+  public static function getType($name) {
+    $type_map = self::getTypeMap();
+    return $type_map[$name];
+  }
+
+  /**
    *
    * @param type $name 
    */
   public static function getSimpleXMLConvertFunction($name) {
-    if (empty(self::$convertSimpleXMLFunctions)) {
+    static $convert_functions;
+    if (empty($convert_functions)) {
       $type_function_map = array(
         'string' => 'convertSimpleXMLToString',
         'boolean' => 'convertSimpleXMLToBoolean',
@@ -80,15 +108,12 @@ class FormControl {
         'array' => 'convertSimpleXMLToArray',
         'mixed' => 'convertSimpleXMLToMixed',
       );
-      $filename = drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xsd';
-      $form_definition = simplexml_load_file($filename);
-      $filter_types = "@type='string' or @type = 'boolean' or @type = 'integer' or @type = 'float' or @type = 'array' or @type = 'mixed'";
-      $form_controls = $form_definition->xpath("/xs:schema/xs:complexType/xs:all/xs:element[$filter_types]");
-      foreach ($form_controls as $form_control) {
-        self::$convertSimpleXMLFunctions[(string) $form_control['name']] = $type_function_map[(string) $form_control['type']];
+      $type_map = self::getTypeMap();
+      foreach ($type_map as $key => $type) {
+        $convert_functions[$key] = $type_function_map[$type];
       }
     }
-    return self::$convertSimpleXMLFunctions[$name];
+    return $convert_functions[$name];
   }
 
   /**
@@ -128,9 +153,10 @@ class FormControl {
    * @param SimpleXMLElement $element 
    */
   public static function convertSimpleXMLToArray(SimpleXMLElement $element) {
+    $output = array();
     $keys = $element->xpath('key');
     foreach ($keys as $key) {
-      if (($name = (string)$key['name']) != null) {
+      if (($name = (string) $key['name']) != null) {
         $output[$name] = self::convertSimpleXMLArrayKey($key);
       }
       else {
@@ -175,18 +201,115 @@ class FormControl {
     switch ($type) {
       case 'string':
         return self::convertSimpleXMLToString($element);
-        break;
       case 'integer':
         return self::convertSimpleXMLToInteger($element);
-        break;
       case 'float':
         return self::convertSimpleXMLToFloat($element);
-        break;
       case 'boolean':
         return self::convertSimpleXMLToBoolean($element);
-        break;
       case 'array':
         return self::convertSimpleXMLToArray($element->array);
+      default:
+        throw new Exception('Invalid type: ' . $type);
+    }
+  }
+
+  /**
+   * Returns a string description of the type of the parameter.
+   * 
+   * @param mixed $var
+   * @return string
+   */
+  public static function determineMixedType($var) {
+    if (is_string($var)) {
+      return 'string';
+    }
+    if (is_int($var)) {
+      return 'integer';
+    }
+    if (is_float($var)) {
+      return 'float';
+    }
+    if (is_bool($var)) {
+      return 'boolean';
+    }
+    if (is_array($var)) {
+      return 'array';
+    }
+    return 'unknown';
+  }
+
+  /**
+   * Converts an array into a SimpleXMLElement
+   * 
+   * @param SimpleXMLElement $element
+   * @param array $var
+   */
+  public static function convertArrayToSimpleXML(SimpleXMLElement $element, array $var) {
+    foreach ($var as $name => $value) {
+      $key = $element->addChild('key');
+      if (!is_numeric($name)) {
+        $key->addAttribute('name', $name);
+      }
+      if (is_array($value)) {
+        self::convertArrayToSimpleXML($key, $value);
+      }
+      else {
+        $type = self::determineMixedType($value);
+        $value = $key->addChild('value', $value);
+        $value->addAttribute('type', $type);
+      }
+    }
+  }
+
+  /**
+   *
+   * @param mixed $var 
+   */
+  public static function convertMixedtoSimpleXML(SimpleXMLElement $control, $var) {
+    $type = self::determineMixedType($var);
+    $control->addAttribute('type', $type);
+    switch ($type) {
+      case 'string':
+      case 'integer':
+      case 'float':
+        $control[0] = (string) $value;
+        break;
+      case 'boolean':
+        $control[0] = ($value) ? 'true' : 'false';
+        break;
+      case 'array':
+        $array = new SimpleXMLElement('<array></array>');
+        self::convertArrayToSimpleXML($array, $value);
+        $control->addChild($array);
+        break;
+    }
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $control
+   * @param mixed $value
+   * @return string 
+   */
+  public static function setFormControlSimpleXMLValue(SimpleXMLElement $control, $value) {
+    $type = self::getType($control->getName());
+    switch ($type) {
+      case 'string':
+      case 'integer':
+      case 'float':
+        $control[0] = (string) $value;
+        break;
+      case 'boolean':
+        $control[0] = ($value) ? 'true' : 'false';
+        break;
+      case 'array':
+        $array = new SimpleXMLElement('<array></array>');
+        self::convertArrayToSimpleXML($array, $value);
+        $control[0] = (string) $array;
+        break;
+      case 'mixed':
+        self::convertMixedtoSimpleXML($control, $value);
         break;
       default:
         throw new Exception('Invalid type: ' . $type);
@@ -223,6 +346,16 @@ class FormControl {
     else {
       throw new Exception("Invalid Name: $name for FormControl.");
     }
+  }
+
+  /**
+   * 
+   */
+  public function asXML() {
+    $name = str_replace('#', '', $this->_name); // Remove the Hash.
+    $control = new SimpleXMLElement("<$name></$name>");
+    self::setFormControlSimpleXMLValue($control, $this->value);
+    return $control->asXML();
   }
 
 }

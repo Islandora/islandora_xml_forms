@@ -25,4 +25,11 @@ class FormProperties {
     $this->document = $document_properties;
   }
 
+  public function asXML() {
+    $properties = new SimpleXMLElement('<properties></properties>');
+    $document_properties = simplexml_load_string($this->document->asXML());
+    $properties->addChild($document_properties->getName(), (string) $document_properties);
+    return $properties->asXML();
+  }
+
 }

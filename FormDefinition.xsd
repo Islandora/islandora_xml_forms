@@ -67,7 +67,7 @@
             <xs:element minOccurs="0" name="executes_submit_callback" type="boolean"/>
             <xs:element minOccurs="0" name="field_prefix" type="string"/>
             <xs:element minOccurs="0" name="field_suffix" type="string"/>
-            <xs:element minOccurs="0" name="max_length" type="integer"/>
+            <xs:element minOccurs="0" name="maxlength" type="integer"/>
             <xs:element minOccurs="0" name="method" type="string"> </xs:element>
             <xs:element minOccurs="0" name="multiple" type="boolean"/>
             <xs:element minOccurs="0" name="name" type="string"/>
@@ -114,6 +114,7 @@
                                         <xs:enumeration value="string"/>
                                         <xs:enumeration value="integer"/>
                                         <xs:enumeration value="boolean"/>
+                                        <xs:enumeration value="float"/>
                                     </xs:restriction>
                                 </xs:simpleType>
                             </xs:attribute>

@@ -35,7 +35,6 @@ class FormDefinition {
    * @return FormDefinition
    */
   public static function createFromXMLDefiniton($xml_definition) {
-
     return self::createFromSimpleXML(simplexml_load_string($xml_definition));
   }
 
@@ -89,6 +88,19 @@ class FormDefinition {
   public function __construct(FormProperties $properties, FormElements $elements) {
     $this->properties = $properties;
     $this->elements = $elements;
+  }
+
+  /**
+   * 
+   * @return string
+   */
+  public function asXML() {
+    $form = new SimpleXMLElement('<form></form>');
+    $properties = simplexml_load_string($this->properties->asXML());
+    $form->addChild($properties->getName(), (string) $properties);
+    $elements = simplexml_load_string($this->elements->asXML());
+    $form->addChild($elements->getName(), (string) $elements);
+    return $form->asXML();
   }
 
 }

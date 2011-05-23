@@ -57,9 +57,10 @@ class DocumentProperties {
    * @return DocumentProperties
    */
   public static function createFromSimpleXML(SimpleXMLElement $properties) {
-    $root_prefix = (string) $properties->root['prefix'];
-    $root_name = (string) $properties->root['local_name'];
-    $root_uri = (string) $properties->root['uri'];
+    $root = $properties->root;
+    $root_prefix = (string) $root->prefix;
+    $root_name = (string) $root->local_name;
+    $root_uri = (string) $root->uri;
     $schema = isset($properties->schema) ? (string) $properties->schema : NULL;
     $namespaces = array();
     if (isset($properties->namespaces)) {
@@ -83,12 +84,40 @@ class DocumentProperties {
    * @param string $schema
    * @param array $namespaces 
    */
-  public function __construct($root_prefix, $root_name, $root_uri, $schema, array &$namespaces) {
+  public function __construct($root_prefix, $root_name, $root_uri, $schema, array $namespaces) {
     $this->prefix = $root_prefix;
     $this->name = $root_name;
     $this->uri = $root_uri;
     $this->schema = $schema;
     $this->namespaces = $namespaces;
+  }
+
+  public function asXML() {
+    $document_properties = new SimpleXMLElement('<document_properties></document_properties>');
+    // Root
+    $root = $document_properties->addChild('root');
+    if ($this->prefix) {
+      $root->addChild('prefix', $this->prefix);
+    }
+    if ($this->name) {
+      $root->addChild('local_name', $this->name);
+    }
+    if ($this->uri) {
+      $root->addChild('uri', $this->uri);
+    }
+    // Namespaces
+    if (count($this->namespaces) > 0) {
+      $namespaces = $document_properties->addChild('namespaces');
+      foreach ($this->namespaces as $prefix => $uri) {
+        $namespace = $namespaces->addChild('namespace', $uri);
+        $namespace->addAttribute('prefix', $prefix);
+      }
+    }
+    // Schema
+    if ($this->schema) {
+      $schema = $document_properties->addChild('schema', $this->schema);
+    }
+    return $document_properties->asXML();
   }
 
 }

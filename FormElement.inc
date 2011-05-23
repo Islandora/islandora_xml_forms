@@ -146,4 +146,34 @@ class FormElement extends FormElementArrayObject {
     parent::__set($name, $value);
   }
 
+  /**
+   * 
+   */
+  public function asXML() {
+    // Create Element
+    $element = new SimpleXMLElement('<element></element>');
+    if (isset($this->name)) {
+      $element->addAttribute('key', $this->name);
+    }
+    // Controls
+    foreach ($this->controls as $control) {
+      $control = simplexml_load_string($control->asXML());
+      $element->addChild($control->getName(), (string) $control);
+    }
+    // Actions
+    if (isset($this->actions)) {
+      $actions = simplexml_load_string($this->actions->asXML());
+      $element->addChild($actions->getName(), (string) $actions);
+    }
+    // Children
+    if (count($this) > 0) {
+      $children = $element->addChild('children');
+      foreach ($this as $child) {
+        $child = simplexml_load_string($child->asXML());
+        $children->addChild($child->getName(), (string) $child);
+      }
+    }
+    return $element->asXML();
+  }
+
 }
