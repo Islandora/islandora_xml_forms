@@ -80,7 +80,7 @@ class Update implements Action {
   public function valid() {
     return isset($this->path);
   }
-  
+
   /**
    *
    * @param NodeRegistry $registry
@@ -115,6 +115,18 @@ class Update implements Action {
    */
   private function update(DOMNode $node, $value) {
     $node->nodeValue = $value;
+  }
+
+  /**
+   * 
+   * @return DOMElement
+   */
+  public function asNode(DOMDocument $document) {
+    $update = $document->createElement('update');
+    if (isset($this->path)) {
+      $update->appendChild($this->path->asNode());
+    }
+    return $update;
   }
 
 }

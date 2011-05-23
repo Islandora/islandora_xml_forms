@@ -92,32 +92,39 @@ class DocumentProperties {
     $this->namespaces = $namespaces;
   }
 
-  public function asXML() {
-    $document_properties = new SimpleXMLElement('<document_properties></document_properties>');
-    // Root
-    $root = $document_properties->addChild('root');
-    if ($this->prefix) {
-      $root->addChild('prefix', $this->prefix);
+  public function asNode(DOMDocument $document) {
+    $document_properties = $document->createElement('document_properties');
+    $root = $document->createElement('root');
+    // Root Info
+    if (isset($this->prefix)) {
+      $prefix = $document->createElement('prefix', $this->prefix);
+      $root->appendChild($prefix);
     }
-    if ($this->name) {
-      $root->addChild('local_name', $this->name);
+    if (isset($this->name)) {
+      $local_name = $document->createElement('local_name', $this->name);
+      $root->appendChild($local_name);
     }
-    if ($this->uri) {
-      $root->addChild('uri', $this->uri);
+    if (isset($this->uri)) {
+      $uri = $document->createElement('uri', $this->uri);
+      $root->appendChild(uri);
     }
+    $document_properties->appendChild($root);
     // Namespaces
     if (count($this->namespaces) > 0) {
-      $namespaces = $document_properties->addChild('namespaces');
+      $namespaces = $document->createElement('namespaces');
       foreach ($this->namespaces as $prefix => $uri) {
-        $namespace = $namespaces->addChild('namespace', $uri);
-        $namespace->addAttribute('prefix', $prefix);
+        $namespace = $document->createElement('namespace', $uri);
+        $namespace->setAttribute('prefix', $prefix);
+        $namespaces->appendChild($namespace);
       }
+      $document_properties->appendChild($namespaces);
     }
     // Schema
-    if ($this->schema) {
-      $schema = $document_properties->addChild('schema', $this->schema);
+    if (isset($this->schema)) {
+      $schema = $document->createElement('schema', $this->schema);
+      $document_properties->appendChild($schema);
     }
-    return $document_properties->asXML();
+    return $document_properties;
   }
 
 }

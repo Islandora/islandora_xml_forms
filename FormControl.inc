@@ -176,13 +176,10 @@ class FormControl {
       switch ($key->value['type']) {
         case 'string':
           return self::convertSimpleXMLToString($key->value);
-          break;
         case 'integer':
           return self::convertSimpleXMLToInteger($key->value);
-          break;
         case 'boolean':
           return self::convertSimpleXMLToBoolean($key->value);
-          break;
         default:
           throw new Exception('Invalid Type: ' . $key->value['type']);
       }
@@ -215,6 +212,23 @@ class FormControl {
   }
 
   /**
+   *
+   * @param SimpleXMLElement $element 
+   */
+  public static function convertSimpleXMLToUserData(SimpleXMLElement $element) {
+    return module_invoke_all('convert_form_control_user_data');
+  }
+
+  /**
+   *
+   * @param string $name 
+   * @return boolean
+   */
+  public static function validName($name) {
+    return is_string($name) && strpos($name, '#') === 0;
+  }
+
+  /**
    * Returns a string description of the type of the parameter.
    * 
    * @param mixed $var
@@ -236,101 +250,7 @@ class FormControl {
     if (is_array($var)) {
       return 'array';
     }
-    return 'unknown';
-  }
-
-  /**
-   * Converts an array into a SimpleXMLElement
-   * 
-   * @param SimpleXMLElement $element
-   * @param array $var
-   */
-  public static function convertArrayToSimpleXML(SimpleXMLElement $element, array $var) {
-    foreach ($var as $name => $value) {
-      $key = $element->addChild('key');
-      if (!is_numeric($name)) {
-        $key->addAttribute('name', $name);
-      }
-      if (is_array($value)) {
-        self::convertArrayToSimpleXML($key, $value);
-      }
-      else {
-        $type = self::determineMixedType($value);
-        $value = $key->addChild('value', $value);
-        $value->addAttribute('type', $type);
-      }
-    }
-  }
-
-  /**
-   *
-   * @param mixed $var 
-   */
-  public static function convertMixedtoSimpleXML(SimpleXMLElement $control, $var) {
-    $type = self::determineMixedType($var);
-    $control->addAttribute('type', $type);
-    switch ($type) {
-      case 'string':
-      case 'integer':
-      case 'float':
-        $control[0] = (string) $value;
-        break;
-      case 'boolean':
-        $control[0] = ($value) ? 'true' : 'false';
-        break;
-      case 'array':
-        $array = new SimpleXMLElement('<array></array>');
-        self::convertArrayToSimpleXML($array, $value);
-        $control->addChild($array);
-        break;
-    }
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $control
-   * @param mixed $value
-   * @return string 
-   */
-  public static function setFormControlSimpleXMLValue(SimpleXMLElement $control, $value) {
-    $type = self::getType($control->getName());
-    switch ($type) {
-      case 'string':
-      case 'integer':
-      case 'float':
-        $control[0] = (string) $value;
-        break;
-      case 'boolean':
-        $control[0] = ($value) ? 'true' : 'false';
-        break;
-      case 'array':
-        $array = new SimpleXMLElement('<array></array>');
-        self::convertArrayToSimpleXML($array, $value);
-        $control[0] = (string) $array;
-        break;
-      case 'mixed':
-        self::convertMixedtoSimpleXML($control, $value);
-        break;
-      default:
-        throw new Exception('Invalid type: ' . $type);
-    }
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $element 
-   */
-  public static function convertSimpleXMLToUserData(SimpleXMLElement $element) {
-    return module_invoke_all('convert_form_control_user_data');
-  }
-
-  /**
-   *
-   * @param string $name 
-   * @return boolean
-   */
-  public static function validName($name) {
-    return is_string($name) && strpos($name, '#') === 0;
+    throw new Exception('Invalid type.');
   }
 
   /**
@@ -351,11 +271,79 @@ class FormControl {
   /**
    * 
    */
-  public function asXML() {
+  public function asNode(DOMDocument $document) {
     $name = str_replace('#', '', $this->_name); // Remove the Hash.
-    $control = new SimpleXMLElement("<$name></$name>");
-    self::setFormControlSimpleXMLValue($control, $this->value);
-    return $control->asXML();
+    $control = $document->createElement($name);
+    switch (self::getType($name)) {
+      case 'string':
+      case 'integer':
+      case 'float':
+        $control->appendChild(new DOMText((string) $this->value));
+        break;
+      case 'boolean':
+        $control->appendChild(new DOMText(($this->value) ? 'true' : 'false'));
+        break;
+      case 'array':
+        $this->appendArray($document, $control, $this->value);
+        break;
+      case 'mixed':
+        $this->appendMixed($document, $control, $this->value);
+        break;
+      default:
+        throw new Exception('Invalid type: ' . $type);
+    }
+    return $control;
+  }
+
+  /**
+   *
+   * @param DOMElement $control
+   * @param array $values 
+   */
+  private function appendArray(DOMDocument $document, DOMElement $control, array $values) {
+    foreach ($values as $name => $item) {
+      $key = $document->createElement('key');
+      if (!is_numeric($name)) {
+        $key->setAttribute('name', $name);
+      }
+      if (is_array($value)) {
+        $this->appendArray($key, $item);
+      }
+      else if (isset($item)) {
+        $value = $document->createElement('value', (string) $item);
+        $value->setAttribute('type', self::determineMixedType($item));
+        $key->appendChild($value);
+      }
+      else {
+        continue;
+      }
+      $control->appendChild($key);
+    }
+  }
+
+  /**
+   *
+   * @param DOMElement $control
+   * @param mixed $value 
+   */
+  private function appendMixed(DOMDocument $document, DOMElement $control, $value) {
+    $type = self::determineMixedType($value);
+    $control->setAttribute('type', $type);
+    switch ($type) {
+      case 'string':
+      case 'integer':
+      case 'float':
+        $control->appendChild(new DOMText((string) $value));
+        break;
+      case 'boolean':
+        $control->appendChild(new DOMText(($value) ? 'true' : 'false'));
+        break;
+      case 'array':
+        $array = $document->createElement('array');
+        $this->appendArray($array, $value);
+        $control->appendChild($array);
+        break;
+    }
   }
 
 }
@@ -396,17 +384,6 @@ class FormControls extends ArrayObject {
       $output[$key] = $control->value;
     }
     return $output;
-  }
-
-  /**
-   * 
-   */
-  public function asXML() {
-    $xml = '';
-    foreach ($this as $control) {
-      $xml .= $control->asXML() . "/n";
-    }
-    return $xml;
   }
 
   /**

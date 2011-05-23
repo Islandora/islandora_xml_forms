@@ -162,4 +162,25 @@ class Actions {
     return FALSE;
   }
 
+  /**
+   * 
+   * @return DOMNode
+   */
+  public function asNode(DOMDocument $document) {
+    $actions = $document->createElement('actions');
+    if (isset($this->create)) {
+      $actions->appendChild($this->create->asNode($document));
+    }
+    if (isset($this->read)) {
+      $actions->appendChild($this->read->asNode($document));
+    }
+    if (isset($this->update)) {
+      $actions->appendChild($this->update->asNode($document));
+    }
+    if (isset($this->delete)) {
+      $actions->appendChild($this->delete->asNode($document));
+    }
+    return $actions;
+  }
+
 }

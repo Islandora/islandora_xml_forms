@@ -17,7 +17,7 @@ class Path {
   const DocumentContext = 'document';
   const ParentContext = 'parent'; // Only works if this element is nested within an element that has a full path.
   const SelfContext = 'self'; // Only works if a node is registered, with the given element.
-  
+
   /**
    * XPath to query with.
    * 
@@ -71,6 +71,17 @@ class Path {
   public function query(NodeRegistry $registry, FormElement $element) {
     $context = $this->getContext($registry, $element);
     return $registry->document->query($this->path, $context);
+  }
+
+  /**
+   * 
+   * @return DOMElement
+   */
+  public function asNode() {
+    $path = new DOMElement('path');
+    $path->appendChild(new DOMText($this->path));
+    $path->setAttribute('context', $this->context);
+    return $path;
   }
 
 }

@@ -88,4 +88,16 @@ class Read implements Action {
     return $this->path->query($registry, $element);
   }
 
+  /**
+   * 
+   * @return DOMElement
+   */
+  public function asNode(DOMDocument $document) {
+    $read = $document->createElement('read');
+    if (isset($this->path)) {
+      $read->appendChild($this->path->asNode());
+    }
+    return $read;
+  }
+
 }

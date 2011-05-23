@@ -37,4 +37,12 @@ interface Action {
    * @param mixed $value 
    */
   public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL);
+
+  /**
+   * Converts this action to its XML repersentation.
+   * 
+   * @param DOMDocument $document
+   * @return DOMElement
+   */
+  public function asNode(DOMDocument $document);
 }

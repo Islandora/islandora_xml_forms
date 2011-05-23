@@ -91,16 +91,28 @@ class FormDefinition {
   }
 
   /**
+   *
+   * @return type 
+   */
+  public function asXML() {
+    $document = new DOMDocument();
+    $form = $this->asNode($document);
+    $document->appendChild($form);
+    echo $document->saveXML();
+    return $document->saveXML();
+  }
+
+  /**
    * 
    * @return string
    */
-  public function asXML() {
-    $form = new SimpleXMLElement('<form></form>');
-    $properties = simplexml_load_string($this->properties->asXML());
-    $form->addChild($properties->getName(), (string) $properties);
-    $elements = simplexml_load_string($this->elements->asXML());
-    $form->addChild($elements->getName(), (string) $elements);
-    return $form->asXML();
+  public function asNode(DOMDocument $document) {
+    $form = $document->createElement('form');
+    $properties = $this->properties->asNode($document);
+    $form->appendChild($properties);
+    $elements = $this->elements->asNode($document);
+    $form->appendChild($elements);
+    return $form;
   }
 
 }

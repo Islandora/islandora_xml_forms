@@ -48,6 +48,11 @@ class Create implements Action {
    * @var string
    */
   protected $prefix;
+  /**
+   * The value used to create the Element, Attribute or XML Snippit.
+   * @var string
+   */
+  protected $value;
 
   /**
    *
@@ -68,11 +73,12 @@ class Create implements Action {
     $context = (string) $create->path['context'];
     $schema_path = isset($create->schema_path) ? (string) $create->schema_path : null;
     $schema_name = isset($create->schema_path) ? (string) $create->schema_path['name'] : null;
-    $type = self::getCreateType($create);
+    list($type, $value) = self::getTypeAndValue($create);
     $prefix = self::getPrefix($create, $type);
     $params = array(
       'path' => new Path($path, $context),
       'type' => $type,
+      'value' => $value,
       'prefix' => $prefix,
       'schema_name' => $schema_name,
       'schema_path' => $schema_path
@@ -87,16 +93,16 @@ class Create implements Action {
    * @return integer
    *   Either Create::Element, Create::Attribute, Create::XML, or NULL if $create is not valid. 
    */
-  public static function getCreateType(SimpleXMLElement $create) {
+  public static function getTypeAndValue(SimpleXMLElement $create) {
     $types = array('element' => self::Element, 'attribute' => self::Element, 'xml' => self::XML);
     foreach ($types as $key => $type) {
       if (isset($create->$key)) {
-        return $type;
+        return array($type, $create->key);
       }
     }
     return NULL;
   }
-  
+
   /**
    * Get the type of DOMNode to create.
    * 
@@ -106,9 +112,9 @@ class Create implements Action {
    */
   public static function getPrefix(SimpleXMLElement $create, $type) {
     $types = array(self::Element => 'element', self::Element => 'attribute', self::XML => 'xml');
-    if(isset($types[$type])) {
+    if (isset($types[$type])) {
       $type = $types[$type];
-      return isset($create->$type['prefix']) ? (string) $create->$type['prefix'] : NULL; 
+      return isset($create->$type['prefix']) ? (string) $create->$type['prefix'] : NULL;
     }
     return NULL;
   }
@@ -122,6 +128,7 @@ class Create implements Action {
   public function __construct(array &$params) {
     $this->path = $params['path'];
     $this->type = $params['type'];
+    $this->value = $params['value'];
     $this->schemaName = isset($params['schema_name']) ? $params['schema_name'] : null;
     $this->schamePath = isset($params['schema_path']) ? $params['schema_path'] : null;
     if ($this->valid()) {
@@ -138,7 +145,7 @@ class Create implements Action {
   public function valid() {
     return!(empty($this->path) || empty($this->type));
   }
-  
+
   /**
    *
    * @param NodeRegistry $registry
@@ -224,6 +231,39 @@ class Create implements Action {
   private function append(DOMNode $child, DOMElement $parent) {
     // @todo Use the schema element to insert the element at the proper spot.
     $parent->appendChild($child);
+  }
+
+  /**
+   * 
+   * @return DOMElement
+   */
+  public function asNode(DOMDocument $document) {
+    $create = $document->createElement('create');
+    if (isset($this->path)) {
+      $create->appendChild($this->path->asNode());
+    }
+    // @todo Add schema info to the out put...
+    switch ($this->type) {
+      case Create::Attribute:
+        $attribute = $document->createElement('attribute', $this->value);
+        if (isset($this->prefix)) {
+          $attribute->setAttribute('prefix', $this->prefix);
+        }
+        $create->appendChild($attribute);
+        break;
+      case Create::Element:
+        $element = $document->createElement('element', $this->value);
+        if (isset($this->prefix)) {
+          $element->setAttribute('prefix', $this->prefix);
+        }
+        $create->appendChild($element);
+        break;
+      case Create::XML:
+        $xml = $document->createElement('xml', $this->value);
+        $create->appendChild($xml);
+        break;
+    }
+    return $create;
   }
 
 }

@@ -106,15 +106,6 @@ class FormElement extends FormElementArrayObject {
   }
 
   /**
-   * Returns the XML repersentation of this object. The XML repersentation is defined by FormDefinition.xsd.
-   * 
-   * @return SimpleXMLElement
-   */
-  public function toXML() {
-    
-  }
-
-  /**
    * Get an element's property, child, or FormControl.
    * 
    * Defined properties: hash, key, parent, collection
@@ -146,34 +137,36 @@ class FormElement extends FormElementArrayObject {
     parent::__set($name, $value);
   }
 
+
   /**
-   * 
+   * @return DOMNode
    */
-  public function asXML() {
+  public function asNode(DOMDocument $document) {
     // Create Element
-    $element = new SimpleXMLElement('<element></element>');
+    $element = $document->createElement('element');
     if (isset($this->name)) {
-      $element->addAttribute('key', $this->name);
+      $element->setAttribute('key', $this->name);
     }
     // Controls
     foreach ($this->controls as $control) {
-      $control = simplexml_load_string($control->asXML());
-      $element->addChild($control->getName(), (string) $control);
+      $control = $control->asNode($document);
+      $element->appendChild($control);
     }
     // Actions
     if (isset($this->actions)) {
-      $actions = simplexml_load_string($this->actions->asXML());
-      $element->addChild($actions->getName(), (string) $actions);
+      $actions = $this->actions->asNode($document);
+      $element->appendChild($actions);
     }
     // Children
     if (count($this) > 0) {
-      $children = $element->addChild('children');
+      $children = $document->createElement('children');
       foreach ($this as $child) {
-        $child = simplexml_load_string($child->asXML());
-        $children->addChild($child->getName(), (string) $child);
+        $child = $child->asNode($document);
+        $children->appendChild($child);
       }
+      $element->appendChild($children);
     }
-    return $element->asXML();
+    return $element;
   }
 
 }
