@@ -1482,6 +1482,13 @@ Ext.formbuilder.createElementForm = function () {
                     if(has_actions) {
                         record.set('actions', actions);
                     }
+                    record.set('text', values.key + ' (' + values.type + ')');
+                    record.endEdit();
+                    record.commit();
+                    record.store.sync();
+                    Ext.formbuilder.elementStore.sync();
+                    //record.commit();  
+                    //record.store.sync();
                 }
             }
         }]

@@ -51,8 +51,7 @@ function xml_form_builder_edit_save($form_name) {
   module_load_include('inc', 'xml_form_builder', 'JSONForm');
   $json_form = new JSONForm($form_name);
   $def = $json_form->getFormDefinition();
-  //echo $def->saveXML();
-  //FormBuilder::SetFormDefinition($form_name, $json_form->getFormDefinition());
+  FormBuilder::SetFormDefinition($form_name, $json_form->getFormDefinition());
 }
 
 /**
@@ -72,6 +71,9 @@ function xml_form_builder_create_element_type_store() {
     proxy: {
       type: 'memory',
       reader: {
+        type: 'json'
+      },
+      writer: {
         type: 'json'
       }
     },

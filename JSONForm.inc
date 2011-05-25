@@ -62,7 +62,7 @@ class JSONForm {
    * @return FormElements
    */
   private function createFormElements() {
-    $elements = $this->createElements($this->json->elements->elements);
+    $elements = $this->createElements($this->json->elements);
     return new FormElements(Form::ROOT, $elements);
   }
 

@@ -93,8 +93,8 @@ Ext.formbuilder.createTreePanel = function() {
                         // Load by name...
                         Ext.formbuilder.showElementForm();
                         var form = Ext.formbuilder.elementForm.getForm();
-                        // record = Ext.clone(record);
-                        var data = Ext.clone(record.data);
+                        //var data = Ext.clone(record.data);
+                        var data = record.data;
                         form.loadRecord(record);
                         //attributes
                         var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];

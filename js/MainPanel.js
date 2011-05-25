@@ -45,8 +45,15 @@ Ext.formbuilder.createMainPanel = function(children){
                         properties: {}, 
                         elements: []
                     };
+                    
                     var root = Ext.formbuilder.elementStore.getRootNode().getChildAt(0);
-                    data.elements = root.getAssociatedData();
+                    root.eachChild(function(child) {
+                        var elements = this;
+                        elements.push(child.data);
+                        var last = elements.length-1;
+                        this[last].elements = [];
+                        child.eachChild(arguments.callee, elements[last].elements);
+                    }, data.elements);
                     Ext.Ajax.request({
                         url: url,
                         params: {
