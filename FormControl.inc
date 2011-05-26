@@ -10,7 +10,7 @@
 /**
  * 
  */
-class FormControl {
+class XMLFormControl {
 
   /**
    *

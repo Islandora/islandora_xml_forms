@@ -13,7 +13,7 @@ module_load_include('inc', 'xml_form_api', 'Registry');
 /**
  * 
  */
-class FormElement extends FormElementArrayObject {
+class XMLFormElement extends FormElementArrayObject {
 
   /**
    * Id for this element.
