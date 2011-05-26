@@ -226,7 +226,7 @@
         <xs:restriction base="xs:boolean"/>
     </xs:simpleType>
     <xs:simpleType name="integer">
-        <xs:restriction base="xs:positiveInteger"/>
+        <xs:restriction base="xs:int"/>
     </xs:simpleType>
     <xs:simpleType name="float">
         <xs:restriction base="xs:float"/>

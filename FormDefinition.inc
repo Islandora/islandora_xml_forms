@@ -98,7 +98,6 @@ class FormDefinition {
     $document = new DOMDocument();
     $form = $this->asNode($document);
     $document->appendChild($form);
-    echo $document->saveXML();
     return $document->saveXML();
   }
 
