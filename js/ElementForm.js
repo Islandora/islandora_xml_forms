@@ -186,6 +186,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'tree',
                     name: 'tree',
                     fieldLabel: 'Tree',
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -203,6 +204,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'required',
                     name: 'required',
                     fieldLabel: 'Required',
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -220,6 +222,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'disabled',
                     name: 'disabled',
                     fieldLabel: 'Disabled',
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -238,6 +241,7 @@ Ext.formbuilder.createElementForm = function () {
                     name: 'access',
                     fieldLabel: 'Access',
                     checked: true,
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -723,6 +727,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'collapsed',
                     name: 'collapsed',
                     fieldLabel: 'Collapsed',
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -740,6 +745,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'collapsible',
                     name: 'collapsible',
                     fieldLabel: 'Collapsible',
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -757,6 +763,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'executes_submit_callback',
                     name: 'executes_submit_callback',
                     fieldLabel: 'Executes Submit Callback',
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -774,6 +781,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'multiple',
                     name: 'multiple',
                     fieldLabel: 'Multiple',
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -791,6 +799,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'resizable',
                     name: 'resizable',
                     fieldLabel: 'Resizable',
+                    inputValue: true,
                     listeners: {
                         render: function() {
                             Ext.create('Ext.tip.ToolTip', {
@@ -900,6 +909,7 @@ Ext.formbuilder.createElementForm = function () {
                         id: 'ahah-keypress',
                         name: 'ahah_keypress',
                         fieldLabel: 'Keypress',
+                        inputValue: true,
                         listeners: {
                             render: function() {
                                 Ext.create('Ext.tip.ToolTip', {
