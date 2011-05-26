@@ -62,7 +62,8 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
   else if (FormBuilder::FormExists($form_name)) {
     form_set_error('form_name', "The given form name '$form_name' is already in use. Form names must be unique.");
   }
-  if (isset($_FILES['files'])) {
+  $file_uploaded = $_FILES['files']['error']['file'] == 0;
+  if ($file_uploaded) {
     if ($_FILES['files']['type']['file'] == 'text/xml') {
       module_load_include('inc', 'xml_form_api', 'FormDefinition');
       $definition = new DOMDocument();
@@ -90,9 +91,16 @@ function xml_form_builder_create_submit(array $form, array &$form_state) {
   if ($clicked == t('Create')) {
     if (FormBuilder::CreateForm($form_name)) {
       drupal_set_message("Successfully created form: $form_name.");
-      if (isset($_FILES['files'])) {
+      $file_uploaded = $_FILES['files']['error']['file'] == 0;
+      if ($file_uploaded) {
         $definition = new DOMDocument();
         $definition->load($_FILES['files']['tmp_name']['file']);
+        FormBuilder::SetFormDefinition($form_name, $definition);
+      }
+      else { // Use the default template.
+        $path = drupal_get_path('module', 'xml_form_builder');
+        $definition = new DOMDocument();
+        $definition->load("$path/FormDefinition.xml");
         FormBuilder::SetFormDefinition($form_name, $definition);
       }
       $form_state['redirect'] = FormBuilder::EditPath($form_name);
