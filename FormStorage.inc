@@ -10,7 +10,7 @@
 /**
  * Class for controling persistant data for the form.
  */
-class FormStorage {
+class XMLFormStorage {
   /**
    * The root element where we store all the required info.
    */
