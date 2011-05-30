@@ -32,6 +32,21 @@ function xml_form_api_menu() {
 }
 
 /**
+ * Register classes for FormProperties.
+ * 
+ * @return array
+ */
+function xml_form_api_objectify_properties() {
+  $properties['#actions'] = array(
+    'type' => 'inc',
+    'module' => 'xml_form_api',
+    'name' => 'Actions',
+    'class' => 'Actions'
+  );
+  return $properties;
+}
+
+/**
  * Menu Callback, returns FormDefinition.xsd
  */
 function xml_form_api_get_form_defintion() {
