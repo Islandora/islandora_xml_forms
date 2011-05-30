@@ -9,13 +9,12 @@
  * Defines a FormDefinition class that allows XML form defintions to be processed by the FormGenerator, and other
  * classes.
  */
-module_load_include('inc', 'xml_form_api', 'FormProperties');
-module_load_include('inc', 'xml_form_api', 'FormElements');
+module_load_include('inc', 'xml_form_api', 'XMLFormProperties');
 
 /**
  * Describes a form
  */
-class FormDefinition {
+class XMLFormDefinition {
 
   /**
    * @var FormProperties

@@ -40,14 +40,14 @@ function xml_form_api_get_form_defintion() {
 
 function createTestDefinition() {
   $document = new DOMDocument();
-  $document->load(drupal_get_path('module', 'xml_form_api') . '/FormDefinition.xml');
+  $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/FormDefinition.xml');
   $xml = $document->saveXML();
   return FormDefinition::createFromXMLDefiniton($xml);
 }
 
 function createTestDocument($document_properties) {
   $document = new DOMDocument();
-  $document->load(drupal_get_path('module', 'xml_form_api') . '/test_data/mods.xml');
+  $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/mods.xml');
   $xml = $document->saveXML();
   return new Document($document_properties, $xml);
 }
@@ -60,7 +60,7 @@ function xml_form_api_test() {
 }
 
 function xml_form(&$form_state) {
-  $form = new Form($form_state);
+  $form = new XMLForm($form_state);
   if (!$form->isInitialized()) { // Was initialized from storage.
     // Create Definition.
     $definition = createTestDefinition();

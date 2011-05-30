@@ -6,15 +6,17 @@
  * @file
  *
  */
+module_load_include('inc', 'objective_forms', 'FormPropertyInterface');
 module_load_include('inc', 'xml_form_api', 'Create');
 module_load_include('inc', 'xml_form_api', 'Read');
 module_load_include('inc', 'xml_form_api', 'Update');
 module_load_include('inc', 'xml_form_api', 'Delete');
 
+
 /**
  * Container Class for all actions.
  */
-class Actions {
+class Actions implements FormPropertyInterface {
 
   /**
    * If executed this object will create one or more DOMNodes in the Document.
@@ -181,6 +183,10 @@ class Actions {
       $actions->appendChild($this->delete->asNode($document));
     }
     return $actions;
+  }
+  
+  public function toDrupalForm() {
+    ;
   }
 
 }

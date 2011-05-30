@@ -68,7 +68,7 @@ class XMLForm extends Form {
    * @param FormDefinition $form_definition 
    * @param Document $xml_document
    */
-  public function initialize(FormDefinition $form_definition, Document $document) {
+  public function initialize(XMLFormDefinition $form_definition, Document $document) {
     if (!$this->initialized) {
       //$this->definition = $form_definition;
       $this->document = $document;
