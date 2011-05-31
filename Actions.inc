@@ -12,7 +12,6 @@ module_load_include('inc', 'xml_form_api', 'Read');
 module_load_include('inc', 'xml_form_api', 'Update');
 module_load_include('inc', 'xml_form_api', 'Delete');
 
-
 /**
  * Container Class for all actions.
  */
@@ -67,19 +66,26 @@ class Actions implements FormPropertyInterface {
   }
 
   /**
+   * 
+   */
+  public function __construct($value) {
+    
+  }
+
+  /**
    * Create Actions.
    * 
    * @param Create $create
    * @param Read $read
    * @param Update $update
    * @param Delete $delete 
-   */
-  public function __construct(Create $create = NULL, Read $read = NULL, Update $update = NULL, Delete $delete = NULL) {
+   *
+    public function __construct(Create $create = NULL, Read $read = NULL, Update $update = NULL, Delete $delete = NULL) {
     $this->create = $create;
     $this->read = $read;
     $this->update = $update;
     $this->delete = $delete;
-  }
+    } */
 
   /**
    * Get the appropriate Action to perform.
@@ -184,9 +190,9 @@ class Actions implements FormPropertyInterface {
     }
     return $actions;
   }
-  
-  public function toDrupalForm() {
-    ;
+
+  public function getValue() {
+    return NULL;
   }
 
 }

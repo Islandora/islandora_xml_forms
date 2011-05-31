@@ -28,10 +28,10 @@ class XMLForm extends Form {
 
   /**
    *
-   * @param array $form_state 
+   * @param array $form_state
    */
   public function __construct(array &$form_state) {
-    parent::__construct($form_state);
+    parent::__construct(array(), $form_state);
     if ($this->storage->initialized) {
       $this->initializeFromStorage();
     }
@@ -43,6 +43,7 @@ class XMLForm extends Form {
   private function initializeFromStorage() {
     //$this->definition = $this->storage->definition;
     $this->document = $this->storage->document;
+    $this->root = $this->storage->root;
     //$this->registry = $this->storage->registry;
     //$this->elements = $this->storage->elements;
   }
