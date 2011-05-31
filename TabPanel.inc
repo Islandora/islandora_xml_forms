@@ -8,7 +8,7 @@
  *  Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
 module_load_include('inc', 'xml_form_elements', 'Element');
-module_load_include('inc', 'xml_form_api', 'Form');
+module_load_include('inc', 'xml_form_api', 'XMLForm');
 
 /**
  * A collection of static functions that allow for theming and processing tabpanels.

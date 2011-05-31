@@ -6,7 +6,6 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'Post');
 
 class Ahah {
 

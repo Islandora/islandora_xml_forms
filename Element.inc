@@ -8,7 +8,7 @@
  */
 module_load_include('inc', 'xml_form_elements', 'Ahah');
 module_load_include('inc', 'xml_form_api', 'Utils');
-module_load_include('inc', 'xml_form_api', 'Form');
+module_load_include('inc', 'xml_form_api', 'XMLForm');
 
 /**
  * A collection of generic static functions that can be used for AHAH callbacks.
@@ -37,7 +37,7 @@ class Element {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     // Duplicate Element
     $form = new Form($form_state);
-    $new_element = $form->duplicate($duplicate);
+    $new_element = $form->duplicateOriginal($duplicate);
     // Rebuild the form, validation and submit callbacks will be called.
     module_load_include('inc', 'xml_form_builder', 'Edit');
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
