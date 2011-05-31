@@ -104,9 +104,8 @@ class XMLDocument {
   private function createFromExistingDocument() {
     $doc = new DOMDocument();
     $doc->loadXML($this->xml);
-    $schema = $this->properties->schema;
-    if ($schema) {
-      if (!$doc->schemaValidate($schema)) {
+    if ($this->schema) {
+      if (!$doc->schemaValidate($this->schema)) {
         throw new Exception('Can not create a document from an existing invalid document.');
       }
     }

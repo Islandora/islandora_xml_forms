@@ -6,7 +6,7 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'Form');
+module_load_include('inc', 'xml_form_api', 'XMLForm');
 
 /**
  * Implementation of Hook Menu.
@@ -14,13 +14,13 @@ module_load_include('inc', 'xml_form_api', 'Form');
  * @return array
  */
 function xml_form_api_menu() {
-  $items['FormDefinition.xsd'] = array(
-    'title' => 'Form Definition',
-    'description' => 'Returns FormDefinition.xsd',
-    'page callback' => 'xml_form_api_get_form_defintion',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );
+//  $items['XMLFormDefinition.xsd'] = array(
+//    'title' => 'Form Definition',
+//    'description' => 'Returns XMLFormDefinition.xsd',
+//    'page callback' => 'xml_form_api_get_form_defintion',
+//    'access arguments' => array('access content'),
+//    'type' => MENU_CALLBACK,
+//  );
   $items['test'] = array(
     'title' => 'Test',
     'description' => 'test',
@@ -53,18 +53,16 @@ function xml_form_api_get_form_defintion() {
   
 }
 
-function createTestDefinition() {
+function getTestDefinition() {
   $document = new DOMDocument();
-  $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/FormDefinition.xml');
-  $xml = $document->saveXML();
-  return FormDefinition::createFromXMLDefiniton($xml);
+  $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/XMLFormDefinition.xml');
+  return $document->saveXML();
 }
 
-function createTestDocument($document_properties) {
+function getTestDocument() {
   $document = new DOMDocument();
   $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/mods.xml');
-  $xml = $document->saveXML();
-  return new Document($document_properties, $xml);
+  return $document->saveXML();
 }
 
 /**
@@ -75,20 +73,19 @@ function xml_form_api_test() {
 }
 
 function xml_form(&$form_state) {
-  $form = array();
-  
-  $form = new XMLForm($form, $form_state);
-  if (!$form->isInitialized()) { // Was initialized from storage.
-    // Create Definition.
-    $definition = createTestDefinition();
-    // Create Document.
-    $properties = $definition->properties;
-    $document_properties = $properties->document;
-    $document = createTestDocument($document_properties);
-    // Intialize form.
-    $form->initialize($definition, $document); // Hidden Params for extra, but at very least we need the definition.
+  $xml_form = new XMLForm($form_state);
+  if (!$xml_form->isInitialized()) { // Was initialized from storage.
+    module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+    module_load_include('inc', 'xml_form_api', 'XMLDocument');
+    $xml = getTestDefinition();
+    $form = XMLFormDefinition::GetDrupalFormDefinition($xml);
+    $properties = XMLFormDefinition::GetFormProperties($xml);
+    $properties = $properties['document'];
+    $test = getTestDocument();
+    $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema'], $test);
+    $xml_form->initialize($form, $document);
   }
-  return $form->toDrupalForm();
+  return $xml_form->toArray();
 }
 
 function xml_form_validate($form, &$form_state) {

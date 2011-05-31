@@ -1,7 +1,7 @@
 <form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="http://localhost/FormDefinition.xsd">
+    xsi:noNamespaceSchemaLocation="http://localhost/XMLFormDefinition.xsd">
     <properties>
-        <document_properties>
+        <document>
             <root>
                 <local_name>mods</local_name>
                 <prefix>mods</prefix>
@@ -11,7 +11,7 @@
                 <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
             </namespaces>
             <!-- <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema> -->
-        </document_properties>
+        </document>
     </properties>
     <elements>
         <element key="d">
@@ -78,5 +78,5 @@
             <type>submit</type>
             <value>submit</value>
         </element>
-    </elements>
+        </elements>
 </form>

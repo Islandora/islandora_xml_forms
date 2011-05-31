@@ -12,7 +12,7 @@ module_load_include('inc', 'xml_form_api', 'FormElements');
 module_load_include('inc', 'xml_form_api', 'Document');
 module_load_include('inc', 'xml_form_api', 'NodeRegistry');
 
-class XMLForm {
+class XMLForms {
   /**
    * Root of the form;
    */

@@ -41,9 +41,8 @@ class XMLForm extends Form {
    * Initialize this object from values in storage.
    */
   private function initializeFromStorage() {
-    //$this->definition = $this->storage->definition;
-    $this->document = $this->storage->document;
     $this->root = $this->storage->root;
+    $this->document = $this->storage->document;
     //$this->registry = $this->storage->registry;
     //$this->elements = $this->storage->elements;
   }
@@ -52,7 +51,7 @@ class XMLForm extends Form {
    * Stores information required to rebuild this object.
    */
   private function storePersistantMembers() {
-    //$this->storage->definition = $this->definition;
+    $this->storage->root = $this->root;
     $this->storage->document = $this->document;
     //$this->storage->registry = $this->registry;
     //$this->storage->elements = $this->elements;
@@ -69,9 +68,9 @@ class XMLForm extends Form {
    * @param FormDefinition $form_definition 
    * @param Document $xml_document
    */
-  public function initialize(XMLFormDefinition $form_definition, Document $document) {
+  public function initialize(array &$form, XMLDocument $document) {
     if (!$this->initialized) {
-      //$this->definition = $form_definition;
+      $this->root = $this->createRoot($form);
       $this->document = $document;
       //$this->registry = Registry::getInstance();
       //$this->registry->nodes = new NodeRegistry($document);
@@ -99,9 +98,9 @@ class XMLForm extends Form {
    * @return array 
    */
   private function generate() {
-    module_load_include('inc', 'xml_form_api', 'FormGenerator');
-    $generator = new XMLFormGenerator($this, $this->registry->nodes);
-    $generator->generate($this->elements);
+//    module_load_include('inc', 'xml_form_api', 'XMLFormGenerator');
+//    $generator = new XMLFormGenerator($this, $this->registry->nodes);
+//    $generator->generate($this->elements);
   }
 
   /**
@@ -111,24 +110,24 @@ class XMLForm extends Form {
    * @return type 
    */
   public function populate(array &$form_state) {
-    module_load_include('inc', 'xml_form_api', 'FormPopulator');
-    $elements = $this->elements;
-    $form_values = new FormValues($form_state, $elements);
-    $populator = new FormPopulator($this->registry->nodes, $form_values);
-    $populator->populate($elements);
+//    module_load_include('inc', 'xml_form_api', 'XMLFormPopulator');
+//    $elements = $this->elements;
+//    $form_values = new FormValues($form_state, $elements);
+//    $populator = new FormPopulator($this->registry->nodes, $form_values);
+//    $populator->populate($elements);
   }
 
   /**
    *
    * @param array $form_state 
    */
-  public function validate(array &$form_state) {
-    module_load_include('inc', 'xml_form_api', 'FormValues');
-    module_load_include('inc', 'xml_form_api', 'FormValidator');
-    $elements = $this->elements;
-    $form_values = new FormValues($form_state, $elements);
-    $validator = new FormValidator($form_values);
-    return $validator->validate($elements);
+  public function validate(array &$form, array &$form_state) {
+//    module_load_include('inc', 'xml_form_api', 'FormValues');
+//    module_load_include('inc', 'xml_form_api', 'XMLFormValidator');
+//    $elements = $this->elements;
+//    $form_values = new FormValues($form_state, $elements);
+//    $validator = new FormValidator($form_values);
+//    return $validator->validate($elements);
   }
 
   /**
@@ -136,13 +135,13 @@ class XMLForm extends Form {
    * @param array $form_state
    * @return type 
    */
-  public function submit(array &$form_state) {
-    module_load_include('inc', 'xml_form_api', 'FormValues');
-    module_load_include('inc', 'xml_form_api', 'FormProcessor');
-    $elements = $this->elements;
-    $form_values = new FormValues($form_state, $elements);
-    $processor = new FormProcessor($form_values, $this->registry);
-    return $processor->process($elements);
+  public function submit(array &$form, array &$form_state) {
+//    module_load_include('inc', 'xml_form_api', 'FormValues');
+//    module_load_include('inc', 'xml_form_api', 'FormProcessor');
+//    $elements = $this->elements;
+//    $form_values = new FormValues($form_state, $elements);
+//    $processor = new FormProcessor($form_values, $this->registry);
+//    return $processor->process($elements);
   }
 
 }
