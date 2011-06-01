@@ -126,7 +126,6 @@ class NodeRegistry { // implements IteratorAggregate {
    * @return DOMNode
    */
   public function getNode($hash) {
-    var_dump($hash);
     if (isset($this->registered[$hash])) {
       return $this->registered[$hash];
     }
