@@ -6,12 +6,13 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'Document');
+module_load_include('inc', 'xml_form_api', 'XMLDocument');
+module_load_include('inc', 'php_lib', 'DOMHelpers');
 
 /**
  * Tracks the nodes FormElements repersent.
  */
-class NodeRegistry implements IteratorAggregate {
+class NodeRegistry { // implements IteratorAggregate {
 
   /**
    * Only valid when we serialize this object. It stores the paths to registered nodes 
@@ -19,6 +20,7 @@ class NodeRegistry implements IteratorAggregate {
    * 
    * @var array
    */
+
   protected $paths;
   /**
    * A map of FormElements to the DOMNodes the repersent. These nodes are used for populating the form elements
@@ -27,7 +29,6 @@ class NodeRegistry implements IteratorAggregate {
    * @var array
    */
   protected $registered;
-  protected $elements; // @todo implement.
   /**
    * The document that the registered nodes come from.
    * 
@@ -40,18 +41,9 @@ class NodeRegistry implements IteratorAggregate {
    * 
    * @param Document $document 
    */
-  public function __construct(Document $document) {
+  public function __construct(XMLDocument $document) {
     $this->document = $document;
     $this->registered = array();
-  }
-
-  /**
-   * Allows iteration over the registered DOMNodes.
-   * 
-   * @return ArrayIterator 
-   */
-  public function getIterator() {
-    return new ArrayIterator($this->registered);
   }
 
   /**
@@ -61,7 +53,7 @@ class NodeRegistry implements IteratorAggregate {
    */
   public function __sleep() {
     $this->paths = $this->registered;
-    array_walk($this->paths, array('Utils', 'convertNodeToPath'));
+    array_walk($this->paths, 'get_dom_node_xpath');
     return array('paths', 'document');
   }
 
@@ -79,12 +71,11 @@ class NodeRegistry implements IteratorAggregate {
   /**
    * Register a relationship between a FormElement and a DOMNode.
    * 
-   * @param FormElement $element
+   * @param hash $hash
    * @param DOMNode $node 
    */
-  public function register(FormElement $element, DOMNode $node) {
-    $key = $element->hash;
-    $this->registered[$key] = $node;
+  public function register($hash, DOMNode $node) {
+    $this->registered[$hash] = $node;
   }
 
   /**
@@ -103,6 +94,17 @@ class NodeRegistry implements IteratorAggregate {
   }
 
   /**
+   * Is the given FormElement registered?
+   * 
+   * @param hash $hash
+   * @return boolean
+   *   TRUE if the element is registered FALSE otherwise.
+   */
+  public function isElementRegistered($hash) {
+    return $this->getNode($hash) != NULL;
+  }
+
+  /**
    * Find the hash for the element that corresponds to the given DOMNode.
    * 
    * @param DOMNode $node
@@ -118,28 +120,13 @@ class NodeRegistry implements IteratorAggregate {
   }
 
   /**
-   * Is the given FormElement registered?
-   * 
-   * @param mixed $element 
-   *   Either a FormElement, or a FormElements hash.
-   * @return boolean
-   *   TRUE if the element is registered FALSE otherwise.
-   */
-  public function isElementRegistered($element) {
-    return $this->getNode($element) != NULL;
-  }
-
-  /**
    * Get the registered DOMNode associated with the given FormElement.
    * 
-   * @param mixed $hash
-   *   Either a FormElement, or a FormElements hash.
+   * @param hash $hash
    * @return DOMNode
    */
-  public function getNode($element) {
-    $hash = FormElement::isFormElement($element) ?
-        $element->hash :
-        $element;
+  public function getNode($hash) {
+    var_dump($hash);
     if (isset($this->registered[$hash])) {
       return $this->registered[$hash];
     }

@@ -6,6 +6,8 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_api', 'NodeRegistry');
+
 class XMLDocument {
 
   /**
@@ -39,14 +41,22 @@ class XMLDocument {
    */
   protected $schema;
   /**
+   * Stores associations between form elements and DOMNodes.
+   * 
+   * @var NodeRegisty
+   */
+  public $registry;
+  /**
+   * 
    * @var DOMDocument
    */
   protected $document;
   /**
+   * 
    * @var DOMXPath
    */
   protected $xpath;
-
+  
   /**
    * Create an XMLDocument.
    * 
@@ -60,6 +70,7 @@ class XMLDocument {
     $this->namespaces = $namespaces;
     $this->schema = $schema;
     $this->xml = $xml;
+    $this->registry = new NodeRegistry($this);
     $this->document = $this->createDocument();
     $this->xpath = new DOMXPath($this->document);
     $this->registerNamespaces();
@@ -73,7 +84,7 @@ class XMLDocument {
    * @return array
    */
   public function __sleep() {
-    return array('root', 'namespaces', 'schema', 'xml');
+    return array('root', 'namespaces', 'schema', 'xml', 'registry');
   }
 
   /**

@@ -98,9 +98,9 @@ class XMLForm extends Form {
    * @return array 
    */
   private function generate() {
-//    module_load_include('inc', 'xml_form_api', 'XMLFormGenerator');
-//    $generator = new XMLFormGenerator($this, $this->registry->nodes);
-//    $generator->generate($this->elements);
+    module_load_include('inc', 'xml_form_api', 'XMLFormGenerator');
+    $generator = new XMLFormGenerator($this, $this->document);
+    $generator->generate($this->root);
   }
 
   /**

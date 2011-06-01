@@ -6,14 +6,13 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'FormDefinition');
-module_load_include('inc', 'xml_form_api', 'FormPopulator');
+module_load_include('inc', 'php_lib', 'DOMHelpers.inc');
 
 /**
  * The purpose of this class is to register DOMNodes to FormElements and to generate additional FormElements for
  * FormElements that repersent several DOMNodes.
  */
-class FormGenerator {
+class XMLFormGenerator {
 
   /**
    * Reference to the form were, generating.
@@ -28,14 +27,14 @@ class FormGenerator {
   protected $registry;
 
   /**
-   * Create a FormGenerator
+   * Create a XMLFormGenerator
    * 
-   * @param FormDefinition $definition
-   * @param NodeRegistry $registry 
+   * @param XMLForm $form
+   * @param XMLDocument $document
    */
-  public function __construct(Form $form, NodeRegistry $registry) {
+  public function __construct(XMLForm $form, XMLDocument $document) {
     $this->form = $form;
-    $this->registry = $registry;
+    $this->registry = $document->registry;
   }
 
   /**
@@ -43,14 +42,21 @@ class FormGenerator {
    * 
    * @param FormElements $elements 
    */
-  public function generate(FormElements $elements) {
-    $registry = $this->registry;
-    foreach ($elements as $element) {
-      if (!$this->registry->isElementRegistered($element)) {
-        $nodes = $this->findNodes($element);
-        $form_elements = $this->createDuplicates($elements, $element, count($nodes));
-        $this->registerNodes($form_elements, $nodes);
-      }
+  public function generate(FormElement $root) {
+    $this->processElement($root);
+    $root->eachDecendant(array($this, 'processElement'));
+  }
+
+  /**
+   * Registers the given element generates stuff.
+   * 
+   * @param FormElement $element 
+   */
+  public function processElement(FormElement $element) {
+    if (!$this->registry->isElementRegistered($element->hash)) {
+      $nodes = $this->findNodes($element);
+      $form_elements = $this->createDuplicates($element, count($nodes));
+      $this->registerNodes($form_elements, $nodes);
     }
   }
 
@@ -64,7 +70,7 @@ class FormGenerator {
     $reader = $actions ? $actions->read : NULL;
     if ($reader) {
       $results = $reader->execute($this->registry, $element);
-      return Utils::DOMNodelistToArray($results);
+      return dom_node_list_to_array($results);
     }
     return array();
   }
@@ -74,10 +80,12 @@ class FormGenerator {
    * @param FormElement $element
    * @param integer $count 
    */
-  private function createDuplicates(FormElements $elements, FormElement $element, $count) {
+  private function createDuplicates(FormElement $element, $count) {
     $output = array($element);
     for ($i = 1; $i < $count; $i++) {
-      $output[] = $this->form->duplicate($element);
+      $clone = $this->form->duplicateOriginal($element);
+      $element->parent->adopt($clone);
+      $output[] = $clone;
     }
     return $output;
   }
@@ -93,7 +101,7 @@ class FormGenerator {
     $iterator->attachIterator(new ArrayIterator($nodes));
     foreach ($iterator as $set) {
       list($element, $node) = $set;
-      $this->registry->register($element, $node);
+      $this->registry->register($element->hash, $node);
     }
   }
 
