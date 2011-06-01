@@ -38,6 +38,7 @@ class Tag {
    * @return array 
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+    $element['#id'] = $element['#hash'];
     return $element;
   }
 
