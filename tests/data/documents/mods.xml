@@ -8,6 +8,10 @@
     <mods:location>
         <mods:url>http://hdl.handle.net/10176/coccc:3098</mods:url>
     </mods:location>
+    <mods:physicalDescription>
+        <mods:digitalOrigin>born digital</mods:digitalOrigin>
+    </mods:physicalDescription>
+    <mods:targetAudience>public</mods:targetAudience>
     <mods:identifier type="local">coccc:3098</mods:identifier>
 </mods:mods>
 

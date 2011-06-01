@@ -652,22 +652,29 @@
                 <properties>
                     <type>tags</type>
                     <title>Target Audience</title>
-                    <actions>
-                        <create>
-                            <path>/mods:mods</path>
-                            <context>document</context>
-                            <element>targetAudience</element>
-                        </create>
-                        <read>
-                            <path>/mods:mods/mods:targetAudience</path>
-                            <context>document</context>
-                        </read>
-                        <update>
-                            <path>self::node()</path>
-                            <context>self</context>
-                        </update>
-                    </actions>
                 </properties>
+                <children>
+                    <element>
+                        <properties>
+                            <type>tag</type>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <element>targetAudience</element>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:targetAudience</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                            </actions>
+                        </properties>
+                    </element>
+                </children>
             </element>
             <element name="notes">
                 <properties>
