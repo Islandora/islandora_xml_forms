@@ -686,19 +686,10 @@
                         <properties>
                             <type>tabpanel</type>
                             <actions>
-                                <create>
-                                    <path>/mods:mods</path>
-                                    <context>document</context>
-                                    <element>note</element>
-                                </create>
                                 <read>
                                     <path>/mods:mods/mods:note[not(@type)]</path>
                                     <context>document</context>
                                 </read>
-                                <update>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </update>
                             </actions>
                         </properties>
                         <children>
@@ -708,12 +699,18 @@
                                     <title>Note</title>
                                     <actions>
                                         <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
+                                            <path>/mods:mods</path>
+                                            <context>document</context>
                                             <element>note</element>
                                         </create>
-                                        <read></read>
-                                        <update></update>
+                                        <read>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
                                     </actions>
                                 </properties>
                             </element>

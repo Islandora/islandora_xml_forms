@@ -6,15 +6,12 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_api', 'NodeRegistry');
-module_load_include('inc', 'xml_form_api', 'FormElements');
-module_load_include('inc', 'xml_form_api', 'FormValues');
-module_load_include('inc', 'xml_form_api', 'Utils');
+module_load_include('inc', 'xml_form_api', 'XMLDocument');
 
 /**
  * 
  */
-class XMLFormPopulator {
+class XMLFormPrePopulator {
 
   /**
    * Node Registry.
@@ -22,20 +19,14 @@ class XMLFormPopulator {
    * @var NodeRegistry
    */
   protected $registry;
-  /**
-   *
-   * @var FormValues
-   */
-  protected $values;
 
   /**
    * Create FormPopulater.
    * 
    * @param NodeRegistry $registry 
    */
-  public function __construct(NodeRegistry $registry, FormValues $values) {
-    $this->registry = $registry;
-    $this->values = $values;
+  public function __construct(XMLDocument $document) {
+    $this->registry = $document->registry;
   }
 
   /**
@@ -43,11 +34,18 @@ class XMLFormPopulator {
    * 
    * @param array $form
    */
-  public function populate(FormElements $elements) {
-    foreach ($elements as $element) {
-      $value = $this->getDefaultValue($element);
-      $this->setDefaultValue($element, $value);
-    }
+  public function prePopulate(FormElement $root) {
+    $this->prePopulateElement($root);
+    $root->eachDecendant(array($this, 'prePopulateElement'));
+  }
+
+  /**
+   *
+   * @param FormElement $element 
+   */
+  public function prePopulateElement(FormElement $element) {
+    $value = $this->getDefaultValue($element);
+    $this->setDefaultValue($element, $value);
   }
 
   /**
@@ -56,33 +54,8 @@ class XMLFormPopulator {
    * @param FormElement $element
    */
   private function getDefaultValue(FormElement $element) {
-    $value = $this->getSubmittedValue($element);
-    if (empty($value)) {
-      $value = $this->getRegisteredValue($element);
-    }
-    return $value;
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @return mixed 
-   */
-  private function getSubmittedValue(FormElement $element) {
-    return $this->values->getValue($element);
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @return mixed 
-   */
-  private function getRegisteredValue(FormElement $element) {
     $node = $this->registry->getNode($element->hash);
-    if ($node) {
-      return $this->getNodeValue($node);
-    }
-    return NULL;
+    return $this->getNodeValue($node);
   }
 
   /**
@@ -91,9 +64,7 @@ class XMLFormPopulator {
    * @param FormElement $element 
    */
   private function setDefaultValue(FormElement $element, $value) {
-    if (isset($value)) {
-      $element->default_value = $value;
-    }
+    $element->default_value = $value;
   }
 
   /**
@@ -105,7 +76,10 @@ class XMLFormPopulator {
    * @return string
    *   The DOMNode's value if appropriate, otherwise return NULL.
    */
-  private function getNodeValue(DOMNode $node) {
+  private function getNodeValue(DOMNode $node = NULL) {
+    if (empty($node)) {
+      return NULL;
+    }
     switch (get_class($node)) {
       case 'DOMAttr':
         return $node->nodeValue;

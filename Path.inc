@@ -50,14 +50,18 @@ class Path {
   }
 
   private function getParent(NodeRegistry $registry, FormElement $element) {
-    $element = $element->parent;
-    while ($element) {
-      $node = $registry->getNode($element);
-      if ($node) {
-        return $node;
+    $parent = $element->parent;
+    while ($parent) {
+      // Check to see if it defines a read property.
+      if (isset($parent->actions->read)) {
+        $node = $registry->getNode($parent->hash);
+        return isset($node) ? $node : FALSE; // Parent was not read from the document.
       }
+      $parent = $parent->parent;
     }
-    throw new Exception('Context Parent is not defined.');
+    $type = $element->type;
+    $title = $element->title;
+    throw new Exception("The Form Element '{$title}' of type '{$type}' specifies a xpath context of parent but none is defined.");
   }
 
   private function getSelf(NodeRegistry $registry, FormElement $element) {
@@ -70,7 +74,10 @@ class Path {
 
   public function query(NodeRegistry $registry, FormElement $element) {
     $context = $this->getContext($registry, $element);
-    return $registry->document->query($this->path, $context);
+    if ($context !== FALSE) {
+      return $registry->document->query($this->path, $context);
+    }
+    return FALSE;
   }
 
   /**

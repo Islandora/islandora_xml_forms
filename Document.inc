@@ -8,6 +8,7 @@
  */
 module_load_include('inc', 'xml_form_api', 'Utils');
 module_load_include('inc', 'xml_form_api', 'DocumentProperties');
+
 /**
  * 
  */
@@ -153,10 +154,9 @@ class Document {
    * @return DOMNodeList 
    */
   public function query($path, DOMNode $context = NULL) {
-    $results = $context ?
+    return isset($context) ?
         $this->xpath->query($path, $context) :
         $this->xpath->query($path);
-    return $results;
   }
 
 }

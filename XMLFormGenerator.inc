@@ -70,7 +70,9 @@ class XMLFormGenerator {
     $reader = $actions ? $actions->read : NULL;
     if ($reader) {
       $results = $reader->execute($this->registry, $element);
-      return dom_node_list_to_array($results);
+      if ($results) {
+        return dom_node_list_to_array($results);
+      }
     }
     return array();
   }

@@ -51,7 +51,7 @@ class Read implements Action {
    *   The parameters that initialize this object.
    */
   public function __construct(array &$params) {
-    $this->path = $params['path'];
+    $this->path = new Path($params['path'], $params['context']);
     if (!$this->valid()) {
       throw new Exception('Failed to initialize Read.');
     }

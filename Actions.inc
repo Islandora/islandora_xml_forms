@@ -69,7 +69,9 @@ class Actions implements FormPropertyInterface {
    * 
    */
   public function __construct($value) {
-    
+    if (isset($value['read'])) {
+      $this->read = new Read($value['read']);
+    }
   }
 
   /**

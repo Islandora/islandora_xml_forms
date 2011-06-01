@@ -76,6 +76,7 @@ class XMLForm extends Form {
       //$this->registry->nodes = new NodeRegistry($document);
       //$this->elements = clone $form_definition->elements;
       $this->generate(); // Register nodes and generate new elements.
+      $this->prePopulate();
       $this->storePersistantMembers();
     }
     else {
@@ -109,12 +110,10 @@ class XMLForm extends Form {
    * @param FormElements $elements
    * @return type 
    */
-  public function populate(array &$form_state) {
-//    module_load_include('inc', 'xml_form_api', 'XMLFormPopulator');
-//    $elements = $this->elements;
-//    $form_values = new FormValues($form_state, $elements);
-//    $populator = new FormPopulator($this->registry->nodes, $form_values);
-//    $populator->populate($elements);
+  public function prePopulate() {
+    module_load_include('inc', 'xml_form_api', 'XMLFormPrePopulator');
+    $populator = new XMLFormPrePopulator($this->document);
+    $populator->prePopulate($this->root);
   }
 
   /**
