@@ -8,7 +8,6 @@
          class="form-text listElement list">
   </input>
   <div>
-
   </div>
   <ui class="tagEditor">
     <li title="Remove tag">remove</li>
