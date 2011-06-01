@@ -28,6 +28,14 @@ function xml_form_elements_elements() {
       'delete' => TRUE,
     )
   );
+  $type['tags'] = array(
+    '#input' => TRUE,
+    '#process' => array('xml_form_elements_process_tags'),
+  );
+  $type['tag'] = array(
+    '#input' => TRUE,
+    '#process' => array('xml_form_elements_process_tag'),
+  );
   return $type;
 }
 
@@ -47,6 +55,15 @@ function xml_form_elements_theme() {
       'arguments' => array('element'),
       'file' => 'TabPanel.inc'
     ),
+    'tags' => array(
+      'arguments' => array('element'),
+      'template' => 'Tags',
+      'file' => 'Tags.inc'
+    ),
+    'tag' => array(
+      'arguments' => array('element'),
+      'file' => 'Tag.inc'
+    )
   );
 }
 
@@ -144,4 +161,30 @@ function xml_form_elements_process_tabs(array $element, $edit, array &$form_stat
 function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'TabPanel');
   return TabPanel::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ *
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
+ */
+function xml_form_elements_process_tags(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'Tags');
+  return Tags::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ *
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
+ */
+function xml_form_elements_process_tag(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'TabPanel');
+  return Tag::Process($element, $edit, $form_state, $complete_form);
 }

@@ -44,14 +44,14 @@ class TabPanel {
    * @return array 
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    $tabpanel = Element::find($element['#hash'], $form_state);
+    $tabpanel = Element::find($element['#hash']);
     if ($element['#user_data']['add']) {
       $add = self::createAddButton($tabpanel);
-      $element[self::AddButton] = $add->toDrupalForm();
+      $element[self::AddButton] = $add->toArray();
     }
     if ($element['#user_data']['delete']) {
       $delete = self::createRemoveButton($tabpanel);
-      $element[self::DeleteButton] = $delete->toDrupalForm();
+      $element[self::DeleteButton] = $delete->toArray();
     }
     return $element;
   }

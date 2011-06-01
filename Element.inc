@@ -22,9 +22,8 @@ class Element {
    * @param array $form_state
    * @return FormElement 
    */
-  public static function find($hash, array &$form_state) {
-    $form = new Form($form_state);
-    return $form->registry->findElement($hash);
+  public static function find($hash) {
+    return FormElementRegistry::getInstance()->get($hash);
   }
 
   /**
@@ -36,7 +35,7 @@ class Element {
   public static function Duplicate($duplicate, $render = NULL) {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     // Duplicate Element
-    $form = new Form($form_state);
+    $form = new Form($drupal_form, $form_state);
     $new_element = $form->duplicateOriginal($duplicate);
     // Rebuild the form, validation and submit callbacks will be called.
     module_load_include('inc', 'xml_form_builder', 'Edit');
@@ -81,7 +80,7 @@ class Element {
     // Respond to the request with JSON.
     Ahah::respond($element);
   }
-  
+
   /**
    * AHAH callback to rebuild an existing element.
    * 

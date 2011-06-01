@@ -1,0 +1,51 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ *
+ *  Allows forms to dynamically add new tabs to a tabpanel in a form.
+ */
+module_load_include('inc', 'xml_form_elements', 'Element');
+
+/**
+ * A collection of static functions that allow for theming and processing tabpanels.
+ */
+class Tag {
+
+  /**
+   * TabPanel's theme hook.
+   * 
+   * @param array $element
+   * @return string 
+   */
+  public static function Theme($element) {
+    $children = isset($element['#children']) ? $element['#children'] : '';
+    $description = isset($element['#description']) ? "<div class='description'>{$element['#description']}</div>" : ''; 
+    return "<div id='{$element['#hash']}'>{$description}{$children}</div>";
+  }
+
+  /**
+   * The default #process function for tabpanel's.
+   * 
+   * Adds elements that allow for adding/remove form elements.
+   * 
+   * @param array $element
+   * @param mixed $edit
+   * @param array $form_state
+   * @param array $complete_form
+   * @return array 
+   */
+  public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+    return $element;
+  }
+
+}
+
+/**
+ * Theme hook for a tabpanel
+ */
+function theme_tag($element) {
+  return Tag::Theme($element);
+}
