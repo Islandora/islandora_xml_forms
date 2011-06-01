@@ -55,13 +55,13 @@ function xml_form_api_get_form_defintion() {
 
 function getTestDefinition() {
   $document = new DOMDocument();
-  $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/XMLFormDefinition.xml');
+  $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/definitions/mods.xml');
   return $document->saveXML();
 }
 
 function getTestDocument() {
   $document = new DOMDocument();
-  $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/mods.xml');
+  $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/documents/mods.xml');
   return $document->saveXML();
 }
 

@@ -75,7 +75,7 @@ class XMLForm extends Form {
       //$this->registry = Registry::getInstance();
       //$this->registry->nodes = new NodeRegistry($document);
       //$this->elements = clone $form_definition->elements;
-      //$this->generate(); // Register nodes and generate new elements.
+      $this->generate(); // Register nodes and generate new elements.
       $this->storePersistantMembers();
     }
     else {

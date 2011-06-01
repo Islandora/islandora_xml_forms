@@ -29,6 +29,27 @@
                     <weight>0</weight>
                 </properties>
             </element>
+            <element name="tabs">
+                <properties>
+                    <type>tabs</type>
+                    <title>second</title>
+                </properties>
+                <children>
+                    <element name="panel">
+                        <properties>
+                            <type>tabpanel</type>
+                            <title>panel</title>
+                        </properties>
+                        <children>
+                            <element>
+                                <properties>
+                                    <type>textfield</type>
+                                </properties>
+                            </element>
+                        </children>
+                    </element>
+                </children>
+            </element>
         </children>
     </form>
 </definition>

@@ -124,10 +124,18 @@ class XMLFormDefinition {
     }
     $output = array();
     foreach ($children as $child) {
-      $name = $child->getName();
+      $name = self::GetElementPropertyName($child);
       $output[$name] = self::GetElementProperty($child);
     }
     return $output;
+  }
+
+  private static function GetElementPropertyName(SimpleXMLElement $property) {
+    if (isset($property['key'])) {
+      $key = (string) $property['key'];
+      return strcasecmp($key, 'NULL') == 0 ? NULL : $key;
+    }
+    return $property->getName();
   }
 
   private static function GetElementChildren(SimpleXMLElement $element) {
@@ -135,7 +143,7 @@ class XMLFormDefinition {
     if (isset($element->children)) {
       $elements = $element->children->children();
       foreach ($elements as $element) {
-        $key = (string) $element['name'];
+        $key = isset($element['name']) ? (string) $element['name'] : NULL;
         array_add($output, $key, self::GetElement($element));
       }
     }
