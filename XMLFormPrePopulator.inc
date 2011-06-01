@@ -14,7 +14,7 @@ module_load_include('inc', 'xml_form_api', 'Utils');
 /**
  * 
  */
-class FormPopulator {
+class XMLFormPopulator {
 
   /**
    * Node Registry.
