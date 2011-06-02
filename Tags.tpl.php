@@ -6,7 +6,6 @@
          size="25" 
          value="<?php print "{$input['value']}" ?>" 
          class="form-text listElement list">
-  </input>
   <div>
   </div>
   <ui class="tagEditor">

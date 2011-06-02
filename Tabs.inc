@@ -18,6 +18,15 @@ class Tabs {
    * @param array $complete_form 
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+    static $add_files = TRUE;
+    if ($add_files) {
+      $path = drupal_get_path('module', 'xml_form_elements');
+      jquery_ui_add('ui.tabs');
+      drupal_add_js("$path/js/Tabs.js");
+      drupal_add_css("$path/theme/ui.all.css");
+      drupal_add_css("$path/stylesheets/Tabs.css");
+      $add_files = FALSE;
+    }
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
     return $element;
@@ -41,14 +50,6 @@ class Tabs {
  */
 function xml_form_elements_preprocess_tabs(&$vars) {
   $tabs = $vars['tabs'];
-  $path = drupal_get_path('module', 'xml_form_elements');
-  // Javascript
-  drupal_add_js("$path/js/jquery-ui-1.8.7.custom.min.js");
-  drupal_add_js("$path/js/Tabs.js");
-  $vars['scripts'] = drupal_get_js();
-  // CSS
-  drupal_add_css("$path/stylesheets/custom-theme/jquery-ui-1.8.11.custom.css");
-  drupal_add_css("$path/stylesheets/Tabs.css");
   // Header Info
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
   $vars['collapsed'] = $tabs['#collapsed'] == TRUE;

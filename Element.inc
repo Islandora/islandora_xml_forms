@@ -9,6 +9,9 @@
 module_load_include('inc', 'xml_form_elements', 'Ahah');
 module_load_include('inc', 'xml_form_api', 'Utils');
 module_load_include('inc', 'xml_form_api', 'XMLForm');
+module_load_include('inc', 'objective_forms', 'Utils');
+//module_load_include('inc', 'objective_forms', 'FormStorage');
+//module_load_include('inc', 'objective_forms', 'FormElementRegistry');
 
 /**
  * A collection of generic static functions that can be used for AHAH callbacks.
@@ -22,8 +25,11 @@ class Element {
    * @param array $form_state
    * @return FormElement 
    */
-  public static function find($hash) {
-    return FormElementRegistry::getInstance()->get($hash);
+  public static function find($hash, array& $form_state) {
+    /*if (!FormStorage::isInitialized()) {
+      FormStorage::initialize($form_state);
+    }
+    return FormElementRegistry::getInstance()->get($hash);*/
   }
 
   /**
@@ -35,14 +41,15 @@ class Element {
   public static function Duplicate($duplicate, $render = NULL) {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     // Duplicate Element
-    $form = new Form($drupal_form, $form_state);
+    $form = new XMLForm($form_state);
+    $original = $form->findElement($duplicate);
     $new_element = $form->duplicateOriginal($duplicate);
+    $original->parent[] = $new_element;
     // Rebuild the form, validation and submit callbacks will be called.
-    module_load_include('inc', 'xml_form_builder', 'Edit');
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
-    $element = Utils::getDrupalFormElement($render, $drupal_form);
+    $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
     Ahah::respond($element);
   }

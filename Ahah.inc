@@ -64,10 +64,10 @@ class Ahah {
    * @param array $form 
    */
   public static function respond(array &$form = NULL) {
-    $data = theme('status_messages');
+    //$data = theme('status_messages');
     if(isset($form)) {
       unset($form['#prefix'], $form['#suffix']);
-      $data .= '<div></div>';//drupal_render($form);
+      $data .= drupal_render($form);
     }
     $javascript = drupal_add_js(NULL, NULL, 'header');
     $settings = call_user_func_array('array_merge_recursive', $javascript['setting']);

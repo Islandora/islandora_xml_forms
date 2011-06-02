@@ -7,8 +7,9 @@
  *
  *  Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
-module_load_include('inc', 'xml_form_elements', 'Element');
-module_load_include('inc', 'xml_form_api', 'XMLForm');
+//module_load_include('inc', 'xml_form_elements', 'Element');
+//module_load_include('inc', 'xml_form_api', 'XMLForm');
+module_load_include('inc', 'php_lib', 'DrupalFormHelpers');
 
 /**
  * A collection of static functions that allow for theming and processing tabpanels.
@@ -28,7 +29,7 @@ class TabPanel {
    */
   public static function Theme($element) {
     $children = isset($element['#children']) ? $element['#children'] : '';
-    $description = isset($element['#description']) ? "<div class='description'>{$element['#description']}</div>" : ''; 
+    $description = isset($element['#description']) ? "<div class='description'>{$element['#description']}</div>" : '';
     return "<div id='{$element['#hash']}'>{$description}{$children}</div>";
   }
 
@@ -44,14 +45,11 @@ class TabPanel {
    * @return array 
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    $tabpanel = Element::find($element['#hash']);
     if ($element['#user_data']['add']) {
-      $add = self::createAddButton($tabpanel);
-      $element[self::AddButton] = $add->toArray();
+      $element[self::AddButton] = self::createAddButton($element, $complete_form);
     }
     if ($element['#user_data']['delete']) {
-      $delete = self::createRemoveButton($tabpanel);
-      $element[self::DeleteButton] = $delete->toArray();
+      $element[self::DeleteButton] = self::createRemoveButton($element, $complete_form);
     }
     return $element;
   }
@@ -62,22 +60,20 @@ class TabPanel {
    * @param FormElement $tabpanel
    * @return FormElement 
    */
-  private static function createAddButton(FormElement $tabpanel) {
-    $tabs = $tabpanel->parent;
-    $add = new FormElement();
-    $add->type = 'submit';
-    $add->weight = 4;
-    $add->size = 30;
-    $add->value = 'Add';
-    $add->prefix = '<div class="ui-tabpanel-add-button">';
-    $add->suffix = '</div>';
-    $add->ahah = array(
-      'path' => "xml/form/elements/ahah/duplicate/{$tabpanel->hash}/{$tabs->hash}",
-      'wrapper' => $tabs->hash, // The parents wrapper is set to the parents hash.
+  private static function createAddButton(array &$element, array& $complete_form) {
+    $tabs = get_form_element_parent($element, $complete_form);
+    $add['#type'] = 'submit';
+    $add['#weight'] = 4;
+    $add['#size'] = 30;
+    $add['#value'] = 'Add';
+    $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
+    $add['#suffix'] = '</div>';
+    $add['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/duplicate/{$element['#hash']}/{$tabs['#hash']}",
+      'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replace',
       'effect' => 'fade'
     );
-    $tabpanel[self::AddButton] = $add; // Add to the definition.
     return $add;
   }
 
@@ -87,25 +83,23 @@ class TabPanel {
    * @param FormElement $tabpanel
    * @return FormElement 
    */
-  private static function createRemoveButton(FormElement $tabpanel) {
-    $tabs = $tabpanel->parent;
-    $delete = new FormElement();
-    $delete->type = 'submit';
-    $delete->weight = 4;
-    $delete->size = 30;
-    $delete->value = 'Delete';
-    $delete->attributes = array(
+  private static function createRemoveButton(array &$element, array& $complete_form) {
+    $tabs = get_form_element_parent($element, $complete_form);
+    $delete['#type'] = 'submit';
+    $delete['#weight'] = 4;
+    $delete['#size'] = 30;
+    $delete['#value'] = 'Delete';
+    $delete['#attributes'] = array(
       'style' => 'display:none'
     );
-    $delete->prefix = '<div class="ui-tabpanel-delete-button">';
-    $delete->suffix = '</div>';
-    $delete->ahah = array(
-      'path' => "xml/form/elements/ahah/remove/{$tabpanel->hash}/{$tabs->hash}",
-      'wrapper' => $tabs->hash, // The parents wrapper is set to the parents hash.
+    $delete['#prefix'] = '<div class="ui-tabpanel-delete-button">';
+    $delete['#suffix'] = '</div>';
+    $delete['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/remove/{$element['#hash']}/{$tabs['#hash']}",
+      'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replace',
       'effect' => 'fade'
     );
-    $tabpanel[self::DeleteButton] = $delete; // Add to the definition.
     return $delete;
   }
 
