@@ -127,6 +127,20 @@
                                         <properties>
                                             <title>title</title>
                                             <type>textfield</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>title</path>
+                                                    <context>parent</context>
+                                                </read>
+                                                <update>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </update>
+                                            </actions>
                                         </properties>
                                     </element>
                                 </children>
@@ -137,18 +151,64 @@
                         <properties>
                             <title>descript</title>
                             <type>fieldset</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>descript</path>
+                                    <context>parent</context>
+                                </read>
+                            </actions>
                         </properties>
                         <children>
                             <element name="abstract">
                                 <properties>
                                     <title>abstract</title>
                                     <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </create>
+                                        <read>
+                                            <path>abstract</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
                                 </properties>
                             </element>
                             <element name="purpose">
                                 <properties>
                                     <title>purpose</title>
                                     <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </create>
+                                        <read>
+                                            <path>purpose</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
                                 </properties>
                             </element>
                         </children>
@@ -157,24 +217,72 @@
                         <properties>
                             <title>timeperd</title>
                             <type>fieldset</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>timeperd</path>
+                                    <context>parent</context>
+                                </read>
+                            </actions>
                         </properties>
                         <children>
                             <element name="timeinfo">
                                 <properties>
                                     <title>timeinfo</title>
                                     <type>fieldset</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </create>
+                                        <read>
+                                            <path>timeinfo</path>
+                                            <context>parent</context>
+                                        </read>
+                                    </actions>
                                 </properties>
                                 <children>
                                     <element name="sngdate">
                                         <properties>
                                             <title>sngdate</title>
                                             <type>fieldset</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>sngdate</path>
+                                                    <context>parent</context>
+                                                </read>
+                                            </actions>
                                         </properties>
                                         <children>
                                             <element name="caldate">
                                                 <properties>
                                                     <title>caldate</title>
                                                     <type>textfield</type>
+                                                    <actions>
+                                                        <create>
+                                                            <path>self::node()</path>
+                                                            <context>parent</context>
+                                                        </create>
+                                                        <read>
+                                                            <path>caldate</path>
+                                                            <context>parent</context>
+                                                        </read>
+                                                        <update>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </update>
+                                                        <delete>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </delete>
+                                                    </actions>
                                                 </properties>
                                             </element>
                                         </children>
@@ -185,6 +293,24 @@
                                 <properties>
                                     <title>current</title>
                                     <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </create>
+                                        <read>
+                                            <path>current</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
                                 </properties>
                             </element>
                         </children>
@@ -193,6 +319,16 @@
                         <properties>
                             <title>status</title>
                             <type>fieldset</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>status</path>
+                                    <context>parent</context>
+                                </read>
+                            </actions>
                         </properties>
                         <children>
                             <element name="progress">
@@ -204,12 +340,44 @@
                                         <option key="In Work">In Work</option>
                                         <option key="Planned">Planned</option>
                                     </options>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </create>
+                                        <read>
+                                            <path>progress</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                    </actions>
                                 </properties>
                             </element>
                             <element name="update">
                                 <properties>
                                     <title>update</title>
                                     <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </create>
+                                        <read>
+                                            <path>update</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
                                 </properties>
                             </element>
                         </children>
@@ -218,36 +386,128 @@
                         <properties>
                             <title>spdom</title>
                             <type>fieldset</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>spdom</path>
+                                    <context>parent</context>
+                                </read>
+                            </actions>
                         </properties>
                         <children>
                             <element name="bounding">
                                 <properties>
                                     <title>bounding</title>
                                     <type>fieldset</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </create>
+                                        <read>
+                                            <path>bounding</path>
+                                            <context>parent</context>
+                                        </read>
+                                    </actions>
                                 </properties>
                                 <children>
                                     <element name="westbc">
                                         <properties>
                                             <title>westbc</title>
                                             <type>textfield</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>westbc</path>
+                                                    <context>parent</context>
+                                                </read>
+                                                <update>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </update>
+                                                <delete>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </delete>
+                                            </actions>
                                         </properties>
                                     </element>
                                     <element name="eastbc">
                                         <properties>
                                             <title>eastbc</title>
                                             <type>textfield</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>eastbc</path>
+                                                    <context>parent</context>
+                                                </read>
+                                                <update>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </update>
+                                                <delete>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </delete>
+                                            </actions>
                                         </properties>
                                     </element>
                                     <element name="northbc">
                                         <properties>
                                             <title>northbc</title>
                                             <type>textfield</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>northbc</path>
+                                                    <context>parent</context>
+                                                </read>
+                                                <update>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </update>
+                                                <delete>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </delete>
+                                            </actions>
                                         </properties>
                                     </element>
                                     <element name="southbc">
                                         <properties>
                                             <title>southbc</title>
                                             <type>textfield</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>southbc</path>
+                                                    <context>parent</context>
+                                                </read>
+                                                <update>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </update>
+                                                <delete>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </delete>
+                                            </actions>
                                         </properties>
                                     </element>
                                 </children>
@@ -258,6 +518,16 @@
                         <properties>
                             <title>keywords</title>
                             <type>fieldset</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>keywords</path>
+                                    <context>parent</context>
+                                </read>
+                            </actions>
                         </properties>
                         <children>
                             <element name="theme">
@@ -269,12 +539,48 @@
                                     <element>
                                         <properties>
                                             <type>tabpanel</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>theme</path>
+                                                    <context>parent</context>
+                                                </read>
+                                                <update>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </update>
+                                                <delete>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </delete>
+                                            </actions>
                                         </properties>
                                         <children>
                                             <element name="themekt">
                                                 <properties>
                                                     <title>themekt</title>
                                                     <type>textfield</type>
+                                                    <actions>
+                                                        <create>
+                                                            <path>self::node()</path>
+                                                            <context>parent</context>
+                                                        </create>
+                                                        <read>
+                                                            <path>themekt</path>
+                                                            <context>parent</context>
+                                                        </read>
+                                                        <update>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </update>
+                                                        <delete>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </delete>
+                                                    </actions>
                                                 </properties>
                                             </element>
                                             <element name="themekey">
@@ -286,6 +592,24 @@
                                                     <element>
                                                         <properties>
                                                             <type>tag</type>
+                                                            <actions>
+                                                                <create>
+                                                                    <path>self::node()</path>
+                                                                    <context>parent</context>
+                                                                </create>
+                                                                <read>
+                                                                    <path>themekey</path>
+                                                                    <context>parent</context>
+                                                                </read>
+                                                                <update>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </update>
+                                                                <delete>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </delete>
+                                                            </actions>
                                                         </properties>
                                                     </element>
                                                 </children>
@@ -300,12 +624,48 @@
                         <properties>
                             <title>accconst</title>
                             <type>textfield</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>accconst</path>
+                                    <context>parent</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
                         </properties>
                     </element>
                     <element name="useconst">
                         <properties>
                             <title>useconst</title>
                             <type>textfield</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>useconst</path>
+                                    <context>parent</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
                         </properties>
                     </element>
                 </children>
@@ -314,36 +674,112 @@
                 <properties>
                     <title>metainfo</title>
                     <type>fieldset</type>
+                    <actions>
+                        <create>
+                            <path>/metadata</path>
+                            <context>document</context>
+                        </create>
+                        <read>
+                            <path>/metadata/metainfo</path>
+                            <context>document</context>
+                        </read>
+                    </actions>
                 </properties>
                 <children>
                     <element name="metd">
                         <properties>
                             <title>metd</title>
                             <type>textfield</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>metd</path>
+                                    <context>parent</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
                         </properties>
                     </element>
                     <element name="metc">
                         <properties>
                             <title>metc</title>
                             <type>fieldset</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>metc</path>
+                                    <context>parent</context>
+                                </read>
+                            </actions>
                         </properties>
                         <children>
                             <element name="cntinfo">
                                 <properties>
                                     <title>cntinfo</title>
                                     <type>fieldset</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </create>
+                                        <read>
+                                            <path>cntinfo</path>
+                                            <context>parent</context>
+                                        </read>
+                                    </actions>
                                 </properties>
                                 <children>
                                     <element name="cntperp">
                                         <properties>
                                             <title>cntperp</title>
                                             <type>fieldset</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>cntperp</path>
+                                                    <context>parent</context>
+                                                </read>
+                                            </actions>
                                         </properties>
                                         <children>
-                                            <element name="cntpr">
+                                            <element name="cntper">
                                                 <properties>
-                                                    <title>cntpr</title>
+                                                    <title>cntper</title>
                                                     <type>textfield</type>
+                                                    <actions>
+                                                        <create>
+                                                            <path>self::node()</path>
+                                                            <context>parent</context>
+                                                        </create>
+                                                        <read>
+                                                            <path>cntper</path>
+                                                            <context>parent</context>
+                                                        </read>
+                                                        <update>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </update>
+                                                        <delete>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </delete>
+                                                    </actions>
                                                 </properties>
                                             </element>
                                         </children>
@@ -357,30 +793,120 @@
                                             <element>
                                                 <properties>
                                                     <type>tabpanel</type>
+                                                    <actions>
+                                                        <create>
+                                                            <path>self::node()</path>
+                                                            <context>parent</context>
+                                                        </create>
+                                                        <read>
+                                                            <path>cntaddr</path>
+                                                            <context>parent</context>
+                                                        </read>
+                                                        <update>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </update>
+                                                        <delete>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </delete>
+                                                    </actions>
                                                 </properties>
                                                 <children>
                                                     <element name="addrtype">
                                                         <properties>
                                                             <title>addrtype</title>
                                                             <type>textfield</type>
+                                                            <actions>
+                                                                <create>
+                                                                    <path>self::node()</path>
+                                                                    <context>parent</context>
+                                                                </create>
+                                                                <read>
+                                                                    <path>addrtype</path>
+                                                                    <context>parent</context>
+                                                                </read>
+                                                                <update>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </update>
+                                                                <delete>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </delete>
+                                                            </actions>
                                                         </properties>
                                                     </element>
                                                     <element name="city">
                                                         <properties>
                                                             <title>city</title>
                                                             <type>textfield</type>
+                                                            <actions>
+                                                                <create>
+                                                                    <path>self::node()</path>
+                                                                    <context>parent</context>
+                                                                </create>
+                                                                <read>
+                                                                    <path>city</path>
+                                                                    <context>parent</context>
+                                                                </read>
+                                                                <update>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </update>
+                                                                <delete>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </delete>
+                                                            </actions>
                                                         </properties>
                                                     </element>
                                                     <element name="state">
                                                         <properties>
                                                             <title>state</title>
                                                             <type>textfield</type>
+                                                            <actions>
+                                                                <create>
+                                                                    <path>self::node()</path>
+                                                                    <context>parent</context>
+                                                                </create>
+                                                                <read>
+                                                                    <path>state</path>
+                                                                    <context>parent</context>
+                                                                </read>
+                                                                <update>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </update>
+                                                                <delete>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </delete>
+                                                            </actions>
                                                         </properties>
                                                     </element>
                                                     <element name="postal">
                                                         <properties>
                                                             <title>postal</title>
                                                             <type>textfield</type>
+                                                            <actions>
+                                                                <create>
+                                                                    <path>self::node()</path>
+                                                                    <context>parent</context>
+                                                                </create>
+                                                                <read>
+                                                                    <path>postal</path>
+                                                                    <context>parent</context>
+                                                                </read>
+                                                                <update>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </update>
+                                                                <delete>
+                                                                    <path>self::node()</path>
+                                                                    <context>self</context>
+                                                                </delete>
+                                                            </actions>
                                                         </properties>
                                                     </element>
                                                 </children>
@@ -396,6 +922,24 @@
                                             <element>
                                                 <properties>
                                                     <type>tag</type>
+                                                    <actions>
+                                                        <create>
+                                                            <path>self::node()</path>
+                                                            <context>parent</context>
+                                                        </create>
+                                                        <read>
+                                                            <path>cntvoice</path>
+                                                            <context>parent</context>
+                                                        </read>
+                                                        <update>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </update>
+                                                        <delete>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </delete>
+                                                    </actions>
                                                 </properties>
                                             </element>
                                         </children>
@@ -408,12 +952,48 @@
                         <properties>
                             <title>metstdn</title>
                             <type>textfield</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>metstdn</path>
+                                    <context>parent</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
                         </properties>
                     </element>
                     <element name="metstdv">
                         <properties>
                             <title>metstdv</title>
                             <type>textfield</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                </create>
+                                <read>
+                                    <path>metstdv</path>
+                                    <context>parent</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
                         </properties>
                     </element>
                 </children>
