@@ -27,38 +27,56 @@
                     <element name="citation">
                         <properties>
                             <title>citation</title>
+                            <type>fieldset</type>
                         </properties>
                         <children>
-                            <element name="origin">
-                                <properties>
-                                    <title>origin</title>
-                                </properties>
-                            </element>
-                            <element name="pubdate">
-                                <properties>
-                                    <title>pubdate</title>
-                                </properties>
-                            </element>
-                            <element name="title">
-                                <properties>
-                                    <title>title</title>
-                                </properties>
+                            <element name="citeinfo">
+                                <children>
+                                    <element name="origin">
+                                        <properties>
+                                            <title>origin</title>
+                                            <type>tags</type>
+                                        </properties>
+                                        <children>
+                                            <element>
+                                                <properties>
+                                                    <type>tag</type>
+                                                </properties>
+                                            </element>
+                                        </children>
+                                    </element>
+                                    <element name="pubdate">
+                                        <properties>
+                                            <title>pubdate</title>
+                                            <type>textfield</type>
+                                        </properties>
+                                    </element>
+                                    <element name="title">
+                                        <properties>
+                                            <title>title</title>
+                                            <type>textfield</type>
+                                        </properties>
+                                    </element>
+                                </children>
                             </element>
                         </children>
                     </element>
                     <element name="descript">
                         <properties>
                             <title>descript</title>
+                            <type>fieldset</type>
                         </properties>
                         <children>
                             <element name="abstract">
                                 <properties>
                                     <title>abstract</title>
+                                    <type>textfield</type>
                                 </properties>
                             </element>
                             <element name="purpose">
                                 <properties>
                                     <title>purpose</title>
+                                    <type>textfield</type>
                                 </properties>
                             </element>
                         </children>
@@ -66,23 +84,35 @@
                     <element name="timeperd">
                         <properties>
                             <title>timeperd</title>
+                            <type>fieldset</type>
                         </properties>
                         <children>
                             <element name="timeinfo">
                                 <properties>
                                     <title>timeinfo</title>
+                                    <type>fieldset</type>
                                 </properties>
                                 <children>
                                     <element name="sngdate">
                                         <properties>
                                             <title>sngdate</title>
+                                            <type>fieldset</type>
                                         </properties>
+                                        <children>
+                                            <element name="caldate">
+                                                <properties>
+                                                    <title>caldate</title>
+                                                    <type>textfield</type>
+                                                </properties>
+                                            </element>
+                                        </children>
                                     </element>
                                 </children>
                             </element>
                             <element name="current">
                                 <properties>
                                     <title>current</title>
+                                    <type>textfield</type>
                                 </properties>
                             </element>
                         </children>
@@ -90,16 +120,24 @@
                     <element name="status">
                         <properties>
                             <title>status</title>
+                            <type>fieldset</type>
                         </properties>
                         <children>
                             <element name="progress">
                                 <properties>
                                     <title>progress</title>
+                                    <type>select</type>
+                                    <options>
+                                        <option key="Complete">Complete</option>
+                                        <option key="In Work">In Work</option>
+                                        <option key="Planned">Planned</option>
+                                    </options>
                                 </properties>
                             </element>
                             <element name="update">
                                 <properties>
                                     <title>update</title>
+                                    <type>textfield</type>
                                 </properties>
                             </element>
                         </children>
@@ -107,31 +145,37 @@
                     <element name="spdom">
                         <properties>
                             <title>spdom</title>
+                            <type>fieldset</type>
                         </properties>
                         <children>
                             <element name="bounding">
                                 <properties>
                                     <title>bounding</title>
+                                    <type>fieldset</type>
                                 </properties>
                                 <children>
                                     <element name="westbc">
                                         <properties>
                                             <title>westbc</title>
+                                            <type>textfield</type>
                                         </properties>
                                     </element>
                                     <element name="eastbc">
                                         <properties>
                                             <title>eastbc</title>
+                                            <type>textfield</type>
                                         </properties>
                                     </element>
                                     <element name="northbc">
                                         <properties>
                                             <title>northbc</title>
+                                            <type>textfield</type>
                                         </properties>
                                     </element>
                                     <element name="southbc">
                                         <properties>
                                             <title>southbc</title>
+                                            <type>textfield</type>
                                         </properties>
                                     </element>
                                 </children>
@@ -141,22 +185,40 @@
                     <element name="keywords">
                         <properties>
                             <title>keywords</title>
+                            <type>fieldset</type>
                         </properties>
                         <children>
                             <element name="theme">
                                 <properties>
                                     <title>theme</title>
+                                    <type>tabs</type>
                                 </properties>
                                 <children>
-                                    <element name="themekt">
+                                    <element>
                                         <properties>
-                                            <title>themekt</title>
+                                            <type>tabpanel</type>
                                         </properties>
-                                    </element>
-                                    <element name="themekey">
-                                        <properties>
-                                            <title>themekey</title>
-                                        </properties>
+                                        <children>
+                                            <element name="themekt">
+                                                <properties>
+                                                    <title>themekt</title>
+                                                    <type>textfield</type>
+                                                </properties>
+                                            </element>
+                                            <element name="themekey">
+                                                <properties>
+                                                    <title>themekey</title>
+                                                    <type>tags</type>
+                                                </properties>
+                                                <children>
+                                                    <element>
+                                                        <properties>
+                                                            <type>tag</type>
+                                                        </properties>
+                                                    </element>
+                                                </children>
+                                            </element>
+                                        </children>
                                     </element>
                                 </children>
                             </element>
@@ -165,11 +227,13 @@
                     <element name="accconst">
                         <properties>
                             <title>accconst</title>
+                            <type>textfield</type>
                         </properties>
                     </element>
                     <element name="useconst">
                         <properties>
                             <title>useconst</title>
+                            <type>textfield</type>
                         </properties>
                     </element>
                 </children>
@@ -177,31 +241,37 @@
             <element name="metainfo">
                 <properties>
                     <title>metainfo</title>
+                    <type>fieldset</type>
                 </properties>
                 <children>
                     <element name="metd">
                         <properties>
                             <title>metd</title>
+                            <type>textfield</type>
                         </properties>
                     </element>
                     <element name="metc">
                         <properties>
                             <title>metc</title>
+                            <type>fieldset</type>
                         </properties>
                         <children>
                             <element name="cntinfo">
                                 <properties>
                                     <title>cntinfo</title>
+                                    <type>fieldset</type>
                                 </properties>
                                 <children>
                                     <element name="cntperp">
                                         <properties>
                                             <title>cntperp</title>
+                                            <type>fieldset</type>
                                         </properties>
                                         <children>
                                             <element name="cntpr">
                                                 <properties>
                                                     <title>cntpr</title>
+                                                    <type>textfield</type>
                                                 </properties>
                                             </element>
                                         </children>
@@ -209,34 +279,54 @@
                                     <element name="cntaddr">
                                         <properties>
                                             <title>cntaddr</title>
+                                            <type>tabs</type>
                                         </properties>
                                         <children>
-                                            <element name="addrtype">
+                                            <element>
                                                 <properties>
-                                                    <title>addrtype</title>
+                                                    <type>tabpanel</type>
                                                 </properties>
-                                            </element>
-                                            <element name="city">
-                                                <properties>
-                                                    <title>city</title>
-                                                </properties>
-                                            </element>
-                                            <element name="state">
-                                                <properties>
-                                                    <title>state</title>
-                                                </properties>
-                                            </element>
-                                            <element name="postal">
-                                                <properties>
-                                                    <title>postal</title>
-                                                </properties>
+                                                <children>
+                                                    <element name="addrtype">
+                                                        <properties>
+                                                            <title>addrtype</title>
+                                                            <type>textfield</type>
+                                                        </properties>
+                                                    </element>
+                                                    <element name="city">
+                                                        <properties>
+                                                            <title>city</title>
+                                                            <type>textfield</type>
+                                                        </properties>
+                                                    </element>
+                                                    <element name="state">
+                                                        <properties>
+                                                            <title>state</title>
+                                                            <type>textfield</type>
+                                                        </properties>
+                                                    </element>
+                                                    <element name="postal">
+                                                        <properties>
+                                                            <title>postal</title>
+                                                            <type>textfield</type>
+                                                        </properties>
+                                                    </element>
+                                                </children>
                                             </element>
                                         </children>
                                     </element>
                                     <element name="cntvoice">
                                         <properties>
                                             <title>cntvoice</title>
+                                            <type>tags</type>
                                         </properties>
+                                        <children>
+                                            <element>
+                                                <properties>
+                                                    <type>tag</type>
+                                                </properties>
+                                            </element>
+                                        </children>
                                     </element>
                                 </children>
                             </element>
@@ -245,14 +335,22 @@
                     <element name="metstdn">
                         <properties>
                             <title>metstdn</title>
+                            <type>textfield</type>
                         </properties>
                     </element>
                     <element name="metstdv">
                         <properties>
                             <title>metstdv</title>
+                            <type>textfield</type>
                         </properties>
                     </element>
                 </children>
+            </element>
+            <element name="submit">
+                <properties>
+                    <type>submit</type>
+                    <value>Submit</value>
+                </properties>
             </element>
         </children>
     </form>
