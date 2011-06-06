@@ -85,17 +85,19 @@ function xml_form(&$form_state) {
     $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema'], $test);
     $xml_form->initialize($form, $document);
   }
-  return $xml_form->toArray();
+  $output = $xml_form->toArray();
+  //var_dump($output['creator']);
+  return $output;
 }
 
 function xml_form_validate($form, &$form_state) {
-  var_dump($form_state['values']);
   //$form = new Form($form_state);
   //$form->validate($form_state);
 }
 
 function xml_form_submit($form, &$form_state) {
-  var_dump($form_state['values']);
+  $i = 0;
+  $i++;
 //  Requires some check to make sure its not a ahah callback...
 //  $form = new Form($form_state);
 //  $document = $form->submit($form_state);

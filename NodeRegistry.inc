@@ -54,10 +54,6 @@ class NodeRegistry { // implements IteratorAggregate {
   public function __sleep() {
     $this->paths = array();
     foreach ($this->registered as $key => $node) {
-      if (empty($node)) {
-        var_dump('The fuck!');
-        var_dump($this->registered);
-      }
       $this->paths[$key] = get_dom_node_xpath($node);
     }
     return array('paths', 'document');
@@ -71,9 +67,6 @@ class NodeRegistry { // implements IteratorAggregate {
     foreach ($this->paths as $key => $path) {
       $result = $this->document->query($path);
       $this->registered[$key] = $result->item(0);
-      if (empty($this->registered[$key])) {
-        var_dump($path);
-      }
     }
   }
 

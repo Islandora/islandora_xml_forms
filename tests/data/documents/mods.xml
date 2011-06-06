@@ -3,6 +3,7 @@
     <mods:titleInfo>
         <mods:title>The Toilet Paper</mods:title>
     </mods:titleInfo>
+    <mods:name type='personal'><mods:namePart>default value!</mods:namePart><mods:role><mods:roleTerm authority="marcrelator" type="text">creator</mods:roleTerm></mods:role></mods:name>
     <mods:abstract>The Toilet Paper is the newsletter of the Colorado College Career Center.</mods:abstract>
     <mods:note>Fez_Collection</mods:note>
     <mods:location>

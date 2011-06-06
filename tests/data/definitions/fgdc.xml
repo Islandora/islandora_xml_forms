@@ -3,50 +3,254 @@
     <properties>
         <document>
             <root>
-                <local_name>mods</local_name>
-                <prefix>mods</prefix>
-                <uri>http://www.loc.gov/mods/v3</uri>
+                <local_name>metadata</local_name>
+                <prefix>fgdc</prefix>
+                <uri>http://localhost</uri>
             </root>
             <namespaces>
-                <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
+                <namespace prefix="mods">http://localhost</namespace>
             </namespaces>
-            <!-- <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema> -->
+            <!--<schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>-->
         </document>
     </properties>
     <form>
         <properties>
-            <access>true</access>
-            <ahah>
-                <path>asdf/asdf</path>
-                <keypress>true</keypress>
-            </ahah>
+            
         </properties>
         <children>
-            <element name="first">
+            <element name="idinfo">
                 <properties>
-                    <title>first</title>
-                    <type>textfield</type>
-                    <weight>0</weight>
-                </properties>
-            </element>
-            <element name="tabs">
-                <properties>
-                    <type>tabs</type>
-                    <title>second</title>
+                    <title>idinfo</title>
+                    <type>fieldset</type>
                 </properties>
                 <children>
-                    <element name="panel">
+                    <element name="citation">
                         <properties>
-                            <type>tabpanel</type>
-                            <title>panel</title>
+                            <title>citation</title>
                         </properties>
                         <children>
-                            <element>
+                            <element name="origin">
                                 <properties>
-                                    <type>textfield</type>
+                                    <title>origin</title>
+                                </properties>
+                            </element>
+                            <element name="pubdate">
+                                <properties>
+                                    <title>pubdate</title>
+                                </properties>
+                            </element>
+                            <element name="title">
+                                <properties>
+                                    <title>title</title>
                                 </properties>
                             </element>
                         </children>
+                    </element>
+                    <element name="descript">
+                        <properties>
+                            <title>descript</title>
+                        </properties>
+                        <children>
+                            <element name="abstract">
+                                <properties>
+                                    <title>abstract</title>
+                                </properties>
+                            </element>
+                            <element name="purpose">
+                                <properties>
+                                    <title>purpose</title>
+                                </properties>
+                            </element>
+                        </children>
+                    </element>
+                    <element name="timeperd">
+                        <properties>
+                            <title>timeperd</title>
+                        </properties>
+                        <children>
+                            <element name="timeinfo">
+                                <properties>
+                                    <title>timeinfo</title>
+                                </properties>
+                                <children>
+                                    <element name="sngdate">
+                                        <properties>
+                                            <title>sngdate</title>
+                                        </properties>
+                                    </element>
+                                </children>
+                            </element>
+                            <element name="current">
+                                <properties>
+                                    <title>current</title>
+                                </properties>
+                            </element>
+                        </children>
+                    </element>
+                    <element name="status">
+                        <properties>
+                            <title>status</title>
+                        </properties>
+                        <children>
+                            <element name="progress">
+                                <properties>
+                                    <title>progress</title>
+                                </properties>
+                            </element>
+                            <element name="update">
+                                <properties>
+                                    <title>update</title>
+                                </properties>
+                            </element>
+                        </children>
+                    </element>
+                    <element name="spdom">
+                        <properties>
+                            <title>spdom</title>
+                        </properties>
+                        <children>
+                            <element name="bounding">
+                                <properties>
+                                    <title>bounding</title>
+                                </properties>
+                                <children>
+                                    <element name="westbc">
+                                        <properties>
+                                            <title>westbc</title>
+                                        </properties>
+                                    </element>
+                                    <element name="eastbc">
+                                        <properties>
+                                            <title>eastbc</title>
+                                        </properties>
+                                    </element>
+                                    <element name="northbc">
+                                        <properties>
+                                            <title>northbc</title>
+                                        </properties>
+                                    </element>
+                                    <element name="southbc">
+                                        <properties>
+                                            <title>southbc</title>
+                                        </properties>
+                                    </element>
+                                </children>
+                            </element>
+                        </children>
+                    </element>
+                    <element name="keywords">
+                        <properties>
+                            <title>keywords</title>
+                        </properties>
+                        <children>
+                            <element name="theme">
+                                <properties>
+                                    <title>theme</title>
+                                </properties>
+                                <children>
+                                    <element name="themekt">
+                                        <properties>
+                                            <title>themekt</title>
+                                        </properties>
+                                    </element>
+                                    <element name="themekey">
+                                        <properties>
+                                            <title>themekey</title>
+                                        </properties>
+                                    </element>
+                                </children>
+                            </element>
+                        </children>
+                    </element>
+                    <element name="accconst">
+                        <properties>
+                            <title>accconst</title>
+                        </properties>
+                    </element>
+                    <element name="useconst">
+                        <properties>
+                            <title>useconst</title>
+                        </properties>
+                    </element>
+                </children>
+            </element>
+            <element name="metainfo">
+                <properties>
+                    <title>metainfo</title>
+                </properties>
+                <children>
+                    <element name="metd">
+                        <properties>
+                            <title>metd</title>
+                        </properties>
+                    </element>
+                    <element name="metc">
+                        <properties>
+                            <title>metc</title>
+                        </properties>
+                        <children>
+                            <element name="cntinfo">
+                                <properties>
+                                    <title>cntinfo</title>
+                                </properties>
+                                <children>
+                                    <element name="cntperp">
+                                        <properties>
+                                            <title>cntperp</title>
+                                        </properties>
+                                        <children>
+                                            <element name="cntpr">
+                                                <properties>
+                                                    <title>cntpr</title>
+                                                </properties>
+                                            </element>
+                                        </children>
+                                    </element>
+                                    <element name="cntaddr">
+                                        <properties>
+                                            <title>cntaddr</title>
+                                        </properties>
+                                        <children>
+                                            <element name="addrtype">
+                                                <properties>
+                                                    <title>addrtype</title>
+                                                </properties>
+                                            </element>
+                                            <element name="city">
+                                                <properties>
+                                                    <title>city</title>
+                                                </properties>
+                                            </element>
+                                            <element name="state">
+                                                <properties>
+                                                    <title>state</title>
+                                                </properties>
+                                            </element>
+                                            <element name="postal">
+                                                <properties>
+                                                    <title>postal</title>
+                                                </properties>
+                                            </element>
+                                        </children>
+                                    </element>
+                                    <element name="cntvoice">
+                                        <properties>
+                                            <title>cntvoice</title>
+                                        </properties>
+                                    </element>
+                                </children>
+                            </element>
+                        </children>
+                    </element>
+                    <element name="metstdn">
+                        <properties>
+                            <title>metstdn</title>
+                        </properties>
+                    </element>
+                    <element name="metstdv">
+                        <properties>
+                            <title>metstdv</title>
+                        </properties>
                     </element>
                 </children>
             </element>

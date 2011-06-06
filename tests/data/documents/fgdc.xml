@@ -1,57 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../XMLFormDefinition.xsd">
-    <properties>
-        <document>
-            <root>
-                <local_name>mods</local_name>
-                <prefix>mods</prefix>
-                <uri>http://www.loc.gov/mods/v3</uri>
-            </root>
-            <namespaces>
-                <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
-            </namespaces>
-            <!-- <schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema> -->
-        </document>
-    </properties>
-    <form>
-        <properties>
-            <access>true</access>
-            <ahah>
-                <path>asdf/asdf</path>
-                <keypress>true</keypress>
-            </ahah>
-        </properties>
-        <children>
-            <element name="first">
-                <properties>
-                    <title>first</title>
-                    <type>textfield</type>
-                    <weight>0</weight>
-                </properties>
-            </element>
-            <element name="tabs">
-                <properties>
-                    <type>tabs</type>
-                    <title>second</title>
-                </properties>
-                <children>
-                    <element name="panel">
-                        <properties>
-                            <type>tabpanel</type>
-                            <title>panel</title>
-                        </properties>
-                        <children>
-                            <element>
-                                <properties>
-                                    <type>textfield</type>
-                                </properties>
-                            </element>
-                        </children>
-                    </element>
-                </children>
-            </element>
-        </children>
-    </form>
-</definition>
+<metadata xmlns:fgdc="http://localhost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://localhost file:/Users/nbanks/Projects/DGI/fgdc/fgdc-std-001-1998.xsd">
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <origin>Unknown</origin>
+                <pubdate>Unknown</pubdate>
+                <title>Unknown</title>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>Unknown</abstract>
+            <purpose>Unknown</purpose>
+        </descript>
+        <timeperd>
+            <timeinfo>
+                <sngdate>
+                <caldate>Unknown</caldate>
+                </sngdate>
+            </timeinfo>
+            <current>Unknown</current>
+        </timeperd>
+        <status>
+            <progress>Planned</progress>
+            <update>Unknown</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc>0.0</westbc>
+                <eastbc>0.0</eastbc>
+                <northbc>0.0</northbc>
+                <southbc>0.0</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>Unknown</themekt>
+                <themekey>Unknown</themekey>
+            </theme>
+        </keywords>
+        <accconst>Unknown</accconst>
+        <useconst>Unknown</useconst>
+    </idinfo>
+    <metainfo>
+        <metd>0000</metd>
+        <metc>
+            <cntinfo>
+                <cntperp>
+                    <cntper>Unknown</cntper>
+                </cntperp>
+                <cntaddr>
+                    <addrtype>Unknown</addrtype>
+                    <city>Unknown</city>
+                    <state>Unknown</state>
+                    <postal>Unknown</postal>
+                </cntaddr>
+                <cntvoice>Unknown</cntvoice>
+            </cntinfo>
+        </metc>
+        <metstdn>Unknown</metstdn>
+        <metstdv>Unknown</metstdv>
+    </metainfo>
+</metadata>
 
