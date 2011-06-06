@@ -10,7 +10,7 @@ module_load_include('inc', 'xml_form_elements', 'Ahah');
 module_load_include('inc', 'xml_form_api', 'Utils');
 module_load_include('inc', 'xml_form_api', 'XMLForm');
 module_load_include('inc', 'objective_forms', 'Utils');
-//module_load_include('inc', 'objective_forms', 'FormStorage');
+module_load_include('inc', 'objective_forms', 'FormPopulator');
 //module_load_include('inc', 'objective_forms', 'FormElementRegistry');
 
 /**
@@ -26,10 +26,10 @@ class Element {
    * @return FormElement 
    */
   public static function find($hash, array& $form_state) {
-    /*if (!FormStorage::isInitialized()) {
+    /* if (!FormStorage::isInitialized()) {
       FormStorage::initialize($form_state);
-    }
-    return FormElementRegistry::getInstance()->get($hash);*/
+      }
+      return FormElementRegistry::getInstance()->get($hash); */
   }
 
   /**
@@ -47,6 +47,8 @@ class Element {
     $original->parent[] = $new_element;
     // Rebuild the form, validation and submit callbacks will be called.
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
+    $populator = new FormPopulator(new FormValues($form_state, $form->root));
+    $populator->populate($drupal_form);
     // Find the element to render.
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
     $element = find_element($drupal_form, $render);
