@@ -46,6 +46,11 @@ class TabPanel {
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     if ($element['#user_data']['add']) {
+      $id = $element['#id'] . '-' . self::AddButton;
+      $element[] = array(
+        '#type' => 'markup',
+        '#value' => "<input type='button' value='Add' onclick='return xml_form_elements.tabpanel.addTab(\"$id\");' class='action-add-tab'>",
+      );
       $element[self::AddButton] = self::createAddButton($element, $complete_form);
     }
     if ($element['#user_data']['delete']) {
@@ -68,6 +73,7 @@ class TabPanel {
     $add['#value'] = 'Add';
     $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
     $add['#suffix'] = '</div>';
+    $add['#attributes'] = array('style' => 'display:none');
     $add['#ahah'] = array(
       'path' => "xml/form/elements/ahah/duplicate/{$element['#hash']}/{$tabs['#hash']}",
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.

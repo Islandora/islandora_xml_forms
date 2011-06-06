@@ -21,6 +21,7 @@ class Tags {
     $path = drupal_get_path('module', 'xml_form_elements');
     drupal_add_css("$path/stylesheets/tags.css");
     $element['#id'] = $element['#hash'];
+    $element['#tree'] = TRUE;
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
     return $element;

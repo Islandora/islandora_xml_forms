@@ -43,12 +43,18 @@ class Element {
     // Duplicate Element
     $form = new XMLForm($form_state);
     $original = $form->findElement($duplicate);
-    $new_element = $form->duplicateOriginal($duplicate);
-    $original->parent[] = $new_element;
+    //$new_element = $form->duplicateOriginal($duplicate);
+    //$original->parent[] = $new_element;
+    //$drupal_form = $form->toArray();
+    //drupal_prepare_form($form_id, $drupal_form, $form_state);
+    //form_set_cache($form_build_id, $form, $form_state);
+    //$drupal_form = drupal_get_form($form_id);
     // Rebuild the form, validation and submit callbacks will be called.
+    //$drupal_form = $form->toArray();
+    //drupal_process_form($form_id, $drupal_form, $form_state);
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
-    $populator = new FormPopulator(new FormValues($form_state, $form->root));
-    $populator->populate($drupal_form);
+    //$populator = new FormPopulator(new FormValues($form_state, $form->root));
+    //$populator->populate($drupal_form);
     // Find the element to render.
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
     $element = find_element($drupal_form, $render);
