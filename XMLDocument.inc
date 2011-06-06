@@ -185,7 +185,7 @@ class XMLDocument {
    * @return DOMNodeList 
    */
   public function query($path, DOMNode $context = NULL) {
-    $results = $context ?
+    $results = isset($context) ?
         $this->xpath->query($path, $context) :
         $this->xpath->query($path);
     return $results;

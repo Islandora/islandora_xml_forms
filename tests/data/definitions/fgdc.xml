@@ -5,10 +5,12 @@
             <root>
                 <local_name>metadata</local_name>
                 <prefix>fgdc</prefix>
-                <uri>http://localhost</uri>
+                <uri>http://localhost/</uri>
             </root>
             <namespaces>
-                <namespace prefix="mods">http://localhost</namespace>
+                <namespace prefix="xsi">http://www.w3.org/2001/XMLSchema-instance</namespace>
+                <namespace prefix="xmlns">http://www.w3.org/2000/xmlns</namespace>
+                <namespace prefix="fgdc">http://localhost/</namespace>
             </namespaces>
             <!--<schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>-->
         </document>
@@ -22,15 +24,52 @@
                 <properties>
                     <title>idinfo</title>
                     <type>fieldset</type>
+                    <actions>
+                        <create>
+                            <path>/metadata/</path>
+                            <context>document</context>
+                            <element>idinfo</element>
+                        </create>
+                        <read>
+                            <path>/metadata/idinfo</path>
+                            <context>document</context>
+                        </read>
+                    </actions>
                 </properties>
                 <children>
                     <element name="citation">
                         <properties>
                             <title>citation</title>
                             <type>fieldset</type>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                    <element>citation</element>
+                                </create>
+                                <read>
+                                    <path>citation</path>
+                                    <context>parent</context>
+                                </read>
+                            </actions>
                         </properties>
                         <children>
                             <element name="citeinfo">
+                                <properties>
+                                    <title>citeinfo</title>
+                                    <type>fieldset</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <element>citeinfo</element>
+                                        </create>
+                                        <read>
+                                            <path>citeinfo</path>
+                                            <context>parent</context>
+                                        </read>
+                                    </actions>
+                                </properties>
                                 <children>
                                     <element name="origin">
                                         <properties>
@@ -41,6 +80,25 @@
                                             <element>
                                                 <properties>
                                                     <type>tag</type>
+                                                    <actions>
+                                                        <create>
+                                                            <path>self::node()</path>
+                                                            <context>parent</context>
+                                                            <element>origin</element>
+                                                        </create>
+                                                        <read>
+                                                            <path>origin</path>
+                                                            <context>parent</context>
+                                                        </read>
+                                                        <update>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </update>
+                                                        <delete>
+                                                            <path>self::node()</path>
+                                                            <context>self</context>
+                                                        </delete>
+                                                    </actions>
                                                 </properties>
                                             </element>
                                         </children>
@@ -49,6 +107,20 @@
                                         <properties>
                                             <title>pubdate</title>
                                             <type>textfield</type>
+                                            <actions>
+                                                <create>
+                                                    <path>self::node()</path>
+                                                    <context>parent</context>
+                                                </create>
+                                                <read>
+                                                    <path>pubdate</path>
+                                                    <context>parent</context>
+                                                </read>
+                                                <update>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </update>
+                                            </actions>
                                         </properties>
                                     </element>
                                     <element name="title">

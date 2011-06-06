@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<metadata xmlns:fgdc="http://localhost" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://localhost file:/Users/nbanks/Projects/DGI/fgdc/fgdc-std-001-1998.xsd">
+<metadata xmlns:fgdc="http://localhost/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://localhost/ file:/Users/nbanks/Projects/DGI/fgdc/fgdc-std-001-1998.xsd">
     <idinfo>
         <citation>
             <citeinfo>

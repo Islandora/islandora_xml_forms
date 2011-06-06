@@ -45,7 +45,7 @@ class Path {
       case self::SelfContext:
         return $this->getSelf($registry, $element);
       default:
-        throw new Exception('Invalid Context.');
+        throw new Exception("Invalid Context. {$this->context}");
     }
   }
 
