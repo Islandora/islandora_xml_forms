@@ -89,11 +89,13 @@ function xml_form(&$form_state) {
 }
 
 function xml_form_validate($form, &$form_state) {
+  var_dump($form_state['values']);
   //$form = new Form($form_state);
   //$form->validate($form_state);
 }
 
 function xml_form_submit($form, &$form_state) {
+  var_dump($form_state['values']);
 //  Requires some check to make sure its not a ahah callback...
 //  $form = new Form($form_state);
 //  $document = $form->submit($form_state);

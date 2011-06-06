@@ -23,6 +23,7 @@
             </attributes>
         </properties>
         <children>
+            <!-- File Upload
             <element name="indicator">
                 <children>
                     <element name="ingest-file-location">
@@ -34,7 +35,7 @@
                         </properties>
                     </element>
                 </children>
-            </element>
+            </element> -->
             <!-- Co-Alliance form. -->
             <element name="title">
                 <properties>
@@ -717,6 +718,13 @@
                         </children>
                     </element>
                 </children>
+            </element>
+            
+            <element name="submit">
+                <properties>
+                    <type>submit</type>
+                    <value>Submit</value>
+                </properties>
             </element>
             <!--
       <tabpanel>

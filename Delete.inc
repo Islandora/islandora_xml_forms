@@ -56,6 +56,17 @@ class Delete implements Action {
   }
 
   /**
+   * 
+   * @return array
+   */
+  public function getValue() {
+    return array(
+      'path' => $this->path->path,
+      'context' => $this->path->context,
+    );
+  }
+
+  /**
    * Determine if this object has been initialized correctly.
    * 
    * @return boolean

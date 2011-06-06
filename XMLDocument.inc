@@ -94,6 +94,7 @@ class XMLDocument {
     $this->document = $this->createDocument();
     $this->xpath = new DOMXPath($this->document);
     $this->registerNamespaces();
+    $this->registry->wakeup();
   }
 
   /**

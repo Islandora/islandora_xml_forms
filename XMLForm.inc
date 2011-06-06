@@ -7,6 +7,8 @@
  *
  */
 module_load_include('inc', 'objective_forms', 'Form');
+module_load_include('inc', 'xml_form_api', 'XMLDocument');
+module_load_include('inc', 'xml_form_api', 'Actions');
 
 /**
  * 

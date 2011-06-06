@@ -45,4 +45,10 @@ interface Action {
    * @return DOMElement
    */
   public function asNode(DOMDocument $document);
+
+  /**
+   * 
+   * @return array
+   */
+  public function getValue();
 }

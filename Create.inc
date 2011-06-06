@@ -19,6 +19,7 @@ class Create implements Action {
   const Element = 0;
   const Attribute = 1;
   const XML = 2;
+  static $Types = array(self::Element => 'element', self::Attribute => 'attribute', self::XML => 'xml');
 
   /**
    * Path to the parent element, where the DOMNode will be created.
@@ -134,6 +135,19 @@ class Create implements Action {
     if ($this->valid()) {
       throw new Exception('Failed to initialize Create.');
     }
+  }
+
+  /**
+   * 
+   * @return array
+   */
+  public function getValue() {
+    $type = self::$Types[$this->type];
+    return array(
+      'path' => $this->path->path,
+      'context' => $this->path->context,
+      $type => $this->value
+    );
   }
 
   /**

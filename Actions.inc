@@ -193,8 +193,17 @@ class Actions implements FormPropertyInterface {
     return $actions;
   }
 
+  /**
+   *
+   * @return array
+   */
   public function getValue() {
-    return NULL;
+    return array(
+      'create' => isset($this->create) ? $this->create->getValue() : NULL,
+      'read' => isset($this->read) ? $this->read->getValue() : NULL,
+      'update' => isset($this->update) ? $this->update->getValue() : NULL,
+      'delete' => isset($this->delete) ? $this->delete->getValue() : NULL,
+    );
   }
 
 }
