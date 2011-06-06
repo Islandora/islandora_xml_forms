@@ -6,11 +6,12 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_api', 'XMLDocument');
 
 /**
  * 
  */
-class FormProcessAction {
+class XMLFormProcessAction {
 
   /**
    *
@@ -83,7 +84,7 @@ class FormProcessAction {
 /**
  * Process the form generate a Document.
  */
-class FormProcessor {
+class XMLFormProcessor {
 
   /**
    * Submitted form values.
@@ -102,17 +103,17 @@ class FormProcessor {
    * @param type $form_state
    * @param type $definition 
    */
-  public function __construct(FormValues $values, NodeRegistry $registry) {
+  public function __construct(FormValues $values, XMLDocument $document) {
     $this->values = $values;
-    $this->registry = $registry;
+    $this->registry = $document->registry;
   }
 
   /**
    *
    * @param FormElement $element 
    */
-  public function process(FormElements $elements) {
-    $actions = &$this->createActions($elements);
+  public function process(FormElement $element) {
+    $actions = &$this->createActions($element);
     $actions = &$this->sortActions($actions);
     return $this->performActions($actions);
   }
@@ -122,22 +123,20 @@ class FormProcessor {
    * @param FormElements $elements
    * @return array
    */
-  private function &createActions(FormElements $elements) {
-    $actions = array();
-    foreach ($elements as $element) {
-      $actions[] = $this->createAction($element);
-    }
+  private function &createActions(FormElement $element) {
+    $actions = new ArrayObject();
+    $element->each(array($this, 'createAction'), $actions);
     return $actions;
   }
 
   /**
    *
    * @param FormElement $element
-   * @return FormProcessAction 
+   * @return XMLFormProcessAction 
    */
-  private function createAction(FormElement $element) {
-    $value = $this->values->getValue($element);
-    return new FormProcessAction($this->registry, $element, $value);
+  public function createAction(FormElement $element, $actions) {
+    $value = $this->values->getValue($element->hash);
+    $actions[] = new XMLFormProcessAction($this->registry, $element, $value);
   }
 
   /**
@@ -145,7 +144,7 @@ class FormProcessor {
    * @param array $actions
    * @return array
    */
-  private function &sortActions(array &$actions) {
+  private function &sortActions($actions) {
     $delete = array();
     $update = array();
     $create = array();

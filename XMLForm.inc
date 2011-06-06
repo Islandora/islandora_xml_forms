@@ -137,12 +137,11 @@ class XMLForm extends Form {
    * @return type 
    */
   public function submit(array &$form, array &$form_state) {
-//    module_load_include('inc', 'xml_form_api', 'FormValues');
-//    module_load_include('inc', 'xml_form_api', 'FormProcessor');
-//    $elements = $this->elements;
-//    $form_values = new FormValues($form_state, $elements);
-//    $processor = new FormProcessor($form_values, $this->registry);
-//    return $processor->process($elements);
+    module_load_include('inc', 'objective_forms', 'FormValues');
+    module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
+    $form_values = new FormValues($form_state, $form);
+    $processor = new XMLFormProcessor($form_values, $this->document);
+    return $processor->process($this->root);
   }
 
 }

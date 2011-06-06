@@ -170,7 +170,7 @@ class XMLDocument {
    * 
    * @return string 
    */
-  public function asXML() {
+  public function saveXML() {
     return $this->document->saveXML();
   }
 

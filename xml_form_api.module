@@ -96,8 +96,10 @@ function xml_form_validate($form, &$form_state) {
 }
 
 function xml_form_submit($form, &$form_state) {
-  $i = 0;
-  $i++;
+  $_form = new XMLForm($form_state);
+  $doc = $_form->submit($form, $form_state);
+  echo  $doc->saveXML();
+  //var_dump($doc);
 //  Requires some check to make sure its not a ahah callback...
 //  $form = new Form($form_state);
 //  $document = $form->submit($form_state);
