@@ -75,6 +75,14 @@ function xml_form_elements_preprocess_tabs(&$vars) {
     $count++;
   }
   // Content Info
-  $vars['content'] = $tabs['#children'];
+  if(isset($tabs['#children'])) {
+    $vars['content'] = $tabs['#children'];
+  }
+  else {
+    $parents = $tabs['#array_parents'];
+    $name = array_pop($parents);
+    $vars['content'] = '';
+    drupal_set_message("Attempted to create a tabs: '$name', without defining any child tabpanels.", 'error');
+  }
 }
 

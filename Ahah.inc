@@ -52,13 +52,8 @@ class Ahah {
     $form['#redirect'] = FALSE;
     $form['#programmed'] = FALSE;
     $form_state['post'] = $_POST;
-    //$form = self::_drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
-    //$form['#post'] = $form_state['#post'];
-    //$form_state['values'] = array();
-    $form = drupal_process_form($form_id, $form, $form_state);
+    drupal_process_form($form_id, $form, $form_state);
     $form = self::_drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
-    //$form = form_builder($form_id, $form, $form_state);
-    //drupal_process_form($form_id, $form, $form_state);
     return $form;
   }
 
@@ -76,12 +71,15 @@ class Ahah {
       $form_build_id = 'form-' . md5(uniqid(mt_rand(), TRUE));
     }
     $form['#build_id'] = $form_build_id;
+    //dsm($form['first']['blah']['second']['third']);
     drupal_prepare_form($form_id, $form, $form_state);
 
     // Now, we cache the form structure so it can be retrieved later for
     // validation. If $form_state['storage'] is populated, we'll also cache
     // it so that it can be used to resume complex multi-step processes.
     form_set_cache($form_build_id, $form, $form_state);
+    
+    //dsm($form['first']['blah']['second']['third']);
 
     // Clear out all post data, as we don't want the previous step's
     // data to pollute this one and trigger validate/submit handling,
@@ -98,7 +96,7 @@ class Ahah {
    * @param array $form 
    */
   public static function respond(array &$form = NULL) {
-    //$data = theme('status_messages');
+    $data = theme('status_messages');
     if (isset($form)) {
       unset($form['#prefix'], $form['#suffix']);
       $data .= drupal_render($form);
