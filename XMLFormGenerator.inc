@@ -85,8 +85,8 @@ class XMLFormGenerator {
   private function createDuplicates(FormElement $element, $count) {
     $output = array($element);
     for ($i = 1; $i < $count; $i++) {
-      $clone = $this->form->duplicateOriginal($element);
-      $element->parent->adopt($clone);
+      $clone = $this->form->duplicateOriginal($element->hash);
+      $element->parent[] = $clone;
       $output[] = $clone;
     }
     return $output;
