@@ -9,6 +9,10 @@
 module_load_include('inc', 'xml_form_elements', 'Tag');
 
 class Tags {
+  /**
+   * Constants
+   */
+  const AddButton = 'add-tag';
 
   /**
    *
@@ -24,7 +28,23 @@ class Tags {
     $element['#tree'] = TRUE;
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
+    $element[self::AddButton] = self::createAddButton($element, $complete_form);
     return $element;
+  }
+
+  private static function createAddButton(array &$element, array &$complete_form) {
+    $add['#type'] = 'submit';
+    $add['#weight'] = 4;
+    $add['#size'] = 30;
+    $add['#value'] = 'Add';
+    $add['#attributes'] = array('style' => 'display:none');
+    $add['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/tag/{$element['#hash']}/add",
+      'wrapper' => $element['#hash'], // The parents wrapper is set to the parents hash.
+      'method' => 'replace',
+      'effect' => 'fade'
+    );
+    return $add;
   }
 
 }
@@ -35,9 +55,18 @@ class Tags {
  * @param array $vars 
  */
 function xml_form_elements_preprocess_tags(&$vars) {
-  $tabs = &$vars[0];
-  $vars['input']['id'] = "input-{$tabs['#id']}";
-  $vars['input']['name'] = $tabs['#name'];
-  $vars['input']['value'] = $tabs['#value'];
-  $vars['label'] = $tabs['#title'];
+  $tags = &$vars[0];
+  $vars['add'] = $tags[Tags::AddButton]; 
+  // Create tags.
+  $vars['tags'] = array();
+  $children = element_children($tags);
+  foreach ($children as $key) {
+    $child = $tags[$key];
+    if ($child['#type'] == 'tag') {
+      $vars['tags'][$key] = $child;
+    }
+  }
+  // First tag is the textfield, all other's show up as icons.
+  $vars['input'] = array_shift($vars['tags']);
+  $vars['label'] = $tags['#title'];
 }

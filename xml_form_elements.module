@@ -133,6 +133,45 @@ function xml_form_elements_menu() {
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
+  /**
+   * 
+   */
+  $items['xml/form/elements/ahah/tag/add/%'] = array(
+    'title' => 'Add a tag to the form, with the value submited for this first.',
+    'description' => 'AHAH callback',
+    'page callback' => 'Tag::Add',
+    'page arguments' => array(6),
+    'access arguments' => array('access content'),
+    'file' => 'Tag.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * 
+   */
+  $items['xml/form/elements/ahah/tag/edit/%'] = array(
+    'title' => 'Edit a tag.',
+    'description' => 'AHAH callback',
+    'page callback' => 'Tag::Edit',
+    'page arguments' => array(6),
+    'access arguments' => array('access content'),
+    'file' => 'Tag.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * 
+   */
+  $items['xml/form/elements/ahah/tag/remove/%'] = array(
+    'title' => 'Remove a tag.',
+    'description' => 'AHAH callback',
+    'page callback' => 'Tag::Remove',
+    'page arguments' => array(6),
+    'access arguments' => array('access content'),
+    'file' => 'Tag.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
 
   return $items;
 }

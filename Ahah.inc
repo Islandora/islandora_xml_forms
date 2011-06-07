@@ -55,7 +55,7 @@ class Ahah {
     //$form = self::_drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
     //$form['#post'] = $form_state['#post'];
     //$form_state['values'] = array();
-    //$form = drupal_process_form($form_id, $form, $form_state);
+    $form = drupal_process_form($form_id, $form, $form_state);
     $form = self::_drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
     //$form = form_builder($form_id, $form, $form_state);
     //drupal_process_form($form_id, $form, $form_state);

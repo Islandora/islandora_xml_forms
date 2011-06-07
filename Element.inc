@@ -53,8 +53,8 @@ class Element {
     //$drupal_form = $form->toArray();
     //drupal_process_form($form_id, $drupal_form, $form_state);
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
-    //$populator = new FormPopulator(new FormValues($form_state, $form->root));
-    //$populator->populate($drupal_form);
+    $populator = new FormPopulator(new FormValues($form_state, $form->root));
+    $populator->populate($drupal_form);
     // Find the element to render.
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
     $element = find_element($drupal_form, $render);

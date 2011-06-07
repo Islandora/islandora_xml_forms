@@ -22,6 +22,7 @@ class Tabs {
     if ($add_files) {
       $path = drupal_get_path('module', 'xml_form_elements');
       jquery_ui_add('ui.tabs');
+      drupal_add_js("$path/js/XMLFormElements.js");
       drupal_add_js("$path/js/Tabs.js");
       drupal_add_css("$path/theme/ui.all.css");
       drupal_add_css("$path/stylesheets/Tabs.css");

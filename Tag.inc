@@ -22,7 +22,7 @@ class Tag {
    */
   public static function Theme($element) {
     $children = isset($element['#children']) ? $element['#children'] : '';
-    $description = isset($element['#description']) ? "<div class='description'>{$element['#description']}</div>" : ''; 
+    $description = isset($element['#description']) ? "<div class='description'>{$element['#description']}</div>" : '';
     return "<div id='{$element['#hash']}'>{$description}{$children}</div>";
   }
 
@@ -40,6 +40,40 @@ class Tag {
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $element['#id'] = $element['#hash'];
     return $element;
+  }
+
+  /**
+   *
+   * @param hash $textfield_hash
+   */
+  public static function Add($textfield_hash) {
+    // Get the value from the textfield hash
+    // Duplicate the textfield hash
+    // Set the textfield value to be blank
+    // Render
+  }
+
+  /**
+   *
+   * @param hash $textfield_hash
+   * @param hash $tag_hash 
+   */
+  public static function Edit($textfield_hash, $tag_hash) {
+    // Get the value from the textfield hash
+    // Duplicate the textfield hash
+    // Set the textfield value to be blank
+    // Render
+  }
+
+  /**
+   *
+   * @param hash $tag_hash 
+   */
+  public static function Remove($tag_hash) {
+    // Get the value from the textfield hash
+    // Duplicate the textfield hash
+    // Set the textfield value to be blank
+    // Render
   }
 
 }
