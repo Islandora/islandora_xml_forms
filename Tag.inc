@@ -48,13 +48,12 @@ class Tag {
     $element[self::RemoveButton] = self::createRemoveButton($element, $complete_form);
     return $element;
   }
-  
+
   private static function createRemoveButton(array &$element, array &$complete_form) {
     $tags = get_form_element_parent($element, $complete_form);
     $add['#type'] = 'submit';
     $add['#weight'] = 4;
     $add['#size'] = 30;
-    $add['#value'] = 'Remove';
     $add['#attributes'] = array('style' => 'display:none');
     $add['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/remove/{$element['#hash']}",
@@ -64,13 +63,12 @@ class Tag {
     );
     return $add;
   }
-  
+
   private static function createEditButton(array &$element, array &$complete_form) {
     $tags = get_form_element_parent($element, $complete_form);
     $add['#type'] = 'submit';
     $add['#weight'] = 4;
     $add['#size'] = 30;
-    $add['#value'] = 'Edit';
     $add['#attributes'] = array('style' => 'display:none');
     $add['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/edit/{$element['#hash']}",
@@ -94,7 +92,6 @@ class Tag {
     $input_hash = $input['#hash'];
     $input_value = $input['#value'];
     form_set_value($input, '', $form_state); // Set input field to ''.
-    
     // Duplicate Element, set its default value to the submitted value.
     $form = new XMLForm($form_state);
     $input = $form->findElement($input_hash);
@@ -114,11 +111,19 @@ class Tag {
    * @param hash $textfield_hash
    * @param hash $tag_hash 
    */
-  public static function Edit($textfield_hash, $tag_hash) {
-    // Get the value from the textfield hash
-    // Duplicate the textfield hash
-    // Set the textfield value to be blank
-    // Render
+  public static function Edit($hash) {
+    list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
+    $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state); // Process the submitted form.
+    $edit = find_element($drupal_form, $hash); // Find the tags we are dealing with.
+    $tags = get_form_element_parent($edit, $drupal_form);
+    $children = get_element_children($tags, 'tag');
+    $input = &$tags[array_shift($children)]; // Get the input field.
+    form_set_value($input, $edit['#value'], $form_state); // Set input field to ''.
+    $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
+    // Find the parent element to render.
+    $element = find_element($drupal_form, $tags['#hash']);
+    // Respond to the request with JSON.
+    Ahah::respond($element);
   }
 
   /**

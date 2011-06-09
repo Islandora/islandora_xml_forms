@@ -52,7 +52,7 @@ class Ahah {
    * @param array $form
    * @param array $form_state 
    */
-  public static function processForm($form_id, array &$form, array &$form_state) {
+  public static function &processForm($form_id, array &$form, array &$form_state) {
     $form['#post'] = $_POST;
     $form['#redirect'] = FALSE;
     $form['#programmed'] = FALSE;
