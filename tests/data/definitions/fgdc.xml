@@ -17,7 +17,7 @@
     </properties>
     <form>
         <properties>
-            
+            <tree>true</tree>
         </properties>
         <children>
             <element name="idinfo">
