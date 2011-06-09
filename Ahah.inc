@@ -46,13 +46,31 @@ class Ahah {
     return array($form_id, $form_build_id, &$form, &$form_state);
   }
 
-  public static function &rebuildForm($form_id, $form_build_id, array &$form, array &$form_state) {
-    $args = $form['#parameters'];
+  /**
+   *
+   * @param type $form_id
+   * @param array $form
+   * @param array $form_state 
+   */
+  public static function processForm($form_id, array &$form, array &$form_state) {
     $form['#post'] = $_POST;
     $form['#redirect'] = FALSE;
     $form['#programmed'] = FALSE;
     $form_state['post'] = $_POST;
     drupal_process_form($form_id, $form, $form_state);
+    return $form;
+  }
+
+  /**
+   *
+   * @param type $form_id
+   * @param type $form_build_id
+   * @param array $form
+   * @param array $form_state
+   * @return type 
+   */
+  public static function &rebuildForm($form_id, $form_build_id, array &$form, array &$form_state) {
+    $args = $form['#parameters'];
     $form = drupal_rebuild_form($form_id, $form_state, $args, $form_build_id);
     return $form;
   }

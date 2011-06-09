@@ -39,7 +39,7 @@ class Tags {
     $add['#value'] = 'Add';
     $add['#attributes'] = array('style' => 'display:none');
     $add['#ahah'] = array(
-      'path' => "xml/form/elements/ahah/tag/{$element['#hash']}/add",
+      'path' => "xml/form/elements/ahah/tag/add/{$element['#hash']}",
       'wrapper' => $element['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replace',
       'effect' => 'fade'
