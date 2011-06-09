@@ -13,6 +13,11 @@ module_load_include('inc', 'xml_form_elements', 'Element');
  * A collection of static functions that allow for theming and processing tabpanels.
  */
 class Tag {
+  /**
+   * Constants
+   */
+  const RemoveButton = 'remove-tag';
+  const EditButton = 'edit-tag';
 
   /**
    * TabPanel's theme hook.
@@ -39,7 +44,41 @@ class Tag {
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $element['#id'] = $element['#hash'];
+    $element[self::EditButton] = self::createEditButton($element, $complete_form);
+    $element[self::RemoveButton] = self::createRemoveButton($element, $complete_form);
     return $element;
+  }
+  
+  private static function createRemoveButton(array &$element, array &$complete_form) {
+    $tags = get_form_element_parent($element, $complete_form);
+    $add['#type'] = 'submit';
+    $add['#weight'] = 4;
+    $add['#size'] = 30;
+    $add['#value'] = 'Remove';
+    $add['#attributes'] = array('style' => 'display:none');
+    $add['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/tag/remove/{$element['#hash']}",
+      'wrapper' => $tags['#hash'], // The parents wrapper is set to the parents hash.
+      'method' => 'replace',
+      'effect' => 'fade'
+    );
+    return $add;
+  }
+  
+  private static function createEditButton(array &$element, array &$complete_form) {
+    $tags = get_form_element_parent($element, $complete_form);
+    $add['#type'] = 'submit';
+    $add['#weight'] = 4;
+    $add['#size'] = 30;
+    $add['#value'] = 'Edit';
+    $add['#attributes'] = array('style' => 'display:none');
+    $add['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/tag/edit/{$element['#hash']}",
+      'wrapper' => $tags['#hash'], // The parents wrapper is set to the parents hash.
+      'method' => 'replace',
+      'effect' => 'fade'
+    );
+    return $add;
   }
 
   /**
@@ -47,21 +86,14 @@ class Tag {
    * @param hash $textfield_hash
    */
   public static function Add($tags) {
-    // Get the value from the textfield hash
-    // Duplicate the textfield hash
-    // Set the textfield value to be blank
-    // Render
-    
-    // Get Form and Submitted value. Set the input field value to ''.
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
-    $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state);
-    $tags = find_element($drupal_form, $tags);
+    $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state); // Process the submitted form.
+    $tags = find_element($drupal_form, $tags); // Find the tags we are dealing with.
     $children = get_element_children($tags, 'tag');
-    // 
-    $input = &$tags[array_shift($children)];
+    $input = &$tags[array_shift($children)]; // Get the input field.
     $input_hash = $input['#hash'];
     $input_value = $input['#value'];
-    form_set_value($input, '', $form_state); // Set input to ''.
+    form_set_value($input, '', $form_state); // Set input field to ''.
     
     // Duplicate Element, set its default value to the submitted value.
     $form = new XMLForm($form_state);
@@ -93,11 +125,20 @@ class Tag {
    *
    * @param hash $tag_hash 
    */
-  public static function Remove($tag_hash) {
-    // Get the value from the textfield hash
-    // Duplicate the textfield hash
-    // Set the textfield value to be blank
-    // Render
+  public static function Remove($tag) {
+    list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
+    // Duplicate Element, set its default value to the submitted value.
+    $form = new XMLForm($form_state);
+    $tag = $form->findElement($tag);
+    $render = $tag->parent->hash;
+    $form->remove($tag->hash);
+    // Process and Rebuild.
+    $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state); // Process the submitted form.
+    $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
+    // Find the parent element to render.
+    $element = find_element($drupal_form, $render);
+    // Respond to the request with JSON.
+    Ahah::respond($element);
   }
 
 }

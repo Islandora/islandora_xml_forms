@@ -14,7 +14,7 @@
   </div>
   <ui class="tag-list">
     <?php foreach($tags as $tag): ?>
-    <li title="<?php print "{$tag['#value']}" ?>"><span class="edit-tag"><?php print "{$tag['#value']}" ?></span><span class="remove-tag"></span></li>
+    <li title="<?php print "{$tag['#value']}" ?>"><span class="edit-tag"><?php print "{$tag['#value']}" ?></span><input type="image" src="http://xml_form_api.local/sites/xml_form_api.local/modules/xml_form_elements/images/minus_small.png" name="<?php print $tag['remove-tag']['#name'] ?>" id="<?php print $tag['remove-tag']['#id'] ?>" value="remove"></li>
     <?php endforeach ?>
   </ui>
 </div>
