@@ -28,7 +28,6 @@ class Tabs {
       drupal_add_css("$path/stylesheets/Tabs.css");
       $add_files = FALSE;
     }
-    $element['#tree'] = TRUE;
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
     return $element;

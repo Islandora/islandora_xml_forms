@@ -19,20 +19,6 @@ module_load_include('inc', 'objective_forms', 'FormPopulator');
 class Element {
 
   /**
-   * Find the element identified by $hash.
-   * 
-   * @param hash $hash
-   * @param array $form_state
-   * @return FormElement 
-   */
-  public static function find($hash, array& $form_state) {
-    /* if (!FormStorage::isInitialized()) {
-      FormStorage::initialize($form_state);
-      }
-      return FormElementRegistry::getInstance()->get($hash); */
-  }
-
-  /**
    * AHAH callback to duplicate an existing element.
    * 
    * @param hash $duplicate
@@ -45,7 +31,6 @@ class Element {
     $original = $form->findElement($duplicate);
     $new_element = $form->duplicateOriginal($duplicate);
     $original->parent[] = $new_element;
-    dsm($form_state);
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
@@ -60,15 +45,15 @@ class Element {
    * @param hash $remove
    * @param hash $render
    */
-  public static function Remove($remove, $render = NULL) {
+  public static function Remove($remove, $render) {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     // Remove Element
-    $form = new Form($form_state);
+    $form = new XMLForm($form_state);
     $form->remove($remove);
     // Rebuild the form, validation and submit callbacks will be called.
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
-    $element = Utils::getDrupalFormElement($render, $drupal_form);
+    $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
     Ahah::respond($element);
   }
@@ -83,7 +68,7 @@ class Element {
     // Rebuild the form, validation and submit callbacks will be called.
     $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);
     // Find the element to render.
-    $element = Utils::getDrupalFormElement($render, $form);
+    $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
     Ahah::respond($element);
   }
@@ -98,7 +83,7 @@ class Element {
     // Rebuild the form, validation and submit callbacks will be called.
     $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);
     // Find the element to render.
-    $element = Utils::getDrupalFormElement($render, $form);
+    $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
     Ahah::respond($element);
   }
