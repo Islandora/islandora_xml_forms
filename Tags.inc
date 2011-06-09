@@ -55,6 +55,7 @@ class Tags {
  * @param array $vars 
  */
 function xml_form_elements_preprocess_tags(&$vars) {
+  global $base_url;
   $tags = &$vars[0];
   $vars['add'] = $tags[Tags::AddButton]; 
   // Create tags.
@@ -69,4 +70,5 @@ function xml_form_elements_preprocess_tags(&$vars) {
   // First tag is the textfield, all other's show up as icons.
   $vars['input'] = array_shift($vars['tags']);
   $vars['label'] = $tags['#title'];
+  $vars['image_path'] = "$base_url/{$vars['directory']}/images";
 }
