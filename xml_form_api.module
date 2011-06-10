@@ -102,9 +102,12 @@ function xml_form_validate($form, &$form_state) {
   //$form->validate($form_state);
 }
 
-function xml_form_submit($form, &$form_state) {
-  //$_form = new XMLForm($form_state);
-  //$doc = $_form->submit($form, $form_state);
+function xml_form_submit($drupal_form, &$form_state) {
+  $form = new XMLForm($form_state);
+  $doc = $form->submit($drupal_form, $form_state);
+  $document = $doc->document;
+  dom_document_pretty_print($document);
+  exit();
 //  Requires some check to make sure its not a ahah callback...
 //  $form = new Form($form_state);
 //  $document = $form->submit($form_state);

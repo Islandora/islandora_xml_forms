@@ -23,36 +23,10 @@ class Delete implements Action {
 
   /**
    *
-   * @param string $xml_definition
-   * @return Delete
-   */
-  public static function createFromXMLDefiniton($xml_definition) {
-    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $delete
-   * @return Delete
-   */
-  public static function createFromSimpleXML(SimpleXMLElement $delete) {
-    $path = (string) $delete->path;
-    $context = (string) $delete->path['context'];
-    $params = array(
-      'path' => new Path($path, $context),
-    );
-    return new self($params);
-  }
-
-  /**
-   *
    * @param array $params 
    */
   public function __construct(array &$params) {
-    $this->path = $params['path'];
-    if (!$this->valid()) {
-      throw new Exception('Failed to initialize Delete.');
-    }
+    $this->path = new Path($params['path'], $params['context']);
   }
 
   /**
@@ -65,17 +39,7 @@ class Delete implements Action {
       'context' => $this->path->context,
     );
   }
-
-  /**
-   * Determine if this object has been initialized correctly.
-   * 
-   * @return boolean
-   *   TRUE if this object is valid FALSE otherwise.
-   */
-  public function valid() {
-    return isset($this->path);
-  }
-
+  
   /**
    * 
    * @param NodeRegistry $registry
@@ -85,7 +49,7 @@ class Delete implements Action {
    * @return boolean
    */
   public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    return TRUE;
+    return isset($value) && $value == '';
   }
 
   /**

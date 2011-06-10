@@ -28,7 +28,8 @@
                         <create>
                             <path>/metadata/</path>
                             <context>document</context>
-                            <element>idinfo</element>
+                            <type>element</type>
+                            <value>idinfo</value>
                         </create>
                         <read>
                             <path>/metadata/idinfo</path>
@@ -45,7 +46,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
-                                    <element>citation</element>
+                                    <type>element</type>
+                                    <value>citation</value>
                                 </create>
                                 <read>
                                     <path>citation</path>
@@ -62,7 +64,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
-                                            <element>citeinfo</element>
+                                            <type>element</type>
+                                            <value>citeinfo</value>
                                         </create>
                                         <read>
                                             <path>citeinfo</path>
@@ -84,7 +87,8 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
-                                                            <element>origin</element>
+                                                            <type>element</type>
+                                                            <value>origin</value>
                                                         </create>
                                                         <read>
                                                             <path>origin</path>
@@ -111,6 +115,8 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>pubdate</value>
                                                 </create>
                                                 <read>
                                                     <path>pubdate</path>
@@ -120,6 +126,10 @@
                                                     <path>self::node()</path>
                                                     <context>self</context>
                                                 </update>
+                                                <delete>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </delete>
                                             </actions>
                                         </properties>
                                     </element>
@@ -131,6 +141,8 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>title</value>
                                                 </create>
                                                 <read>
                                                     <path>title</path>
@@ -140,6 +152,10 @@
                                                     <path>self::node()</path>
                                                     <context>self</context>
                                                 </update>
+                                                <delete>
+                                                    <path>self::node()</path>
+                                                    <context>self</context>
+                                                </delete>
                                             </actions>
                                         </properties>
                                     </element>
@@ -155,6 +171,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>descript</value>
                                 </create>
                                 <read>
                                     <path>descript</path>
@@ -171,6 +189,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <type>element</type>
+                                            <value>abstract</value>
                                         </create>
                                         <read>
                                             <path>abstract</path>
@@ -195,6 +215,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <type>element</type>
+                                            <value>purpose</value>
                                         </create>
                                         <read>
                                             <path>purpose</path>
@@ -221,6 +243,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>timeperd</value>
                                 </create>
                                 <read>
                                     <path>timeperd</path>
@@ -237,6 +261,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <type>element</type>
+                                            <value>timeinfo</value>
                                         </create>
                                         <read>
                                             <path>timeinfo</path>
@@ -253,6 +279,8 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>sngdate</value>
                                                 </create>
                                                 <read>
                                                     <path>sngdate</path>
@@ -269,6 +297,8 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <type>element</type>
+                                                            <value>caldate</value>
                                                         </create>
                                                         <read>
                                                             <path>caldate</path>
@@ -297,6 +327,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <type>element</type>
+                                            <value>current</value>
                                         </create>
                                         <read>
                                             <path>current</path>
@@ -323,6 +355,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>status</value>
                                 </create>
                                 <read>
                                     <path>status</path>
@@ -344,6 +378,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <type>element</type>
+                                            <value>progress</value>
                                         </create>
                                         <read>
                                             <path>progress</path>
@@ -353,6 +389,10 @@
                                             <path>self::node()</path>
                                             <context>self</context>
                                         </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
                                     </actions>
                                 </properties>
                             </element>
@@ -364,6 +404,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <type>element</type>
+                                            <value>update</value>
                                         </create>
                                         <read>
                                             <path>update</path>
@@ -390,6 +432,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>spdom</value>
                                 </create>
                                 <read>
                                     <path>spdom</path>
@@ -406,6 +450,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <type>element</type>
+                                            <value>bounding</value>
                                         </create>
                                         <read>
                                             <path>bounding</path>
@@ -422,6 +468,8 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>westbc</value>
                                                 </create>
                                                 <read>
                                                     <path>westbc</path>
@@ -446,6 +494,8 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>eastbc</value>
                                                 </create>
                                                 <read>
                                                     <path>eastbc</path>
@@ -470,6 +520,8 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>northbc</value>
                                                 </create>
                                                 <read>
                                                     <path>northbc</path>
@@ -494,6 +546,8 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>southbc</value>
                                                 </create>
                                                 <read>
                                                     <path>southbc</path>
@@ -522,6 +576,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>keywords</value>
                                 </create>
                                 <read>
                                     <path>keywords</path>
@@ -543,15 +599,13 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>tabpanel</value>
                                                 </create>
                                                 <read>
                                                     <path>theme</path>
                                                     <context>parent</context>
                                                 </read>
-                                                <update>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </update>
                                                 <delete>
                                                     <path>self::node()</path>
                                                     <context>self</context>
@@ -567,6 +621,8 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <type>element</type>
+                                                            <value>themekt</value>
                                                         </create>
                                                         <read>
                                                             <path>themekt</path>
@@ -596,6 +652,8 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <type>element</type>
+                                                                    <value>themekey</value>
                                                                 </create>
                                                                 <read>
                                                                     <path>themekey</path>
@@ -628,6 +686,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>accconst</value>
                                 </create>
                                 <read>
                                     <path>accconst</path>
@@ -652,6 +712,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>useconst</value>
                                 </create>
                                 <read>
                                     <path>useconst</path>
@@ -678,6 +740,8 @@
                         <create>
                             <path>/metadata</path>
                             <context>document</context>
+                            <type>element</type>
+                            <value>metainfo</value>
                         </create>
                         <read>
                             <path>/metadata/metainfo</path>
@@ -694,6 +758,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>metd</value>
                                 </create>
                                 <read>
                                     <path>metd</path>
@@ -718,6 +784,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>metc</value>
                                 </create>
                                 <read>
                                     <path>metc</path>
@@ -734,6 +802,8 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <type>element</type>
+                                            <value>cntinfo</value>
                                         </create>
                                         <read>
                                             <path>cntinfo</path>
@@ -750,6 +820,8 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>cntperp</value>
                                                 </create>
                                                 <read>
                                                     <path>cntperp</path>
@@ -766,6 +838,8 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <type>element</type>
+                                                            <value>cntper</value>
                                                         </create>
                                                         <read>
                                                             <path>cntper</path>
@@ -797,15 +871,13 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <type>element</type>
+                                                            <value>cntaddr</value>
                                                         </create>
                                                         <read>
                                                             <path>cntaddr</path>
                                                             <context>parent</context>
                                                         </read>
-                                                        <update>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </update>
                                                         <delete>
                                                             <path>self::node()</path>
                                                             <context>self</context>
@@ -821,6 +893,8 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <type>element</type>
+                                                                    <value>addrtype</value>
                                                                 </create>
                                                                 <read>
                                                                     <path>addrtype</path>
@@ -845,6 +919,8 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <type>element</type>
+                                                                    <value>city</value>
                                                                 </create>
                                                                 <read>
                                                                     <path>city</path>
@@ -869,6 +945,8 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <type>element</type>
+                                                                    <value>state</value>
                                                                 </create>
                                                                 <read>
                                                                     <path>state</path>
@@ -893,6 +971,8 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <type>element</type>
+                                                                    <value>postal</value>
                                                                 </create>
                                                                 <read>
                                                                     <path>postal</path>
@@ -926,6 +1006,8 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <type>element</type>
+                                                            <value>tag</value>
                                                         </create>
                                                         <read>
                                                             <path>cntvoice</path>
@@ -956,6 +1038,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>metstdn</value>
                                 </create>
                                 <read>
                                     <path>metstdn</path>
@@ -980,6 +1064,8 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>metstdv</value>
                                 </create>
                                 <read>
                                     <path>metstdv</path>

@@ -69,8 +69,17 @@ class Actions implements FormPropertyInterface {
    * 
    */
   public function __construct($value) {
+    if (isset($value['create'])) {
+      $this->create = new Create($value['create']);
+    }
     if (isset($value['read'])) {
       $this->read = new Read($value['read']);
+    }
+    if (isset($value['update'])) {
+      $this->update = new Update($value['update']);
+    }
+    if (isset($value['delete'])) {
+      $this->delete = new Delete($value['delete']);
     }
   }
 
@@ -112,7 +121,7 @@ class Actions implements FormPropertyInterface {
    * @return Action type and Action
    */
   public function getAppropriateAction(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    $node = $registry->getNode($element);
+    $node = $registry->getNode($element->hash);
     $modify_or_delete = isset($node);
     if ($modify_or_delete) {
       if ($this->shouldDelete($registry, $element, $value)) {

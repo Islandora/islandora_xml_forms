@@ -8,7 +8,7 @@
  */
 module_load_include('inc', 'xml_form_api', 'ActionInterface');
 module_load_include('inc', 'xml_form_api', 'Path');
-module_load_include('inc', 'xml_form_api', 'Utils');
+module_load_include('inc', 'php_lib', 'DOMHelpers.inc');
 
 /**
  * 
@@ -16,62 +16,29 @@ module_load_include('inc', 'xml_form_api', 'Utils');
 class Update implements Action {
 
   /**
-   *
+   * Path to the element to update.
+   * 
    * @var Path 
    */
   protected $path;
   /**
-   *
+   * Path to the element's definition within its schema.
+   * 
    * @var string 
    */
-  protected $schemaName;
-  /**
-   *
-   * @var string
-   */
-  protected $schemaPath;
-
-  /**
-   *
-   * @param string $xml_definition
-   * @return Update
-   */
-  public static function createFromXMLDefiniton($xml_definition) {
-    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $update
-   * @return Update
-   */
-  public static function createFromSimpleXML(SimpleXMLElement $update) {
-    $path = (string) $update->path;
-    $context = (string) $update->path['context'];
-    $schema_path = isset($update->schema_path) ? (string) $update->schema_path : null;
-    $schema_name = isset($update->schema_path) ? (string) $update->schema_path['name'] : null;
-    $params = array(
-      'path' => new Path($path, $context),
-      'schema_name' => $schema_name,
-      'schema_path' => $schema_path
-    );
-    return new self($params);
-  }
+  protected $schema;
 
   /**
    *
    * @param array $params 
    */
   public function __construct(array &$params) {
-    $this->path = $params['path'];
-    $this->schemaName = isset($params['schema_name']) ? $params['schema_name'] : null;
-    $this->schamePath = isset($params['schema_path']) ? $params['schema_path'] : null;
-    if (!$this->valid()) {
-      throw new Exception('Failed to initialize Update.');
-    }
+    $this->path = new Path($params['path'], $params['context']);
+    $this->schema = isset($params['schema']) ? $params['schema'] : NULL;
   }
 
   /**
+   * Used by the form builder???
    * 
    * @return array
    */
@@ -83,16 +50,6 @@ class Update implements Action {
   }
 
   /**
-   * Determine if this object has been initialized correctly.
-   * 
-   * @return boolean
-   *   TRUE if this object is valid FALSE otherwise.
-   */
-  public function valid() {
-    return isset($this->path);
-  }
-
-  /**
    *
    * @param NodeRegistry $registry
    * @param FormElement $element
@@ -101,7 +58,7 @@ class Update implements Action {
    * @return boolean
    */
   public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    return TRUE;
+    return $registry->isElementRegistered($element->hash); // Under what cases should we not update an existing value? It must have been read first.
   }
 
   /**
@@ -112,7 +69,7 @@ class Update implements Action {
    */
   public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
     $results = $this->path->query($registry, $element);
-    $results = Utils::DOMNodelistToArray($results);
+    $results = dom_node_list_to_array($results);
     foreach ($results as $node) {
       $this->update($node, $value);
     }

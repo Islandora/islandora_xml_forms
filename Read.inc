@@ -22,29 +22,6 @@ class Read implements Action {
   protected $path;
 
   /**
-   *
-   * @param string $xml_definition
-   * @return Read
-   */
-  public static function createFromXMLDefiniton($xml_definition) {
-    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $read
-   * @return Read
-   */
-  public static function createFromSimpleXML(SimpleXMLElement $read) {
-    $path = (string) $read->path;
-    $context = (string) $read->path['context'];
-    $params = array(
-      'path' => new Path($path, $context),
-    );
-    return new self($params);
-  }
-
-  /**
    * Construct Read Action.
    * 
    * @param array $params
@@ -52,9 +29,6 @@ class Read implements Action {
    */
   public function __construct(array &$params) {
     $this->path = new Path($params['path'], $params['context']);
-    if (!$this->valid()) {
-      throw new Exception('Failed to initialize Read.');
-    }
   }
 
   /**
@@ -66,16 +40,6 @@ class Read implements Action {
       'path' => $this->path->path,
       'context' => $this->path->context,
     );
-  }
-
-  /**
-   * Determine if this object has been initialized correctly.
-   * 
-   * @return boolean
-   *   TRUE if this object is valid FALSE otherwise.
-   */
-  public function valid() {
-    return isset($this->path);
   }
 
   /**

@@ -65,7 +65,7 @@ class Path {
   }
 
   private function getSelf(NodeRegistry $registry, FormElement $element) {
-    $node = $registry->getNode($element);
+    $node = $registry->getNode($element->hash);
     if ($node) {
       return $node;
     }

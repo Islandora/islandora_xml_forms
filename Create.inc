@@ -16,11 +16,10 @@ class Create implements Action {
   /**
    * Create types.
    */
-  const Element = 0;
-  const Attribute = 1;
-  const XML = 2;
-  static $Types = array(self::Element => 'element', self::Attribute => 'attribute', self::XML => 'xml');
-
+  const Element = 'element';
+  const Attribute = 'attribute';
+  const XML = 'xml';
+  
   /**
    * Path to the parent element, where the DOMNode will be created.
    * 
@@ -28,17 +27,11 @@ class Create implements Action {
    */
   protected $path;
   /**
-   * Name of the schema that contains the definition for this element.
+   * Path the this elements definition in the schema.
    * 
    * @var path
    */
-  protected $schemaName;
-  /**
-   * Path to this elements schema definition.
-   * 
-   * @var path
-   */
-  protected $schemaPath;
+  protected $schema;
   /**
    * Either Create::Element, Create::Attribute, Create::XML 
    * @var integer
@@ -57,84 +50,14 @@ class Create implements Action {
 
   /**
    *
-   * @param string $xml_definition
-   * @return Create
-   */
-  public static function createFromXMLDefiniton($xml_definition) {
-    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
-  }
-
-  /**
-   *
-   * @param SimpleXMLElement $create 
-   * @return Create
-   */
-  public static function createFromSimpleXML(SimpleXMLElement $create) {
-    $path = (string) $create->path;
-    $context = (string) $create->path['context'];
-    $schema_path = isset($create->schema_path) ? (string) $create->schema_path : null;
-    $schema_name = isset($create->schema_path) ? (string) $create->schema_path['name'] : null;
-    list($type, $value) = self::getTypeAndValue($create);
-    $prefix = self::getPrefix($create, $type);
-    $params = array(
-      'path' => new Path($path, $context),
-      'type' => $type,
-      'value' => $value,
-      'prefix' => $prefix,
-      'schema_name' => $schema_name,
-      'schema_path' => $schema_path
-    );
-    return new self($params);
-  }
-
-  /**
-   * Get the type of DOMNode to create.
-   * 
-   * @param SimpleXMLElement $create
-   * @return integer
-   *   Either Create::Element, Create::Attribute, Create::XML, or NULL if $create is not valid. 
-   */
-  public static function getTypeAndValue(SimpleXMLElement $create) {
-    $types = array('element' => self::Element, 'attribute' => self::Element, 'xml' => self::XML);
-    foreach ($types as $key => $type) {
-      if (isset($create->$key)) {
-        return array($type, $create->key);
-      }
-    }
-    return NULL;
-  }
-
-  /**
-   * Get the type of DOMNode to create.
-   * 
-   * @param SimpleXMLElement $create
-   * @return integer
-   *   Either Create::Element, Create::Attribute, Create::XML, or NULL if $create is not valid. 
-   */
-  public static function getPrefix(SimpleXMLElement $create, $type) {
-    $types = array(self::Element => 'element', self::Element => 'attribute', self::XML => 'xml');
-    if (isset($types[$type])) {
-      $type = $types[$type];
-      return isset($create->$type['prefix']) ? (string) $create->$type['prefix'] : NULL;
-    }
-    return NULL;
-  }
-
-  /**
-   * Construct Create Action.
-   * 
-   * @param array $params
-   *   The parameters that initialize this object.
+   * @param array $params 
    */
   public function __construct(array &$params) {
-    $this->path = $params['path'];
+    $this->path = new Path($params['path'], $params['context']);
+    $this->schema = isset($params['schema']) ? $params['schema'] : NULL;
     $this->type = $params['type'];
+    $this->prefix = isset($params['prefix']) ? $params['prefix'] : NULL;
     $this->value = $params['value'];
-    $this->schemaName = isset($params['schema_name']) ? $params['schema_name'] : null;
-    $this->schamePath = isset($params['schema_path']) ? $params['schema_path'] : null;
-    if ($this->valid()) {
-      throw new Exception('Failed to initialize Create.');
-    }
   }
 
   /**
@@ -142,22 +65,14 @@ class Create implements Action {
    * @return array
    */
   public function getValue() {
-    $type = self::$Types[$this->type];
     return array(
       'path' => $this->path->path,
       'context' => $this->path->context,
-      $type => $this->value
+      'schema' => $this->schema,
+      'type' => $this->type,
+      'prefix' => $this->prefix,
+      'value' => $this->value,
     );
-  }
-
-  /**
-   * Determine if this object has been initialized correctly.
-   * 
-   * @return boolean
-   *   TRUE if this object is valid FALSE otherwise.
-   */
-  public function valid() {
-    return!(empty($this->path) || empty($this->type));
   }
 
   /**
@@ -192,7 +107,7 @@ class Create implements Action {
    * @param mixed $value
    * @return DOMNode 
    */
-  private function create(Document $document, $value) {
+  private function create(XMLDocument $document, $value) {
     $action = array(self::Element => 'createElement', self::Attribute => 'createAttribute', self::XML => 'createXML');
     return call_user_method($action[$this->type], $this, $document, $value);
   }
@@ -203,9 +118,9 @@ class Create implements Action {
    * @param mixed $value
    * @return DOMElement
    */
-  private function createElement(Document $document, $value) {
+  private function createElement(XMLDocument $document, $value) {
     $namespace = $document->getNamespace($this->prefix);
-    $name = isset($namespace) ? "{$this->prefix}:{$this->create}" : $this->create;
+    $name = isset($namespace) ? "{$this->prefix}:{$this->value}" : $this->value;
     return isset($namespace) ?
         new DOMElement($name, $value, $namespace) :
         new DOMElement($name, $value);
@@ -217,10 +132,10 @@ class Create implements Action {
    * @param mixed $value
    * @return DOMAttr 
    */
-  private function createAttribute(Document $document, $value) {
+  private function createAttribute(XMLDocument $document, $value) {
     $namespace = $document->getNamespace($this->prefix);
     $doc = $document->document;
-    $name = isset($namespace) ? "{$this->prefix}:{$this->create}" : $this->create;
+    $name = isset($namespace) ? "{$this->prefix}:{$this->create}" : $this->value;
     $attribute = isset($namespace) ?
         $doc->createAttributeNS($namespace, $name) :
         $doc->createAttribute($name);
@@ -233,7 +148,7 @@ class Create implements Action {
    * @param Document $document
    * @param DOMElement $value 
    */
-  private function createXML(Document $document, $value) {
+  private function createXML(XMLDocument $document, $value) {
     // @todo Implement Me !!!!
   }
 

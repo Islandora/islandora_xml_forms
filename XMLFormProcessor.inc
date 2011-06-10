@@ -125,6 +125,7 @@ class XMLFormProcessor {
    */
   private function &createActions(FormElement $element) {
     $actions = new ArrayObject();
+    // @todo add a system that catches all removed form elements that have registered nodes, remove those elements from the form! 
     $element->each(array($this, 'createAction'), $actions);
     return $actions;
   }
@@ -137,6 +138,7 @@ class XMLFormProcessor {
   public function createAction(FormElement $element, $actions) {
     $value = $this->values->getValue($element->hash);
     $actions[] = new XMLFormProcessAction($this->registry, $element, $value);
+    return TRUE;
   }
 
   /**

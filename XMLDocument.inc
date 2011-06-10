@@ -50,7 +50,7 @@ class XMLDocument {
    * 
    * @var DOMDocument
    */
-  protected $document;
+  public $document;
   /**
    * 
    * @var DOMXPath
@@ -162,7 +162,7 @@ class XMLDocument {
    * @return string
    */
   public function getNamespace($prefix) {
-    $this->properties->namespaces[$prefix];
+    return isset($this->namespaces[$prefix]) ? $this->namespaces[$prefix] : NULL;
   }
 
   /**
