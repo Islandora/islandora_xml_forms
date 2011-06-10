@@ -28,6 +28,7 @@
                         <create>
                             <path>/metadata/</path>
                             <context>document</context>
+                            <schema>/xsd:schema/xsd:complexType[@name='metadataType']/xsd:sequence/xsd:element[@ref='idinfo']</schema>
                             <type>element</type>
                             <value>idinfo</value>
                         </create>
@@ -46,6 +47,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='citation']</schema>
                                     <type>element</type>
                                     <value>citation</value>
                                 </create>
@@ -64,6 +66,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='citationType']/xsd:sequence/xsd:element[@ref='citeinfo']</schema>
                                             <type>element</type>
                                             <value>citeinfo</value>
                                         </create>
@@ -87,6 +90,7 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='origin']</schema>
                                                             <type>element</type>
                                                             <value>origin</value>
                                                         </create>
@@ -115,6 +119,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='pubdate']</schema>
                                                     <type>element</type>
                                                     <value>pubdate</value>
                                                 </create>
@@ -141,6 +146,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='title']</schema>
                                                     <type>element</type>
                                                     <value>title</value>
                                                 </create>
@@ -171,6 +177,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='descript']</schema>
                                     <type>element</type>
                                     <value>descript</value>
                                 </create>
@@ -189,6 +196,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='descriptType']/xsd:sequence/xsd:element[@ref='abstract']</schema>
                                             <type>element</type>
                                             <value>abstract</value>
                                         </create>
@@ -215,6 +223,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='descriptType']/xsd:sequence/xsd:element[@ref='purpose']</schema>
                                             <type>element</type>
                                             <value>purpose</value>
                                         </create>
@@ -243,6 +252,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='timeperd']</schema>
                                     <type>element</type>
                                     <value>timeperd</value>
                                 </create>
@@ -261,6 +271,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='timeperdType']/xsd:sequence/xsd:element[@ref='timeinfo']</schema>
                                             <type>element</type>
                                             <value>timeinfo</value>
                                         </create>
@@ -279,6 +290,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='timeinfoType']/xsd:choice/xsd:element[@ref='sngdate']</schema>
                                                     <type>element</type>
                                                     <value>sngdate</value>
                                                 </create>
@@ -297,6 +309,7 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <schema>/xsd:schema/xsd:complexType[@name='sngdateType']/xsd:sequence/xsd:element[@ref='caldate']</schema>
                                                             <type>element</type>
                                                             <value>caldate</value>
                                                         </create>
@@ -327,6 +340,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='timeperdType']/xsd:sequence/xsd:element[@ref='current']</schema>
                                             <type>element</type>
                                             <value>current</value>
                                         </create>
@@ -355,6 +369,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='status']</schema>
                                     <type>element</type>
                                     <value>status</value>
                                 </create>
@@ -378,6 +393,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='statusType']/xsd:sequence/xsd:element[@ref='progress']</schema>
                                             <type>element</type>
                                             <value>progress</value>
                                         </create>
@@ -404,6 +420,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='statusType']/xsd:sequence/xsd:element[@ref='update']</schema>
                                             <type>element</type>
                                             <value>update</value>
                                         </create>
@@ -432,6 +449,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='spdom']</schema>
                                     <type>element</type>
                                     <value>spdom</value>
                                 </create>
@@ -450,6 +468,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='spdomTy’]/xsd:sequence/xsd:element[@ref='bounding']</schema>
                                             <type>element</type>
                                             <value>bounding</value>
                                         </create>
@@ -468,6 +487,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='westbc']</schema>
                                                     <type>element</type>
                                                     <value>westbc</value>
                                                 </create>
@@ -494,6 +514,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='eastbc']</schema>
                                                     <type>element</type>
                                                     <value>eastbc</value>
                                                 </create>
@@ -520,6 +541,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='northbc']</schema>
                                                     <type>element</type>
                                                     <value>northbc</value>
                                                 </create>
@@ -546,6 +568,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='southbc']</schema>
                                                     <type>element</type>
                                                     <value>southbc</value>
                                                 </create>
@@ -576,6 +599,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='keywords']</schema>
                                     <type>element</type>
                                     <value>keywords</value>
                                 </create>
@@ -599,6 +623,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='keywordsType']/xsd:sequence/xsd:element[@ref='theme']</schema>
                                                     <type>element</type>
                                                     <value>tabpanel</value>
                                                 </create>
@@ -621,6 +646,7 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <schema>/xsd:schema/xsd:complexType[@name='themeType']/xsd:sequence/xsd:element[@ref='themekt']</schema>
                                                             <type>element</type>
                                                             <value>themekt</value>
                                                         </create>
@@ -652,6 +678,7 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <schema>/xsd:schema/xsd:complexType[@name='themeType']/xsd:sequence/xsd:element[@ref='themekey']</schema>
                                                                     <type>element</type>
                                                                     <value>themekey</value>
                                                                 </create>
@@ -686,6 +713,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='accconst']</schema>
                                     <type>element</type>
                                     <value>accconst</value>
                                 </create>
@@ -712,6 +740,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='status']</schema>
                                     <type>element</type>
                                     <value>useconst</value>
                                 </create>
@@ -740,6 +769,7 @@
                         <create>
                             <path>/metadata</path>
                             <context>document</context>
+                            <schema>/xsd:schema/xsd:complexType[@name='metadataType']/xsd:sequence/xsd:element[@ref='metainfo']</schema>
                             <type>element</type>
                             <value>metainfo</value>
                         </create>
@@ -758,6 +788,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metd']</schema>
                                     <type>element</type>
                                     <value>metd</value>
                                 </create>
@@ -784,6 +815,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metc']</schema>
                                     <type>element</type>
                                     <value>metc</value>
                                 </create>
@@ -802,6 +834,7 @@
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='metcType']/xsd:sequence/xsd:element[@ref='cntinfo']</schema>
                                             <type>element</type>
                                             <value>cntinfo</value>
                                         </create>
@@ -820,6 +853,7 @@
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:choice/xsd:element[@ref='cntperp']</schema>
                                                     <type>element</type>
                                                     <value>cntperp</value>
                                                 </create>
@@ -838,6 +872,7 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <schema>/xsd:schema/xsd:complexType[@name='cntperpType']/xsd:sequence/xsd:element[@ref='cntper']</schema>
                                                             <type>element</type>
                                                             <value>cntper</value>
                                                         </create>
@@ -871,6 +906,7 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:element[@ref='cntaddr']</schema>
                                                             <type>element</type>
                                                             <value>cntaddr</value>
                                                         </create>
@@ -893,6 +929,7 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='addrtype']</schema>
                                                                     <type>element</type>
                                                                     <value>addrtype</value>
                                                                 </create>
@@ -919,6 +956,7 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='city']</schema>
                                                                     <type>element</type>
                                                                     <value>city</value>
                                                                 </create>
@@ -945,6 +983,7 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='state']</schema>
                                                                     <type>element</type>
                                                                     <value>state</value>
                                                                 </create>
@@ -971,6 +1010,7 @@
                                                                 <create>
                                                                     <path>self::node()</path>
                                                                     <context>parent</context>
+                                                                    <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='postal']</schema>
                                                                     <type>element</type>
                                                                     <value>postal</value>
                                                                 </create>
@@ -1006,6 +1046,7 @@
                                                         <create>
                                                             <path>self::node()</path>
                                                             <context>parent</context>
+                                                            <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:element[@ref='cntvoice']</schema>
                                                             <type>element</type>
                                                             <value>tag</value>
                                                         </create>
@@ -1038,6 +1079,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metstdn']</schema>
                                     <type>element</type>
                                     <value>metstdn</value>
                                 </create>
@@ -1064,6 +1106,7 @@
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metstdn']</schema>
                                     <type>element</type>
                                     <value>metstdv</value>
                                 </create>
