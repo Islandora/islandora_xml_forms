@@ -26,12 +26,12 @@ class Element {
    */
   public static function Duplicate($duplicate, $render = NULL) {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
+    $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state);
     // Duplicate Element
     $form = new XMLForm($form_state);
     $original = $form->findElement($duplicate);
     $new_element = $form->duplicateOriginal($duplicate);
     $original->parent[] = $new_element;
-    $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state);
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.

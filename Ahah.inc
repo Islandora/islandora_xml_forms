@@ -57,7 +57,8 @@ class Ahah {
     $form['#redirect'] = FALSE;
     $form['#programmed'] = FALSE;
     $form_state['post'] = $_POST;
-    drupal_process_form($form_id, $form, $form_state);
+    $form_state['values'] = array();
+    $form = form_builder($form_id, $form, $form_state);
     return $form;
   }
 
