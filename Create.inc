@@ -19,7 +19,7 @@ class Create implements Action {
   const Element = 'element';
   const Attribute = 'attribute';
   const XML = 'xml';
-  
+
   /**
    * Path to the parent element, where the DOMNode will be created.
    * 
@@ -31,7 +31,7 @@ class Create implements Action {
    * 
    * @var path
    */
-  protected $schema;
+  protected $schema_path;
   /**
    * Either Create::Element, Create::Attribute, Create::XML 
    * @var integer
@@ -54,7 +54,7 @@ class Create implements Action {
    */
   public function __construct(array &$params) {
     $this->path = new Path($params['path'], $params['context']);
-    $this->schema = isset($params['schema']) ? $params['schema'] : NULL;
+    $this->schema_path = isset($params['schema']) ? $params['schema'] : NULL;
     $this->type = $params['type'];
     $this->prefix = isset($params['prefix']) ? $params['prefix'] : NULL;
     $this->value = $params['value'];
@@ -68,7 +68,7 @@ class Create implements Action {
     return array(
       'path' => $this->path->path,
       'context' => $this->path->context,
-      'schema' => $this->schema,
+      'schema' => $this->schema_path,
       'type' => $this->type,
       'prefix' => $this->prefix,
       'value' => $this->value,
@@ -95,9 +95,10 @@ class Create implements Action {
   public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
     $results = $this->path->query($registry, $element);
     if ($results) {
+      $document = $registry->document;
       $parent = $results->item(0);
-      $created = $this->create($registry->document, $value);
-      $this->append($created, $parent);
+      $created = $this->create($document, $value);
+      $this->append($document, $created, $parent);
     }
   }
 
@@ -157,9 +158,17 @@ class Create implements Action {
    * @param DOMNode $child
    * @param DOMElement $parent 
    */
-  private function append(DOMNode $child, DOMElement $parent) {
-    // @todo Use the schema element to insert the element at the proper spot.
-    $parent->appendChild($child);
+  private function append(XMLDocument $document, DOMNode $child, DOMElement $parent) {
+    if (isset($document->schema)) {
+      try {
+        $document->schema->insertNode($this->schema_path, $parent, $child);
+      } catch (Exception $e) {
+        drupal_set_message('', 'error');
+      }
+    }
+    else {
+      $parent->appendChild($child);
+    }
   }
 
   /**

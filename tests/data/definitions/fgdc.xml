@@ -12,7 +12,7 @@
                 <namespace prefix="xmlns">http://www.w3.org/2000/xmlns</namespace>
                 <namespace prefix="fgdc">http://localhost/</namespace>
             </namespaces>
-            <!--<schema name="mods">http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>-->
+            <schema>/Users/nbanks/Projects/DGI/fgdc/fgdc-std-001-1998.xsd</schema>
         </document>
     </properties>
     <form>

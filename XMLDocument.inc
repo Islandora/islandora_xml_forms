@@ -7,6 +7,7 @@
  *
  */
 module_load_include('inc', 'xml_form_api', 'NodeRegistry');
+module_load_include('inc', 'xml_form_api', 'Schema');
 
 class XMLDocument {
 
@@ -39,7 +40,7 @@ class XMLDocument {
    * 
    * @var string
    */
-  protected $schema;
+  public $schema;
   /**
    * Stores associations between form elements and DOMNodes.
    * 
@@ -68,7 +69,7 @@ class XMLDocument {
   public function __construct(array &$root, array &$namespaces, $schema, &$xml = NULL) {
     $this->root = $root;
     $this->namespaces = $namespaces;
-    $this->schema = $schema;
+    $this->schema = isset($schema) ? new Schema($schema) : NULL;
     $this->xml = $xml;
     $this->registry = new NodeRegistry($this);
     $this->document = $this->createDocument();
@@ -117,7 +118,7 @@ class XMLDocument {
     $doc = new DOMDocument();
     $doc->loadXML($this->xml);
     if ($this->schema) {
-      if (!$doc->schemaValidate($this->schema)) {
+      if (!$doc->schemaValidate($this->schema->filename)) {
         throw new Exception('Can not create a document from an existing invalid document.');
       }
     }
