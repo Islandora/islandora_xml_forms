@@ -209,6 +209,7 @@ class Schema {
   }
 
   private function loadIncludedFiles() {
+    $this->includes = array();
     $included_files = $this->getIncludedFiles();
     foreach ($included_files as $include_file) {
       $filename = "$this->location/$include_file";
@@ -233,6 +234,7 @@ class Schema {
   }
 
   private function loadImportedFiles() {
+    $this->imports = array();
     $imported_files = $this->getImportedFiles();
     foreach ($imported_files as $import_file) {
       list($location, $namespace) = $import_file;
