@@ -1,0 +1,6 @@
+; $Id$
+name = Schema API
+description = Provides functions and classes that allow for effective use of information stored within XML schema's.
+files[] = tests/Schema.test
+dependencies[] = php_lib
+core = 6.x
