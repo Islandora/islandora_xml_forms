@@ -67,7 +67,8 @@ class Schema {
   }
 
   /**
-   *
+   * Get a list of members to serialize.
+   * 
    * @return array
    */
   public function __sleep() {
@@ -75,14 +76,15 @@ class Schema {
   }
 
   /**
-   * 
+   * Reinitialize this Object, when unserialized.
    */
   public function __wakeup() {
     $this->loadSchema($this->filename);
   }
 
   /**
-   *
+   * Get a read only protected variable.
+   * 
    * @param string $name
    * @return mixed
    */
@@ -91,7 +93,8 @@ class Schema {
   }
 
   /**
-   *
+   * Set the value of a protected member.
+   * 
    * @param string $name
    * @param mixed $value 
    */
@@ -109,6 +112,11 @@ class Schema {
     return substr($filename, 0, $index);
   }
 
+  /**
+   * Load the schema.
+   * 
+   * @param string $filename 
+   */
   private function loadSchema($filename) {
     $this->schema = new DOMDocument();
     $this->schema->load($filename);
@@ -117,12 +125,18 @@ class Schema {
     $this->loadImportedFiles();
   }
 
+  /**
+   * Configure this schema's xpath.
+   */
   private function configureXPath() {
     $this->xpath = new DOMXPath($this->schema);
     $this->xpath->registerNamespace(self::prefix, self::uri);
     $this->registerNamespaces();
   }
 
+  /**
+   * Register namepaces for use in xpath queries.
+   */
   private function registerNamespaces() {
     $that = $this;
     $simple = simplexml_import_dom($this->schema->documentElement);
@@ -132,6 +146,9 @@ class Schema {
     }
   }
 
+  /**
+   * Load included schema's.
+   */
   private function loadIncludedFiles() {
     $this->includes = array();
     $included_files = $this->getIncludedFiles();
@@ -146,6 +163,11 @@ class Schema {
     }
   }
 
+  /**
+   * Gets a list of schema files that this schema includes.
+   * 
+   * @return array
+   */
   private function getIncludedFiles() {
     $included_files = array();
     $result = $this->xpath->query('//xs:include');
@@ -157,6 +179,9 @@ class Schema {
     return $included_files;
   }
 
+  /**
+   * Load imported schema's.
+   */
   private function loadImportedFiles() {
     $this->imports = array();
     $imported_files = $this->getImportedFiles();
@@ -172,6 +197,11 @@ class Schema {
     }
   }
 
+  /**
+   * Gets a list of schema files that this schema imports.
+   * 
+   * @return array
+   */
   private function getImportedFiles() {
     $imported_files = array();
     $result = $this->xpath->query('//xs:import');
@@ -185,6 +215,13 @@ class Schema {
     return $imported_files;
   }
 
+  /**
+   * Query the given path in this schema, and all schema's that are included or imported.
+   * 
+   * @param string $path
+   * 
+   * @return array
+   */
   public function query($path) {
     $results = dom_node_list_to_array($this->xpath->query($path));
     foreach ($this->includes as $schema) {
@@ -194,7 +231,12 @@ class Schema {
   }
 
   /**
+   * Gets a unique node at the given path in this schema.
    * 
+   * If the node does not exist or is not unique an exception is thrown.
+   * 
+   * @param string $path
+   * @return DOMNode
    */
   public function getUniqueNode($path) {
     $results = $this->query($path);
@@ -204,6 +246,11 @@ class Schema {
     return array_shift($results);
   }
 
+  /**
+   * Gets all element tags within this schema.
+   * 
+   * @return array
+   */
   public function getAllElements() {
     return $this->query('//xs:element');
   }
