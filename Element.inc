@@ -8,11 +8,15 @@
  * Models a <xs:element> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
+module_load_include('inc', 'schema_api', 'All');
+module_load_include('inc', 'schema_api', 'Choice');
+module_load_include('inc', 'schema_api', 'Sequence');
+module_load_include('inc', 'schema_api', 'Group');
 
 /**
  * Models a <xs:element> element.
  */
-class Element {
+class XS_Element {
   /**
    * Constants.
    */
@@ -48,10 +52,10 @@ class Element {
     $this->protected = new ReadOnlyProtectedMembers(
             array(
               'node' => $node,
-              'all' => $this->createAll(),
-              'choice' => $this->createChoice(),
-              'sequence' => $this->createSequence(),
-              'group' => $this->createGroup(),
+              'all' => $this->createAll($node),
+              'choice' => $this->createChoice($node),
+              'sequence' => $this->createSequence($node),
+              'group' => $this->createGroup($node),
             )
     );
     /**
@@ -97,9 +101,9 @@ class Element {
    * @return DOMElement
    */
   private function createAll(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', SimpleContent::LocalName);
+    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_All::LocalName);
     if (count($result) == 1) {
-      return new SimpleContent(array_unshift($result));
+      return new XS_All(array_unshift($result));
     }
     return NULL;
   }
@@ -110,9 +114,9 @@ class Element {
    * @return DOMElement
    */
   private function createChoice(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', SimpleContent::LocalName);
+    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_Choice::LocalName);
     if (count($result) == 1) {
-      return new SimpleContent(array_unshift($result));
+      return new XS_Choice(array_unshift($result));
     }
     return NULL;
   }
@@ -123,9 +127,9 @@ class Element {
    * @return DOMElement
    */
   private function createSequence(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', SimpleContent::LocalName);
+    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_Sequence::LocalName);
     if (count($result) == 1) {
-      return new SimpleContent(array_unshift($result));
+      return new XS_Sequence(array_unshift($result));
     }
     return NULL;
   }
@@ -136,9 +140,9 @@ class Element {
    * @return DOMElement
    */
   private function createGroup(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', SimpleContent::LocalName);
+    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_Group::LocalName);
     if (count($result) == 1) {
-      return new SimpleContent(array_unshift($result));
+      return new XS_Group(array_unshift($result));
     }
     return NULL;
   }

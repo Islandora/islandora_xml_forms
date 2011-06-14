@@ -5,7 +5,7 @@
 /**
  * @file
  *
- * Models a <xs:complexType> element.
+ * Models a <xs:group> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'schema_api', 'ComplexContent');
@@ -16,21 +16,21 @@ module_load_include('inc', 'schema_api', 'Sequence');
 module_load_include('inc', 'schema_api', 'Group');
 
 /**
- * Models a <xs:complexType> element.
+ * Models a <xs:group> element.
  */
-class XS_ComplexType {
+class XS_Group {
   /**
    * Constants.
    */
-  const LocalName = 'complexType';
+  const LocalName = 'group';
 
   /**
-   * Checks to see if the given DOMElement is a xs:complexType element
+   * Checks to see if the given DOMElement is a xs:Group element
    * 
    * @param DOMElement $node 
    * @return boolean
    */
-  public static function isComplexType(DOMElement $node) {
+  public static function isGroup(DOMElement $node) {
     return $node->localName == self::LocalName;
   }
 
@@ -42,7 +42,7 @@ class XS_ComplexType {
   protected $protected;
 
   /**
-   * Create a ComplexType element.
+   * Create a Group element.
    * 
    * @param DOMElement $node 
    */
@@ -54,12 +54,9 @@ class XS_ComplexType {
     $this->protected = new ReadOnlyProtectedMembers(
             array(
               'node' => $node,
-              'complexContent' => $this->createComplexContent($node),
-              'simpleContent' => $this->createSimpleContent($node),
               'all' => $this->createAll($node),
               'choice' => $this->createChoice($node),
               'sequence' => $this->createSequence($node),
-              'group' => $this->createGroup($node),
             )
     );
     /**
@@ -75,8 +72,8 @@ class XS_ComplexType {
    * @param DOMElement $node 
    */
   private function validateConstructorArguments(DOMElement $node) {
-    if (!self::isComplexType($node)) {
-      throw new Exception('Can not create a ComplexType object from a non complexType DOMElement: ' . $node->localName);
+    if (!self::isGroup($node)) {
+      throw new Exception('Can not create a Group object from a non Group DOMElement: ' . $node->localName);
     }
   }
 
@@ -160,19 +157,6 @@ class XS_ComplexType {
     $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_Sequence::LocalName);
     if (count($result) == 1) {
       return new XS_Sequence(array_unshift($result));
-    }
-    return NULL;
-  }
-
-  /**
-   * Creates the member if its definition exists.
-   * 
-   * @return DOMElement
-   */
-  private function createGroup(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_Group::LocalName);
-    if (count($result) == 1) {
-      return new XS_Group(array_unshift($result));
     }
     return NULL;
   }
