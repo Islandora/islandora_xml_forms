@@ -5,21 +5,22 @@
 /**
  * @file
  *
- * Models a <xs:group> element.
+ * Models a <xs:restriction> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'Node');
-module_load_include('inc', 'schema_api', 'ComplexType');
-module_load_include('inc', 'schema_api', 'SimpleType');
+module_load_include('inc', 'schema_api', 'All');
+module_load_include('inc', 'schema_api', 'Choice');
+module_load_include('inc', 'schema_api', 'Sequence');
+module_load_include('inc', 'schema_api', 'Group');
 
 /**
- * Models a <xs:group> DOMElement.
+ * Models a <xs:restriction> element.
  */
-class XMLSchemaGroup extends XMLSchemaNode {
+class XMLSchemaRestriction extends XMLSchemaNode {
   /**
    * Constants.
    */
-  const LocalName = 'group';
+  const LocalName = 'restriction';
 
   /**
    * 
@@ -32,6 +33,7 @@ class XMLSchemaGroup extends XMLSchemaNode {
           'all' => $this->createChild(XMLSchemaAll::LocalName),
           'choice' => $this->createChild(XMLSchemaChoice::LocalName),
           'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
+          'group' => $this->createChild(XMLSchemaGroup::LocalName),
         )
     );
   }

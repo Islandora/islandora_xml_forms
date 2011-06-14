@@ -8,6 +8,7 @@
  * Models a <xs:complexType> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
+module_load_include('inc', 'schema_api', 'Node');
 module_load_include('inc', 'schema_api', 'ComplexContent');
 module_load_include('inc', 'schema_api', 'SimpleContent');
 module_load_include('inc', 'schema_api', 'All');
@@ -16,183 +17,39 @@ module_load_include('inc', 'schema_api', 'Sequence');
 module_load_include('inc', 'schema_api', 'Group');
 
 /**
- * Models a <xs:complexType> element.
+ * Models a <xs:complexType> DOMElement.
  */
-class XS_ComplexType {
+class XMLSchemaComplexType extends XMLSchemaNode {
   /**
    * Constants.
    */
   const LocalName = 'complexType';
 
   /**
-   * Checks to see if the given DOMElement is a xs:complexType element
-   * 
-   * @param DOMElement $node 
-   * @return boolean
-   */
-  public static function isComplexType(DOMElement $node) {
-    return $node->localName == self::LocalName;
-  }
-
-  /**
-   * Protected read only members.
-   * 
-   * @var ReadOnlyProtectedMembers
-   */
-  protected $protected;
-
-  /**
-   * Create a ComplexType element.
    * 
    * @param DOMElement $node 
    */
   public function __construct(DOMElement $node) {
-    $this->validateConstructorArguments($node);
-    /**
-     * Initialize members, many of these will be NULL.
-     */
-    $this->protected = new ReadOnlyProtectedMembers(
-            array(
-              'node' => $node,
-              'complexContent' => $this->createComplexContent($node),
-              'simpleContent' => $this->createSimpleContent($node),
-              'all' => $this->createAll($node),
-              'choice' => $this->createChoice($node),
-              'sequence' => $this->createSequence($node),
-              'group' => $this->createGroup($node),
-            )
+    parent::__construct($node);
+    $this->protected->add(
+        array(
+          'complexContent' => $this->createChild(XMLSchemaComplexContent::LocalName),
+          'simpleContent' => $this->createChild(XMLSchemaSimpleContent::LocalName),
+          'all' => $this->createChild(XMLSchemaAll::LocalName),
+          'choice' => $this->createChild(XMLSchemaChoice::LocalName),
+          'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
+          'group' => $this->createChild(XMLSchemaGroup::LocalName),
+        )
     );
-    /**
-     * We need to do this after cause this function accesses 
-     * protected read only members.
-     */
-    $this->protected->add('compositor', $this->getCompositor());
   }
 
   /**
-   * Checks to see if this type can be created correctly from the arguments passed to the constructor.
+   * Returns the local name of this object.
    * 
-   * @param DOMElement $node 
+   * @return string
    */
-  private function validateConstructorArguments(DOMElement $node) {
-    if (!self::isComplexType($node)) {
-      throw new Exception('Can not create a ComplexType object from a non complexType DOMElement: ' . $node->localName);
-    }
-  }
-
-  /**
-   * Get a protected member for read access.
-   * 
-   * @param string $name 
-   */
-  public function __get($name) {
-    return $this->protected->$name;
-  }
-
-  /**
-   * Set the protected members value.
-   * 
-   * @param string $name
-   * @param mixed $value 
-   */
-  public function __set($name, $value) {
-    $this->protected->$name = $value;
-  }
-
-  /**
-   * Creates the member if its definition exists.
-   * 
-   * @return DOMElement
-   */
-  private function createComplexContent(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_ComplexContent::LocalName);
-    if (count($result) == 1) {
-      return new XS_ComplexContent(array_unshift($result));
-    }
-    return NULL;
-  }
-
-  /**
-   * Creates the member if its definition exists.
-   * 
-   * @return DOMElement
-   */
-  private function createSimpleContent(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_SimpleContent::LocalName);
-    if (count($result) == 1) {
-      return new XS_SimpleContent(array_unshift($result));
-    }
-    return NULL;
-  }
-
-  /**
-   * Creates the member if its definition exists.
-   * 
-   * @return DOMElement
-   */
-  private function createAll(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_All::LocalName);
-    if (count($result) == 1) {
-      return new XS_All(array_unshift($result));
-    }
-    return NULL;
-  }
-
-  /**
-   * Creates the member if its definition exists.
-   * 
-   * @return DOMElement
-   */
-  private function createChoice(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_Choice::LocalName);
-    if (count($result) == 1) {
-      return new XS_Choice(array_unshift($result));
-    }
-    return NULL;
-  }
-
-  /**
-   * Creates the member if its definition exists.
-   * 
-   * @return DOMElement
-   */
-  private function createSequence(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_Sequence::LocalName);
-    if (count($result) == 1) {
-      return new XS_Sequence(array_unshift($result));
-    }
-    return NULL;
-  }
-
-  /**
-   * Creates the member if its definition exists.
-   * 
-   * @return DOMElement
-   */
-  private function createGroup(DOMElement $node) {
-    $result = dom_node_filter_children($node, 'DOMElement', 'localName', XS_Group::LocalName);
-    if (count($result) == 1) {
-      return new XS_Group(array_unshift($result));
-    }
-    return NULL;
-  }
-
-  /**
-   * Returns this objects compositor if defined.
-   * 
-   * @return DOMElement
-   */
-  private function getCompositor() {
-    if (isset($this->all)) {
-      return $this->all;
-    }
-    else if (isset($this->choice)) {
-      return $this->choice;
-    }
-    else if (isset($this->sequence)) {
-      return $this->sequence;
-    }
-    return NULL;
+  protected function getLocalName() {
+    return self::LocalName;
   }
 
 }

@@ -13,7 +13,7 @@ module_load_include('inc', 'xml_form_api', 'SchemaTag');
  * Ignoring imported documents for the most part as they are not used much in FGDC this will be an issue we will need
  * to address in the future.
  */
-class Schema {
+class XMLSchema {
   /**
    * Constants
    */
@@ -138,7 +138,6 @@ class Schema {
    * Register namepaces for use in xpath queries.
    */
   private function registerNamespaces() {
-    $that = $this;
     $simple = simplexml_import_dom($this->schema->documentElement);
     $namespaces = $simple->getNamespaces(true);
     foreach ($namespaces as $prefix => $uri) {
@@ -155,7 +154,7 @@ class Schema {
     foreach ($included_files as $include_file) {
       $filename = "$this->location/$include_file";
       if (empty(self::$schemas[$filename])) {
-        $this->includes[$filename] = new Schema($filename, $this->namespace); // Included files share the same namespace.
+        $this->includes[$filename] = new XMLSchema($filename, $this->namespace); // Included files share the same namespace.
       }
       else {
         $this->includes[$filename] = self::$schemas[$filename];
@@ -189,7 +188,7 @@ class Schema {
       list($location, $namespace) = $import_file;
       $filename = "$this->location/$location";
       if (empty(self::$schemas[$filename])) {
-        $this->imports[$filename] = new Schema($filename, $namespace);
+        $this->imports[$filename] = new XMLSchema($filename, $namespace);
       }
       else {
         $this->imports[$filename] = self::$schemas[$filename];

@@ -5,20 +5,18 @@
 /**
  * @file
  *
- * Models a <xs:choice> element.
+ * Models a <xs:union> element.
  */
-module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'schema_api', 'Node');
-module_load_include('inc', 'schema_api', 'Element');
 
 /**
- * Models a <xs:choice> element.
+ * Models a <xs:union> DOMElement.
  */
-class XMLSchemaChoice extends XMLSchemaNode {
+class XMLSchemaUnion extends XMLSchemaNode {
   /**
    * Constants.
    */
-  const LocalName = 'choice';
+  const LocalName = 'union';
 
   /**
    * 
@@ -26,7 +24,6 @@ class XMLSchemaChoice extends XMLSchemaNode {
    */
   public function __construct(DOMElement $node) {
     parent::__construct($node);
-    $this->protected->add('element', $this->createChildren(XMLSchemaElement::LocalName));
   }
 
   /**

@@ -11,7 +11,7 @@
 /**
  * Unit Tests for the FormControl class.
  */
-class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
+class SchemaAPI_Element_TestCase extends DrupalUnitTestCase {
 
   /**
    * Get Test info.
@@ -21,8 +21,8 @@ class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => 'Schema Unit Tests.',
-      'description' => 'Unit tests for Schema.inc',
+      'name' => 'Element Unit Tests.',
+      'description' => 'Unit tests for Element.inc',
       'group' => 'Schema API',
     );
   }
@@ -31,20 +31,27 @@ class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
    * setUp() performs any pre-requisite tasks that need to happen. 
    */
   public function setUp() {
+    // Enable any modules required for the test.
     parent::setUp('schema_api');
     module_load_include('inc', 'schema_api', 'Schema');
+    module_load_include('inc', 'schema_api', 'Element');
   }
 
   /**
    *
    */
   public function test() {
-    /**
-     * Basic Create.
-     */
     $path = drupal_get_path('module', 'schema_api');
     $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
+    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
+    $node = $schema->getUniqueNode($path);
+    $this->assertNotNull($node);
+    $element = new XMLSchemaElement($node);
+    $this->assertNotNull($element);
+    $this->assertFalse($element->isReference()); // Element is not a refence.
+    $this->assertTrue($element->hasType()); // Element does have a Type.
+    $this->assertNotNull($element->complexType); // Element has a complex type.
   }
 
 }

@@ -11,7 +11,7 @@
 /**
  * Unit Tests for the FormControl class.
  */
-class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
+class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
 
   /**
    * Get Test info.
@@ -21,8 +21,8 @@ class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
    */
   public static function getInfo() {
     return array(
-      'name' => 'Schema Unit Tests.',
-      'description' => 'Unit tests for Schema.inc',
+      'name' => 'InsertOrderMap Unit Tests.',
+      'description' => 'Unit tests for InsertOrderMap.inc',
       'group' => 'Schema API',
     );
   }
@@ -31,20 +31,21 @@ class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
    * setUp() performs any pre-requisite tasks that need to happen. 
    */
   public function setUp() {
+    // Enable any modules required for the test.
     parent::setUp('schema_api');
-    module_load_include('inc', 'schema_api', 'Schema');
+    module_load_include('inc', 'schema_api', 'InsertOrderMap');
   }
 
   /**
    *
    */
   public function test() {
-    /**
-     * Basic Create.
-     */
     $path = drupal_get_path('module', 'schema_api');
     $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
+    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
+    $insert_map = new XMLSchemaInsertOrderMap($schema, $path);
+    $this->assertNotNull($insert_map);
   }
 
 }
