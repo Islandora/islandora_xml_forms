@@ -63,7 +63,7 @@ class XMLSchemaAny extends XMLSchemaNode {
    *
    * @param XMLSchemaInsertOrderMapNode $parent_node 
    */
-  public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
+  public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     list($min, $max) = $this->getMinMaxOccurs();
     return new XMLSchemaInsertOrderMapNode($min, $max, 'element', $this->getName(), $parent);
   }

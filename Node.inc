@@ -57,7 +57,7 @@ abstract class XMLSchemaNode {
   /**
    * Used to convert this object to an InsertOrderMapNode
    */
-  abstract public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL);
+  abstract public function asInsertOrderNode(InsertOrderNode $parent = NULL);
 
   /**
    *

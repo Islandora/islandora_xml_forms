@@ -56,10 +56,10 @@ class XMLSchemaComplexType extends XMLSchemaNode {
    *
    * @param XMLSchemaInsertOrderMapNode $parent_node 
    */
-  public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
+  public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     $content = $this->getContent();
     if ($content) {
-      return $content->asInsertOrderMapNode($parent);
+      return $content->asInsertOrderNode($parent);
     }
   }
 

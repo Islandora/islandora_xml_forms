@@ -25,13 +25,20 @@ abstract class InsertOrderNode {
     $this->parent = $parent;
   }
 
-  abstract public function matchesConstraint(DOMElement $child);
+  abstract public function matchesConstraint(DOMElement $element);
 }
 
 abstract class InsertOrderCompositor extends InsertOrderNode {
 
+  public $children;
+
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
+    $this->children = array();
+  }
+
+  public function addChild(InsertOrderNode $child) {
+    $this->children[] = $child;
   }
 
 }
@@ -42,7 +49,7 @@ class InsertOrderAll extends InsertOrderCompositor {
     parent::__construct($min, $max, $parent);
   }
 
-  public function matchesConstraint(DOMElement $child) {
+  public function matchesConstraint(DOMElement $element) {
     
   }
 
@@ -54,7 +61,7 @@ class InsertOrderChoice extends InsertOrderCompositor {
     parent::__construct($min, $max, $parent);
   }
 
-  public function matchesConstraint(DOMElement $child) {
+  public function matchesConstraint(DOMElement $element) {
     
   }
 
@@ -66,8 +73,13 @@ class InsertOrderSequence extends InsertOrderCompositor {
     parent::__construct($min, $max, $parent);
   }
 
-  public function matchesConstraint(DOMElement $child) {
-    
+  public function matchesConstraint(DOMElement $element) {
+    foreach ($this->children as $child) {
+      if ($child->matchesConstraint($element)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
 }
@@ -80,12 +92,17 @@ class InsertOrderElement extends InsertOrderNode {
   public function __construct($name, $min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
     $this->name = $name;
+    $this->matches = array();
   }
 
-  public function matchesConstraint(DOMElement $child) {
-    if ($child->localName == $name) {
-      
+  public function matchesConstraint(DOMElement $element) {
+    $same_type = $element->localName == $this->name;
+    $count = count($this->matches);
+    if ($same_type && $count < $this->max) {
+      $matches[] = $child;
+      return TRUE;
     }
+    return FALSE;
   }
 
 }
@@ -93,7 +110,7 @@ class InsertOrderElement extends InsertOrderNode {
 /**
  * A tree like structure that models where elements can be insert into.
  */
-class XMLSchemaInsertOrderMap {
+class InsertOrderMap {
 
   /**
    * The schema.
@@ -129,7 +146,7 @@ class XMLSchemaInsertOrderMap {
    * @return InsertOrderNode
    */
   public function getInsertOrderMap() {
-    $this->element->complexType->asInsertOrderMapNode();
+    return $this->element->complexType->asInsertOrderNode();
   }
 
   /**
@@ -141,6 +158,7 @@ class XMLSchemaInsertOrderMap {
   public function insert(DOMElement $parent, DOMElement $new) {
     $children = dom_node_children($parent, 'DOMElement'); // Child Elements.
     $children[] = $new; // Add the new child to the set of children.
+    // Match constaints. The map stores the matched constaints.
     $map = $this->getInsertOrderMap();
     do {
       $matches = FALSE;

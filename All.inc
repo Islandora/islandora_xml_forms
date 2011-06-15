@@ -42,7 +42,7 @@ class XMLSchemaAll extends XMLSchemaNode {
    *
    * @param XMLSchemaInsertOrderMapNode $parent 
    */
-  public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
+  public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     
   }
 }
