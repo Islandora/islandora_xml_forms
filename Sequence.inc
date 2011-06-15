@@ -26,7 +26,13 @@ class XMLSchemaSequence extends XMLSchemaNode {
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
-    $this->protected->add('element', $this->createChildren(XMLSchemaElement::LocalName));
+    $this->protected->add(array(
+      'element' => $this->createChildren(XMLSchemaElement::LocalName),
+      'choice' => $this->createChildren(XMLSchemaChoice::LocalName),
+      'sequence' => $this->createChildren(XMLSchemaSequence::LocalName),
+      'group' => $this->createChildren(XMLSchemaGroup::LocalName),
+      'children' => $this->createChildren() // All children in the correct order.
+    ));
   }
 
   /**
@@ -45,7 +51,9 @@ class XMLSchemaSequence extends XMLSchemaNode {
   public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
     list($min, $max) = $this->getMinMaxOccurs();
     $map_node = new XMLSchemaInsertOrderMapNode($min, $max, 'compositor', self::LocalName, $parent);
-    // Build the children.
+    foreach ($this->children as $child) {
+      $map_node->children[] = $child->asInsertOrderMapNode($map_node);
+    }
     return $map_node;
   }
 

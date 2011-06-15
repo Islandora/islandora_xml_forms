@@ -15,7 +15,7 @@ module_load_include('inc', 'schema_api', 'SimpleType');
 /**
  * Models a <xs:element> DOMElement.
  */
-class XMLSchemaElement extends XMLSchemaNode {
+class XMLSchemaAny extends XMLSchemaNode {
   /**
    * Constants.
    */
@@ -29,7 +29,7 @@ class XMLSchemaElement extends XMLSchemaNode {
     parent::__construct($schema, $node);
     $this->protected->add(
         array(
-          'complexType' => $this->createType(XMLSchemaComplexType::LocalName), // We could make this lazy, then it wouldn't expand the whole tree...
+          'complexType' => $this->createType(XMLSchemaComplexType::LocalName),
           'simpleType' => $this->createType(XMLSchemaSimpleType::LocalName),
         //'key' => @todo Implement...
         //'keyRef' => @todo Implement...

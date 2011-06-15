@@ -46,7 +46,16 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
     $insert_map = new XMLSchemaInsertOrderMap($schema, $path);
     $this->assertNotNull($insert_map);
-    $this->assertNotNull($insert_map->map);
+    $map = $insert_map->map;
+    $this->assertNotNull($map); // Map exists.
+    $this->assertNull($map->parent, 'Top level doesn\'t have parent.'); // Top level doesn't have parent.
+    $this->assertEqual($map->min, 1, 'Min value set correctly');
+    $this->assertEqual($map->max, 1, 'Max value set correctly');
+    $this->assertEqual($map->type, 'compositor', 'Type set correctly');
+    $this->assertEqual($map->compositor, 'sequence', 'Compositor is of type sequence.');
+    $this->assertEqual($map->element, NULL, 'Element correctly set to NULL');
+    $this->assertEqual(count($map->children), 14, 'Correct Number of children.');
+    
   }
 
 }

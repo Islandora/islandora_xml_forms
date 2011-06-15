@@ -10,6 +10,14 @@
 module_load_include('inc', 'schema_api', 'Schema');
 module_load_include('inc', 'schema_api', 'Element');
 
+
+/**
+ * Current position, moves along the map.
+ */
+class XMLSchemaInsertOrderMapNodeTracker {
+  
+}
+
 class XMLSchemaInsertOrderMapNode {
 
   public $parent; // Parent Node.
@@ -21,7 +29,7 @@ class XMLSchemaInsertOrderMapNode {
   public $children; // Child nodes
 
   public function __construct($min, $max, $type, $name, XMLSchemaInsertOrderMapNode $parent = NULL) {
-    // $this->validateConstructorArguments($parent, $min, $max, $type, $name); Implement later.
+// $this->validateConstructorArguments($parent, $min, $max, $type, $name); Implement later.
     $this->parent = $parent;
     $this->min = $min;
     $this->max = $max;
@@ -78,7 +86,39 @@ class XMLSchemaInsertOrderMap {
    * @param DOMElement $child 
    */
   public function insert(DOMElement $parent, DOMElement $child) {
-    // Walk through the map eating children of parent until we find a suitable resting place for child.
+// Walk through the map eating children of parent until we find a suitable resting place for child.
+// How are we gonna do this.
+    /**
+     * foreach child we attempt to match it to a position in the map. Storing our current positon in the map, 
+     * when we come across a element node that excepts the type our child is (identified by local_name). 
+     * 
+     * At position.
+     * 
+     * Match child with position. If position is fully occupied move on to next position.
+     * 
+     * If child doesn't match the current position, but a match is required to proceed what should we do? // aka out of order construction...
+     * Options:
+     *   Ignore it? 
+     *     + Continue trying to match the following children to this position in the map.
+     *       Potential problems: 
+     *         - One of the following children may match to this position but is supposed to match to a later position.
+     *         - 
+     *     + Move to the next position in the map with the same child trying to find a match.
+     * 
+     * What does it mean to be out of order what can we expect to find later, out of order, how does that affect what I'm currently processing?
+     * 
+     * Match then test if we can insert the new child?
+     * 
+     * We test if we can insert it into this position. How???
+     * 
+     * If the following element in the child array is not of the same type as the child.
+     * 
+     * -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----*
+     * Could we just collect all the children at each insertion and reorder the elements, not just find the 
+     * insert position for the new element ???
+     * -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----*
+     */
+    
   }
 
 }

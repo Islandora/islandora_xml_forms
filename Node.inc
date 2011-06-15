@@ -101,8 +101,10 @@ abstract class XMLSchemaNode {
    * @param string $local_name
    * @return array
    */
-  protected function findChildren($local_name) {
-    return dom_node_filter_children($this->node, 'DOMElement', 'localName', $local_name);
+  protected function findChildren($local_name = NULL) {
+    return isset($local_name) ?
+        dom_node_filter_children($this->node, 'DOMElement', 'localName', $local_name) :
+        dom_node_children($this->node, 'DOMElement');
   }
 
   /**
@@ -124,7 +126,7 @@ abstract class XMLSchemaNode {
    * @param string $local_name
    * @return array
    */
-  protected function createChildren($local_name) {
+  protected function createChildren($local_name = NULL) {
     $output = array();
     $children = $this->findChildren($local_name);
     foreach ($children as $child) {
