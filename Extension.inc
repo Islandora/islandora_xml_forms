@@ -52,7 +52,7 @@ class XMLSchemaExtension extends XMLSchemaNode {
    * @param XMLSchemaInsertOrderMapNode $parent 
    */
   public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
-    
+    //Extensions of complex types are sequences by default...
   }
 
 }

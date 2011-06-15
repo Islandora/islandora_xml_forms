@@ -95,6 +95,8 @@ class XMLSchemaInsertOrderMap {
      * At position.
      * 
      * Match child with position. If position is fully occupied move on to next position.
+     *   Potential problems:
+     *     + Nothing obvious...
      * 
      * If child doesn't match the current position, but a match is required to proceed what should we do? // aka out of order construction...
      * Options:
@@ -114,7 +116,15 @@ class XMLSchemaInsertOrderMap {
      *    + Ignore and continue to the next node in the map with the same child.
      *       Potential problems:
      *        - If we can't assume that the existing children were already in the correct order to the best of their ability, then we could end up with a dangling element, one 
-     *          that followed after the current but was supposed to be matched to this positon.
+     *          that followed after the current but was supposed to be matched to this positon, messing up the rest of our processing.
+     *
+     * How to deal with compositors.
+     *    If <xs:all> is present just insert at the end of the element.
+     *
+     *    Choices can contain sequences...
+     * 
+     *    We require intelligent backtracking to deal with choices. As the choices can appear out of order and an 'unbounded' amount of times. 
+     *    What of unbounded sequences? Their components have to appear in order if the first element is present.
      * 
      * What does it mean to be out of order what can we expect to find later, out of order, how does that affect what I'm currently processing?
      * 
@@ -124,9 +134,19 @@ class XMLSchemaInsertOrderMap {
      * 
      * If the following element in the child array is not of the same type as the child.
      * 
+     * Topology and discrete mathematics would come in handy now.
+     * 
      * -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----*
      * Could we just collect all the children at each insertion and reorder the elements, not just find the 
      * insert position for the new element ???
+     * 
+     * This is dependant on the order having no semantic value for the same types. A schema could assume this. But it would be
+     * up to the users to enforce it, as xsd's don't allow for different typed elements sharing the same name under an element.
+     * I think we can safely assume that schema designers wouldn't create this semantic difference under the same parent.
+     * 
+     * Is this actually easier than determining the insert positon of the new child?
+     * 
+     * 
      * -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----*
      */
     
