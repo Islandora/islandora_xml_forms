@@ -13,7 +13,7 @@ module_load_include('inc', 'schema_api', 'Element');
 /**
  * Maybe a different node type for each kind of constraint.
  */
-class InsertOrderNode {
+abstract class InsertOrderNode {
 
   public $parent; // Parent Node.
   public $min; // Occurs
@@ -25,9 +25,10 @@ class InsertOrderNode {
     $this->parent = $parent;
   }
 
+  abstract public function matchesConstraint(DOMElement $child);
 }
 
-class InsertOrderCompositor extends InsertOrderNode {
+abstract class InsertOrderCompositor extends InsertOrderNode {
 
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
@@ -41,12 +42,20 @@ class InsertOrderAll extends InsertOrderCompositor {
     parent::__construct($min, $max, $parent);
   }
 
+  public function matchesConstraint(DOMElement $child) {
+    
+  }
+
 }
 
 class InsertOrderChoice extends InsertOrderCompositor {
 
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
+  }
+
+  public function matchesConstraint(DOMElement $child) {
+    
   }
 
 }
@@ -57,12 +66,26 @@ class InsertOrderSequence extends InsertOrderCompositor {
     parent::__construct($min, $max, $parent);
   }
 
+  public function matchesConstraint(DOMElement $child) {
+    
+  }
+
 }
 
 class InsertOrderElement extends InsertOrderNode {
 
-  public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
+  public $name;
+  public $matches; // The nodes that matched this element
+
+  public function __construct($name, $min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
+    $this->name = $name;
+  }
+
+  public function matchesConstraint(DOMElement $child) {
+    if ($child->localName == $name) {
+      
+    }
   }
 
 }
@@ -103,6 +126,7 @@ class XMLSchemaInsertOrderMap {
 
   /**
    * 
+   * @return InsertOrderNode
    */
   public function getInsertOrderMap() {
     $this->element->complexType->asInsertOrderMapNode();
@@ -112,13 +136,42 @@ class XMLSchemaInsertOrderMap {
    * Inserts the given child element into the right positon of its parent element.
    * 
    * @param DOMElement $parent
-   * @param DOMElement $child 
+   * @param DOMElement $new
    */
-  public function insert(DOMElement $parent, DOMElement $child) {
-    $map = $this->getInsertOrderMap();
-
+  public function insert(DOMElement $parent, DOMElement $new) {
     $children = dom_node_children($parent, 'DOMElement'); // Child Elements.
-    $children[] = $child; // Add the new child to the set of children.
+    $children[] = $new; // Add the new child to the set of children.
+    $map = $this->getInsertOrderMap();
+    do {
+      $matches = FALSE;
+      foreach ($children as $key => $child) {
+        if ($map->matchesConstraint($child)) {
+          unset($children[$key]);
+          $matches = TRUE;
+        }
+      }
+    } while ($matches == TRUE);
+    // Now use the map to generate the new order for elements. This doesn't work with mixed content!
+    $ordered_children = array();
+    $ordered_children = $map->getOrder();
+    /**
+     * Allows for out of order composition, when the final element is
+     * added this block should not be entered.
+     */
+    if (count($children) > 0) {
+      $ordered_children = array_merge($ordered_children, $children);
+    }
+    // Remove all child elements
+    $children = dom_node_children($parent, 'DOMElement'); // Child Elements.
+    foreach ($children as $child) {
+      if (isset($child->parentNode)) {
+        $child->parentNode->removeChild($child);
+      }
+    }
+    // Re-insert the child elements, in the correct order.
+    foreach ($ordered_children as $child) {
+      $parent->appendChild($child);
+    }
     /**
      *  We aren't iterating over the children, we are iterating of the map of constaints.
      *  When we encounter a node that excepts a given child, we move that child off the
