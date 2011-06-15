@@ -101,9 +101,20 @@ class XMLSchemaInsertOrderMap {
      *   Ignore it? 
      *     + Continue trying to match the following children to this position in the map.
      *       Potential problems: 
-     *         - One of the following children may match to this position but is supposed to match to a later position.
+     *         - One of the following children may match to this position but is supposed to match to a later position. 
+     *            + Is this really important? They will be of the same type, order dependance of a element is a syntatic difference not a semantic one, under the same parent in XML?
      *         - 
      *     + Move to the next position in the map with the same child trying to find a match.
+     * 
+     * If child doesn't match the current position, but a match isn't required to proceed?
+     * Options:
+     *    + Continue trying to match the following children to this position in the map.
+     *       Potential problems:
+     *        - Any time we editing or creating a element we should be able to assume it was in the correct order to the best of its ability (missing elements), when we process it?
+     *    + Ignore and continue to the next node in the map with the same child.
+     *       Potential problems:
+     *        - If we can't assume that the existing children were already in the correct order to the best of their ability, then we could end up with a dangling element, one 
+     *          that followed after the current but was supposed to be matched to this positon.
      * 
      * What does it mean to be out of order what can we expect to find later, out of order, how does that affect what I'm currently processing?
      * 
