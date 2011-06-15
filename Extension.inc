@@ -46,5 +46,13 @@ class XMLSchemaExtension extends XMLSchemaNode {
   protected function getLocalName() {
     return self::LocalName;
   }
+  
+  /**
+   *
+   * @param XMLSchemaInsertOrderMapNode $parent 
+   */
+  public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
+    
+  }
 
 }

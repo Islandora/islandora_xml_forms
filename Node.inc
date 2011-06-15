@@ -55,6 +55,28 @@ abstract class XMLSchemaNode {
   abstract protected function getLocalName();
 
   /**
+   * Used to convert this object to an InsertOrderMapNode
+   */
+  abstract public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL);
+
+  /**
+   *
+   * @param string $name
+   * @return boolean
+   */
+  public function __isset($name) {
+    return isset($this->protected->$name);
+  }
+
+  /**
+   *
+   * @param string $name 
+   */
+  public function __unset($name) {
+    unset($this->protected->$name);
+  }
+
+  /**
    * Get a protected member for read access.
    * 
    * @param string $name 
@@ -136,6 +158,17 @@ abstract class XMLSchemaNode {
       return new $class_name($this->schema, $node);
     }
     return NULL;
+  }
+
+  /**
+   * Get the min and max occurs.
+   * 
+   * @return array
+   */
+  public function getMinMaxOccurs() {
+    $min = $this->node->hasAttribute('minOccurs') ? $this->node->getAttribute('minOccurs') : 1;
+    $max = $this->node->hasAttribute('maxOccurs') ? $this->node->getAttribute('maxOccurs') : 1;
+    return array($min, $max);
   }
 
 }

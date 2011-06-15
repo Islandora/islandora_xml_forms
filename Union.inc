@@ -35,4 +35,12 @@ class XMLSchemaUnion extends XMLSchemaNode {
     return self::LocalName;
   }
 
+  /**
+   *
+   * @param XMLSchemaInsertOrderMapNode $parent 
+   */
+  public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
+    
+  }
+
 }

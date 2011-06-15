@@ -38,4 +38,15 @@ class XMLSchemaSequence extends XMLSchemaNode {
     return self::LocalName;
   }
 
+  /**
+   *
+   * @param XMLSchemaInsertOrderMapNode $parent
+   */
+  public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
+    list($min, $max) = $this->getMinMaxOccurs();
+    $map_node = new XMLSchemaInsertOrderMapNode($min, $max, 'compositor', self::LocalName, $parent);
+    // Build the children.
+    return $map_node;
+  }
+
 }

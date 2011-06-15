@@ -52,4 +52,41 @@ class XMLSchemaComplexType extends XMLSchemaNode {
     return self::LocalName;
   }
 
+  /**
+   *
+   * @param XMLSchemaInsertOrderMapNode $parent_node 
+   */
+  public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
+    $content = $this->getContent();
+    if ($content) {
+      return $content->asInsertOrderMapNode($parent);
+    }
+  }
+
+  /**
+   *
+   * @return mixed
+   */
+  protected function getContent() {
+    if (isset($this->complexContent)) {
+      return $this->complexContent;
+    }
+    if (isset($this->simpleContent)) {
+      return $this->simpleContent;
+    }
+    if (isset($this->all)) {
+      return $this->all;
+    }
+    if (isset($this->choice)) {
+      return $this->choice;
+    }
+    if (isset($this->sequence)) {
+      return $this->sequence;
+    }
+    if (isset($this->group)) {
+      return $this->group;
+    }
+    return NULL;
+  }
+
 }

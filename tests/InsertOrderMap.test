@@ -46,6 +46,7 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
     $insert_map = new XMLSchemaInsertOrderMap($schema, $path);
     $this->assertNotNull($insert_map);
+    $this->assertNotNull($insert_map->map);
   }
 
 }

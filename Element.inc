@@ -60,6 +60,15 @@ class XMLSchemaElement extends XMLSchemaNode {
   }
 
   /**
+   *
+   * @param XMLSchemaInsertOrderMapNode $parent_node 
+   */
+  public function asInsertOrderMapNode(XMLSchemaInsertOrderMapNode $parent = NULL) {
+    list($min, $max) = $this->getMinMaxOccurs();
+    return new XMLSchemaInsertOrderMapNode($min, $max, 'element', $this->getName(), $parent);
+  }
+
+  /**
    * Is a reference?
    * 
    * @return boolean
@@ -74,6 +83,19 @@ class XMLSchemaElement extends XMLSchemaNode {
    */
   public function getTypeName() {
     return $this->node->getAttribute('type');
+  }
+
+  /**
+   * 
+   * @return string
+   */
+  public function getName() {
+    if ($this->isReference()) {
+      return $this->node->getAttribute('ref');
+    }
+    else {
+      return $this->node->getAttribute('name');
+    }
   }
 
   /**
