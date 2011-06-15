@@ -254,4 +254,22 @@ class XMLSchema {
     return $this->query('//xs:element');
   }
 
+  /**
+   * Looks for a given global type.
+   * 
+   * Type is defined as a complexType or simpleType.
+   * 
+   * @param string $type_name
+   * 
+   * @return DOMElement 
+   */
+  public function findGlobalType($local_name, $type_name) {
+    if (isset($type_name) && $type_name != '') {
+      $path = "/xs:schema/xs:{$local_name}[@name='$type_name']";
+      $results = $this->query($path);
+      return count($results) == 1 ? array_shift($results) : NULL;
+    }
+    return NULL;
+  }
+
 }

@@ -47,10 +47,10 @@ class SchemaAPI_Element_TestCase extends DrupalUnitTestCase {
     $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
     $node = $schema->getUniqueNode($path);
     $this->assertNotNull($node);
-    $element = new XMLSchemaElement($node);
+    $element = new XMLSchemaElement($schema, $node);
     $this->assertNotNull($element);
     $this->assertFalse($element->isReference()); // Element is not a refence.
-    $this->assertTrue($element->hasType()); // Element does have a Type.
+    $this->assertFalse($element->isTypeInline()); // Element does have a Type.
     $this->assertNotNull($element->complexType); // Element has a complex type.
   }
 

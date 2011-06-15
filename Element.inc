@@ -25,17 +25,29 @@ class XMLSchemaElement extends XMLSchemaNode {
    * 
    * @param DOMElement $node 
    */
-  public function __construct(DOMElement $node) {
-    parent::__construct($node);
+  public function __construct(XMLSchema $schema, DOMElement $node) {
+    parent::__construct($schema, $node);
     $this->protected->add(
         array(
-          'complexType' => $this->createChild(XMLSchemaComplexType::LocalName),
-          'simpleType' => $this->createChild(XMLSchemaSimpleType::LocalName),
+          'complexType' => $this->createType(XMLSchemaComplexType::LocalName),
+          'simpleType' => $this->createType(XMLSchemaSimpleType::LocalName),
         //'key' => @todo Implement...
         //'keyRef' => @todo Implement...
         //'unique' => @todo Implement...
         )
     );
+  }
+
+  /**
+   *
+   * @param string $local_name
+   * @return XMLSchemaNode
+   */
+  private function createType($local_name) {
+    $node = $this->isTypeInline() ?
+        $this->findChild($local_name) :
+        $this->schema->findGlobalType($local_name, $this->getTypeName());
+    return isset($node) ? $this->createNodeTypedObject($node) : NULL;
   }
 
   /**
@@ -57,12 +69,20 @@ class XMLSchemaElement extends XMLSchemaNode {
   }
 
   /**
+   * 
+   * @return string
+   */
+  public function getTypeName() {
+    return $this->node->getAttribute('type');
+  }
+
+  /**
    * Has type
    * 
    * @return boolean
    */
-  public function hasType() {
-    return $this->node->hasAttribute('type');
+  public function isTypeInline() {
+    return $this->getTypeName() == '';
   }
 
 }

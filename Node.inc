@@ -14,6 +14,12 @@ module_load_include('inc', 'php_lib', 'DOMHelpers');
 abstract class XMLSchemaNode {
 
   /**
+   * The top level schema.
+   * 
+   * @var XMLSchema
+   */
+  protected $schema;
+  /**
    *
    * @var ReadOnlyProtectedMembers
    */
@@ -24,8 +30,9 @@ abstract class XMLSchemaNode {
    * 
    * @param DOMElement $node 
    */
-  public function __construct(DOMElement $node) {
+  public function __construct(XMLSchema $schema, DOMElement $node) {
     $this->validateConstructorArguments($node);
+    $this->schema = $schema;
     $this->protected = new ReadOnlyProtectedMembers(array('node' => $node));
   }
 
@@ -73,7 +80,7 @@ abstract class XMLSchemaNode {
    * @return array
    */
   protected function findChildren($local_name) {
-    return dom_node_filter_children($node, 'DOMElement', 'localName', $local_name);
+    return dom_node_filter_children($this->node, 'DOMElement', 'localName', $local_name);
   }
 
   /**
@@ -99,7 +106,7 @@ abstract class XMLSchemaNode {
     $output = array();
     $children = $this->findChildren($local_name);
     foreach ($children as $child) {
-      $output[] = $this->createChild($local_name, $child);
+      $output[] = $this->createNodeTypedObject($child);
     }
     return $output;
   }
@@ -112,11 +119,21 @@ abstract class XMLSchemaNode {
    * 
    * @return mixed
    */
-  protected function createChild($local_name, DOMElement $child = NULL) {
-    $class_name = "XMLSchema$local_name";
-    $child = isset($child) ? $child : $this->findChild($local_name);
-    if (isset($child) && class_exists($class_name)) {
-      return new $class_name($child);
+  protected function createChild($local_name) {
+    $child = $this->findChild($local_name);
+    return isset($child) ? $this->createNodeTypedObject($child) : NULL;
+  }
+
+  /**
+   * Creates an a object defined by the local name of the given DOMNode if such a class exists.
+   * 
+   * @param DOMElement $node
+   * @return mixed
+   */
+  protected function createNodeTypedObject(DOMElement $node) {
+    $class_name = "XMLSchema{$node->localName}";
+    if (class_exists($class_name)) {
+      return new $class_name($this->schema, $node);
     }
     return NULL;
   }

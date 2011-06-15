@@ -36,7 +36,7 @@ class XMLSchemaInsertOrderMap {
    */
   public function __construct(XMLSchema $schema, $path) {
     $this->schema = $schema;
-    $this->element = new XMLSchemaElement($this->schema->getUniqueNode($path));
+    $this->element = new XMLSchemaElement($this->schema, $this->schema->getUniqueNode($path));
     $this->buildMap();
   }
 
