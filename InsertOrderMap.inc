@@ -26,6 +26,8 @@ abstract class InsertOrderNode {
   }
 
   abstract public function matchesConstraint(DOMElement $element);
+
+  abstract public function getOrder();
 }
 
 abstract class InsertOrderCompositor extends InsertOrderNode {
@@ -39,6 +41,14 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 
   public function addChild(InsertOrderNode $child) {
     $this->children[] = $child;
+  }
+
+  public function getOrder() {
+    $order = array();
+    foreach ($this->children as $child) {
+      $order = array_merge($order, $child->getOrder());
+    }
+    return $order;
   }
 
 }
@@ -99,10 +109,14 @@ class InsertOrderElement extends InsertOrderNode {
     $same_type = $element->localName == $this->name;
     $count = count($this->matches);
     if ($same_type && $count < $this->max) {
-      $matches[] = $child;
+      $matches[] = $element;
       return TRUE;
     }
     return FALSE;
+  }
+
+  public function getOrder() {
+    return $this->matches;
   }
 
 }

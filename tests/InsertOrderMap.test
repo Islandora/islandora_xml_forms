@@ -40,8 +40,8 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
    *
    */
   public function test() {
-    $path = drupal_get_path('module', 'schema_api');
-    $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
+    $data_path = drupal_get_path('module', 'schema_api') . '/tests/data';
+    $schema = new XMLSchema($data_path . '/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
     $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
     $insert_map = new InsertOrderMap($schema, $path);
@@ -53,6 +53,18 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $this->assertEqual($map->max, 1, 'Max value set correctly');
     $this->assertEqual($map instanceof InsertOrderSequence, 'Set top level type correctly');
     $this->assertEqual(count($map->children), 14, 'Correct Number of children.');
+    $order = $map->getOrder();
+    $this->assertEqual($order, array(), 'getOrder returns an empty array if no constaints were matched.');
+
+    // Open existing document.
+    $doc = new DOMDocument();
+    $doc->load($data_path . '/documents/fgdc.xml');
+    $xpath = new DOMXPath($doc);
+    $results = $xpath->query('/metadata/idinfo');
+    $parent = $results->item(0);
+    $this->assertNotNull($parent, 'Found parent.');
+    $new = new DOMElement('origin', 'test');
+    $insert_map->insert($parent, $new);
   }
 
 }
