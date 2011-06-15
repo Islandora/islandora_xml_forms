@@ -146,6 +146,22 @@ class XMLSchemaInsertOrderMap {
      * 
      * Is this actually easier than determining the insert positon of the new child?
      * 
+     * Maybe. if we just assume no order of children at the begining of processing and match them to their first matching positon.
+     * 
+     * So the processing should be like so.
+     * 
+     * At position.
+     * 
+     * Attempt to match all children (including the new one) to the given position, once the position is full or all elements have been run though
+     * move to the next position regardless if the current position has been filed (Out of order!). 
+     * 
+     * Continue on building the new order of all children.
+     * 
+     * Still have to be weary of the rules surrounding compositors, When determining if we can move to the next node. 
+     * 
+     * Or do we?
+     * 
+     * 
      * 
      * -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----*
      */
