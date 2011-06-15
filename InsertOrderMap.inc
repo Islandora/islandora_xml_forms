@@ -10,36 +10,59 @@
 module_load_include('inc', 'schema_api', 'Schema');
 module_load_include('inc', 'schema_api', 'Element');
 
-
 /**
- * Current position, moves along the map.
+ * Maybe a different node type for each kind of constraint.
  */
-class XMLSchemaInsertOrderMapNodeTracker {
-  
-}
-
-class XMLSchemaInsertOrderMapNode {
+class InsertOrderNode {
 
   public $parent; // Parent Node.
   public $min; // Occurs
   public $max; // Occurs
-  public $type; // compositor, element.
-  public $compositor; // all, choice, sequence
-  public $element; // Tag name of the element.
-  public $children; // Child nodes
 
-  public function __construct($min, $max, $type, $name, XMLSchemaInsertOrderMapNode $parent = NULL) {
-// $this->validateConstructorArguments($parent, $min, $max, $type, $name); Implement later.
-    $this->parent = $parent;
+  public function __construct($min, $max, InsertOrderNode $parent = NULL) {
     $this->min = $min;
     $this->max = $max;
-    $this->type = $type;
-    if ($type == 'compositor') {
-      $this->compositor = $name;
-    }
-    else {
-      $this->element = $name;
-    }
+    $this->parent = $parent;
+  }
+
+}
+
+class InsertOrderCompositor extends InsertOrderNode {
+
+  public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
+    parent::__construct($min, $max, $parent);
+  }
+
+}
+
+class InsertOrderAll extends InsertOrderCompositor {
+
+  public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
+    parent::__construct($min, $max, $parent);
+  }
+
+}
+
+class InsertOrderChoice extends InsertOrderCompositor {
+
+  public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
+    parent::__construct($min, $max, $parent);
+  }
+
+}
+
+class InsertOrderSequence extends InsertOrderCompositor {
+
+  public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
+    parent::__construct($min, $max, $parent);
+  }
+
+}
+
+class InsertOrderElement extends InsertOrderNode {
+
+  public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
+    parent::__construct($min, $max, $parent);
   }
 
 }
@@ -76,7 +99,13 @@ class XMLSchemaInsertOrderMap {
   public function __construct(XMLSchema $schema, $path) {
     $this->schema = $schema;
     $this->element = new XMLSchemaElement($this->schema, $this->schema->getUniqueNode($path));
-    $this->map = $this->element->complexType->asInsertOrderMapNode();
+  }
+
+  /**
+   * 
+   */
+  public function getInsertOrderMap() {
+    $this->element->complexType->asInsertOrderMapNode();
   }
 
   /**
@@ -86,6 +115,26 @@ class XMLSchemaInsertOrderMap {
    * @param DOMElement $child 
    */
   public function insert(DOMElement $parent, DOMElement $child) {
+    $map = $this->getInsertOrderMap();
+
+    $children = dom_node_children($parent, 'DOMElement'); // Child Elements.
+    $children[] = $child; // Add the new child to the set of children.
+    /**
+     *  We aren't iterating over the children, we are iterating of the map of constaints.
+     *  When we encounter a node that excepts a given child, we move that child off the
+     *  Children list and append it to the "Ordered Children's" list.
+     * 
+     *  The node must be aware that it matched the given element, so that the following children may not,
+     *  be incorrectly matched to it.
+     * 
+     *  For a particular 
+     * 
+     * We could iterate over the children repeatedly until none were removed from the list. When that occured move to the next constraint.
+     * 
+     * 
+     * Only the final case really matters, when all elements are created that the order needs to be determined, 
+     * We must assume that it is possible...
+     */
 // Walk through the map eating children of parent until we find a suitable resting place for child.
 // How are we gonna do this.
     /**
@@ -161,11 +210,26 @@ class XMLSchemaInsertOrderMap {
      * 
      * Or do we?
      * 
+     * If we move our positon only to compositors (Not to the depth of the element requirements)... 
+     *   We run though all elements untill the compositor can take no more children, then move to the next compositor, at the same depth...
      * 
+     *   So what happens if we say have a sequence that contains a choice that contains an element and a sequence. 
+     *   How do we traverse it???  
+     *  
+     *   How to deal with these constraints...
      * 
+     *  Choice/Sequence ...
+     *  
+     * We encounter a choice, that has min=max=1, it has two elements.
+     * 
+     * One element matches the first, so the constraint has been filled. Move on to the sibling composition.
+     * 
+     * If element and its min/max has been filled, move to the next.
+     * 
+     * Need some way to model the constaints and the order of elements
+     *   
      * -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----*
      */
-    
   }
 
 }
