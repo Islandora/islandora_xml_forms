@@ -8,7 +8,7 @@
  * Models a <xs:extension> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'All');
+module_load_include('inc', 'schema  _api', 'Any');
 module_load_include('inc', 'schema_api', 'Choice');
 module_load_include('inc', 'schema_api', 'Sequence');
 module_load_include('inc', 'schema_api', 'Group');
@@ -28,12 +28,14 @@ class XMLSchemaExtension extends XMLSchemaNode {
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
+    $base = $node->getAttribute('base');
     $this->protected->add(
         array(
-          'all' => $this->createChild(XMLSchemaAll::LocalName),
+          'base' => $this->findExtension($base),
           'choice' => $this->createChild(XMLSchemaChoice::LocalName),
           'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
           'group' => $this->createChild(XMLSchemaGroup::LocalName),
+          'children' => $this->createChildren() // All children in the correct order.
         )
     );
   }
@@ -46,13 +48,44 @@ class XMLSchemaExtension extends XMLSchemaNode {
   protected function getLocalName() {
     return self::LocalName;
   }
-  
+
+  /**
+   * @param string $base
+   * @return $complexType.
+   */
+  private function findExtension($base) {
+    if ($base == 'xs:anyType') {
+      return new XMLSchemaAny($this->schema);
+    }
+    else {
+      $node = $this->schema->findGlobalType('complexType', $base);
+      return new XMLSchemaComplexType($this->schema, $node);
+    }
+  }
+
+  public function extendsComplexContent() {
+    return $this->node->parentNode->localName == 'complexContent';
+  }
+
+  public function extendsSimpleContent() {
+    return $this->node->parentNode->localName == 'simpleContent';
+  }
+
   /**
    *
    * @param XMLSchemaInsertOrderMapNode $parent 
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
-    //Extensions of complex types are sequences by default...
+    if ($this->extendsComplexContent()) {
+      list($min, $max) = $this->getMinMaxOccurs();
+      $map_node = new InsertOrderSequence($min, $max, $parent);
+      $map_node->children[] = $this->base->asInsertOrderNode(); // Base class.
+      foreach ($this->children as $child) {
+        $map_node->children[] = $child->asInsertOrderNode($map_node);
+      }
+      return $map_node;
+    }
+    return NULL;
   }
 
 }

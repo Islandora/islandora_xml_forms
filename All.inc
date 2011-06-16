@@ -43,6 +43,12 @@ class XMLSchemaAll extends XMLSchemaNode {
    * @param XMLSchemaInsertOrderMapNode $parent 
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
-    
+    list($min, $max) = $this->getMinMaxOccurs();
+    $map_node = new InsertOrderAll($min, $max, $parent);
+    foreach ($this->children as $child) {
+      $map_node->children[] = $child->asInsertOrderNode($map_node);
+    }
+    return $map_node;
   }
+
 }

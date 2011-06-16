@@ -42,13 +42,13 @@ class XMLSchemaSimpleContent extends XMLSchemaNode {
   protected function getLocalName() {
     return self::LocalName;
   }
-  
+
   /**
    *
    * @param XMLSchemaInsertOrderMapNode $parent 
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
-    
+    return NULL;
   }
 
 }

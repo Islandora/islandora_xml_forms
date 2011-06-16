@@ -42,13 +42,29 @@ class XMLSchemaComplexContent extends XMLSchemaNode {
   protected function getLocalName() {
     return self::LocalName;
   }
-  
+
+  /**
+   * 
+   */
+  private function getContent() {
+    if ($this->extension) {
+      return $this->extension;
+    }
+    else if ($this->restriction) {
+      return $this->restriction;
+    }
+    return NULL;
+  }
+
   /**
    *
    * @param XMLSchemaInsertOrderMapNode $parent 
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
-    
+    $content = $this->getContent();
+    if ($content) {
+      return $content->asInsertOrderNode($parent);
+    }
   }
 
 }

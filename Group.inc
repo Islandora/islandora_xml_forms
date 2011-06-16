@@ -29,9 +29,9 @@ class XMLSchemaGroup extends XMLSchemaNode {
     parent::__construct($schema, $node);
     $this->protected->add(
         array(
-          'all' => $this->createChild(XMLSchemaAll::LocalName),
-          'choice' => $this->createChild(XMLSchemaChoice::LocalName),
-          'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
+          'all' => $this->createType(XMLSchemaAll::LocalName),
+          'choice' => $this->createType(XMLSchemaChoice::LocalName),
+          'sequence' => $this->createType(XMLSchemaSequence::LocalName),
         )
     );
   }
@@ -44,13 +44,47 @@ class XMLSchemaGroup extends XMLSchemaNode {
   protected function getLocalName() {
     return self::LocalName;
   }
-  
+
+  /**
+   *
+   * @param string $local_name
+   * @return XMLSchemaNode
+   */
+  private function createType($local_name) {
+    $group = $this->schema->findGlobalType('group', $this->getName);
+    $children = dom_node_filter_children($group, 'DOMElement', 'localName', $local_name);
+    if (count($children) == 1) {
+      $child = array_shift($children);
+      return $this->createNodeTypedObject($child);
+    }
+  }
+
   /**
    *
    * @param XMLSchemaInsertOrderMapNode $parent 
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
-    
+    $content = $this->getContent();
+    if ($content) {
+      return $content->asInsertOrderNode($parent);
+    }
+  }
+
+  /**
+   *
+   * @return 
+   */
+  private function getContent() {
+    if (isset($this->all)) {
+      return $this->all;
+    }
+    if (isset($this->choice)) {
+      return $this->choice;
+    }
+    if (isset($this->sequence)) {
+      return $this->sequence;
+    }
+    return NULL;
   }
 
 }

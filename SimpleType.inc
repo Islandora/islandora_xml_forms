@@ -50,6 +50,7 @@ class XMLSchemaSimpleType extends XMLSchemaNode {
    * @param XMLSchemaInsertOrderMapNode $parent 
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
-    
+    return NULL;
   }
+
 }

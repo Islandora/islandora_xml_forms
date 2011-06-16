@@ -11,12 +11,20 @@ module_load_include('inc', 'schema_api', 'Schema');
 module_load_include('inc', 'schema_api', 'Element');
 
 /**
- *
+ * How do I do this...
+ *  
+ * Build a list of possible sequences for a given number of child elements?
  * 
+ * foreach element node create
+ * 
+ * Generate a valid sequence for given set of elements.
+ * 
+ * 
+ * 
+ * 
+ * 
+ * Seqence.
  */
-
-
-
 
 /**
  * Maybe a different node type for each kind of constraint.
@@ -277,6 +285,17 @@ class InsertOrderElement extends InsertOrderNode {
 
   public function getOrder() {
     return $this->matches;
+  }
+
+}
+
+class InsertOrderAny extends InsertOrderNode {
+
+  public $names;
+
+  public function __construct(array $names, $min, $max, InsertOrderNode $parent = NULL) {
+    parent::__construct($min, $max, $parent);
+    $this->names = $names;
   }
 
 }
