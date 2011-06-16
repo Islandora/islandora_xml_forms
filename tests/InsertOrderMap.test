@@ -43,10 +43,10 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $data_path = drupal_get_path('module', 'schema_api') . '/tests/data';
     $schema = new XMLSchema($data_path . '/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
-    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
-    $insert_map = new InsertOrderMap($schema, $path);
+    $insert_map = new InsertOrderMap($schema);
     $this->assertNotNull($insert_map);
-    $map = $insert_map->getInsertOrderMap();
+    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
+    $map = $insert_map->getInsertOrderMap($path);
     $this->assertNotNull($map); // Map exists.
     $this->assertNull($map->parent, 'Top level doesn\'t have parent.'); // Top level doesn't have parent.
     $this->assertEqual($map->min, 1, 'Min value set correctly');
@@ -60,11 +60,16 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $doc = new DOMDocument();
     $doc->load($data_path . '/documents/fgdc.xml');
     $xpath = new DOMXPath($doc);
-    $results = $xpath->query('/metadata/idinfo');
+    $results = $xpath->query('/metadata/idinfo/citation/citeinfo');
     $parent = $results->item(0);
     $this->assertNotNull($parent, 'Found parent.');
     $new = new DOMElement('origin', 'test');
-    $insert_map->insert($parent, $new);
+    $path = '/xsd:schema/xsd:element[@name=\'citeinfo\']'; // Path to the idinfo element.
+    $insert_map->insert($path, $parent, $new);
+    $valid = $doc->schemaValidate($data_path . '/schemas/fgdc-std-001-1998.xsd');
+    $this->assertNotNull($new->parentNode, 'New element was added to the document.');
+    $this->assertEqual($new->parentNode, $parent, 'New element has the correct parent.');
+    $this->assertTrue($valid, 'Document remains valid after insert.');
   }
 
 }

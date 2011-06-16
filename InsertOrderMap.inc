@@ -108,8 +108,9 @@ class InsertOrderElement extends InsertOrderNode {
   public function matchesConstraint(DOMElement $element) {
     $same_type = $element->localName == $this->name;
     $count = count($this->matches);
-    if ($same_type && $count < $this->max) {
-      $matches[] = $element;
+    $within_range = is_numeric($this->max) ? $count < $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
+    if ($same_type && $within_range) {
+      $this->matches[] = $element;
       return TRUE;
     }
     return FALSE;
@@ -133,12 +134,6 @@ class InsertOrderMap {
    */
   protected $schema;
   /**
-   * The element defined.
-   * 
-   * @var XS_Element
-   */
-  public $element;
-  /**
    *
    * @var XMLSchemaInsertOrderMapNode 
    */
@@ -150,17 +145,17 @@ class InsertOrderMap {
    * @param Schema $schema
    * @param string $path 
    */
-  public function __construct(XMLSchema $schema, $path) {
+  public function __construct(XMLSchema $schema) {
     $this->schema = $schema;
-    $this->element = new XMLSchemaElement($this->schema, $this->schema->getUniqueNode($path));
   }
 
   /**
    * 
    * @return InsertOrderNode
    */
-  public function getInsertOrderMap() {
-    return $this->element->complexType->asInsertOrderNode();
+  public function getInsertOrderMap($path) {
+    $element = new XMLSchemaElement($this->schema, $this->schema->getUniqueNode($path));
+    return $element->complexType->asInsertOrderNode();
   }
 
   /**
@@ -169,11 +164,11 @@ class InsertOrderMap {
    * @param DOMElement $parent
    * @param DOMElement $new
    */
-  public function insert(DOMElement $parent, DOMElement $new) {
+  public function insert($path, DOMElement $parent, DOMElement $new) {
     $children = dom_node_children($parent, 'DOMElement'); // Child Elements.
     $children[] = $new; // Add the new child to the set of children.
     // Match constaints. The map stores the matched constaints.
-    $map = $this->getInsertOrderMap();
+    $map = $this->getInsertOrderMap($path);
     do {
       $matches = FALSE;
       foreach ($children as $key => $child) {
