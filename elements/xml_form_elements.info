@@ -1,0 +1,8 @@
+; $Id$
+name = XML Form Elements
+description = Coming soon.
+package = XML Form API
+dependencies[] = xml_form_api
+dependencies[] = jquery_update
+dependencies[] = jquery_ui
+core = 6.x

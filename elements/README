@@ -1,0 +1,51 @@
+Its recommended that you use at least jquery-ui 1.7.3, this module will look for the theme stored in themes/xml-form-elements/
+
+
+
+http://drupal.org/files/issues/806500_jquery_update_ahah_js_clone.patch
+
+Here is an experimental patch for this problem:
+
+This patch keeps the disabled behaviour of the element and instead creates a hidden input with the the correct name and value so the correct data gets submitted as usual. The hidden input is removed once the submit is complete.
+
+So far its working for me with buttons, text & select elements, and avoids the UI moving around as in patch #11.
+
+Attachment	Size
+806500_jquery_update_ahah_js_clone.patch	1.8 KB
+
+I've included the patch inline...
+
+diff --git replace/ahah.js replace/ahah.js
+index 54758dd..accb893 100644
+--- replace/ahah.js
++++ replace/ahah.js
+@@ -120,6 +120,10 @@ Drupal.ahah.prototype.beforeSubmit = function (form_values, element, options) {
+   // Disable the element that received the change.
+   $(this.element).addClass('progress-disabled').attr('disabled', true);
+ 
++  // Since the submitted element is disabled, it doesn't get submitted, so lets create a hidden clone of it.
++  this.submitted_element = '<input type="hidden" id="ahah-submitted-element" name="' + $(this.element).attr('name') + '" value="' + $(this.element).val() + '" />';
++  $(this.element).after(this.submitted_element);
++
+   // Insert progressbar or throbber.
+   if (this.progress.type == 'bar') {
+     var progressBar = new Drupal.progressBar('ahah-progress-' + this.element.id, eval(this.progress.update_callback), this.progress.method, eval(this.progress.error_callback));
+@@ -157,6 +161,9 @@ Drupal.ahah.prototype.success = function (response, status) {
+   this.form_target ? form.attr('target', this.form_target) : form.removeAttr('target');
+   this.form_encattr ? form.attr('target', this.form_encattr) : form.removeAttr('encattr');
+ 
++  // Remove the submitted clone element.
++  $('#ahah-submitted-element').remove();
++
+   // Remove the progress element.
+   if (this.progress.element) {
+     $(this.progress.element).remove();
+@@ -207,6 +214,8 @@ Drupal.ahah.prototype.error = function (response, uri) {
+   alert(Drupal.ahahError(response, uri));
+   // Resore the previous action and target to the form.
+   $(this.element).parent('form').attr( { action: this.form_action, target: this.form_target} );
++  // Remove the submitted clone element.
++  $('#ahah-submitted-element').remove();
+   // Remove the progress element.
+   if (this.progress.element) {
+     $(this.progress.element).remove();

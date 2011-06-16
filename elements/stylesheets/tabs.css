@@ -1,0 +1,40 @@
+/* 
+    Document   : tabs
+    Created on : May 5, 2011, 3:26:57 PM
+    Author     : nbanks
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+
+.ui-tabs-panel >.ui-tabpanel-add-button > input.progress-disabled {
+    float: none;
+}
+
+.ui-tabs-panel >.ui-tabpanel-add-button > div.ahah-progress {
+    display: inline-block;
+    float: none;
+    vertical-align: middle;
+    text-align: center;
+    margin-bottom: 5px;
+    /*vertical-align: middle;
+    position: relative;
+    text-align: center;*/
+}
+
+.ui-tabs-panel > .ui-tabpanel-add-button {
+    width: 70px;
+}
+
+.ui-tabs-panel > .ui-tabpanel-add-button > .form-button, .ui-tabs-panel > .ui-tabpanel-add-button > .form-submit {
+    margin: 0;
+}

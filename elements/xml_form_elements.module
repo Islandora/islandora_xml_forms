@@ -1,0 +1,229 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ *
+ */
+
+/**
+ * Implements hook_elements. Registers Elements.
+ * 
+ * @return array
+ */
+function xml_form_elements_elements() {
+  $type = array();
+  $type['tabs'] = array(
+    '#input' => TRUE,
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#process' => array('xml_form_elements_process_tabs'),
+  );
+  $type['tabpanel'] = array(
+    '#input' => TRUE,
+    '#process' => array('xml_form_elements_process_tabpanel'),
+    '#user_data' => array(
+      'add' => TRUE,
+      'delete' => TRUE,
+    )
+  );
+  $type['tags'] = array(
+    '#input' => TRUE,
+    '#process' => array('xml_form_elements_process_tags'),
+  );
+  $type['tag'] = array(
+    '#input' => TRUE,
+    '#process' => array('xml_form_elements_process_tag'),
+  );
+  return $type;
+}
+
+/**
+ * Implements hook_theme. Register themes.
+ *
+ * @return array
+ */
+function xml_form_elements_theme() {
+  return array(
+    'tabs' => array(
+      'arguments' => array('tabs' => NULL),
+      'template' => 'Tabs',
+      'file' => 'Tabs.inc'
+    ),
+    'tabpanel' => array(
+      'arguments' => array('element'),
+      'file' => 'TabPanel.inc'
+    ),
+    'tags' => array(
+      'arguments' => array('element'),
+      'template' => 'Tags',
+      'file' => 'Tags.inc'
+    ),
+    'tag' => array(
+      'arguments' => array('element'),
+      'file' => 'Tag.inc'
+    )
+  );
+}
+
+/**
+ * Implements hook_menu. Register menus.
+ *
+ * @return array 
+ */
+function xml_form_elements_menu() {
+  /**
+   * Duplicate a form element. Takes two parameters.
+   * The first parameter is the #hash of the element to duplicate. The second
+   * is the #hash of the element to render. If the second parameter is not given
+   * the newly duplicated element will be rendered.
+   */
+  $items['xml/form/elements/ahah/duplicate/%'] = array(
+    'title' => 'Duplicate a Form Element',
+    'description' => 'AHAH callback',
+    'page callback' => 'Element::Duplicate',
+    'page arguments' => array(5, 6),
+    'access arguments' => array('access content'),
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * Remove's a form element. Takes two parameters.
+   * The first parameter is the #hash of the element to remove. The second
+   * is the #hash of the element to render. If the second parameter is not given
+   * an empty div will be rendered.
+   */
+  $items['xml/form/elements/ahah/remove/%'] = array(
+    'title' => 'Remove a Form Element',
+    'description' => 'AHAH callback',
+    'page callback' => 'Element::Remove',
+    'page arguments' => array(5, 6),
+    'access arguments' => array('access content'),
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * Validate's a form element. Takes one parameter.
+   * The first parameter is the #hash of the element to render.
+   */
+  $items['xml/form/elements/ahah/validate/%'] = array(
+    'title' => 'Validate a Element',
+    'description' => 'AHAH callback',
+    'page callback' => 'Element::Validate',
+    'page arguments' => array(5),
+    'access arguments' => array('access content'),
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * Rebuild the form and re-render a chunk of it. Takes one parameter.
+   * The first parameter is the #hash of the element to render.
+   */
+  $items['xml/form/elements/ahah/rebuild/%'] = array(
+    'title' => 'Rebuild the form.',
+    'description' => 'AHAH callback',
+    'page callback' => 'Element::Rebuild',
+    'page arguments' => array(5),
+    'access arguments' => array('access content'),
+    'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * 
+   */
+  $items['xml/form/elements/ahah/tag/add/%'] = array(
+    'title' => 'Add a tag to the form, with the value submited for this first.',
+    'description' => 'AHAH callback',
+    'page callback' => 'Tag::Add',
+    'page arguments' => array(6),
+    'access arguments' => array('access content'),
+    'file' => 'Tag.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * 
+   */
+  $items['xml/form/elements/ahah/tag/edit/%'] = array(
+    'title' => 'Edit a tag.',
+    'description' => 'AHAH callback',
+    'page callback' => 'Tag::Edit',
+    'page arguments' => array(6),
+    'access arguments' => array('access content'),
+    'file' => 'Tag.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * 
+   */
+  $items['xml/form/elements/ahah/tag/remove/%'] = array(
+    'title' => 'Remove a tag.',
+    'description' => 'AHAH callback',
+    'page callback' => 'Tag::Remove',
+    'page arguments' => array(6),
+    'access arguments' => array('access content'),
+    'file' => 'Tag.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ *
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
+ */
+function xml_form_elements_process_tabs(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'Tabs');
+  return Tabs::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ *
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
+ */
+function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'TabPanel');
+  return TabPanel::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ *
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
+ */
+function xml_form_elements_process_tags(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'Tags');
+  return Tags::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ *
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
+ */
+function xml_form_elements_process_tag(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'TabPanel');
+  return Tag::Process($element, $edit, $form_state, $complete_form);
+}
