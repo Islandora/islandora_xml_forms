@@ -1,0 +1,9 @@
+; $Id$
+name = XML Forms
+description = Build/Store/Render drupal forms that allow for the manipulation of XML files.
+dependencies[] = xml_form_api
+dependencies[] = xml_form_builder
+dependencies[] = xml_form_elements
+package = XML Forms
+version = 6.x-$Format:%h$-dev
+core = 6.x
