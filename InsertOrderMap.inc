@@ -5,10 +5,18 @@
 /**
  * @file
  *
- * Builds a map that defines where elements can be inserted
+ * Builds a map that defines where elements can be inserted.
  */
 module_load_include('inc', 'schema_api', 'Schema');
 module_load_include('inc', 'schema_api', 'Element');
+
+/**
+ *
+ * 
+ */
+
+
+
 
 /**
  * Maybe a different node type for each kind of constraint.
@@ -25,11 +33,20 @@ abstract class InsertOrderNode {
     $this->parent = $parent;
   }
 
+  abstract public function constraintMet();
+
   abstract public function matchesConstraint(DOMElement $element);
+
+  abstract public function matches(DOMElement $element);
+
+  abstract public function storeMatch(DOMElement $element);
 
   abstract public function getOrder();
 }
 
+/**
+ * 
+ */
 abstract class InsertOrderCompositor extends InsertOrderNode {
 
   public $children;
@@ -37,22 +54,74 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
     $this->children = array();
+    $this->children[0] = array();
+  }
+
+  public function __clone() {
+    $children = $this->children[0];
+    $this->children = array();
+    $this->children[0] = array();
+    foreach ($children as $child) {
+      $this->addChild(clone $child);
+    }
+  }
+
+  public function constraintMet() {
+    return TRUE;
+  }
+
+  protected function canCloneChildren() {
+    $count = count($this->children);
+    $within_max_range = is_numeric($this->max) ? $count < $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
+    return $within_max_range;
+  }
+
+  protected function cloneChildren() {
+    $count = count($this->children);
+    foreach ($this->children[0] as $child) {
+      $this->children[$count][] = clone $child;
+    }
   }
 
   public function addChild(InsertOrderNode $child) {
-    $this->children[] = $child;
+    $this->children[0][] = $child;
   }
 
   public function getOrder() {
     $order = array();
-    foreach ($this->children as $child) {
-      $order = array_merge($order, $child->getOrder());
+    $count = count($this->children);
+    for ($i = 0; $i < $count; $i++) {
+      foreach ($this->children[$i] as $child) {
+        $order = array_merge($order, $child->getOrder());
+      }
     }
     return $order;
   }
 
+  public function containsConstraintFor(DOMElement $element) {
+    $count = count($this->children);
+    for ($i = 0; $i < $count; $i++) {
+      foreach ($this->children[$i] as $child) {
+        if ($child instanceof InsertOrderElement) {
+          if ($child->name == $element->localName) {
+            return TRUE;
+          }
+        }
+        else {
+          if ($child->containsConstraintFor($element)) {
+            return TRUE;
+          }
+        }
+      }
+    }
+    return FALSE;
+  }
+
 }
 
+/**
+ * 
+ */
 class InsertOrderAll extends InsertOrderCompositor {
 
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
@@ -60,31 +129,98 @@ class InsertOrderAll extends InsertOrderCompositor {
   }
 
   public function matchesConstraint(DOMElement $element) {
-    
+    return TRUE; // 
   }
 
 }
 
+/**
+ * 
+ */
 class InsertOrderChoice extends InsertOrderCompositor {
 
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
   }
 
-  public function matchesConstraint(DOMElement $element) {
+  public function constraintMet() {
     
+  }
+
+  public function _storeMatch(DOMElement $element) {
+    for ($i = 0; $i < $count; $i++) {
+      foreach ($this->children[$i] as $child) {
+        if ($child->storeMatch($element)) {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  public function storeMatch(DOMElement $element) {
+    if ($this->containsConstraintFor($element)) {
+      if ($this->_storeMatch($element)) {
+        return TRUE;
+      }
+      else if ($this->canCloneChildren()) { // Choice compositor can repeat.
+        $this->cloneChildren(); // Choices can
+      }
+    }
+    return FALSE;
+
+    // 
+    $matches_constraint = FALSE;
+    $count = count($this->children);
+    for ($i = 0; $i < $count; $i++) {
+      foreach ($this->children[$i] as $child) {
+        if ($child->matches($element)) {
+          $matches_constraint = TRUE;
+          if ($child->storeMatch($element)) {
+            return TRUE;
+          }
+        }
+      }
+    }
+    // Contraint was matched but not stored. Try cloning our children if appropriate.
+    if ($matches_constraint && $this->canCloneChildren()) {
+      $this->cloneChildren();
+      return $this->matchesConstraint($element); //repeat;
+    }
+    return FALSE;
   }
 
 }
 
+/**
+ * 
+ */
 class InsertOrderSequence extends InsertOrderCompositor {
 
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
   }
 
+  public function constraintMet() {
+    $count = count($this->children);
+    if ($count < $this->min) {
+      return FALSE;
+    }
+    for ($i = 0; $i < $count; $i++) {
+      foreach ($this->children[$i] as $child) {
+        if (!$child->constraintMet()) {
+          return FALSE;
+        }
+      }
+    }
+    return TRUE;
+  }
+
   public function matchesConstraint(DOMElement $element) {
     foreach ($this->children as $child) {
+      if ($child instanceof InsertOrderElement) {
+        $child->constraintMet();
+      }
       if ($child->matchesConstraint($element)) {
         return TRUE;
       }
@@ -94,6 +230,9 @@ class InsertOrderSequence extends InsertOrderCompositor {
 
 }
 
+/**
+ * 
+ */
 class InsertOrderElement extends InsertOrderNode {
 
   public $name;
@@ -105,13 +244,33 @@ class InsertOrderElement extends InsertOrderNode {
     $this->matches = array();
   }
 
-  public function matchesConstraint(DOMElement $element) {
-    $same_type = $element->localName == $this->name;
+  public function __clone() {
+    $this->matches = array();
+  }
+
+  public function constraintMet() {
     $count = count($this->matches);
-    $within_range = is_numeric($this->max) ? $count < $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
-    if ($same_type && $within_range) {
-      $this->matches[] = $element;
-      return TRUE;
+    $within_min_range = $this->min <= $count;
+    $within_max_range = is_numeric($this->max) ? $count <= $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
+    return $within_min_range && $within_max_range;
+  }
+
+  public function matchesConstraint(DOMElement $element) {
+    return $element->localName == $this->name;
+  }
+
+  public function matches(DOMElement $element) {
+    return $element->localName == $this->name;
+  }
+
+  public function storeMatch(DOMElement $element) {
+    if ($this->matchesConstraint($element)) {
+      $count = count($this->matches);
+      $within_range = is_numeric($this->max) ? $count < $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
+      if ($within_range) {
+        $this->matches[] = $element;
+        return TRUE;
+      }
     }
     return FALSE;
   }
@@ -172,7 +331,7 @@ class InsertOrderMap {
     do {
       $matches = FALSE;
       foreach ($children as $key => $child) {
-        if ($map->matchesConstraint($child)) {
+        if ($map->storeMatch($child)) {
           unset($children[$key]);
           $matches = TRUE;
         }

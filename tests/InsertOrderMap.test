@@ -60,6 +60,8 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $doc = new DOMDocument();
     $doc->load($data_path . '/documents/fgdc.xml');
     $xpath = new DOMXPath($doc);
+
+    // Simple Sequence insert.
     $results = $xpath->query('/metadata/idinfo/citation/citeinfo');
     $parent = $results->item(0);
     $this->assertNotNull($parent, 'Found parent.');
@@ -70,6 +72,10 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $this->assertNotNull($new->parentNode, 'New element was added to the document.');
     $this->assertEqual($new->parentNode, $parent, 'New element has the correct parent.');
     $this->assertTrue($valid, 'Document remains valid after insert.');
+
+    // Simple Choice insert.
+    
+    ///xsd:schema/xsd:element[@name='cntinfo']
   }
 
 }
