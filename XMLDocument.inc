@@ -7,7 +7,7 @@
  *
  */
 module_load_include('inc', 'xml_form_api', 'NodeRegistry');
-module_load_include('inc', 'xml_form_api', 'Schema');
+module_load_include('inc', 'schema_api', 'Schema');
 
 class XMLDocument {
 
@@ -69,7 +69,7 @@ class XMLDocument {
   public function __construct(array &$root, array &$namespaces, $schema, &$xml = NULL) {
     $this->root = $root;
     $this->namespaces = $namespaces;
-    $this->schema = isset($schema) ? new Schema($schema) : NULL;
+    $this->schema = isset($schema) ? new XMLSchema($schema) : NULL;
     $this->xml = $xml;
     $this->registry = new NodeRegistry($this);
     $this->document = $this->createDocument();
