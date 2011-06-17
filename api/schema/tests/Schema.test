@@ -1,0 +1,50 @@
+<?php
+
+// $Id$
+
+/**
+ * @file
+ * 
+ * Unit Tests.
+ */
+
+/**
+ * Unit Tests for the FormControl class.
+ */
+class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
+
+  /**
+   * Get Test info.
+   *
+   * @return array
+   * Properties that are displayed in the test selection form.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Schema Unit Tests.',
+      'description' => 'Unit tests for Schema.inc',
+      'group' => 'Schema API',
+    );
+  }
+
+  /**
+   * setUp() performs any pre-requisite tasks that need to happen. 
+   */
+  public function setUp() {
+    parent::setUp('schema_api');
+    module_load_include('inc', 'schema_api', 'Schema');
+  }
+
+  /**
+   *
+   */
+  public function test() {
+    /**
+     * Basic Create.
+     */
+    $path = drupal_get_path('module', 'schema_api');
+    $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
+    $this->assertNotNull($schema);
+  }
+
+}
