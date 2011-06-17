@@ -1,8 +1,9 @@
 ; $Id$
 name = XML Form Elements
-description = Coming soon.
-package = XML Form API
+description = Defines custom elements to be used in conjunction with XML Forms.
+package = XML Forms
 dependencies[] = xml_form_api
 dependencies[] = jquery_update
 dependencies[] = jquery_ui
+version = 6.x-$Format:%h$-dev
 core = 6.x
