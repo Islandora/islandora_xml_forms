@@ -17,6 +17,7 @@
     </properties>
     <form>
         <properties>
+            <type>form</type>
             <tree>true</tree>
         </properties>
         <children>

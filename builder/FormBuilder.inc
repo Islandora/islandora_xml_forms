@@ -222,16 +222,16 @@ class FormBuilder {
 
   public static function TransformPropertiesToJSON($form_name) {
     if (self::HasFormDefinition($form_name)) {
-      module_load_include('inc', 'xml_form_api', 'FormDefinition');
-      $form_definition = FormDefinition::createFromXMLDefiniton(self::GetFormDefinition($form_name));
-      $document_properties = $form_definition->properties->document;
-      $namespaces = isset($document_properties->namespaces) ? $document_properties->namespaces : array();
+      module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+      $properties = XMLFormDefinition::GetFormProperties(self::GetFormDefinition($form_name));
+      $document_properties = $properties['document'];
+      $namespaces = isset($document_properties['namespaces']) ? $document_properties['namespaces'] : array();
       $properties = array(
-        'name' => $document_properties->name,
-        'prefix' => $document_properties->prefix,
-        'uri' => $document_properties->uri,
+        'name' => $document_properties['root']['local_name'],
+        'prefix' => $document_properties['root']['prefix'],
+        'uri' => $document_properties['root']['uri'],
         'namespaces' => $namespaces,
-        'schema' => $document_properties->schema,
+        'schema' => $document_properties['schema']
       );
       return json_encode(array($properties));
     }
@@ -242,17 +242,16 @@ class FormBuilder {
 
   public static function TransformElementsToJSON($form_name) {
     if (self::HasFormDefinition($form_name)) {
-      module_load_include('inc', 'xml_form_api', 'FormDefinition');
-      $form_definition = FormDefinition::createFromXMLDefiniton(self::GetFormDefinition($form_name));
-      $root = $form_definition->elements->root;
+      module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+      $root = XMLFormDefinition::GetDrupalFormDefinition(self::GetFormDefinition($form_name));
       $elements = array(
         'key' => 'elements',
         'text' => 'Elements',
         'children' => array()
       );
-      foreach ($root as $element) {
-        $elements['children'][] = self::TransformElement($element);
-      }
+      $form_element = new FormElement($root);
+      $form_element['#type'] = 'form';
+      $elements['children'][] = self::TransformElement($form_element);
       return json_encode(array('expanded' => true, 'children' => $elements));
     }
     else {
@@ -265,7 +264,7 @@ class FormBuilder {
     // Form Controls.
     foreach ($element->controls as $name => $control) {
       $name = str_replace('#', '', $name); // Remove the Hash.
-      $value = $control->value;
+      $value = $control;
       if (is_array($value)) {
         $value = self::TransformArray($value);
       }
@@ -273,10 +272,10 @@ class FormBuilder {
     }
     // Children
     $output['children'] = array();
-    foreach ($element as $child) {
+    foreach ($element->children as $child) {
       $output['children'][] = self::TransformElement($child);
     }
-    $key = $element->key;
+    $key = $element->getIndex();
     $type = $element['#type'];
     $output['key'] = $key;
     $output['text'] = "{$key} ({$type})";

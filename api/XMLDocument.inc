@@ -7,7 +7,7 @@
  *
  */
 module_load_include('inc', 'xml_form_api', 'NodeRegistry');
-module_load_include('inc', 'schema_api', 'Schema');
+module_load_include('inc', 'xml_schema_api', 'Schema');
 
 class XMLDocument {
 

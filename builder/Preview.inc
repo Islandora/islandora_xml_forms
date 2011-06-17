@@ -20,13 +20,18 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
     drupal_not_found();
     exit();
   }
-  module_load_include('inc', 'xml_form_api', 'Form');
-  $form = new Form($form_state);
-  if (!$form->isInitialized()) {
+  module_load_include('inc', 'xml_form_api', 'XMLForm');
+  $xml_form = new XMLForm($form_state);
+  if (!$xml_form->isInitialized()) { // Was initialized from storage.
+    module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+    module_load_include('inc', 'xml_form_api', 'XMLDocument');
     $xml_definition = FormBuilder::GetFormDefinition($form_name);
-    $form_definition = FormDefinition::createFromXMLDefiniton($xml_definition);
-    $document = new Document($form_definition->properties->document);
-    $form->initialize($form_definition, $document);
+    $form = XMLFormDefinition::GetDrupalFormDefinition($xml_definition);
+    $properties = XMLFormDefinition::GetFormProperties($xml_definition);
+    $properties = $properties['document'];
+    $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema']);
+    $xml_form->initialize($form, $document);
   }
-  return $form->toDrupalForm();  
+  $output = $xml_form->toArray();
+  return $output;
 }

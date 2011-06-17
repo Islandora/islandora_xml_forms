@@ -49,10 +49,6 @@ Ext.formbuilder.createPropertiesForm = function() {
                 name: 'schema',
                 fieldLabel: 'Name',
                 anchor: '100%'
-            },{
-                xtype: 'textfield',
-                fieldLabel: 'URI',
-                anchor: '100%'
             }]
         },{
             xtype: 'formgrid',
