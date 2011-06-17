@@ -1,0 +1,8 @@
+; $Id$
+name = XML Schema API
+description = Provides functions and classes that allow for effective use of information stored within XML Schema's.
+files[] = tests/Schema.test
+dependencies[] = php_lib
+package = XML Forms
+version = 6.x-$Format:%h$-dev
+core = 6.x
