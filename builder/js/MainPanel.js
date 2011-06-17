@@ -41,12 +41,12 @@ Ext.formbuilder.createMainPanel = function(children){
                 text: 'Save',
                 handler: function() {
                     var url = window.location.pathname + '/save';
+                    var properties_record = Ext.formbuilder.propertiesStore.getAt(0);
                     var data = {
-                        properties: {}, 
+                        properties: properties_record.data, 
                         elements: []
                     };
-                    
-                    var root = Ext.formbuilder.elementStore.getRootNode().getChildAt(0);
+                    var root = Ext.formbuilder.elementStore.getRootNode();//.getChildAt(0);
                     root.eachChild(function(child) {
                         var elements = this;
                         elements.push(child.data);
@@ -54,6 +54,7 @@ Ext.formbuilder.createMainPanel = function(children){
                         this[last].elements = [];
                         child.eachChild(arguments.callee, elements[last].elements);
                     }, data.elements);
+
                     Ext.Ajax.request({
                         url: url,
                         params: {

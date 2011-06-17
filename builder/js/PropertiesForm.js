@@ -15,7 +15,39 @@ Ext.formbuilder.createPropertiesForm = function() {
         buttons: [{
             text: 'Save',
             handler: function() {
-                alert("Saved");
+                var form = this.up('form').getForm();
+                if (form.isValid()) {
+                    var record = form.getRecord();
+                    // Start
+                    record.beginEdit();
+                    // Normal form fields
+                    var values = form.getValues();
+                    for(var i in values) {
+                        record.set(i, values[i]);
+                    }
+                    // Grids
+                    var toArray = function(store) {
+                        var output = [];
+                        store.each(function(item){
+                            item = item.data;
+                            if(item.key) {
+                                output.push({
+                                    prefix: item.key, 
+                                    uri: item.value
+                                });
+                            }
+                            else {
+                                output.push([item.value]);
+                            }
+                        });
+                        return output;
+                    }
+                    var store = Ext.getCmp('namespaces').store;
+                    record.set('namespaces', toArray(store));
+                    // End
+                    record.endEdit();
+                }
+                
             }
         }],
         items:  [{
@@ -54,27 +86,16 @@ Ext.formbuilder.createPropertiesForm = function() {
             xtype: 'formgrid',
             title: 'Namespaces',
             id: 'namespaces',
+            name: 'namespaces',
             height: 300,
-            store: new Ext.data.Store({
-                fields: ['prefix', 'uri'],
-                proxy: {
-                    type: 'memory',
-                    reader: {
-                        type: 'json'
-                    }
-                },
-                data: [{
-                    prefix: 'test prefix', 
-                    uri: 'test uri'
-                }]
-            }),
+            store: this.createMapStore(),
             modelInitTmpl: {
-                prefix: '', 
-                uri: ''
+                key: '', 
+                value: ''
             },
             columns: [{
                 xtype: 'gridcolumn',
-                dataIndex: 'prefix',
+                dataIndex: 'key',
                 header: 'Prefix',
                 sortable: true,
                 width: 150,
@@ -83,7 +104,7 @@ Ext.formbuilder.createPropertiesForm = function() {
                 }
             },{
                 xtype: 'gridcolumn',
-                dataIndex: 'uri',
+                dataIndex: 'value',
                 header: 'URI',
                 sortable: true,
                 flex: 1,

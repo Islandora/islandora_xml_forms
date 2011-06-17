@@ -17,9 +17,6 @@ class JSONForm {
    * @var stdClass
    */
   protected $json;
-  protected $documentProperties;
-  protected $properties;
-  protected $elements;
   protected $definition;
 
   /**
@@ -27,43 +24,68 @@ class JSONForm {
    */
   public function __construct($form_name) {
     $this->json = json_decode($_POST['data']);
-    $this->properties = $this->createFormProperties();
-    $this->elements = $this->createFormElements();
-    $this->definition = $this->createFormDefinition($this->properties, $this->elements);
+    $properties = $this->createProperties();
+    print_r($properties);
+    exit();
+    $form = $this->createDrupalForm();
+    $this->definition = XMLFormDefinition::Create($properties, $form);
   }
 
   /**
    *
    * @return FormProperties 
    */
-  private function createFormProperties() {
-    module_load_include('inc', 'xml_form_api', 'FormProperties');
-    $this->documentProperties = $this->createDocumentProperties();
-    return new FormProperties($this->documentProperties);
-  }
-
-  /**
-   *
-   * @return DocumentProperties 
-   */
-  private function createDocumentProperties() {
-    module_load_include('inc', 'xml_form_api', 'DocumentProperties');
+  private function createProperties() {
     $properties = $this->json->properties;
-    $prefix = null; //$properties->prefix;
-    $name = "mods"; //$properties->name;
-    $uri = null; //$properties->uri;
-    $schema = null; //$properties->schema;
-    $namespaces = array(); //$properties->namespaces;
-    return new DocumentProperties($prefix, $name, $uri, $schema, $namespaces);
+    print_r($properties);
+    $namespaces = $this->convertStdClassToArray($properties->namespaces);
+    return array(
+      'document' => array(
+        'root' => array(
+          'prefix' => $properties->prefix,
+          'local_name' => $properties->name,
+          'uri' => $properties->uri
+        ),
+        'namespaces' => $namespaces,
+        'schema' => $properties->schema
+    ));
   }
 
   /**
    *
    * @return FormElements
    */
-  private function createFormElements() {
-    $elements = $this->createElements($this->json->elements);
-    return new FormElements(Form::ROOT, $elements);
+  private function createDrupalForm() {
+    $elements = $this->json->elements;
+    $output = array();
+    foreach ($elements as $element) {
+      list($key, $value) = $this->createDrupalFormElement($element);
+      if (isset($key)) {
+        $output[$key] = $value;
+      }
+      else {
+        $output[] = $value;
+      }
+    }
+    return $output;
+  }
+
+  /**
+   * 
+   */
+  private function createDrupalFormElement($element) {
+    $key = isset($element->key) ? $element->key : NULL;
+    $controls = $this->getDrupalFormControls($element);
+    $children = $this->getDrupalFormChildElements($element->elements);
+    return array($key, array_merge($controls, $children));
+  }
+
+  private function getDrupalFormControls($element) {
+    
+  }
+
+  private function getDrupalFormChildElements($element) {
+    
   }
 
   /**
@@ -86,6 +108,8 @@ class JSONForm {
    */
   private function createElement($element) {
     $key = isset($element->key) ? $element->key : NULL;
+
+    exit();
     $controls = $this->createFormControls($element);
     $actions = $this->createActions($element);
     $children = $this->createElements($element->elements);
@@ -147,19 +171,30 @@ class JSONForm {
       'value' => array('validate' => 'stringIsNotEmpty'),
       'weight' => array(),
       'user_data' => array('convert' => 'convertFormControlToMap', 'validate' => 'arrayIsNotEmpty'),
+      'actions' => array('convert' => 'convertFormControlToMap', 'validate' => 'arrayIsNotEmpty'),
     );
-    module_load_include('inc', 'xml_form_api', 'FormControl');
-    $form_controls = new FormControls();
+    $form_controls = array();
     foreach ($controls as $control => $action) {
       if (isset($element->$control)) {
         $name = "#$control";
-        $value = isset($action['convert']) ? call_user_func(array($this, $action['convert']), $element->$control) : $element->$control;
+        $value = $this->convertStdClassToArray($element->$control);
         if (empty($action['validate']) || call_user_func(array($this, $action['validate']), $value)) {
-          $form_controls[$name] = new FormControl($name, $value);
+          $form_controls[$name] = $value;
         }
       }
     }
     return $form_controls;
+  }
+
+  function convertStdClassToArray($object) {
+    $array = array();
+    if (is_object($object) || is_array($object)) {
+      foreach ($object as $key => $value) {
+        $array[$key] = is_object($value) ? $this->convertStdClassToArray($value) : $value;
+      }
+      return $array;
+    }
+    return $object;
   }
 
   /**
@@ -242,23 +277,12 @@ class JSONForm {
   }
 
   /**
-   *
-   * @param FormProperties $properties
-   * @param FormElements $elements 
-   */
-  private function createFormDefinition(FormProperties $properties, FormElements $elements) {
-    return new FormDefinition($properties, $elements);
-  }
-
-  /**
    * Get the form definition ready for storage.
    * 
    * @return DOMDocument 
    */
   public function getFormDefinition() {
-    $doc = new DOMDocument();
-    $doc->loadXML($this->definition->asXML());
-    return $doc;
+    return $this->definition;
   }
 
 }

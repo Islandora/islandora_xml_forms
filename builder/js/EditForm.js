@@ -771,7 +771,7 @@ Ext.app = (function() {
                                 text: 'Delete',
                                 disabled: true,
                                 itemId: 'delete',
-                                scope: this,
+                                scope: this,s
                                 handler: this.onDeleteClick
                             }]
                         }]

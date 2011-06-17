@@ -46,6 +46,34 @@ class XMLFormDefinition {
   }
 
   /**
+   * Create
+   */
+  public static function Create(array $properties, array $form) {
+    $definition = new SimpleXMLElement('<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></definition>');
+    self::AddPropertiesToDefinition($definition, $properties);
+    self::AddFormToDefinition($definition, new FormElement($form));
+    return dom_import_simplexml($definition);
+  }
+
+  /**
+   * 
+   * @param SimpleXMLElement $definition 
+   * @param array $properties
+   */
+  private static function AddPropertiesToDefinition(SimpleXMLElement $definition, array &$properties) {
+    
+  }
+
+  /**
+   *
+   * @param SimpleXMLElement $definition
+   * @param FormElement $form
+   */
+  private static function AddFormToDefinition(SimpleXMLElement $definition, FormElement $form) {
+    
+  }
+
+  /**
    * Get form properties.
    * 
    * @param sting $xml_definition
@@ -87,7 +115,7 @@ class XMLFormDefinition {
    * 
    * @return array
    */
-  public static function GetDrupalFormDefinition(&$xml_definition) {
+  public static function GetDrupalForm(&$xml_definition) {
     if (!self::isValid($xml_definition)) {
       throw new Exception('The given XMLFormDefinition is invalid.');
     }

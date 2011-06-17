@@ -243,15 +243,18 @@ class FormBuilder {
   public static function TransformElementsToJSON($form_name) {
     if (self::HasFormDefinition($form_name)) {
       module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-      $root = XMLFormDefinition::GetDrupalFormDefinition(self::GetFormDefinition($form_name));
+      $root = XMLFormDefinition::GetDrupalForm(self::GetFormDefinition($form_name));
       $elements = array(
-        'key' => 'elements',
+        'key' => 'Root',
         'text' => 'Elements',
         'children' => array()
       );
       $form_element = new FormElement($root);
       $form_element['#type'] = 'form';
-      $elements['children'][] = self::TransformElement($form_element);
+      //$elements['children'][] = self::TransformElement($form_element);
+      $elements = self::TransformElement($form_element);
+      $elements['key'] = 'Root';
+      $elements['text'] = "Form ({$elements['type']})";
       return json_encode(array('expanded' => true, 'children' => $elements));
     }
     else {

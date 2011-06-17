@@ -86,7 +86,7 @@ function xml_form(&$form_state) {
     module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
     module_load_include('inc', 'xml_form_api', 'XMLDocument');
     $xml = getTestDefinition();
-    $form = XMLFormDefinition::GetDrupalFormDefinition($xml);
+    $form = XMLFormDefinition::GetDrupalForm($xml);
     $properties = XMLFormDefinition::GetFormProperties($xml);
     $properties = $properties['document'];
     $test = getTestDocument();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../XMLFormDefinition.xsd">
+<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../XMLFormDefinition.xsd">
     <properties>
         <document>
             <root>
@@ -21,1120 +22,1127 @@
             <tree>true</tree>
         </properties>
         <children>
-            <element name="idinfo">
+            <element name="root">
                 <properties>
-                    <title>idinfo</title>
-                    <type>fieldset</type>
-                    <actions>
-                        <create>
-                            <path>/metadata/</path>
-                            <context>document</context>
-                            <schema>/xsd:schema/xsd:complexType[@name='metadataType']/xsd:sequence/xsd:element[@ref='idinfo']</schema>
-                            <type>element</type>
-                            <value>idinfo</value>
-                        </create>
-                        <read>
-                            <path>/metadata/idinfo</path>
-                            <context>document</context>
-                        </read>
-                    </actions>
+                    <type>form</type>
+                    <tree>true</tree>
                 </properties>
                 <children>
-                    <element name="citation">
+                    <element name="idinfo">
                         <properties>
-                            <title>citation</title>
+                            <title>idinfo</title>
                             <type>fieldset</type>
                             <actions>
                                 <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='citation']</schema>
+                                    <path>/metadata/</path>
+                                    <context>document</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='metadataType']/xsd:sequence/xsd:element[@ref='idinfo']</schema>
                                     <type>element</type>
-                                    <value>citation</value>
+                                    <value>idinfo</value>
                                 </create>
                                 <read>
-                                    <path>citation</path>
-                                    <context>parent</context>
+                                    <path>/metadata/idinfo</path>
+                                    <context>document</context>
                                 </read>
                             </actions>
                         </properties>
                         <children>
-                            <element name="citeinfo">
+                            <element name="citation">
                                 <properties>
-                                    <title>citeinfo</title>
+                                    <title>citation</title>
                                     <type>fieldset</type>
                                     <actions>
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='citationType']/xsd:sequence/xsd:element[@ref='citeinfo']</schema>
+                                            <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='citation']</schema>
                                             <type>element</type>
-                                            <value>citeinfo</value>
+                                            <value>citation</value>
                                         </create>
                                         <read>
-                                            <path>citeinfo</path>
+                                            <path>citation</path>
                                             <context>parent</context>
                                         </read>
                                     </actions>
                                 </properties>
                                 <children>
-                                    <element name="origin">
+                                    <element name="citeinfo">
                                         <properties>
-                                            <title>origin</title>
-                                            <type>tags</type>
-                                        </properties>
-                                        <children>
-                                            <element>
-                                                <properties>
-                                                    <type>tag</type>
-                                                    <actions>
-                                                        <create>
-                                                            <path>self::node()</path>
-                                                            <context>parent</context>
-                                                            <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='origin']</schema>
-                                                            <type>element</type>
-                                                            <value>origin</value>
-                                                        </create>
-                                                        <read>
-                                                            <path>origin</path>
-                                                            <context>parent</context>
-                                                        </read>
-                                                        <update>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </update>
-                                                        <delete>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </delete>
-                                                    </actions>
-                                                </properties>
-                                            </element>
-                                        </children>
-                                    </element>
-                                    <element name="pubdate">
-                                        <properties>
-                                            <title>pubdate</title>
-                                            <type>textfield</type>
-                                            <actions>
-                                                <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='pubdate']</schema>
-                                                    <type>element</type>
-                                                    <value>pubdate</value>
-                                                </create>
-                                                <read>
-                                                    <path>pubdate</path>
-                                                    <context>parent</context>
-                                                </read>
-                                                <update>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </update>
-                                                <delete>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </delete>
-                                            </actions>
-                                        </properties>
-                                    </element>
-                                    <element name="title">
-                                        <properties>
-                                            <title>title</title>
-                                            <type>textfield</type>
-                                            <actions>
-                                                <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='title']</schema>
-                                                    <type>element</type>
-                                                    <value>title</value>
-                                                </create>
-                                                <read>
-                                                    <path>title</path>
-                                                    <context>parent</context>
-                                                </read>
-                                                <update>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </update>
-                                                <delete>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </delete>
-                                            </actions>
-                                        </properties>
-                                    </element>
-                                </children>
-                            </element>
-                        </children>
-                    </element>
-                    <element name="descript">
-                        <properties>
-                            <title>descript</title>
-                            <type>fieldset</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='descript']</schema>
-                                    <type>element</type>
-                                    <value>descript</value>
-                                </create>
-                                <read>
-                                    <path>descript</path>
-                                    <context>parent</context>
-                                </read>
-                            </actions>
-                        </properties>
-                        <children>
-                            <element name="abstract">
-                                <properties>
-                                    <title>abstract</title>
-                                    <type>textfield</type>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='descriptType']/xsd:sequence/xsd:element[@ref='abstract']</schema>
-                                            <type>element</type>
-                                            <value>abstract</value>
-                                        </create>
-                                        <read>
-                                            <path>abstract</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                        <delete>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </delete>
-                                    </actions>
-                                </properties>
-                            </element>
-                            <element name="purpose">
-                                <properties>
-                                    <title>purpose</title>
-                                    <type>textfield</type>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='descriptType']/xsd:sequence/xsd:element[@ref='purpose']</schema>
-                                            <type>element</type>
-                                            <value>purpose</value>
-                                        </create>
-                                        <read>
-                                            <path>purpose</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                        <delete>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </delete>
-                                    </actions>
-                                </properties>
-                            </element>
-                        </children>
-                    </element>
-                    <element name="timeperd">
-                        <properties>
-                            <title>timeperd</title>
-                            <type>fieldset</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='timeperd']</schema>
-                                    <type>element</type>
-                                    <value>timeperd</value>
-                                </create>
-                                <read>
-                                    <path>timeperd</path>
-                                    <context>parent</context>
-                                </read>
-                            </actions>
-                        </properties>
-                        <children>
-                            <element name="timeinfo">
-                                <properties>
-                                    <title>timeinfo</title>
-                                    <type>fieldset</type>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='timeperdType']/xsd:sequence/xsd:element[@ref='timeinfo']</schema>
-                                            <type>element</type>
-                                            <value>timeinfo</value>
-                                        </create>
-                                        <read>
-                                            <path>timeinfo</path>
-                                            <context>parent</context>
-                                        </read>
-                                    </actions>
-                                </properties>
-                                <children>
-                                    <element name="sngdate">
-                                        <properties>
-                                            <title>sngdate</title>
+                                            <title>citeinfo</title>
                                             <type>fieldset</type>
                                             <actions>
                                                 <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='timeinfoType']/xsd:choice/xsd:element[@ref='sngdate']</schema>
-                                                    <type>element</type>
-                                                    <value>sngdate</value>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='citationType']/xsd:sequence/xsd:element[@ref='citeinfo']</schema>
+                                                  <type>element</type>
+                                                  <value>citeinfo</value>
                                                 </create>
                                                 <read>
-                                                    <path>sngdate</path>
-                                                    <context>parent</context>
+                                                  <path>citeinfo</path>
+                                                  <context>parent</context>
                                                 </read>
                                             </actions>
                                         </properties>
                                         <children>
-                                            <element name="caldate">
+                                            <element name="origin">
                                                 <properties>
-                                                    <title>caldate</title>
-                                                    <type>textfield</type>
-                                                    <actions>
-                                                        <create>
-                                                            <path>self::node()</path>
-                                                            <context>parent</context>
-                                                            <schema>/xsd:schema/xsd:complexType[@name='sngdateType']/xsd:sequence/xsd:element[@ref='caldate']</schema>
-                                                            <type>element</type>
-                                                            <value>caldate</value>
-                                                        </create>
-                                                        <read>
-                                                            <path>caldate</path>
-                                                            <context>parent</context>
-                                                        </read>
-                                                        <update>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </update>
-                                                        <delete>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </delete>
-                                                    </actions>
+                                                  <title>origin</title>
+                                                  <type>tags</type>
+                                                </properties>
+                                                <children>
+                                                  <element>
+                                                  <properties>
+                                                  <type>tag</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='origin']</schema>
+                                                  <type>element</type>
+                                                  <value>origin</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>origin</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                </children>
+                                            </element>
+                                            <element name="pubdate">
+                                                <properties>
+                                                  <title>pubdate</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='pubdate']</schema>
+                                                  <type>element</type>
+                                                  <value>pubdate</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>pubdate</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                </properties>
+                                            </element>
+                                            <element name="title">
+                                                <properties>
+                                                  <title>title</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='citeinfoType']/xsd:sequence/xsd:element[@ref='title']</schema>
+                                                  <type>element</type>
+                                                  <value>title</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>title</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
                                                 </properties>
                                             </element>
                                         </children>
                                     </element>
                                 </children>
                             </element>
-                            <element name="current">
+                            <element name="descript">
                                 <properties>
-                                    <title>current</title>
-                                    <type>textfield</type>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='timeperdType']/xsd:sequence/xsd:element[@ref='current']</schema>
-                                            <type>element</type>
-                                            <value>current</value>
-                                        </create>
-                                        <read>
-                                            <path>current</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                        <delete>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </delete>
-                                    </actions>
-                                </properties>
-                            </element>
-                        </children>
-                    </element>
-                    <element name="status">
-                        <properties>
-                            <title>status</title>
-                            <type>fieldset</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='status']</schema>
-                                    <type>element</type>
-                                    <value>status</value>
-                                </create>
-                                <read>
-                                    <path>status</path>
-                                    <context>parent</context>
-                                </read>
-                            </actions>
-                        </properties>
-                        <children>
-                            <element name="progress">
-                                <properties>
-                                    <title>progress</title>
-                                    <type>select</type>
-                                    <options>
-                                        <option key="Complete">Complete</option>
-                                        <option key="In Work">In Work</option>
-                                        <option key="Planned">Planned</option>
-                                    </options>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='statusType']/xsd:sequence/xsd:element[@ref='progress']</schema>
-                                            <type>element</type>
-                                            <value>progress</value>
-                                        </create>
-                                        <read>
-                                            <path>progress</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                        <delete>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </delete>
-                                    </actions>
-                                </properties>
-                            </element>
-                            <element name="update">
-                                <properties>
-                                    <title>update</title>
-                                    <type>textfield</type>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='statusType']/xsd:sequence/xsd:element[@ref='update']</schema>
-                                            <type>element</type>
-                                            <value>update</value>
-                                        </create>
-                                        <read>
-                                            <path>update</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                        <delete>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </delete>
-                                    </actions>
-                                </properties>
-                            </element>
-                        </children>
-                    </element>
-                    <element name="spdom">
-                        <properties>
-                            <title>spdom</title>
-                            <type>fieldset</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='spdom']</schema>
-                                    <type>element</type>
-                                    <value>spdom</value>
-                                </create>
-                                <read>
-                                    <path>spdom</path>
-                                    <context>parent</context>
-                                </read>
-                            </actions>
-                        </properties>
-                        <children>
-                            <element name="bounding">
-                                <properties>
-                                    <title>bounding</title>
+                                    <title>descript</title>
                                     <type>fieldset</type>
                                     <actions>
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='spdomTy’]/xsd:sequence/xsd:element[@ref='bounding']</schema>
+                                            <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='descript']</schema>
                                             <type>element</type>
-                                            <value>bounding</value>
+                                            <value>descript</value>
                                         </create>
                                         <read>
-                                            <path>bounding</path>
+                                            <path>descript</path>
                                             <context>parent</context>
                                         </read>
                                     </actions>
                                 </properties>
                                 <children>
-                                    <element name="westbc">
+                                    <element name="abstract">
                                         <properties>
-                                            <title>westbc</title>
+                                            <title>abstract</title>
                                             <type>textfield</type>
                                             <actions>
                                                 <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='westbc']</schema>
-                                                    <type>element</type>
-                                                    <value>westbc</value>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='descriptType']/xsd:sequence/xsd:element[@ref='abstract']</schema>
+                                                  <type>element</type>
+                                                  <value>abstract</value>
                                                 </create>
                                                 <read>
-                                                    <path>westbc</path>
-                                                    <context>parent</context>
+                                                  <path>abstract</path>
+                                                  <context>parent</context>
                                                 </read>
                                                 <update>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
                                                 </update>
                                                 <delete>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
                                                 </delete>
                                             </actions>
                                         </properties>
                                     </element>
-                                    <element name="eastbc">
+                                    <element name="purpose">
                                         <properties>
-                                            <title>eastbc</title>
+                                            <title>purpose</title>
                                             <type>textfield</type>
                                             <actions>
                                                 <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='eastbc']</schema>
-                                                    <type>element</type>
-                                                    <value>eastbc</value>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='descriptType']/xsd:sequence/xsd:element[@ref='purpose']</schema>
+                                                  <type>element</type>
+                                                  <value>purpose</value>
                                                 </create>
                                                 <read>
-                                                    <path>eastbc</path>
-                                                    <context>parent</context>
+                                                  <path>purpose</path>
+                                                  <context>parent</context>
                                                 </read>
                                                 <update>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
                                                 </update>
                                                 <delete>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </delete>
-                                            </actions>
-                                        </properties>
-                                    </element>
-                                    <element name="northbc">
-                                        <properties>
-                                            <title>northbc</title>
-                                            <type>textfield</type>
-                                            <actions>
-                                                <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='northbc']</schema>
-                                                    <type>element</type>
-                                                    <value>northbc</value>
-                                                </create>
-                                                <read>
-                                                    <path>northbc</path>
-                                                    <context>parent</context>
-                                                </read>
-                                                <update>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </update>
-                                                <delete>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </delete>
-                                            </actions>
-                                        </properties>
-                                    </element>
-                                    <element name="southbc">
-                                        <properties>
-                                            <title>southbc</title>
-                                            <type>textfield</type>
-                                            <actions>
-                                                <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='southbc']</schema>
-                                                    <type>element</type>
-                                                    <value>southbc</value>
-                                                </create>
-                                                <read>
-                                                    <path>southbc</path>
-                                                    <context>parent</context>
-                                                </read>
-                                                <update>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </update>
-                                                <delete>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
                                                 </delete>
                                             </actions>
                                         </properties>
                                     </element>
                                 </children>
                             </element>
-                        </children>
-                    </element>
-                    <element name="keywords">
-                        <properties>
-                            <title>keywords</title>
-                            <type>fieldset</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='keywords']</schema>
-                                    <type>element</type>
-                                    <value>keywords</value>
-                                </create>
-                                <read>
-                                    <path>keywords</path>
-                                    <context>parent</context>
-                                </read>
-                            </actions>
-                        </properties>
-                        <children>
-                            <element name="theme">
+                            <element name="timeperd">
                                 <properties>
-                                    <title>theme</title>
-                                    <type>tabs</type>
+                                    <title>timeperd</title>
+                                    <type>fieldset</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='timeperd']</schema>
+                                            <type>element</type>
+                                            <value>timeperd</value>
+                                        </create>
+                                        <read>
+                                            <path>timeperd</path>
+                                            <context>parent</context>
+                                        </read>
+                                    </actions>
                                 </properties>
                                 <children>
-                                    <element>
+                                    <element name="timeinfo">
                                         <properties>
-                                            <type>tabpanel</type>
+                                            <title>timeinfo</title>
+                                            <type>fieldset</type>
                                             <actions>
                                                 <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='keywordsType']/xsd:sequence/xsd:element[@ref='theme']</schema>
-                                                    <type>element</type>
-                                                    <value>tabpanel</value>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='timeperdType']/xsd:sequence/xsd:element[@ref='timeinfo']</schema>
+                                                  <type>element</type>
+                                                  <value>timeinfo</value>
                                                 </create>
                                                 <read>
-                                                    <path>theme</path>
-                                                    <context>parent</context>
+                                                  <path>timeinfo</path>
+                                                  <context>parent</context>
                                                 </read>
-                                                <delete>
-                                                    <path>self::node()</path>
-                                                    <context>self</context>
-                                                </delete>
                                             </actions>
                                         </properties>
                                         <children>
-                                            <element name="themekt">
+                                            <element name="sngdate">
                                                 <properties>
-                                                    <title>themekt</title>
-                                                    <type>textfield</type>
-                                                    <actions>
-                                                        <create>
-                                                            <path>self::node()</path>
-                                                            <context>parent</context>
-                                                            <schema>/xsd:schema/xsd:complexType[@name='themeType']/xsd:sequence/xsd:element[@ref='themekt']</schema>
-                                                            <type>element</type>
-                                                            <value>themekt</value>
-                                                        </create>
-                                                        <read>
-                                                            <path>themekt</path>
-                                                            <context>parent</context>
-                                                        </read>
-                                                        <update>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </update>
-                                                        <delete>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </delete>
-                                                    </actions>
-                                                </properties>
-                                            </element>
-                                            <element name="themekey">
-                                                <properties>
-                                                    <title>themekey</title>
-                                                    <type>tags</type>
+                                                  <title>sngdate</title>
+                                                  <type>fieldset</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='timeinfoType']/xsd:choice/xsd:element[@ref='sngdate']</schema>
+                                                  <type>element</type>
+                                                  <value>sngdate</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>sngdate</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  </actions>
                                                 </properties>
                                                 <children>
-                                                    <element>
-                                                        <properties>
-                                                            <type>tag</type>
-                                                            <actions>
-                                                                <create>
-                                                                    <path>self::node()</path>
-                                                                    <context>parent</context>
-                                                                    <schema>/xsd:schema/xsd:complexType[@name='themeType']/xsd:sequence/xsd:element[@ref='themekey']</schema>
-                                                                    <type>element</type>
-                                                                    <value>themekey</value>
-                                                                </create>
-                                                                <read>
-                                                                    <path>themekey</path>
-                                                                    <context>parent</context>
-                                                                </read>
-                                                                <update>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </update>
-                                                                <delete>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </delete>
-                                                            </actions>
-                                                        </properties>
-                                                    </element>
+                                                  <element name="caldate">
+                                                  <properties>
+                                                  <title>caldate</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='sngdateType']/xsd:sequence/xsd:element[@ref='caldate']</schema>
+                                                  <type>element</type>
+                                                  <value>caldate</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>caldate</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
                                                 </children>
                                             </element>
                                         </children>
                                     </element>
+                                    <element name="current">
+                                        <properties>
+                                            <title>current</title>
+                                            <type>textfield</type>
+                                            <actions>
+                                                <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='timeperdType']/xsd:sequence/xsd:element[@ref='current']</schema>
+                                                  <type>element</type>
+                                                  <value>current</value>
+                                                </create>
+                                                <read>
+                                                  <path>current</path>
+                                                  <context>parent</context>
+                                                </read>
+                                                <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                </update>
+                                                <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                </delete>
+                                            </actions>
+                                        </properties>
+                                    </element>
                                 </children>
                             </element>
-                        </children>
-                    </element>
-                    <element name="accconst">
-                        <properties>
-                            <title>accconst</title>
-                            <type>textfield</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='accconst']</schema>
-                                    <type>element</type>
-                                    <value>accconst</value>
-                                </create>
-                                <read>
-                                    <path>accconst</path>
-                                    <context>parent</context>
-                                </read>
-                                <update>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </update>
-                                <delete>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </delete>
-                            </actions>
-                        </properties>
-                    </element>
-                    <element name="useconst">
-                        <properties>
-                            <title>useconst</title>
-                            <type>textfield</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='status']</schema>
-                                    <type>element</type>
-                                    <value>useconst</value>
-                                </create>
-                                <read>
-                                    <path>useconst</path>
-                                    <context>parent</context>
-                                </read>
-                                <update>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </update>
-                                <delete>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </delete>
-                            </actions>
-                        </properties>
-                    </element>
-                </children>
-            </element>
-            <element name="metainfo">
-                <properties>
-                    <title>metainfo</title>
-                    <type>fieldset</type>
-                    <actions>
-                        <create>
-                            <path>/metadata</path>
-                            <context>document</context>
-                            <schema>/xsd:schema/xsd:complexType[@name='metadataType']/xsd:sequence/xsd:element[@ref='metainfo']</schema>
-                            <type>element</type>
-                            <value>metainfo</value>
-                        </create>
-                        <read>
-                            <path>/metadata/metainfo</path>
-                            <context>document</context>
-                        </read>
-                    </actions>
-                </properties>
-                <children>
-                    <element name="metd">
-                        <properties>
-                            <title>metd</title>
-                            <type>textfield</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metd']</schema>
-                                    <type>element</type>
-                                    <value>metd</value>
-                                </create>
-                                <read>
-                                    <path>metd</path>
-                                    <context>parent</context>
-                                </read>
-                                <update>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </update>
-                                <delete>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </delete>
-                            </actions>
-                        </properties>
-                    </element>
-                    <element name="metc">
-                        <properties>
-                            <title>metc</title>
-                            <type>fieldset</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metc']</schema>
-                                    <type>element</type>
-                                    <value>metc</value>
-                                </create>
-                                <read>
-                                    <path>metc</path>
-                                    <context>parent</context>
-                                </read>
-                            </actions>
-                        </properties>
-                        <children>
-                            <element name="cntinfo">
+                            <element name="status">
                                 <properties>
-                                    <title>cntinfo</title>
+                                    <title>status</title>
                                     <type>fieldset</type>
                                     <actions>
                                         <create>
                                             <path>self::node()</path>
                                             <context>parent</context>
-                                            <schema>/xsd:schema/xsd:complexType[@name='metcType']/xsd:sequence/xsd:element[@ref='cntinfo']</schema>
+                                            <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='status']</schema>
                                             <type>element</type>
-                                            <value>cntinfo</value>
+                                            <value>status</value>
                                         </create>
                                         <read>
-                                            <path>cntinfo</path>
+                                            <path>status</path>
                                             <context>parent</context>
                                         </read>
                                     </actions>
                                 </properties>
                                 <children>
-                                    <element name="cntperp">
+                                    <element name="progress">
                                         <properties>
-                                            <title>cntperp</title>
+                                            <title>progress</title>
+                                            <type>select</type>
+                                            <options>
+                                                <option key="Complete">Complete</option>
+                                                <option key="In Work">In Work</option>
+                                                <option key="Planned">Planned</option>
+                                            </options>
+                                            <actions>
+                                                <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='statusType']/xsd:sequence/xsd:element[@ref='progress']</schema>
+                                                  <type>element</type>
+                                                  <value>progress</value>
+                                                </create>
+                                                <read>
+                                                  <path>progress</path>
+                                                  <context>parent</context>
+                                                </read>
+                                                <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                </update>
+                                                <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                </delete>
+                                            </actions>
+                                        </properties>
+                                    </element>
+                                    <element name="update">
+                                        <properties>
+                                            <title>update</title>
+                                            <type>textfield</type>
+                                            <actions>
+                                                <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='statusType']/xsd:sequence/xsd:element[@ref='update']</schema>
+                                                  <type>element</type>
+                                                  <value>update</value>
+                                                </create>
+                                                <read>
+                                                  <path>update</path>
+                                                  <context>parent</context>
+                                                </read>
+                                                <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                </update>
+                                                <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                </delete>
+                                            </actions>
+                                        </properties>
+                                    </element>
+                                </children>
+                            </element>
+                            <element name="spdom">
+                                <properties>
+                                    <title>spdom</title>
+                                    <type>fieldset</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='spdom']</schema>
+                                            <type>element</type>
+                                            <value>spdom</value>
+                                        </create>
+                                        <read>
+                                            <path>spdom</path>
+                                            <context>parent</context>
+                                        </read>
+                                    </actions>
+                                </properties>
+                                <children>
+                                    <element name="bounding">
+                                        <properties>
+                                            <title>bounding</title>
                                             <type>fieldset</type>
                                             <actions>
                                                 <create>
-                                                    <path>self::node()</path>
-                                                    <context>parent</context>
-                                                    <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:choice/xsd:element[@ref='cntperp']</schema>
-                                                    <type>element</type>
-                                                    <value>cntperp</value>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='spdomTy’]/xsd:sequence/xsd:element[@ref='bounding']</schema>
+                                                  <type>element</type>
+                                                  <value>bounding</value>
                                                 </create>
                                                 <read>
-                                                    <path>cntperp</path>
-                                                    <context>parent</context>
+                                                  <path>bounding</path>
+                                                  <context>parent</context>
                                                 </read>
                                             </actions>
                                         </properties>
                                         <children>
-                                            <element name="cntper">
+                                            <element name="westbc">
                                                 <properties>
-                                                    <title>cntper</title>
-                                                    <type>textfield</type>
-                                                    <actions>
-                                                        <create>
-                                                            <path>self::node()</path>
-                                                            <context>parent</context>
-                                                            <schema>/xsd:schema/xsd:complexType[@name='cntperpType']/xsd:sequence/xsd:element[@ref='cntper']</schema>
-                                                            <type>element</type>
-                                                            <value>cntper</value>
-                                                        </create>
-                                                        <read>
-                                                            <path>cntper</path>
-                                                            <context>parent</context>
-                                                        </read>
-                                                        <update>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </update>
-                                                        <delete>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </delete>
-                                                    </actions>
+                                                  <title>westbc</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='westbc']</schema>
+                                                  <type>element</type>
+                                                  <value>westbc</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>westbc</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                </properties>
+                                            </element>
+                                            <element name="eastbc">
+                                                <properties>
+                                                  <title>eastbc</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='eastbc']</schema>
+                                                  <type>element</type>
+                                                  <value>eastbc</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>eastbc</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                </properties>
+                                            </element>
+                                            <element name="northbc">
+                                                <properties>
+                                                  <title>northbc</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='northbc']</schema>
+                                                  <type>element</type>
+                                                  <value>northbc</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>northbc</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                </properties>
+                                            </element>
+                                            <element name="southbc">
+                                                <properties>
+                                                  <title>southbc</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='boundingType']/xsd:sequence/xsd:element[@ref='southbc']</schema>
+                                                  <type>element</type>
+                                                  <value>southbc</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>southbc</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
                                                 </properties>
                                             </element>
                                         </children>
                                     </element>
-                                    <element name="cntaddr">
+                                </children>
+                            </element>
+                            <element name="keywords">
+                                <properties>
+                                    <title>keywords</title>
+                                    <type>fieldset</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='keywords']</schema>
+                                            <type>element</type>
+                                            <value>keywords</value>
+                                        </create>
+                                        <read>
+                                            <path>keywords</path>
+                                            <context>parent</context>
+                                        </read>
+                                    </actions>
+                                </properties>
+                                <children>
+                                    <element name="theme">
                                         <properties>
-                                            <title>cntaddr</title>
+                                            <title>theme</title>
                                             <type>tabs</type>
                                         </properties>
                                         <children>
                                             <element>
                                                 <properties>
-                                                    <type>tabpanel</type>
-                                                    <actions>
-                                                        <create>
-                                                            <path>self::node()</path>
-                                                            <context>parent</context>
-                                                            <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:element[@ref='cntaddr']</schema>
-                                                            <type>element</type>
-                                                            <value>cntaddr</value>
-                                                        </create>
-                                                        <read>
-                                                            <path>cntaddr</path>
-                                                            <context>parent</context>
-                                                        </read>
-                                                        <delete>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </delete>
-                                                    </actions>
+                                                  <type>tabpanel</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='keywordsType']/xsd:sequence/xsd:element[@ref='theme']</schema>
+                                                  <type>element</type>
+                                                  <value>tabpanel</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>theme</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
                                                 </properties>
                                                 <children>
-                                                    <element name="addrtype">
-                                                        <properties>
-                                                            <title>addrtype</title>
-                                                            <type>textfield</type>
-                                                            <actions>
-                                                                <create>
-                                                                    <path>self::node()</path>
-                                                                    <context>parent</context>
-                                                                    <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='addrtype']</schema>
-                                                                    <type>element</type>
-                                                                    <value>addrtype</value>
-                                                                </create>
-                                                                <read>
-                                                                    <path>addrtype</path>
-                                                                    <context>parent</context>
-                                                                </read>
-                                                                <update>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </update>
-                                                                <delete>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </delete>
-                                                            </actions>
-                                                        </properties>
-                                                    </element>
-                                                    <element name="city">
-                                                        <properties>
-                                                            <title>city</title>
-                                                            <type>textfield</type>
-                                                            <actions>
-                                                                <create>
-                                                                    <path>self::node()</path>
-                                                                    <context>parent</context>
-                                                                    <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='city']</schema>
-                                                                    <type>element</type>
-                                                                    <value>city</value>
-                                                                </create>
-                                                                <read>
-                                                                    <path>city</path>
-                                                                    <context>parent</context>
-                                                                </read>
-                                                                <update>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </update>
-                                                                <delete>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </delete>
-                                                            </actions>
-                                                        </properties>
-                                                    </element>
-                                                    <element name="state">
-                                                        <properties>
-                                                            <title>state</title>
-                                                            <type>textfield</type>
-                                                            <actions>
-                                                                <create>
-                                                                    <path>self::node()</path>
-                                                                    <context>parent</context>
-                                                                    <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='state']</schema>
-                                                                    <type>element</type>
-                                                                    <value>state</value>
-                                                                </create>
-                                                                <read>
-                                                                    <path>state</path>
-                                                                    <context>parent</context>
-                                                                </read>
-                                                                <update>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </update>
-                                                                <delete>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </delete>
-                                                            </actions>
-                                                        </properties>
-                                                    </element>
-                                                    <element name="postal">
-                                                        <properties>
-                                                            <title>postal</title>
-                                                            <type>textfield</type>
-                                                            <actions>
-                                                                <create>
-                                                                    <path>self::node()</path>
-                                                                    <context>parent</context>
-                                                                    <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='postal']</schema>
-                                                                    <type>element</type>
-                                                                    <value>postal</value>
-                                                                </create>
-                                                                <read>
-                                                                    <path>postal</path>
-                                                                    <context>parent</context>
-                                                                </read>
-                                                                <update>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </update>
-                                                                <delete>
-                                                                    <path>self::node()</path>
-                                                                    <context>self</context>
-                                                                </delete>
-                                                            </actions>
-                                                        </properties>
-                                                    </element>
+                                                  <element name="themekt">
+                                                  <properties>
+                                                  <title>themekt</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='themeType']/xsd:sequence/xsd:element[@ref='themekt']</schema>
+                                                  <type>element</type>
+                                                  <value>themekt</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>themekt</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                  <element name="themekey">
+                                                  <properties>
+                                                  <title>themekey</title>
+                                                  <type>tags</type>
+                                                  </properties>
+                                                  <children>
+                                                  <element>
+                                                  <properties>
+                                                  <type>tag</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='themeType']/xsd:sequence/xsd:element[@ref='themekey']</schema>
+                                                  <type>element</type>
+                                                  <value>themekey</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>themekey</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                  </children>
+                                                  </element>
                                                 </children>
-                                            </element>
-                                        </children>
-                                    </element>
-                                    <element name="cntvoice">
-                                        <properties>
-                                            <title>cntvoice</title>
-                                            <type>tags</type>
-                                        </properties>
-                                        <children>
-                                            <element>
-                                                <properties>
-                                                    <type>tag</type>
-                                                    <actions>
-                                                        <create>
-                                                            <path>self::node()</path>
-                                                            <context>parent</context>
-                                                            <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:element[@ref='cntvoice']</schema>
-                                                            <type>element</type>
-                                                            <value>tag</value>
-                                                        </create>
-                                                        <read>
-                                                            <path>cntvoice</path>
-                                                            <context>parent</context>
-                                                        </read>
-                                                        <update>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </update>
-                                                        <delete>
-                                                            <path>self::node()</path>
-                                                            <context>self</context>
-                                                        </delete>
-                                                    </actions>
-                                                </properties>
                                             </element>
                                         </children>
                                     </element>
                                 </children>
                             </element>
+                            <element name="accconst">
+                                <properties>
+                                    <title>accconst</title>
+                                    <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='accconst']</schema>
+                                            <type>element</type>
+                                            <value>accconst</value>
+                                        </create>
+                                        <read>
+                                            <path>accconst</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
+                                </properties>
+                            </element>
+                            <element name="useconst">
+                                <properties>
+                                    <title>useconst</title>
+                                    <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='idinfoType']/xsd:sequence/xsd:element[@ref='status']</schema>
+                                            <type>element</type>
+                                            <value>useconst</value>
+                                        </create>
+                                        <read>
+                                            <path>useconst</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
+                                </properties>
+                            </element>
                         </children>
                     </element>
-                    <element name="metstdn">
+                    <element name="metainfo">
                         <properties>
-                            <title>metstdn</title>
-                            <type>textfield</type>
+                            <title>metainfo</title>
+                            <type>fieldset</type>
                             <actions>
                                 <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metstdn']</schema>
+                                    <path>/metadata</path>
+                                    <context>document</context>
+                                    <schema>/xsd:schema/xsd:complexType[@name='metadataType']/xsd:sequence/xsd:element[@ref='metainfo']</schema>
                                     <type>element</type>
-                                    <value>metstdn</value>
+                                    <value>metainfo</value>
                                 </create>
                                 <read>
-                                    <path>metstdn</path>
-                                    <context>parent</context>
+                                    <path>/metadata/metainfo</path>
+                                    <context>document</context>
                                 </read>
-                                <update>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </update>
-                                <delete>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </delete>
                             </actions>
                         </properties>
+                        <children>
+                            <element name="metd">
+                                <properties>
+                                    <title>metd</title>
+                                    <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metd']</schema>
+                                            <type>element</type>
+                                            <value>metd</value>
+                                        </create>
+                                        <read>
+                                            <path>metd</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
+                                </properties>
+                            </element>
+                            <element name="metc">
+                                <properties>
+                                    <title>metc</title>
+                                    <type>fieldset</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metc']</schema>
+                                            <type>element</type>
+                                            <value>metc</value>
+                                        </create>
+                                        <read>
+                                            <path>metc</path>
+                                            <context>parent</context>
+                                        </read>
+                                    </actions>
+                                </properties>
+                                <children>
+                                    <element name="cntinfo">
+                                        <properties>
+                                            <title>cntinfo</title>
+                                            <type>fieldset</type>
+                                            <actions>
+                                                <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='metcType']/xsd:sequence/xsd:element[@ref='cntinfo']</schema>
+                                                  <type>element</type>
+                                                  <value>cntinfo</value>
+                                                </create>
+                                                <read>
+                                                  <path>cntinfo</path>
+                                                  <context>parent</context>
+                                                </read>
+                                            </actions>
+                                        </properties>
+                                        <children>
+                                            <element name="cntperp">
+                                                <properties>
+                                                  <title>cntperp</title>
+                                                  <type>fieldset</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:choice/xsd:element[@ref='cntperp']</schema>
+                                                  <type>element</type>
+                                                  <value>cntperp</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>cntperp</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  </actions>
+                                                </properties>
+                                                <children>
+                                                  <element name="cntper">
+                                                  <properties>
+                                                  <title>cntper</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='cntperpType']/xsd:sequence/xsd:element[@ref='cntper']</schema>
+                                                  <type>element</type>
+                                                  <value>cntper</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>cntper</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                </children>
+                                            </element>
+                                            <element name="cntaddr">
+                                                <properties>
+                                                  <title>cntaddr</title>
+                                                  <type>tabs</type>
+                                                </properties>
+                                                <children>
+                                                  <element>
+                                                  <properties>
+                                                  <type>tabpanel</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:element[@ref='cntaddr']</schema>
+                                                  <type>element</type>
+                                                  <value>cntaddr</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>cntaddr</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  <children>
+                                                  <element name="addrtype">
+                                                  <properties>
+                                                  <title>addrtype</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='addrtype']</schema>
+                                                  <type>element</type>
+                                                  <value>addrtype</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>addrtype</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                  <element name="city">
+                                                  <properties>
+                                                  <title>city</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='city']</schema>
+                                                  <type>element</type>
+                                                  <value>city</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>city</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                  <element name="state">
+                                                  <properties>
+                                                  <title>state</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='state']</schema>
+                                                  <type>element</type>
+                                                  <value>state</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>state</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                  <element name="postal">
+                                                  <properties>
+                                                  <title>postal</title>
+                                                  <type>textfield</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='cntaddrType']/xsd:sequence/xsd:element[@ref='postal']</schema>
+                                                  <type>element</type>
+                                                  <value>postal</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>postal</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                  </children>
+                                                  </element>
+                                                </children>
+                                            </element>
+                                            <element name="cntvoice">
+                                                <properties>
+                                                  <title>cntvoice</title>
+                                                  <type>tags</type>
+                                                </properties>
+                                                <children>
+                                                  <element>
+                                                  <properties>
+                                                  <type>tag</type>
+                                                  <actions>
+                                                  <create>
+                                                  <path>self::node()</path>
+                                                  <context>parent</context>
+                                                  <schema>/xsd:schema/xsd:complexType[@name='cntinfoType']/xsd:sequence/xsd:element[@ref='cntvoice']</schema>
+                                                  <type>element</type>
+                                                  <value>tag</value>
+                                                  </create>
+                                                  <read>
+                                                  <path>cntvoice</path>
+                                                  <context>parent</context>
+                                                  </read>
+                                                  <update>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </update>
+                                                  <delete>
+                                                  <path>self::node()</path>
+                                                  <context>self</context>
+                                                  </delete>
+                                                  </actions>
+                                                  </properties>
+                                                  </element>
+                                                </children>
+                                            </element>
+                                        </children>
+                                    </element>
+                                </children>
+                            </element>
+                            <element name="metstdn">
+                                <properties>
+                                    <title>metstdn</title>
+                                    <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metstdn']</schema>
+                                            <type>element</type>
+                                            <value>metstdn</value>
+                                        </create>
+                                        <read>
+                                            <path>metstdn</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
+                                </properties>
+                            </element>
+                            <element name="metstdv">
+                                <properties>
+                                    <title>metstdv</title>
+                                    <type>textfield</type>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metstdn']</schema>
+                                            <type>element</type>
+                                            <value>metstdv</value>
+                                        </create>
+                                        <read>
+                                            <path>metstdv</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
+                                </properties>
+                            </element>
+                        </children>
                     </element>
-                    <element name="metstdv">
+                    <element name="submit">
                         <properties>
-                            <title>metstdv</title>
-                            <type>textfield</type>
-                            <actions>
-                                <create>
-                                    <path>self::node()</path>
-                                    <context>parent</context>
-                                    <schema>/xsd:schema/xsd:complexType[@name='metainfoType']/xsd:sequence/xsd:element[@ref='metstdn']</schema>
-                                    <type>element</type>
-                                    <value>metstdv</value>
-                                </create>
-                                <read>
-                                    <path>metstdv</path>
-                                    <context>parent</context>
-                                </read>
-                                <update>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </update>
-                                <delete>
-                                    <path>self::node()</path>
-                                    <context>self</context>
-                                </delete>
-                            </actions>
+                            <type>submit</type>
+                            <value>Submit</value>
                         </properties>
                     </element>
                 </children>
             </element>
-            <element name="submit">
-                <properties>
-                    <type>submit</type>
-                    <value>Submit</value>
-                </properties>
-            </element>
         </children>
     </form>
 </definition>
-

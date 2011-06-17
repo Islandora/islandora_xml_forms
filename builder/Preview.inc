@@ -26,7 +26,7 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
     module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
     module_load_include('inc', 'xml_form_api', 'XMLDocument');
     $xml_definition = FormBuilder::GetFormDefinition($form_name);
-    $form = XMLFormDefinition::GetDrupalFormDefinition($xml_definition);
+    $form = XMLFormDefinition::GetDrupalForm($xml_definition);
     $properties = XMLFormDefinition::GetFormProperties($xml_definition);
     $properties = $properties['document'];
     $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema']);
