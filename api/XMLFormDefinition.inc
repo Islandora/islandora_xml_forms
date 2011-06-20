@@ -51,9 +51,12 @@ class XMLFormDefinition {
   public static function Create(array $properties, array $form) {
     $definition = new SimpleXMLElement('<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></definition>');
     self::AddPropertiesToDefinition($definition, $properties);
-    echo $definition->asXML();
-    exit();
     self::AddFormToDefinition($definition, new FormElement($form));
+    $doc = new DOMDocument();
+    $doc->loadXML($definition->asXML());
+    format_dom_document($doc);
+    echo $doc->saveXML();
+    exit();
     return dom_import_simplexml($definition);
   }
 
@@ -78,6 +81,7 @@ class XMLFormDefinition {
           $root->addChild('uri', $properties['document']['root']['uri']);
         }
       }
+      print_r($properties['document']['namespaces']);
       if (isset($properties['document']['namespaces'])) {
         $namespaces = $document_properties->addChild('namespaces');
         foreach ($properties['document']['namespaces'] as $item) {
@@ -96,8 +100,48 @@ class XMLFormDefinition {
    * @param SimpleXMLElement $definition
    * @param FormElement $form
    */
-  private static function AddFormToDefinition(SimpleXMLElement $definition, FormElement $form) {
-    
+  private static function AddFormToDefinition(SimpleXMLElement $definition, FormElement $root) {
+    $form = $definition->addChild('form');
+    $properties = $form->addChild('properties');
+    foreach ($root->controls as $key => $value) {
+      self::AddFormControlToProperties($properties, $key, $value);
+    }
+    $children = $form->addChild('children');
+    foreach ($root->children as $key => $child) {
+      self::AddFormElementToChildren($children, $key, $child);
+    }
+  }
+
+  private static function AddFormControlToProperties(SimpleXMLElement $properties, $key, $value) {
+    $key = trim($key, '#');
+    if (!is_array($value)) {
+      $control = $properties->addChild($key, $value);
+      if ($key == 'option') { // Hacktastic...
+        $control->addAttribute('key', $value);
+      }
+    }
+    else {
+      $control = $properties->addChild($key);
+      foreach ($value as $index => $item) {
+        $index = trim($index, '#');
+        self::AddFormControlToProperties($control, $index, $item);
+      }
+    }
+  }
+
+  private static function AddFormElementToChildren(SimpleXMLElement $children, $key, FormElement $child) {
+    $element = $children->addChild('element');
+    if (isset($key)) {
+      $element->addAttribute('name', $key);
+    }
+    $properties = $element->addChild('properties');
+    foreach ($child->controls as $key => $value) {
+      self::AddFormControlToProperties($properties, $key, $value);
+    }
+    $children = $element->addChild('children');
+    foreach ($child->children as $key => $grandchild) {
+      self::AddFormElementToChildren($children, $key, $grandchild);
+    }
   }
 
   /**

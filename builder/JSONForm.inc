@@ -29,9 +29,9 @@ class JSONForm {
     $this->json = json_decode($_POST['data']);
     $properties = $this->createProperties();
     $form = $this->createDrupalForm();
-    print_r($form);
+    $this->definition = XMLFormDefinition::Create($properties, $form['Root']);
+    echo $this->definition;
     exit();
-    $this->definition = XMLFormDefinition::Create($properties, $form);
   }
 
   /**

@@ -209,8 +209,7 @@ Ext.define('Element', {
         type: types.ARRAY
     }, {
         name: 'required',
-        type: 'boolean',
-        defaultValue: false
+        type: 'boolean'
     }, {
         name: 'resizable',
         type: 'boolean'
