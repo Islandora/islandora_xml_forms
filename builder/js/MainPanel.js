@@ -9,7 +9,7 @@
 Ext.formbuilder.createMainPanel = function(children){
     return Ext.create('Ext.panel.Panel', {
         width: 960,
-        height: 1725,
+        height: 820,
         title: 'Form Editor',
         layout: 'border',
         renderTo: 'xml-form-builder-editor',

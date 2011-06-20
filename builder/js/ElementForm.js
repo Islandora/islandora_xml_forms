@@ -18,7 +18,7 @@ Ext.formbuilder.createElementForm = function () {
             id: 'key',
             name: 'key',
             fieldLabel: 'Key',
-            width: 500,
+            width: 640,
             listeners: {
                 render: function() {
                     Ext.create('Ext.tip.ToolTip', {
@@ -30,16 +30,16 @@ Ext.formbuilder.createElementForm = function () {
             }
         }, {
             xtype: 'tabpanel',
-            height: 1540,
+            height: 640,
             plain: true,
             unstyled: true,
             defaults: {
-                bodyStyle:'padding:10px',
                 frame: true
             },
             items:[{
                 title: 'Common Form Controls',
                 collapsible: true,
+                autoScroll: true,
                 items: [{
                     xtype: 'combobox',
                     id: 'type',
@@ -113,7 +113,328 @@ Ext.formbuilder.createElementForm = function () {
                             });
                         }
                     }
-                },  {
+                }, {
+                    xtype: 'checkbox',
+                    id: 'required',
+                    name: 'required',
+                    fieldLabel: 'Required',
+                    inputValue: true,
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'required',
+                                anchor: 'left',
+                                html: '<h3><a name="required" id="required"></a>#required</h3>' +
+                            '<p><strong>Used by</strong>: <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#file">file</a>, <a href="#password">password</a>, <a href="#password_confirm">password_confirm</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
+                            '<p><strong>Description</strong>: Indicates whether or not the element is required. This automatically validates for empty fields, and flags inputs as required. File fields are <strong>NOT</strong> allowed to be required.</p>' +
+                            '<p><strong>Values</strong>: TRUE or FALSE</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    collapsed: true,
+                    title:'Create',
+                    id: 'actions_create',
+                    checkboxName: 'actions_create',
+                    items: [{
+                        xtype: 'combobox',
+                        fieldLabel: 'Path Context',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'document',
+                        name: 'actions_create_context',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'document', 
+                                value:'document'
+                            },{
+                                display:'parent', 
+                                value:'parent'
+                            }]
+                        }),
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-context',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Context</h3>' +
+                                '<p class="help">The context in which the path will be executed in.</p>'
+                                });
+                            }
+                        }
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Path',
+                        name: 'actions_create_path',
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }]
+                }, {
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    collapsed: true,
+                    title:'Read',
+                    id: 'actions_read',
+                    checkboxName: 'actions_read',
+                    items: [{
+                        xtype: 'combobox',
+                        fieldLabel: 'Path Context',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'document',
+                        name: 'actions_read_context',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'document', 
+                                value:'document'
+                            },{
+                                display:'parent', 
+                                value:'parent'
+                            }]
+                        })
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Path',
+                        name: 'actions_read_path',
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }]
+                }, {
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    collapsed: true,
+                    title:'Update',
+                    id: 'actions_update',
+                    checkboxName: 'actions_update',
+                    items: [{
+                        xtype: 'combobox',
+                        fieldLabel: 'Path Context',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'self',
+                        name: 'actions_update_context',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'document', 
+                                value:'document'
+                            },{
+                                display:'parent', 
+                                value:'parent'
+                            },{
+                                display:'self', 
+                                value:'self'
+                            }]
+                        })
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Path',
+                        value: 'self::node()',
+                        name: 'actions_update_path',
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }]
+                }, {
+                    xtype:'fieldset',
+                    checkboxToggle: true,
+                    collapsed: true,
+                    title:'Delete',
+                    id: 'actions_delete',
+                    checkboxName: 'actions_delete',
+                    items: [{
+                        xtype: 'combobox',
+                        fieldLabel: 'Path Context',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'self',
+                        name: 'actions_delete_context',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'document', 
+                                value:'document'
+                            },{
+                                display:'parent', 
+                                value:'parent'
+                            },{
+                                display:'self', 
+                                value:'self'
+                            }]
+                        })
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Path',
+                        value: 'self::node()',
+                        name: 'actions_delete_path',
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }]
+                }]
+            }, {
+                title: 'Advanced Form Controls',
+                autoScroll: true,
+                items: [{
+                    xtype: 'textfield',
+                    id: 'autocomplete_path',
+                    name: 'autocomplete_path',
+                    fieldLabel: 'Autocomplete Path',
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'autocomplete_path',
+                                anchor: 'left',
+                                html: '<h3><a name="autocomplete_path" id="autocomplete_path"></a>#autocomplete_path</h3>' +
+                            '<p><strong>Used by</strong>: <a href="#textfield">textfield</a></p>' +
+                            '<p><strong>Description</strong>: The path the AJAX autocomplete script uses as the source for autocompletion.</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'textfield',
+                    id: 'button_type',
+                    name: 'button_type',
+                    fieldLabel: 'Button Type',
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'button_type',
+                                anchor: 'left',
+                                html: '<h3><a name="button_type" id="button_type"></a>#button_type</h3>' +
+                            '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#image_button">image_button</a>, <a href="#submit">submit</a></p>' +
+                            '<p><strong>Description</strong>: Adds a CSS class to the button, in the form <em>form-[button_type_value]</em>. Note that this does NOT set the HTML attribute <em>type</em> of the button.</p>' +
+                            '<p class="help"><strong>Values</strong>: String </p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'numberfield',
+                    id: 'cols',
+                    name: 'cols',
+                    fieldLabel: 'Cols',
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'cols',
+                                anchor: 'left',
+                                html: '<h3><a name="cols" id="cols"></a>#cols</h3>' +
+                            '<p><strong>Used by</strong>: <a href="#textarea">textarea</a></p>' +
+                            '<p><strong>Description</strong>: How many columns wide the textarea should be (see also <a href="#rows">#rows</a>)</p>' +
+                            '<p><strong>Values</strong>: A positive number</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'checkbox',
+                    id: 'disabled',
+                    name: 'disabled',
+                    fieldLabel: 'Disabled',
+                    inputValue: true,
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'disabled',
+                                anchor: 'left',
+                                html: '<h3><a name="disabled" id="disabled"></a>#disabled</h3>' +
+                            '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#file">file</a>, <a href="#image_button">image_button</a>, <a href="#password">password</a>, <a href="#password_confirm">password_confirm</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#submit">submit</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
+                            '<p><strong>Description</strong>: Disables (greys out) a form input element. Note that disabling a form field doesn\'t necessarily prevent someone from submitting a value through DOM manipulation. It just tells the browser not to accept input.</p>' +
+                            '<p><strong>Values</strong>: TRUE or FALSE</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'numberfield',
+                    id: 'delta',
+                    name: 'delta',
+                    fieldLabel: 'Delta',
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'delta',
+                                anchor: 'left',
+                                html: '<h3><a name="delta" id="delta"></a>#delta</h3>' +
+                            '<p><strong>Used by</strong>: <a href="#weight">weight</a></p>' +
+                            '<p><strong>Description</strong>: Number of weights to have selectable. For example, with $delta =&gt; 10, the weight selection box would display numbers from -10 to 10.</p>' +
+                            '<p><strong>Values</strong>: A positive number</p>'
+                            });
+                        }
+                    }
+                },   {
                     xtype: 'textfield',
                     id: 'prefix',
                     name: 'prefix',
@@ -196,345 +517,6 @@ Ext.formbuilder.createElementForm = function () {
                             '<p><strong>Used by</strong>: All</p>' +
                             '<p><strong>Description</strong>: Used to allow collections of form elements. Normally applied to the "parent" element, as the #tree property cascades to sub-elements. Use where you previously used ][ in form_ calls. For more information, see <a href="http://drupal.org/node/48643">#tree and #parents</a> in the handbook.</p>' +
                             '<p><strong>Values</strong>: TRUE or FALSE</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'checkbox',
-                    id: 'required',
-                    name: 'required',
-                    fieldLabel: 'Required',
-                    inputValue: true,
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'required',
-                                anchor: 'left',
-                                html: '<h3><a name="required" id="required"></a>#required</h3>' +
-                            '<p><strong>Used by</strong>: <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#file">file</a>, <a href="#password">password</a>, <a href="#password_confirm">password_confirm</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
-                            '<p><strong>Description</strong>: Indicates whether or not the element is required. This automatically validates for empty fields, and flags inputs as required. File fields are <strong>NOT</strong> allowed to be required.</p>' +
-                            '<p><strong>Values</strong>: TRUE or FALSE</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'checkbox',
-                    id: 'disabled',
-                    name: 'disabled',
-                    fieldLabel: 'Disabled',
-                    inputValue: true,
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'disabled',
-                                anchor: 'left',
-                                html: '<h3><a name="disabled" id="disabled"></a>#disabled</h3>' +
-                            '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#file">file</a>, <a href="#image_button">image_button</a>, <a href="#password">password</a>, <a href="#password_confirm">password_confirm</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#submit">submit</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
-                            '<p><strong>Description</strong>: Disables (greys out) a form input element. Note that disabling a form field doesn\'t necessarily prevent someone from submitting a value through DOM manipulation. It just tells the browser not to accept input.</p>' +
-                            '<p><strong>Values</strong>: TRUE or FALSE</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'checkbox',
-                    id: 'access',
-                    name: 'access',
-                    fieldLabel: 'Access',
-                    checked: true,
-                    inputValue: true,
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'access',
-                                anchor: 'left',
-                                html:  '<h3><a name="access" id="access"></a>#access</h3>' +
-                            '<p><strong>Used by</strong>: All elements and forms</p>' +
-                            '<p><strong>Description</strong>: Whether the element is accessible or not; when FALSE, the element is not rendered and the user submitted value is not taken into consideration.</p>' +
-                            '<p><strong>Values</strong>: TRUE or FALSE.</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'formgrid',
-                    id: 'attributes',
-                    name: 'attributes',
-                    title: 'Attributes',
-                    height: 150,
-                    collapsible: true,
-                    store: this.createMapStore(),
-                    modelInitTmpl: {
-                        key: '',
-                        value: ''
-                    },
-                    columns: [{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'key',
-                        header: 'Key',
-                        sortable: true,
-                        width: 200,
-                        field: {
-                            type: 'textfield'
-                        }
-                    },{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'value',
-                        header: 'Value',
-                        sortable: true,
-                        flex: 1,
-                        field: {
-                            type: 'textfield'
-                        }
-                    }],
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'attributes',
-                                anchor: 'left',
-                                html: '<h3><a name="attributes" id="attributes"></a>#attributes</h3>' +
-                            '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#fieldset">fieldset</a>, <a href="#file">file</a>, <a href="#form">form</a>, <a href="#image_button">image_button</a>, <a href="#password">password</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#submit">submit</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
-                            '<p><strong>Description</strong>: Additional HTML attributes, such as \'class\' can be set using this mechanism.</p>' +
-                            '<p><strong>Values</strong>: Any HTML attribute not covered by other properties, e.g. <strong>class</strong> (for control types), <strong>enctype</strong> (for forms).</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'formgrid',
-                    id: 'element_validate',
-                    name: 'element_validate',
-                    title: 'Element Validate',
-                    height: 150,
-                    collapsible: true,
-                    store: this.createArrayStore(),
-                    modelInitTmpl: {
-                        value: ''
-                    },
-                    columns: [{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'value',
-                        header: 'Function',
-                        sortable: true,
-                        flex: 1,
-                        field: {
-                            type: 'textfield'
-                        }
-                    }],
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'element_validate',
-                                anchor: 'left',
-                                html: '<h3><a name="element_validate" id="element_validate"></a>#element_validate</h3>' +
-                            '<p class="help"><strong>Used by</strong>: any element</p>' +
-                            '<p><strong>Description</strong>: A list of custom validation functions that need to be passed. The functions must use <a href="/api/drupal/includes--form.inc/function/form_error/6" title="Flag an element as having an error." class="local">form_error</a>() or <a href="/api/drupal/includes--form.inc/function/form_set_error/6" title="File an error against a form element." class="local">form_set_error</a>() to set an error if the validation fails.</p>' +
-                            '<p><strong>Values</strong>: an array of function names to be called to validate this element (and/or its children).</p>'
-                            });
-                        }
-                    }
-                },  {
-                    xtype: 'formgrid',
-                    title: 'Process',
-                    id: 'process',
-                    name: 'process',
-                    height: 150,
-                    collapsible: true,
-                    store: this.createArrayStore(),
-                    modelInitTmpl: {
-                        value: ''
-                    },
-                    columns: [{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'value',
-                        header: 'Functions',
-                        sortable: true,
-                        flex: 1,
-                        field: {
-                            type: 'textfield'
-                        }
-                    }],
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'process',
-                                anchor: 'left',
-                                html: '<h3><a name="process"></a>#process</h3>' +
-                            '<p><strong>Description</strong>: An array of functions that are called when an element is processed. Using this callback, modules can "register" further actions. For example the "radios" form type is expanded to multiple radio buttons using a processing function.</p>' +
-                            '<p><strong>Values</strong>: Array of function names (strings)</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'formgrid',
-                    title: 'Pre Render',
-                    id: 'pre_render',
-                    name: 'pre_render',
-                    height: 150,
-                    collapsible: true,
-                    store: this.createArrayStore(),
-                    modelInitTmpl: {
-                        value: ''
-                    },
-                    columns: [{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'value',
-                        header: 'Functions',
-                        sortable: true,
-                        flex: 1,
-                        field: {
-                            type: 'textfield'
-                        }
-                    }],
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'pre_render',
-                                anchor: 'left',
-                                html: '<h3><a name="pre_render" id="pre_render"></a>#pre_render</h3>' +
-                            '<p><strong>Used by</strong>: All elements and forms.</p>' +
-                            '<p><strong>Description</strong>:' +
-                            'Function(s) to call <strong>before</strong>' +
-                            'rendering in </a><a href="http://api.drupal.org/api/function/drupal_render/" class="local">drupal_render</a>()' +
-                            'has occured. The function(s) provided in #pre_render receive the element as an argument and ' +
-                            'must return the altered element.</p>' +
-                            '<p><strong>Values</strong>: An array of function names to call.</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'formgrid',
-                    title: 'Post Render',
-                    id: 'post_render',
-                    name: 'post_render',
-                    height: 150,
-                    collapsible: true,
-                    store: this.createArrayStore(),
-                    modelInitTmpl: {
-                        value: ''
-                    },
-                    columns: [{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'value',
-                        header: 'Functions',
-                        sortable: true,
-                        flex: 1,
-                        field: {
-                            type: 'textfield'
-                        }
-                    }],
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'post_render',
-                                anchor: 'left',
-                                html: '<h3><a name="post_render" id="post_render"></a>#post_render</h3>' +
-                            '<p><strong>Used by</strong>: All elements and forms</p>' +
-                            '<p><strong>Description</strong>:' +
-                            'Function(s) to call <strong>after</strong>' +
-                            'rendering in </a><a href="http://api.drupal.org/api/function/drupal_render/" class="local">drupal_render</a>()' +
-                            'has occured. The named function is called with two arguments, the rendered element and its children. It returns the (potentially)' +
-                            'altered) element content.</p>' +
-                            '<p><strong>Values</strong>: An array of function names to call.</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'formgrid',
-                    title: 'After Build',
-                    id: 'after_build',
-                    name: 'after_build',
-                    height: 150,
-                    collapsible: true,
-                    store: this.createArrayStore(),
-                    modelInitTmpl: {
-                        value: ''
-                    },
-                    columns: [{
-                        xtype: 'gridcolumn',
-                        dataIndex: 'value',
-                        header: 'Function',
-                        sortable: true,
-                        flex: 1,
-                        field: {
-                            type: 'textfield'
-                        }
-                    }],
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'after_build',
-                                anchor: 'left',
-                                html: '<h3><a name="after_build" id="after_build"></a>#after_build</h3>'+
-                            '<p><strong>Used by</strong>: All elements and forms</p>' +
-                            '<p><strong>Description</strong>: An array of function names which will be called after the form or element is built.</p>'
-                            });
-                        }
-                    }
-                }]
-            }, {
-                title: 'Advanced Form Controls',
-                items: [{
-                    xtype: 'textfield',
-                    id: 'autocomplete_path',
-                    name: 'autocomplete_path',
-                    fieldLabel: 'Autocomplete Path',
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'autocomplete_path',
-                                anchor: 'left',
-                                html: '<h3><a name="autocomplete_path" id="autocomplete_path"></a>#autocomplete_path</h3>' +
-                            '<p><strong>Used by</strong>: <a href="#textfield">textfield</a></p>' +
-                            '<p><strong>Description</strong>: The path the AJAX autocomplete script uses as the source for autocompletion.</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'textfield',
-                    id: 'button_type',
-                    name: 'button_type',
-                    fieldLabel: 'Button Type',
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'button_type',
-                                anchor: 'left',
-                                html: '<h3><a name="button_type" id="button_type"></a>#button_type</h3>' +
-                            '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#image_button">image_button</a>, <a href="#submit">submit</a></p>' +
-                            '<p><strong>Description</strong>: Adds a CSS class to the button, in the form <em>form-[button_type_value]</em>. Note that this does NOT set the HTML attribute <em>type</em> of the button.</p>' +
-                            '<p class="help"><strong>Values</strong>: String </p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'numberfield',
-                    id: 'cols',
-                    name: 'cols',
-                    fieldLabel: 'Cols',
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'cols',
-                                anchor: 'left',
-                                html: '<h3><a name="cols" id="cols"></a>#cols</h3>' +
-                            '<p><strong>Used by</strong>: <a href="#textarea">textarea</a></p>' +
-                            '<p><strong>Description</strong>: How many columns wide the textarea should be (see also <a href="#rows">#rows</a>)</p>' +
-                            '<p><strong>Values</strong>: A positive number</p>'
-                            });
-                        }
-                    }
-                }, {
-                    xtype: 'numberfield',
-                    id: 'delta',
-                    name: 'delta',
-                    fieldLabel: 'Delta',
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'delta',
-                                anchor: 'left',
-                                html: '<h3><a name="delta" id="delta"></a>#delta</h3>' +
-                            '<p><strong>Used by</strong>: <a href="#weight">weight</a></p>' +
-                            '<p><strong>Description</strong>: Number of weights to have selectable. For example, with $delta =&gt; 10, the weight selection box would display numbers from -10 to 10.</p>' +
-                            '<p><strong>Values</strong>: A positive number</p>'
                             });
                         }
                     }
@@ -1024,6 +1006,239 @@ Ext.formbuilder.createElementForm = function () {
                         }
                     }
                 }, {
+                    xtype: 'checkbox',
+                    id: 'access',
+                    name: 'access',
+                    fieldLabel: 'Access',
+                    checked: true,
+                    inputValue: true,
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'access',
+                                anchor: 'left',
+                                html:  '<h3><a name="access" id="access"></a>#access</h3>' +
+                            '<p><strong>Used by</strong>: All elements and forms</p>' +
+                            '<p><strong>Description</strong>: Whether the element is accessible or not; when FALSE, the element is not rendered and the user submitted value is not taken into consideration.</p>' +
+                            '<p><strong>Values</strong>: TRUE or FALSE.</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'formgrid',
+                    id: 'attributes',
+                    name: 'attributes',
+                    title: 'Attributes',
+                    height: 150,
+                    collapsible: true,
+                    store: this.createMapStore(),
+                    modelInitTmpl: {
+                        key: '',
+                        value: ''
+                    },
+                    columns: [{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'key',
+                        header: 'Key',
+                        sortable: true,
+                        width: 200,
+                        field: {
+                            type: 'textfield'
+                        }
+                    },{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'value',
+                        header: 'Value',
+                        sortable: true,
+                        flex: 1,
+                        field: {
+                            type: 'textfield'
+                        }
+                    }],
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'attributes',
+                                anchor: 'left',
+                                html: '<h3><a name="attributes" id="attributes"></a>#attributes</h3>' +
+                            '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#fieldset">fieldset</a>, <a href="#file">file</a>, <a href="#form">form</a>, <a href="#image_button">image_button</a>, <a href="#password">password</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#submit">submit</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
+                            '<p><strong>Description</strong>: Additional HTML attributes, such as \'class\' can be set using this mechanism.</p>' +
+                            '<p><strong>Values</strong>: Any HTML attribute not covered by other properties, e.g. <strong>class</strong> (for control types), <strong>enctype</strong> (for forms).</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'formgrid',
+                    id: 'element_validate',
+                    name: 'element_validate',
+                    title: 'Element Validate',
+                    height: 150,
+                    collapsible: true,
+                    store: this.createArrayStore(),
+                    modelInitTmpl: {
+                        value: ''
+                    },
+                    columns: [{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'value',
+                        header: 'Function',
+                        sortable: true,
+                        flex: 1,
+                        field: {
+                            type: 'textfield'
+                        }
+                    }],
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'element_validate',
+                                anchor: 'left',
+                                html: '<h3><a name="element_validate" id="element_validate"></a>#element_validate</h3>' +
+                            '<p class="help"><strong>Used by</strong>: any element</p>' +
+                            '<p><strong>Description</strong>: A list of custom validation functions that need to be passed. The functions must use <a href="/api/drupal/includes--form.inc/function/form_error/6" title="Flag an element as having an error." class="local">form_error</a>() or <a href="/api/drupal/includes--form.inc/function/form_set_error/6" title="File an error against a form element." class="local">form_set_error</a>() to set an error if the validation fails.</p>' +
+                            '<p><strong>Values</strong>: an array of function names to be called to validate this element (and/or its children).</p>'
+                            });
+                        }
+                    }
+                },  {
+                    xtype: 'formgrid',
+                    title: 'Process',
+                    id: 'process',
+                    name: 'process',
+                    height: 150,
+                    collapsible: true,
+                    store: this.createArrayStore(),
+                    modelInitTmpl: {
+                        value: ''
+                    },
+                    columns: [{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'value',
+                        header: 'Functions',
+                        sortable: true,
+                        flex: 1,
+                        field: {
+                            type: 'textfield'
+                        }
+                    }],
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'process',
+                                anchor: 'left',
+                                html: '<h3><a name="process"></a>#process</h3>' +
+                            '<p><strong>Description</strong>: An array of functions that are called when an element is processed. Using this callback, modules can "register" further actions. For example the "radios" form type is expanded to multiple radio buttons using a processing function.</p>' +
+                            '<p><strong>Values</strong>: Array of function names (strings)</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'formgrid',
+                    title: 'Pre Render',
+                    id: 'pre_render',
+                    name: 'pre_render',
+                    height: 150,
+                    collapsible: true,
+                    store: this.createArrayStore(),
+                    modelInitTmpl: {
+                        value: ''
+                    },
+                    columns: [{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'value',
+                        header: 'Functions',
+                        sortable: true,
+                        flex: 1,
+                        field: {
+                            type: 'textfield'
+                        }
+                    }],
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'pre_render',
+                                anchor: 'left',
+                                html: '<h3><a name="pre_render" id="pre_render"></a>#pre_render</h3>' +
+                            '<p><strong>Used by</strong>: All elements and forms.</p>' +
+                            '<p><strong>Description</strong>:' +
+                            'Function(s) to call <strong>before</strong>' +
+                            'rendering in </a><a href="http://api.drupal.org/api/function/drupal_render/" class="local">drupal_render</a>()' +
+                            'has occured. The function(s) provided in #pre_render receive the element as an argument and ' +
+                            'must return the altered element.</p>' +
+                            '<p><strong>Values</strong>: An array of function names to call.</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'formgrid',
+                    title: 'Post Render',
+                    id: 'post_render',
+                    name: 'post_render',
+                    height: 150,
+                    collapsible: true,
+                    store: this.createArrayStore(),
+                    modelInitTmpl: {
+                        value: ''
+                    },
+                    columns: [{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'value',
+                        header: 'Functions',
+                        sortable: true,
+                        flex: 1,
+                        field: {
+                            type: 'textfield'
+                        }
+                    }],
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'post_render',
+                                anchor: 'left',
+                                html: '<h3><a name="post_render" id="post_render"></a>#post_render</h3>' +
+                            '<p><strong>Used by</strong>: All elements and forms</p>' +
+                            '<p><strong>Description</strong>:' +
+                            'Function(s) to call <strong>after</strong>' +
+                            'rendering in </a><a href="http://api.drupal.org/api/function/drupal_render/" class="local">drupal_render</a>()' +
+                            'has occured. The named function is called with two arguments, the rendered element and its children. It returns the (potentially)' +
+                            'altered) element content.</p>' +
+                            '<p><strong>Values</strong>: An array of function names to call.</p>'
+                            });
+                        }
+                    }
+                }, {
+                    xtype: 'formgrid',
+                    title: 'After Build',
+                    id: 'after_build',
+                    name: 'after_build',
+                    height: 150,
+                    collapsible: true,
+                    store: this.createArrayStore(),
+                    modelInitTmpl: {
+                        value: ''
+                    },
+                    columns: [{
+                        xtype: 'gridcolumn',
+                        dataIndex: 'value',
+                        header: 'Function',
+                        sortable: true,
+                        flex: 1,
+                        field: {
+                            type: 'textfield'
+                        }
+                    }],
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'after_build',
+                                anchor: 'left',
+                                html: '<h3><a name="after_build" id="after_build"></a>#after_build</h3>'+
+                            '<p><strong>Used by</strong>: All elements and forms</p>' +
+                            '<p><strong>Description</strong>: An array of function names which will be called after the form or element is built.</p>'
+                            });
+                        }
+                    }
+                }, {
                     xtype: 'formgrid',
                     id: 'options',
                     name: 'options',
@@ -1174,224 +1389,6 @@ Ext.formbuilder.createElementForm = function () {
                         }
                     }
                 }]
-            }, {
-                title: 'Actions',
-                id: 'actions',
-                items: [{
-                    xtype:'fieldset',
-                    checkboxToggle: true,
-                    collapsed: true,
-                    title:'Create',
-                    id: 'actions_create',
-                    checkboxName: 'actions_create',
-                    items: [{
-                        xtype: 'combobox',
-                        fieldLabel: 'Path Context',
-                        displayField: 'display',
-                        valueField: 'value',
-                        editable: false,
-                        allowBlank: false,
-                        queryMode: 'local',
-                        value: 'document',
-                        name: 'actions_create_context',
-                        store: new Ext.data.Store({
-                            storeId: 'ElementTypes',
-                            fields: ['display', 'value'],
-                            proxy: {
-                                type: 'memory',
-                                reader: {
-                                    type: 'json'
-                                }
-                            },
-                            data: [{
-                                display:'document', 
-                                value:'document'
-                            },{
-                                display:'parent', 
-                                value:'parent'
-                            }]
-                        }),
-                        listeners: {
-                            render: function() {
-                                Ext.create('Ext.tip.ToolTip', {
-                                    target: 'actions-create-context',
-                                    anchor: 'left',
-                                    html: '<h3>Create - Context</h3>' +
-                                '<p class="help">The context in which the path will be executed in.</p>'
-                                });
-                            }
-                        }
-                    }, {
-                        xtype: 'textfield',
-                        fieldLabel: 'Path',
-                        name: 'actions_create_path',
-                        listeners: {
-                            render: function() {
-                                Ext.create('Ext.tip.ToolTip', {
-                                    target: 'actions-create-path',
-                                    anchor: 'left',
-                                    html: '<h3>Create - Path</h3>' +
-                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
-                                });
-                            }
-                        }
-                    }]
-                }, {
-                    xtype:'fieldset',
-                    checkboxToggle: true,
-                    collapsed: true,
-                    title:'Read',
-                    id: 'actions_read',
-                    checkboxName: 'actions_read',
-                    items: [{
-                        xtype: 'combobox',
-                        fieldLabel: 'Path Context',
-                        displayField: 'display',
-                        valueField: 'value',
-                        editable: false,
-                        allowBlank: false,
-                        queryMode: 'local',
-                        value: 'document',
-                        name: 'actions_read_context',
-                        store: new Ext.data.Store({
-                            storeId: 'ElementTypes',
-                            fields: ['display', 'value'],
-                            proxy: {
-                                type: 'memory',
-                                reader: {
-                                    type: 'json'
-                                }
-                            },
-                            data: [{
-                                display:'document', 
-                                value:'document'
-                            },{
-                                display:'parent', 
-                                value:'parent'
-                            }]
-                        })
-                    }, {
-                        xtype: 'textfield',
-                        fieldLabel: 'Path',
-                        name: 'actions_read_path',
-                        listeners: {
-                            render: function() {
-                                Ext.create('Ext.tip.ToolTip', {
-                                    target: 'actions-create-path',
-                                    anchor: 'left',
-                                    html: '<h3>Create - Path</h3>' +
-                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
-                                });
-                            }
-                        }
-                    }]
-                }, {
-                    xtype:'fieldset',
-                    checkboxToggle: true,
-                    collapsed: true,
-                    title:'Update',
-                    id: 'actions_update',
-                    checkboxName: 'actions_update',
-                    items: [{
-                        xtype: 'combobox',
-                        fieldLabel: 'Path Context',
-                        displayField: 'display',
-                        valueField: 'value',
-                        editable: false,
-                        allowBlank: false,
-                        queryMode: 'local',
-                        value: 'self',
-                        name: 'actions_update_context',
-                        store: new Ext.data.Store({
-                            storeId: 'ElementTypes',
-                            fields: ['display', 'value'],
-                            proxy: {
-                                type: 'memory',
-                                reader: {
-                                    type: 'json'
-                                }
-                            },
-                            data: [{
-                                display:'document', 
-                                value:'document'
-                            },{
-                                display:'parent', 
-                                value:'parent'
-                            },{
-                                display:'self', 
-                                value:'self'
-                            }]
-                        })
-                    }, {
-                        xtype: 'textfield',
-                        fieldLabel: 'Path',
-                        value: 'self::node()',
-                        name: 'actions_update_path',
-                        listeners: {
-                            render: function() {
-                                Ext.create('Ext.tip.ToolTip', {
-                                    target: 'actions-create-path',
-                                    anchor: 'left',
-                                    html: '<h3>Create - Path</h3>' +
-                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
-                                });
-                            }
-                        }
-                    }]
-                }, {
-                    xtype:'fieldset',
-                    checkboxToggle: true,
-                    collapsed: true,
-                    title:'Delete',
-                    id: 'actions_delete',
-                    checkboxName: 'actions_delete',
-                    items: [{
-                        xtype: 'combobox',
-                        fieldLabel: 'Path Context',
-                        displayField: 'display',
-                        valueField: 'value',
-                        editable: false,
-                        allowBlank: false,
-                        queryMode: 'local',
-                        value: 'self',
-                        name: 'actions_delete_context',
-                        store: new Ext.data.Store({
-                            storeId: 'ElementTypes',
-                            fields: ['display', 'value'],
-                            proxy: {
-                                type: 'memory',
-                                reader: {
-                                    type: 'json'
-                                }
-                            },
-                            data: [{
-                                display:'document', 
-                                value:'document'
-                            },{
-                                display:'parent', 
-                                value:'parent'
-                            },{
-                                display:'self', 
-                                value:'self'
-                            }]
-                        })
-                    }, {
-                        xtype: 'textfield',
-                        fieldLabel: 'Path',
-                        value: 'self::node()',
-                        name: 'actions_delete_path',
-                        listeners: {
-                            render: function() {
-                                Ext.create('Ext.tip.ToolTip', {
-                                    target: 'actions-create-path',
-                                    anchor: 'left',
-                                    html: '<h3>Create - Path</h3>' +
-                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
-                                });
-                            }
-                        }
-                    }]
-                }]
             }]
         }],
         buttons: [{
@@ -1497,8 +1494,8 @@ Ext.formbuilder.createElementForm = function () {
                     record.commit();
                     record.store.sync();
                     Ext.formbuilder.elementStore.sync();
-                    //record.commit();  
-                    //record.store.sync();
+                //record.commit();  
+                //record.store.sync();
                 }
             }
         }]

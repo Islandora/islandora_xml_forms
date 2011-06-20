@@ -14,7 +14,7 @@ Ext.app = (function() {
             this.createTypes();
             return Ext.create('Ext.panel.Panel', {
                 width: 960,
-                height: 3000,
+                height: 520,
                 title: 'Form Editor',
                 layout: 'border',
                 renderTo: 'xml-form-builder-editor',
@@ -138,6 +138,7 @@ Ext.app = (function() {
                 region: 'center',
                 frame: true,
                 margin: '1 1 1 0',
+                autoScroll: true,
                 items: [{
                     xtype: 'fieldset',
                     title: 'Common Form Controls',
