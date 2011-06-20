@@ -132,7 +132,7 @@ Ext.formbuilder.createTreePanel = function() {
                         }
                         var actions = data.actions;
                         if(actions !== undefined && actions != "") {
-                            if(actions.create !== undefined && actions.create != "") {
+                            if(actions.create !== undefined && actions.create != "" && actions.create !== null) {
                                 var create = actions.create;
                                 var values = {
                                     actions_create: "on",
@@ -144,7 +144,7 @@ Ext.formbuilder.createTreePanel = function() {
                             else {
                                 Ext.getCmp('actions_create').collapse();
                             }
-                            if(actions.read !== undefined && actions.read != "") {
+                            if(actions.read !== undefined && actions.read != "" && actions.read !== null) {
                                 var read = actions.read;
                                 var values = {
                                     actions_read: "on",
@@ -156,7 +156,7 @@ Ext.formbuilder.createTreePanel = function() {
                             else {
                                 Ext.getCmp('actions_read').collapse();
                             }
-                            if(actions.update !== undefined && actions.update != "") {
+                            if(actions.update !== undefined && actions.update != "" && actions.update !== null) {
                                 var update = actions.update;
                                 var values = {
                                     actions_update: "on",
@@ -168,7 +168,7 @@ Ext.formbuilder.createTreePanel = function() {
                             else {
                                 Ext.getCmp('actions_update').collapse();
                             }
-                            if(actions['delete'] !== undefined && actions['delete'] != "") {
+                            if(actions['delete'] !== undefined && actions['delete'] != "" && actions['delete'] !== null) {
                                 var remove = actions['delete'];
                                 var values = {
                                     actions_delete: "on",

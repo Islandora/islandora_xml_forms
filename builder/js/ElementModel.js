@@ -241,7 +241,7 @@ Ext.define('Element', {
     }, {
         name: 'tree',
         type: 'boolean',
-        defaultValue: false
+        defaultValue: true
     }, {
         name: 'validate',
         type: types.ARRAY

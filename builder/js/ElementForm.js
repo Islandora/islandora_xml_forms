@@ -507,6 +507,7 @@ Ext.formbuilder.createElementForm = function () {
                     id: 'tree',
                     name: 'tree',
                     fieldLabel: 'Tree',
+                    checked: true,
                     inputValue: true,
                     listeners: {
                         render: function() {
