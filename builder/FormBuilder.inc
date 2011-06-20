@@ -7,6 +7,8 @@
  *
  * 
  */
+module_load_include('inc', 'php_lib', 'Array');
+
 class FormBuilder {
   /**
    * Permissions.
@@ -268,6 +270,9 @@ class FormBuilder {
     foreach ($element->controls as $name => $control) {
       $name = str_replace('#', '', $name); // Remove the Hash.
       $value = $control;
+      if ($value instanceof FormPropertyInterface) {
+        $value = $value->getValue();
+      }
       if (is_array($value)) {
         $value = self::TransformArray($value);
       }

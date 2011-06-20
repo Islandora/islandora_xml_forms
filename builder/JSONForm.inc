@@ -30,8 +30,6 @@ class JSONForm {
     $properties = $this->createProperties();
     $form = $this->createDrupalForm();
     $this->definition = XMLFormDefinition::Create($properties, $form['Root']);
-    echo $this->definition;
-    exit();
   }
 
   /**
