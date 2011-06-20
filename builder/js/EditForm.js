@@ -138,7 +138,6 @@ Ext.app = (function() {
                 region: 'center',
                 frame: true,
                 margin: '1 1 1 0',
-                autoScroll: true,
                 items: [{
                     xtype: 'fieldset',
                     title: 'Common Form Controls',

@@ -51,6 +51,8 @@ class XMLFormDefinition {
   public static function Create(array $properties, array $form) {
     $definition = new SimpleXMLElement('<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></definition>');
     self::AddPropertiesToDefinition($definition, $properties);
+    echo $definition->asXML();
+    exit();
     self::AddFormToDefinition($definition, new FormElement($form));
     return dom_import_simplexml($definition);
   }
@@ -61,7 +63,32 @@ class XMLFormDefinition {
    * @param array $properties
    */
   private static function AddPropertiesToDefinition(SimpleXMLElement $definition, array &$properties) {
-    
+    $form_properties = $definition->addChild('properties');
+    if (isset($properties['document'])) {
+      $document_properties = $form_properties->addChild('document');
+      if (isset($properties['document']['root'])) {
+        $root = $document_properties->addChild('root');
+        if (isset($properties['document']['root']['prefix'])) {
+          $root->addChild('prefix', $properties['document']['root']['prefix']);
+        }
+        if (isset($properties['document']['root']['local_name'])) {
+          $root->addChild('local_name', $properties['document']['root']['local_name']);
+        }
+        if (isset($properties['document']['root']['uri'])) {
+          $root->addChild('uri', $properties['document']['root']['uri']);
+        }
+      }
+      if (isset($properties['document']['namespaces'])) {
+        $namespaces = $document_properties->addChild('namespaces');
+        foreach ($properties['document']['namespaces'] as $item) {
+          $namespace = $namespaces->addChild('namespace', $item['uri']);
+          $namespace->addAttribute('prefix', $item['prefix']);
+        }
+      }
+      if (isset($properties['document']['schema'])) {
+        $document_properties->addChild('schema', $properties['document']['schema']);
+      }
+    }
   }
 
   /**

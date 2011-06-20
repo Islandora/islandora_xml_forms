@@ -6,6 +6,8 @@
  * @file
  *
  */
+module_load_include('inc', 'php_lib', 'String');
+module_load_include('inc', 'php_lib', 'Array');
 
 /**
  * Builds a form from a JSON object posted to the server by the form builder.
@@ -23,11 +25,12 @@ class JSONForm {
    * Create a FormDefintion from Posted JSON data.
    */
   public function __construct($form_name) {
+    module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
     $this->json = json_decode($_POST['data']);
     $properties = $this->createProperties();
-    print_r($properties);
-    exit();
     $form = $this->createDrupalForm();
+    print_r($form);
+    exit();
     $this->definition = XMLFormDefinition::Create($properties, $form);
   }
 
@@ -37,7 +40,6 @@ class JSONForm {
    */
   private function createProperties() {
     $properties = $this->json->properties;
-    print_r($properties);
     $namespaces = $this->convertStdClassToArray($properties->namespaces);
     return array(
       'document' => array(
@@ -60,12 +62,7 @@ class JSONForm {
     $output = array();
     foreach ($elements as $element) {
       list($key, $value) = $this->createDrupalFormElement($element);
-      if (isset($key)) {
-        $output[$key] = $value;
-      }
-      else {
-        $output[] = $value;
-      }
+      array_add($output, $key, $value);
     }
     return $output;
   }
@@ -76,16 +73,44 @@ class JSONForm {
   private function createDrupalFormElement($element) {
     $key = isset($element->key) ? $element->key : NULL;
     $controls = $this->getDrupalFormControls($element);
-    $children = $this->getDrupalFormChildElements($element->elements);
+    $children = $this->getDrupalFormChildElements($element);
     return array($key, array_merge($controls, $children));
   }
 
+  /**
+   *
+   * @param array $element
+   * @return array
+   */
   private function getDrupalFormControls($element) {
-    
+    $ignore = array('key', 'text', 'root', 'leaf', 'id', 'parentId', 'icon', 'cls', 'qtip', 'qtitle',
+      'iconCls', 'href', 'hrefTarget', 'elements', 'index', 'depth', 'expanded', 'checked',
+      'isLast', 'isFirst', 'allowDrop', 'allowDrag', 'loaded', 'loading');
+    $controls = array();
+    foreach ($element as $key => $value) {
+      $is_control = array_search($key, $ignore) === FALSE;
+      $is_valid = $this->validateFormControl($key, $value);
+      if ($is_control && $is_valid) {
+        $controls["#$key"] = $value;
+      }
+    }
+    return $controls;
   }
 
+  /**
+   *
+   * @param array $element
+   * @return array 
+   */
   private function getDrupalFormChildElements($element) {
-    
+    $children = array();
+    if (isset($element->elements)) {
+      foreach ($element->elements as $child) {
+        list($key, $value) = $this->createDrupalFormElement($child);
+        array_add($children, $key, $value);
+      }
+    }
+    return $children;
   }
 
   /**
@@ -125,65 +150,60 @@ class JSONForm {
 
   /**
    *
-   * @param stdClass $element 
+   * @param string $name
+   * @param mixed $value
+   * @return boolean 
    */
-  private function createFormControls($element) {
+  private function validateFormControl($name, $value) {
     $controls = array(
-      'type' => array(),
-      'access' => array(),
-      'after_build' => array('convert' => 'convertFormControlToArray', 'validate' => 'arrayIsNotEmpty'),
-      'ahah' => array('convert' => 'convertAhah', 'validate' => 'arrayIsNotEmpty'),
-      'attributes' => array('convert' => 'convertFormControlToMap', 'validate' => 'arrayIsNotEmpty'),
-      'autocomplete_path' => array('validate' => 'stringIsNotEmpty'),
-      'button_type' => array('validate' => 'stringIsNotEmpty'),
-      'collapsed' => array(),
-      'collapsible' => array(),
-      'cols' => array(),
-      'default_value' => array('validate' => 'stringIsNotEmpty'),
-      'delta' => array(),
-      'description' => array('validate' => 'stringIsNotEmpty'),
-      'disabled' => array(),
-      'element_validate' => array('convert' => 'convertFormControlToArray', 'validate' => 'arrayIsNotEmpty'),
-      'executes_submit_callback' => array(),
-      'field_prefix' => array('validate' => 'stringIsNotEmpty'),
-      'field_suffix' => array('validate' => 'stringIsNotEmpty'),
-      'maxlength' => array(),
-      'method' => array('validate' => 'stringIsNotEmpty'),
-      'multiple' => array(),
-      'name' => array('validate' => 'stringIsNotEmpty'),
-      'options' => array('convert' => 'convertFormControlToMap', 'validate' => 'arrayIsNotEmpty'),
-      'post_render' => array('convert' => 'convertFormControlToArray', 'validate' => 'arrayIsNotEmpty'),
-      'prefix' => array('validate' => 'stringIsNotEmpty'),
-      'pre_render' => array('convert' => 'convertFormControlToArray', 'validate' => 'arrayIsNotEmpty'),
-      'process' => array('convert' => 'convertFormControlToArray', 'validate' => 'arrayIsNotEmpty'),
-      'required' => array(),
-      'resizable' => array(),
-      'return_value' => array('validate' => 'stringIsNotEmpty'),
-      'rows' => array(),
-      'size' => array(),
-      'src' => array('validate' => 'stringIsNotEmpty'),
-      'submit' => array('convert' => 'convertFormControlToArray', 'validate' => 'arrayIsNotEmpty'),
-      'suffix' => array('validate' => 'stringIsNotEmpty'),
-      'theme' => array('validate' => 'stringIsNotEmpty'),
-      'title' => array('validate' => 'stringIsNotEmpty'),
-      'tree' => array(),
-      'validate' => array('convert' => 'convertFormControlToArray', 'validate' => 'arrayIsNotEmpty'),
-      'value' => array('validate' => 'stringIsNotEmpty'),
-      'weight' => array(),
-      'user_data' => array('convert' => 'convertFormControlToMap', 'validate' => 'arrayIsNotEmpty'),
-      'actions' => array('convert' => 'convertFormControlToMap', 'validate' => 'arrayIsNotEmpty'),
+      'type' => 'is_non_empty_string',
+      'access' => 'is_bool',
+      'after_build' => 'is_non_empty_array',
+      'ahah' => 'is_non_empty_array',
+      'attributes' => 'is_non_empty_array',
+      'autocomplete_path' => 'is_non_empty_string',
+      'button_type' => 'is_non_empty_string',
+      'collapsed' => 'is_bool',
+      'collapsible' => 'is_bool',
+      'cols' => 'is_numeric',
+      'default_value' => 'is_non_empty_string',
+      'delta' => 'is_numeric',
+      'description' => 'is_non_empty_string',
+      'disabled' => 'is_bool',
+      'element_validate' => 'is_non_empty_array',
+      'executes_submit_callback' => 'is_bool',
+      'field_prefix' => 'is_non_empty_string',
+      'field_suffix' => 'is_non_empty_string',
+      'maxlength' => 'is_numeric',
+      'method' => 'is_non_empty_string',
+      'multiple' => 'is_bool',
+      'name' => 'is_non_empty_string',
+      'options' => 'is_non_empty_array',
+      'post_render' => 'is_non_empty_array',
+      'prefix' => 'is_non_empty_string',
+      'pre_render' => 'is_non_empty_array',
+      'process' => 'is_non_empty_array',
+      'required' => 'is_bool',
+      'resizable' => 'is_bool',
+      'return_value' => 'is_non_empty_string',
+      'rows' => 'is_numeric',
+      'size' => 'is_numeric',
+      'src' => 'is_non_empty_string',
+      'submit' => 'is_non_empty_array',
+      'suffix' => 'is_non_empty_string',
+      'theme' => 'is_non_empty_string',
+      'title' => 'is_non_empty_string',
+      'tree' => 'is_bool',
+      'validate' => 'is_non_empty_array',
+      'value' => 'is_non_empty_string',
+      'weight' => 'is_numeric',
+      'user_data' => 'is_non_empty_array',
+      'actions' => 'is_non_empty_array',
     );
-    $form_controls = array();
-    foreach ($controls as $control => $action) {
-      if (isset($element->$control)) {
-        $name = "#$control";
-        $value = $this->convertStdClassToArray($element->$control);
-        if (empty($action['validate']) || call_user_func(array($this, $action['validate']), $value)) {
-          $form_controls[$name] = $value;
-        }
-      }
+    if (isset($controls[$name])) {
+      return call_user_func($controls[$name], $value);
     }
-    return $form_controls;
+    return TRUE; // Assume valid for non specified controls.
   }
 
   function convertStdClassToArray($object) {

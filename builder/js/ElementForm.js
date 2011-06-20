@@ -24,7 +24,7 @@ Ext.formbuilder.createElementForm = function () {
                     Ext.create('Ext.tip.ToolTip', {
                         target: 'key',
                         anchor: 'left',
-                        html: 'Description Coming...'
+                        html: 'The array key for this element.'
                     });
                 }
             }
