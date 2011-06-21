@@ -12,7 +12,7 @@ function xml_forms_menu() {
     'title' => 'schema',
     'description' => 'schema',
     'page callback' => 'xml_forms_get_schema',
-    'page argument' => array(1),
+    'page arguments' => array(1),
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
