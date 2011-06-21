@@ -69,16 +69,16 @@ class Actions implements FormPropertyInterface {
    * 
    */
   public function __construct($value) {
-    if (isset($value['create'])) {
+    if (isset($value['create']) && is_array($value['create'])) {
       $this->create = new Create($value['create']);
     }
-    if (isset($value['read'])) {
+    if (isset($value['read']) && is_array($value['read'])) {
       $this->read = new Read($value['read']);
     }
-    if (isset($value['update'])) {
+    if (isset($value['update']) && is_array($value['update'])) {
       $this->update = new Update($value['update']);
     }
-    if (isset($value['delete'])) {
+    if (isset($value['delete']) && is_array($value['delete'])) {
       $this->delete = new Delete($value['delete']);
     }
   }
