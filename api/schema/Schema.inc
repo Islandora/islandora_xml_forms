@@ -125,6 +125,7 @@ class XMLSchema {
       $this->loadImportedFiles();
       return TRUE;
     }
+    $this->schema = NULL;
     return FALSE;
   }
 
@@ -225,11 +226,14 @@ class XMLSchema {
    * @return array
    */
   public function query($path) {
-    $results = dom_node_list_to_array($this->xpath->query($path));
-    foreach ($this->includes as $schema) {
-      $results = array_merge($results, $schema->query($path));
+    if ($this->schema) {
+      $results = dom_node_list_to_array($this->xpath->query($path));
+      foreach ($this->includes as $schema) {
+        $results = array_merge($results, $schema->query($path));
+      }
+      return $results;
     }
-    return $results;
+    return array();
   }
 
   /**
