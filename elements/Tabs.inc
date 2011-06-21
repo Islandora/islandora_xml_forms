@@ -20,6 +20,7 @@ class Tabs {
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     static $add_files = TRUE;
     if ($add_files) {
+      $path = drupal_get_path('module', 'xml_form_elements');
       jquery_ui_add('ui.tabs');
       drupal_add_js("$path/js/XMLFormElements.js");
       drupal_add_js("$path/js/Tabs.js");
