@@ -137,7 +137,10 @@ Ext.formbuilder.createTreePanel = function() {
                                 var values = {
                                     actions_create: "on",
                                     actions_create_context: create.context,
-                                    actions_create_path: create.path
+                                    actions_create_path: create.path,
+                                    actions_create_schema: create.schema,
+                                    actions_create_type: create.type,
+                                    actions_create_value: create.value
                                 };
                                 form.setValues(values);
                             }
@@ -161,7 +164,8 @@ Ext.formbuilder.createTreePanel = function() {
                                 var values = {
                                     actions_update: "on",
                                     actions_update_context: update.context,
-                                    actions_update_path: update.path
+                                    actions_update_path: update.path,
+                                    actions_update_schema: update.schema
                                 };
                                 form.setValues(values);
                             }

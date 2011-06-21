@@ -8,6 +8,8 @@
  */
 module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'php_lib', 'Array');
+module_load_include('inc', 'php_lib', 'Misc');
+module_load_include('inc', 'xml_form_api', 'Actions');
 
 /**
  * Builds a form from a JSON object posted to the server by the form builder.
@@ -29,7 +31,10 @@ class JSONForm {
     $this->json = json_decode($_POST['data']);
     $properties = $this->createProperties();
     $form = $this->createDrupalForm();
-    $this->definition = XMLFormDefinition::Create($properties, $form['Root']);
+    $definition = XMLFormDefinition::Create($properties, $form['Root']);
+    $this->definition = new DOMDocument();
+    $this->definition->loadXML($definition->asXML());
+    echo  $this->definition->saveXML();
   }
 
   /**
@@ -88,6 +93,7 @@ class JSONForm {
     foreach ($element as $key => $value) {
       $is_control = array_search($key, $ignore) === FALSE;
       $is_valid = $this->validateFormControl($key, $value);
+      $value = is_object($value) ? object_as_array($value) : $value;
       if ($is_control && $is_valid) {
         $controls["#$key"] = $value;
       }
@@ -198,6 +204,7 @@ class JSONForm {
       'user_data' => 'is_non_empty_array',
       'actions' => 'is_non_empty_array',
     );
+    $value = is_object($value) ? object_as_array($value) : $value;
     if (isset($controls[$name])) {
       return call_user_func($controls[$name], $value);
     }

@@ -179,10 +179,86 @@ Ext.formbuilder.createElementForm = function () {
                         xtype: 'textfield',
                         fieldLabel: 'Path',
                         name: 'actions_create_path',
+                        id: 'actions-create-path',
+                        width: 600,
                         listeners: {
                             render: function() {
                                 Ext.create('Ext.tip.ToolTip', {
                                     target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Schema',
+                        name: 'actions_create_schema',
+                        id: 'actions-create-schema',
+                        width: 600,
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-schema',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }, {
+                        xtype: 'combobox',
+                        fieldLabel: 'Type',
+                        displayField: 'display',
+                        valueField: 'value',
+                        editable: false,
+                        allowBlank: false,
+                        queryMode: 'local',
+                        value: 'document',
+                        name: 'actions_create_type',
+                        id: 'actions-create-type',
+                        value: 'element',
+                        store: new Ext.data.Store({
+                            storeId: 'ElementTypes',
+                            fields: ['display', 'value'],
+                            proxy: {
+                                type: 'memory',
+                                reader: {
+                                    type: 'json'
+                                }
+                            },
+                            data: [{
+                                display:'element', 
+                                value:'element'
+                            }, {
+                                display:'attribute', 
+                                value:'attribute'
+                            }, {
+                                display:'xml', 
+                                value:'xml'
+                            }]
+                        }),
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-type',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Context</h3>' +
+                                '<p class="help">The context in which the path will be executed in.</p>'
+                                });
+                            }
+                        }
+                    }, {
+                        xtype: 'textarea',
+                        fieldLabel: 'Value',
+                        name: 'actions_create_value',
+                        id: 'actions-create-value',
+                        width: 600,
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-create-value',
                                     anchor: 'left',
                                     html: '<h3>Create - Path</h3>' +
                                 '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
@@ -228,6 +304,7 @@ Ext.formbuilder.createElementForm = function () {
                         xtype: 'textfield',
                         fieldLabel: 'Path',
                         name: 'actions_read_path',
+                        width: 600,
                         listeners: {
                             render: function() {
                                 Ext.create('Ext.tip.ToolTip', {
@@ -281,10 +358,27 @@ Ext.formbuilder.createElementForm = function () {
                         fieldLabel: 'Path',
                         value: 'self::node()',
                         name: 'actions_update_path',
+                        width: 600,
                         listeners: {
                             render: function() {
                                 Ext.create('Ext.tip.ToolTip', {
                                     target: 'actions-create-path',
+                                    anchor: 'left',
+                                    html: '<h3>Create - Path</h3>' +
+                                '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
+                                });
+                            }
+                        }
+                    }, {
+                        xtype: 'textfield',
+                        fieldLabel: 'Schema',
+                        name: 'actions_update_schema',
+                        id: 'actions-update-schema',
+                        width: 600,
+                        listeners: {
+                            render: function() {
+                                Ext.create('Ext.tip.ToolTip', {
+                                    target: 'actions-update-schema',
                                     anchor: 'left',
                                     html: '<h3>Create - Path</h3>' +
                                 '<p class="help">The XPath will be used to find the elements which we should append to.</p>'
@@ -334,6 +428,7 @@ Ext.formbuilder.createElementForm = function () {
                         fieldLabel: 'Path',
                         value: 'self::node()',
                         name: 'actions_delete_path',
+                        width: 600,
                         listeners: {
                             render: function() {
                                 Ext.create('Ext.tip.ToolTip', {
@@ -1463,7 +1558,10 @@ Ext.formbuilder.createElementForm = function () {
                         has_actions = true;
                         actions.create = {
                             context: values['actions_create_context'],
-                            path: values['actions_create_path']
+                            path: values['actions_create_path'],
+                            schema: values['actions_create_schema'],
+                            type: values['actions_create_type'],
+                            value: values['actions_create_value']
                         };
                     }
                     if(values['actions_read'] == "on") {
@@ -1477,7 +1575,8 @@ Ext.formbuilder.createElementForm = function () {
                         has_actions = true;
                         actions.update = {
                             context: values['actions_update_context'],
-                            path: values['actions_update_path']
+                            path: values['actions_update_path'],
+                            schema: values['actions_update_schema']
                         };
                     }
                     if(values['actions_delete'] == "on") {
@@ -1495,8 +1594,6 @@ Ext.formbuilder.createElementForm = function () {
                     record.commit();
                     record.store.sync();
                     Ext.formbuilder.elementStore.sync();
-                //record.commit();  
-                //record.store.sync();
                 }
             }
         }]

@@ -52,7 +52,7 @@ class XMLFormDefinition {
     $definition = new SimpleXMLElement('<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"></definition>');
     self::AddPropertiesToDefinition($definition, $properties);
     self::AddFormToDefinition($definition, new FormElement($form));
-    return dom_import_simplexml($definition);
+    return $definition;
   }
 
   /**
@@ -108,6 +108,9 @@ class XMLFormDefinition {
   }
 
   private static function AddFormControlToProperties(SimpleXMLElement $properties, $key, $value) {
+    if ($value instanceof FormPropertyInterface) {
+      $value = $value->getValue();
+    }
     $key = trim($key, '#');
     if (!is_array($value)) {
       $control = $properties->addChild($key, $value);
