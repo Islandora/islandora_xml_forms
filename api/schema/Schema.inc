@@ -263,9 +263,27 @@ class XMLSchema {
    * 
    * @return DOMElement 
    */
-  public function findGlobalType($local_name, $type_name) {
-    if (isset($type_name) && $type_name != '') {
-      $path = "/xs:schema/xs:{$local_name}[@name='$type_name']";
+  public function findGlobalType($name) {
+    if (isset($name) && $name != '') {
+      $path = "(/xs:schema/xs:complexType[@name='$name']) | (/xs:schema/xs:simpleType[@name='$name'])";
+      $results = $this->query($path);
+      return count($results) == 1 ? array_shift($results) : NULL;
+    }
+    return NULL;
+  }
+
+  public function findGlobalElement($name) {
+    if (isset($name) && $name != '') {
+      $path = "/xs:schema/xs:element[@name='$name']";
+      $results = $this->query($path);
+      return count($results) == 1 ? array_shift($results) : NULL;
+    }
+    return NULL;
+  }
+
+  public function findGroup($name) {
+    if (isset($name) && $name != '') {
+      $path = "/xs:schema/xs:group[@name='$name']";
       $results = $this->query($path);
       return count($results) == 1 ? array_shift($results) : NULL;
     }

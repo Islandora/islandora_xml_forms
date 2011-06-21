@@ -8,13 +8,13 @@
  * Models a <xs:complexType> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'Node');
-module_load_include('inc', 'schema_api', 'ComplexContent');
-module_load_include('inc', 'schema_api', 'SimpleContent');
-module_load_include('inc', 'schema_api', 'All');
-module_load_include('inc', 'schema_api', 'Choice');
-module_load_include('inc', 'schema_api', 'Sequence');
-module_load_include('inc', 'schema_api', 'Group');
+module_load_include('inc', 'xml_schema_api', 'Node');
+module_load_include('inc', 'xml_schema_api', 'ComplexContent');
+module_load_include('inc', 'xml_schema_api', 'SimpleContent');
+module_load_include('inc', 'xml_schema_api', 'All');
+module_load_include('inc', 'xml_schema_api', 'Choice');
+module_load_include('inc', 'xml_schema_api', 'Sequence');
+module_load_include('inc', 'xml_schema_api', 'Group');
 
 /**
  * Models a <xs:complexType> DOMElement.

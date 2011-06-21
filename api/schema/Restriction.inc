@@ -8,10 +8,10 @@
  * Models a <xs:restriction> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'All');
-module_load_include('inc', 'schema_api', 'Choice');
-module_load_include('inc', 'schema_api', 'Sequence');
-module_load_include('inc', 'schema_api', 'Group');
+module_load_include('inc', 'xml_schema_api', 'All');
+module_load_include('inc', 'xml_schema_api', 'Choice');
+module_load_include('inc', 'xml_schema_api', 'Sequence');
+module_load_include('inc', 'xml_schema_api', 'Group');
 
 /**
  * Models a <xs:restriction> element.
@@ -47,6 +47,14 @@ class XMLSchemaRestriction extends XMLSchemaNode {
    */
   protected function getLocalName() {
     return self::LocalName;
+  }
+  
+  /**
+   * @param string $base
+   * @return $complexType.
+   */
+  private function findExtension($base) {
+    return NULL;
   }
 
   public function restrictsComplexContent() {

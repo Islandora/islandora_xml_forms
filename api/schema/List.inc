@@ -7,7 +7,7 @@
  *
  * Models a <xs:list> element.
  */
-module_load_include('inc', 'schema_api', 'Node');
+module_load_include('inc', 'xml_schema_api', 'Node');
 
 /**
  * Models a <xs:list> DOMElement.

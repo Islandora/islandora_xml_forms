@@ -8,8 +8,8 @@
  * Models a <xs:choice> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'Node');
-module_load_include('inc', 'schema_api', 'Element');
+module_load_include('inc', 'xml_schema_api', 'Node');
+module_load_include('inc', 'xml_schema_api', 'Element');
 
 /**
  * Models a <xs:choice> element.

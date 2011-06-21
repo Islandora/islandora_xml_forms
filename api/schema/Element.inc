@@ -8,9 +8,9 @@
  * Models a <xs:element> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'Node');
-module_load_include('inc', 'schema_api', 'ComplexType');
-module_load_include('inc', 'schema_api', 'SimpleType');
+module_load_include('inc', 'xml_schema_api', 'Node');
+module_load_include('inc', 'xml_schema_api', 'ComplexType');
+module_load_include('inc', 'xml_schema_api', 'SimpleType');
 
 /**
  * Models a <xs:element> DOMElement.
@@ -22,31 +22,48 @@ class XMLSchemaElement extends XMLSchemaNode {
   const LocalName = 'element';
 
   /**
+   *
+   * @var DOMElement
+   */
+  protected $definition; // If $node is a reference then this is the DOMElement $node references, otherwise it is equivalent to $node.
+  /**
+   *
+   * @var DOMElement
+   */
+  protected $reference; // The DOMElement $node reference's if it exists.
+
+  /**
    * 
    * @param DOMElement $node 
    */
+
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
+    $xml = $node->ownerDocument->saveXML($node);
+    $type = $this->createType();
+    $this->protected->add('type', $type);
+    if ($type instanceof XMLSchemaComplexType) {
+      $this->protected->add('complexType', $type);
+    }
+    else if ($type instanceof XMLSchemaSimpleType) {
+      $this->protected->add('simpleType', $type);
+    }
+    /*
     $this->protected->add(
         array(
-          'complexType' => $this->createType(XMLSchemaComplexType::LocalName), // We could make this lazy, then it wouldn't expand the whole tree...
-          'simpleType' => $this->createType(XMLSchemaSimpleType::LocalName),
         //'key' => @todo Implement...
         //'keyRef' => @todo Implement...
         //'unique' => @todo Implement...
         )
-    );
+    );*/
   }
 
   /**
    *
-   * @param string $local_name
    * @return XMLSchemaNode
    */
-  private function createType($local_name) {
-    $node = $this->isTypeInline() ?
-        $this->findChild($local_name) :
-        $this->schema->findGlobalType($local_name, $this->getTypeName());
+  private function createType() {
+    $node = $this->getType();
     return isset($node) ? $this->createNodeTypedObject($node) : NULL;
   }
 
@@ -69,6 +86,19 @@ class XMLSchemaElement extends XMLSchemaNode {
   }
 
   /**
+   * 
+   * @return DOMElement
+   */
+  public function getDefinition() {
+    if (empty($this->definition)) {
+      $this->definition = $this->isReference() ?
+          $this->getReference() :
+          $this->node;
+    }
+    return $this->definition;
+  }
+
+  /**
    * Is a reference?
    * 
    * @return boolean
@@ -78,11 +108,50 @@ class XMLSchemaElement extends XMLSchemaNode {
   }
 
   /**
+   * Gets the element this element refer's to.
    * 
-   * @return string
+   * @return DOMElement
    */
-  public function getTypeName() {
-    return $this->node->getAttribute('type');
+  public function getReference() {
+    if (empty($this->reference) && $this->isReference()) {
+      $name = $this->node->getAttribute('ref');
+      $this->reference = $this->schema->findGlobalElement($name);
+    }
+    return $this->reference;
+  }
+
+  /**
+   *
+   * @return boolean
+   */
+  public function isTyped() {
+    return $this->getDefinition()->hasAttribute('type');
+  }
+
+  /**
+   * 
+   * 
+   * @return boolean
+   */
+  public function isAnonymous() {
+    return $this->isTyped() == FALSE;
+  }
+
+  /**
+   * @return DOMElement
+   */
+  public function getType() {
+    if ($this->isAnonymous()) {
+      $child = dom_node_find_child($this->node, 'DOMElement', 'localName', 'complexType');
+      if (empty($child)) {
+        $child = dom_node_find_child($this->node, 'DOMElement', 'localName', 'simpleType');
+      }
+      return $child; // if key, keyRef, unique, return NULL...
+    }
+    else {
+      $type_name = $this->getDefinition()->getAttribute('type');
+      return $this->schema->findGlobalType($type_name);
+    }
   }
 
   /**
@@ -96,15 +165,6 @@ class XMLSchemaElement extends XMLSchemaNode {
     else {
       return $this->node->getAttribute('name');
     }
-  }
-
-  /**
-   * Has type
-   * 
-   * @return boolean
-   */
-  public function isTypeInline() {
-    return $this->getTypeName() == '';
   }
 
 }

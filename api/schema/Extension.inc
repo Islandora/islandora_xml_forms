@@ -9,9 +9,9 @@
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'schema  _api', 'Any');
-module_load_include('inc', 'schema_api', 'Choice');
-module_load_include('inc', 'schema_api', 'Sequence');
-module_load_include('inc', 'schema_api', 'Group');
+module_load_include('inc', 'xml_schema_api', 'Choice');
+module_load_include('inc', 'xml_schema_api', 'Sequence');
+module_load_include('inc', 'xml_schema_api', 'Group');
 
 /**
  * Models a <xs:extension> element.
@@ -58,7 +58,7 @@ class XMLSchemaExtension extends XMLSchemaNode {
       return new XMLSchemaAny($this->schema);
     }
     else {
-      $node = $this->schema->findGlobalType('complexType', $base);
+      $node = $this->schema->findGlobalType($base);
       return new XMLSchemaComplexType($this->schema, $node);
     }
   }

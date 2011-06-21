@@ -8,8 +8,8 @@
  * Models a <xs:simpleContent> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'Extension');
-module_load_include('inc', 'schema_api', 'Restriction');
+module_load_include('inc', 'xml_schema_api', 'Extension');
+module_load_include('inc', 'xml_schema_api', 'Restriction');
 
 /**
  * Models a <xs:simpleContent> element.

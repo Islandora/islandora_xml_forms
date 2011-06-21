@@ -8,9 +8,9 @@
  * Models a <xs:element> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'Node');
-module_load_include('inc', 'schema_api', 'ComplexType');
-module_load_include('inc', 'schema_api', 'SimpleType');
+module_load_include('inc', 'xml_schema_api', 'Node');
+module_load_include('inc', 'xml_schema_api', 'ComplexType');
+module_load_include('inc', 'xml_schema_api', 'SimpleType');
 
 /**
  * Models a <xs:element> DOMElement.

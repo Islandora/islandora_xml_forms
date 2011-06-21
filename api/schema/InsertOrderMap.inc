@@ -7,8 +7,8 @@
  *
  * Builds a map that defines where elements can be inserted.
  */
-module_load_include('inc', 'schema_api', 'Schema');
-module_load_include('inc', 'schema_api', 'Element');
+module_load_include('inc', 'xml_schema_api', 'Schema');
+module_load_include('inc', 'xml_schema_api', 'Element');
 
 /**
  * How do I do this...
@@ -40,10 +40,10 @@ abstract class InsertOrderNode {
   /**
    * 
    */
-//  abstract public function constraintMet($repitition = NULL);
-  ///abstract public function matchesConstraint(DOMElement $element);
+  //abstract public function constraintMet($repitition = NULL);
+  //abstract public function matchesConstraint(DOMElement $element);
   //abstract public function matches(DOMElement $element);
-
+  
   abstract public function storeMatch(DOMElement $element);
 
   abstract public function getOrder();
@@ -71,7 +71,9 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
     }
   }
 
-  public function constraintMet($repetition = NULL);
+  public function constraintMet($repetition = NULL) {
+    
+  }
 
   protected function canCloneChildren() {
     $count = count($this->children);

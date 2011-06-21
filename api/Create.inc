@@ -8,6 +8,7 @@
  */
 module_load_include('inc', 'xml_form_api', 'ActionInterface');
 module_load_include('inc', 'xml_form_api', 'Path');
+module_load_include('inc', 'xml_schema_api', 'InsertOrderMap');
 
 /**
  * 
@@ -160,11 +161,8 @@ class Create implements Action {
    */
   private function append(XMLDocument $document, DOMNode $child, DOMElement $parent) {
     if (isset($document->schema)) {
-      try {
-        $document->schema->insertNode($this->schema_path, $parent, $child);
-      } catch (Exception $e) {
-        drupal_set_message('', 'error');
-      }
+      $insert_order = new InsertOrderMap($document->schema);
+      $insert_order->insert($this->schema_path, $parent, $child);
     }
     else {
       $parent->appendChild($child);

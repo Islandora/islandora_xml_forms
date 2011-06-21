@@ -8,9 +8,9 @@
  * Models a <xs:group> element.
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
-module_load_include('inc', 'schema_api', 'Node');
-module_load_include('inc', 'schema_api', 'ComplexType');
-module_load_include('inc', 'schema_api', 'SimpleType');
+module_load_include('inc', 'xml_schema_api', 'Node');
+module_load_include('inc', 'xml_schema_api', 'ComplexType');
+module_load_include('inc', 'xml_schema_api', 'SimpleType');
 
 /**
  * Models a <xs:group> DOMElement.
@@ -51,7 +51,7 @@ class XMLSchemaGroup extends XMLSchemaNode {
    * @return XMLSchemaNode
    */
   private function createType($local_name) {
-    $group = $this->schema->findGlobalType('group', $this->getName);
+    $group = $this->schema->findGroup($this->getName);
     $children = dom_node_filter_children($group, 'DOMElement', 'localName', $local_name);
     if (count($children) == 1) {
       $child = array_shift($children);
