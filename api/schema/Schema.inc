@@ -119,10 +119,13 @@ class XMLSchema {
    */
   private function loadSchema($filename) {
     $this->schema = new DOMDocument();
-    $this->schema->load($filename);
-    $this->configureXPath();
-    $this->loadIncludedFiles();
-    $this->loadImportedFiles();
+    if ($this->schema->load($filename)) {
+      $this->configureXPath();
+      $this->loadIncludedFiles();
+      $this->loadImportedFiles();
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**
