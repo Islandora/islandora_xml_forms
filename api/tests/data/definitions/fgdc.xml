@@ -13,7 +13,7 @@
                 <namespace prefix="xmlns">http://www.w3.org/2000/xmlns</namespace>
                 <namespace prefix="fgdc">http://localhost/</namespace>
             </namespaces>
-            <schema>/Users/nbanks/Projects/DGI/fgdc/fgdc-std-001-1998.xsd</schema>
+            <schema>http://localhost/schema/fgdc-std-001-1998.xsd</schema>
         </document>
     </properties>
     <form>

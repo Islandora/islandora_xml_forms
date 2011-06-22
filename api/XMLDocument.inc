@@ -57,7 +57,7 @@ class XMLDocument {
    * @var DOMXPath
    */
   protected $xpath;
-  
+
   /**
    * Create an XMLDocument.
    * 
@@ -118,9 +118,7 @@ class XMLDocument {
     $doc = new DOMDocument();
     $doc->loadXML($this->xml);
     if ($this->schema) {
-      if (!$doc->schemaValidate($this->schema->filename)) {
-        return $doc;
-      }
+      $doc->schemaValidate($this->schema->filename);
     }
     return $doc;
   }
