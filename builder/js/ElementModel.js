@@ -154,14 +154,12 @@ Ext.define('Element', {
         name: 'collapsible',
         type: 'boolean'
     }, {
-        name: 'cols',
-        type: 'int'
+        name: 'cols'
     }, {
         name: 'default_value',
         type: 'string'
     }, {
-        name: 'delta',
-        type: 'int'
+        name: 'delta'
     }, {
         name: 'description',
         type: 'string'
@@ -181,8 +179,7 @@ Ext.define('Element', {
         name: 'field_suffix',
         type: 'string'
     }, {
-        name: 'maxlength',
-        type: 'int'
+        name: 'maxlength'
     }, {
         name: 'method',
         type: 'string'
@@ -217,11 +214,9 @@ Ext.define('Element', {
         name: 'return_value',
         type: 'string'
     }, {
-        name: 'rows',
-        type: 'int'
+        name: 'rows'
     }, {
-        name: 'size',
-        type: 'int'
+        name: 'size'
     }, {
         name: 'src',
         type: 'string'
@@ -248,13 +243,12 @@ Ext.define('Element', {
         name: 'value',
         type: 'string'
     }, {
-        name: 'weight',
-        type: 'int'
+        name: 'weight'
     }, {
         name: 'user_data',
         type: types.ARRAY
     }, {
-        name: 'actions',
+        name: 'actions'
     }],
     associations: [{
         type: 'hasMany',
