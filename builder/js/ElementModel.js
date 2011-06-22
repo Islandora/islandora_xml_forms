@@ -46,7 +46,16 @@ Ext.define('MapModel', {
 Ext.data.Types.ARRAY = {
     type: 'array',
     convert: function(v, data) {
-        return v instanceof Array ? v : [];
+        if(v instanceof Array) {
+            var output = [];
+            $.each(v, function(i, n) {
+                output.push({
+                    value: n
+                });
+            });
+            return output;
+        } 
+        return [];
     }
 };
 /**
@@ -55,7 +64,17 @@ Ext.data.Types.ARRAY = {
 Ext.data.Types.MAP = {
     type: 'map',
     convert: function(v, data) {
-        return v instanceof Array ? v : [];
+        if(v instanceof Object) {
+            var output = [];
+            $.each(v, function(i, n) {
+                output.push({
+                    key: i, 
+                    value: n
+                });
+            });
+            return output;
+        }
+        return [];
     }
 };
 /**
@@ -140,7 +159,7 @@ Ext.define('Element', {
         type: types.AHAH
     }, {
         name: 'attributes',
-        type: types.ARRAY
+        type: types.MAP
     }, {
         name: 'autocomplete_path',
         type: 'string'
@@ -246,7 +265,7 @@ Ext.define('Element', {
         name: 'weight'
     }, {
         name: 'user_data',
-        type: types.ARRAY
+        type: types.MAP
     }, {
         name: 'actions'
     }],

@@ -116,7 +116,6 @@ EOT;
 function xml_form_builder_create_element_store($form_name) {
   $data = Formbuilder::TransformElementsToJSON($form_name);
   $js = <<<EOT
-  //Ext.formbuilder.foobar = $data;
   Ext.formbuilder.elementStore = Ext.create('Ext.data.TreeStore', {
     model: 'Element',
     root: $data
