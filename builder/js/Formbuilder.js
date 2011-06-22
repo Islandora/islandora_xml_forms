@@ -69,7 +69,16 @@ Ext.formbuilder = (function() {
             var record = Ext.formbuilder.propertiesStore.getAt(0);
             var form = this.propertiesForm.getForm();
             form.loadRecord(record);
-            Ext.getCmp('namespaces').store.loadData(record.data['namespaces'], false);
+            var namespaces = [];
+            if(record.data['namespaces'] instanceof Object) {
+                $.each(record.data['namespaces'], function(i, n) {
+                    namespaces.push({
+                        key: i, 
+                        value: n
+                    });
+                });
+            }
+            Ext.getCmp('namespaces').store.loadData(namespaces, false);
         }
     };
     return that;

@@ -34,7 +34,6 @@ class JSONForm {
     $definition = XMLFormDefinition::Create($properties, $form['Root']);
     $this->definition = new DOMDocument();
     $this->definition->loadXML($definition->asXML());
-    echo  $this->definition->saveXML();
   }
 
   /**

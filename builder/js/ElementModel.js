@@ -64,17 +64,7 @@ Ext.data.Types.ARRAY = {
 Ext.data.Types.MAP = {
     type: 'map',
     convert: function(v, data) {
-        if(v instanceof Object) {
-            var output = [];
-            $.each(v, function(i, n) {
-                output.push({
-                    key: i, 
-                    value: n
-                });
-            });
-            return output;
-        }
-        return [];
+        return v instanceof Object ? v : {};
     }
 };
 /**

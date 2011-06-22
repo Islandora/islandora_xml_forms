@@ -81,9 +81,9 @@ class XMLFormDefinition {
       }
       if (isset($properties['document']['namespaces'])) {
         $namespaces = $document_properties->addChild('namespaces');
-        foreach ($properties['document']['namespaces'] as $item) {
-          $namespace = $namespaces->addChild('namespace', $item['uri']);
-          $namespace->addAttribute('prefix', $item['prefix']);
+        foreach ($properties['document']['namespaces'] as $prefix => $uri) {
+          $namespace = $namespaces->addChild('namespace', $uri);
+          $namespace->addAttribute('prefix', $prefix);
         }
       }
       if (isset($properties['document']['schema'])) {
@@ -127,7 +127,8 @@ class XMLFormDefinition {
       $control = $properties->addChild($key);
       foreach ($value as $index => $item) {
         $index = trim($index, '#');
-        self::AddFormControlToProperties($control, $index, $item);
+        $name = ($key == 'options') ? 'option' : $index; // Hacktastic...
+        self::AddFormControlToProperties($control, $name, $item);
       }
     }
   }

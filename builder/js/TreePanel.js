@@ -99,7 +99,23 @@ Ext.formbuilder.createTreePanel = function() {
                         //attributes
                         var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];
                         form_grids.forEach(function(name) {
-                            Ext.getCmp(name).store.loadData(data[name], false);
+                            var converted = [];
+                            if(data[name] instanceof Object) {
+                                $.each(data[name], function(i, n) {
+                                    converted.push({
+                                        key: i, 
+                                        value: n
+                                    });
+                                });
+                            }
+                            else if(data[name] instanceof Array) {
+                                $.each(data[name], function(i, n) {
+                                    converted.push({ 
+                                        value: n
+                                    });
+                                });
+                            }
+                            Ext.getCmp(name).store.loadData(converted, false);
                         });
                         /* Ahah */
                         var ahah = data.ahah;

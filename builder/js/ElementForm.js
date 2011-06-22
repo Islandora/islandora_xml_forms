@@ -1508,29 +1508,33 @@ Ext.formbuilder.createElementForm = function () {
                             record.set(i, values[i]);
                         }
                     }
-                    /* Form Grids */
+                    /* Form Array Grids */
+                    var form_array_grids = [ 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'submit', 'validate' ];
                     var toArray = function(store) {
                         var output = [];
                         store.each(function(item){
                             item = item.data;
-                            if(item.key) {
-                                output.push({
-                                    key: item.key, 
-                                    value: item.value
-                                });
-                            }
-                            else {
-                                output.push([item.value]);
-                            }
-
+                            output.push(item.value);
                         });
                         return output;
                     }
-                    //attributes
-                    var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];
-                    form_grids.forEach(function(name) {
+                    form_array_grids.forEach(function(name) {
                         var store = Ext.getCmp(name).store;
                         record.set(name, toArray(store));
+                    });
+                    /* Form Map Grids */
+                    var form_map_grids = [ 'attributes', 'options', 'user_data' ];
+                    var toObject = function(store) {
+                        var output = {};
+                        store.each(function(item){
+                            item = item.data;
+                            output[item.key] = item.value;
+                        });
+                        return output;
+                    }
+                    form_map_grids.forEach(function(name) {
+                        var store = Ext.getCmp(name).store;
+                        record.set(name, toObject(store));
                     });
                     /* Ahah */
                     if(values['ahah'] == "on") {

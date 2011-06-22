@@ -26,24 +26,16 @@ Ext.formbuilder.createPropertiesForm = function() {
                         record.set(i, values[i]);
                     }
                     // Grids
-                    var toArray = function(store) {
-                        var output = [];
+                    var toObject = function(store) {
+                        var output = {};
                         store.each(function(item){
                             item = item.data;
-                            if(item.key) {
-                                output.push({
-                                    prefix: item.key, 
-                                    uri: item.value
-                                });
-                            }
-                            else {
-                                output.push([item.value]);
-                            }
+                            output[item.key] = item.value;
                         });
                         return output;
                     }
                     var store = Ext.getCmp('namespaces').store;
-                    record.set('namespaces', toArray(store));
+                    record.set('namespaces', toObject(store));
                     // End
                     record.endEdit();
                 }
