@@ -14,13 +14,6 @@ module_load_include('inc', 'xml_form_api', 'XMLForm');
  * @return array
  */
 function xml_form_api_menu() {
-//  $items['XMLFormDefinition.xsd'] = array(
-//    'title' => 'Form Definition',
-//    'description' => 'Returns XMLFormDefinition.xsd',
-//    'page callback' => 'xml_form_api_get_form_defintion',
-//    'access arguments' => array('access content'),
-//    'type' => MENU_CALLBACK,
-//  );
   $items['test'] = array(
     'title' => 'Test',
     'description' => 'test',

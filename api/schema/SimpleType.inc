@@ -9,9 +9,9 @@
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'xml_schema_api', 'Node');
-module_load_include('inc', 'xml_schema_api', 'list');
-module_load_include('inc', 'xml_schema_api', 'union');
-module_load_include('inc', 'xml_schema_api', 'restriction');
+module_load_include('inc', 'xml_schema_api', 'List');
+module_load_include('inc', 'xml_schema_api', 'Union');
+module_load_include('inc', 'xml_schema_api', 'Restriction');
 
 /**
  * Models a <xs:simpleType> DOMElement.
