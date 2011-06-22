@@ -14,7 +14,8 @@
                                                 <xs:all>
                                                   <xs:element minOccurs="0" name="prefix"
                                                   type="xs:NCName"/>
-                                                  <xs:element name="local_name" type="xs:NCName"/>
+                                                  <xs:element name="local_name" type="xs:NCName"
+                                                  minOccurs="0"/>
                                                   <xs:element minOccurs="0" name="uri"
                                                   type="xs:anyURI"/>
                                                 </xs:all>

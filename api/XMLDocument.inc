@@ -69,7 +69,7 @@ class XMLDocument {
   public function __construct(array &$root, array &$namespaces, $schema, &$xml = NULL) {
     $this->root = $root;
     $this->namespaces = $namespaces;
-    $this->schema = isset($schema) ? new XMLSchema($schema) : NULL;
+    $this->schema = is_non_empty_string($schema) ? new XMLSchema($schema) : NULL;
     $this->xml = $xml;
     $this->registry = new NodeRegistry($this);
     $this->document = $this->createDocument();

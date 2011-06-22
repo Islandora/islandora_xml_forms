@@ -7,6 +7,7 @@
  */
 module_load_include('inc', 'php_lib', 'ReadOnlyProtectedMembers');
 module_load_include('inc', 'php_lib', 'DOMHelpers');
+module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'xml_form_api', 'SchemaTag');
 
 /**
@@ -119,7 +120,7 @@ class XMLSchema {
    */
   private function loadSchema($filename) {
     $this->schema = new DOMDocument();
-    if ($this->schema->load($filename)) {
+    if (is_non_empty_string($filename) && $this->schema->load($filename)) {
       $this->configureXPath();
       $this->loadIncludedFiles();
       $this->loadImportedFiles();

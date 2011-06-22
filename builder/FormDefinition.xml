@@ -1,10 +1,8 @@
-<form>
+<definition>
     <properties>
-        <document_properties>
-            <root>
-            </root>
-        </document_properties>
+        <document>
+        </document>
     </properties>
-    <elements>
-    </elements>
-</form>
+    <form>
+    </form>
+</definition>

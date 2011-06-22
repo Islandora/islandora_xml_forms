@@ -66,17 +66,19 @@ class XMLFormDefinition {
       $document_properties = $form_properties->addChild('document');
       if (isset($properties['document']['root'])) {
         $root = $document_properties->addChild('root');
-        if (isset($properties['document']['root']['prefix'])) {
-          $root->addChild('prefix', $properties['document']['root']['prefix']);
+        $prefix = $properties['document']['root']['prefix'];
+        if (is_non_empty_string($prefix)) {
+          $root->addChild('prefix', $prefix);
         }
-        if (isset($properties['document']['root']['local_name'])) {
-          $root->addChild('local_name', $properties['document']['root']['local_name']);
+        $local_name = $properties['document']['root']['local_name'];
+        if (is_non_empty_string($local_name)) {
+          $root->addChild('local_name', $local_name);
         }
-        if (isset($properties['document']['root']['uri'])) {
-          $root->addChild('uri', $properties['document']['root']['uri']);
+        $uri = $properties['document']['root']['uri'];
+        if (is_non_empty_string($uri)) {
+          $root->addChild('uri', $uri);
         }
       }
-      print_r($properties['document']['namespaces']);
       if (isset($properties['document']['namespaces'])) {
         $namespaces = $document_properties->addChild('namespaces');
         foreach ($properties['document']['namespaces'] as $item) {
@@ -110,6 +112,9 @@ class XMLFormDefinition {
   private static function AddFormControlToProperties(SimpleXMLElement $properties, $key, $value) {
     if ($value instanceof FormPropertyInterface) {
       $value = $value->getValue();
+    }
+    if (is_bool($value)) {
+      $value = $value ? 'true' : 'false';
     }
     $key = trim($key, '#');
     if (!is_array($value)) {
@@ -151,7 +156,15 @@ class XMLFormDefinition {
    */
   public static function GetFormProperties(&$xml_definition) {
     if (!self::isValid($xml_definition)) {
-      throw new Exception('The given XMLFormDefinition is invalid.');
+      return array('document' => array(
+          'root' => array(
+            'prefix' => NULL,
+            'local_name' => NULL,
+            'uri' => NULL,
+          ),
+          'namespaces' => array(),
+          'schema' => NULL
+      ));
     }
     $definition = simplexml_load_string($xml_definition);
     $document = $definition->properties->document;
@@ -186,7 +199,7 @@ class XMLFormDefinition {
    */
   public static function GetDrupalForm(&$xml_definition) {
     if (!self::isValid($xml_definition)) {
-      throw new Exception('The given XMLFormDefinition is invalid.');
+      return array(); // Empty form.
     }
     $definition = simplexml_load_string($xml_definition);
     return self::GetElement($definition->form);
