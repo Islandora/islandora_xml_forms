@@ -119,7 +119,7 @@ class XMLDocument {
     $doc->loadXML($this->xml);
     if ($this->schema) {
       if (!$doc->schemaValidate($this->schema->filename)) {
-        throw new Exception('Can not create a document from an existing invalid document.');
+        return $doc;
       }
     }
     return $doc;
