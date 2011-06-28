@@ -1050,7 +1050,7 @@
                                                   <context>parent</context>
                                                   <schema>/xsd:schema/xsd:element[@name="cntinfo"]</schema>
                                                   <type>element</type>
-                                                  <value>tag</value>
+                                                  <value>cntvoice</value>
                                                   </create>
                                                   <read>
                                                   <path>cntvoice</path>
