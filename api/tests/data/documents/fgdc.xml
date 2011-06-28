@@ -4,15 +4,14 @@
     <idinfo>
         <citation>
             <citeinfo>
-                <origin>Unknown</origin>
-                <origin>Known</origin>
+                <origin>origin</origin>
                 <pubdate>Unknown</pubdate>
-                <title>Unknown</title>
+                <title>title</title>
             </citeinfo>
         </citation>
         <descript>
-            <abstract>Unknown</abstract>
-            <purpose>Unknown</purpose>
+            <abstract>abstract</abstract>
+            <purpose>purpose</purpose>
         </descript>
         <timeperd>
             <timeinfo>
@@ -20,11 +19,11 @@
                 <caldate>Unknown</caldate>
                 </sngdate>
             </timeinfo>
-            <current>Unknown</current>
+            <current>current</current>
         </timeperd>
         <status>
             <progress>Planned</progress>
-            <update>Unknown</update>
+            <update>update</update>
         </status>
         <spdom>
             <bounding>
@@ -36,31 +35,31 @@
         </spdom>
         <keywords>
             <theme>
-                <themekt>Unknown</themekt>
-                <themekey>Unknown</themekey>
+                <themekt>themekt</themekt>
+                <themekey>themekey</themekey>
             </theme>
         </keywords>
-        <accconst>Unknown</accconst>
-        <useconst>Unknown</useconst>
+        <accconst>acconst</accconst>
+        <useconst>useconst</useconst>
     </idinfo>
     <metainfo>
         <metd>0000</metd>
         <metc>
             <cntinfo>
                 <cntperp>
-                    <cntper>Unknown</cntper>
+                    <cntper>cntper</cntper>
                 </cntperp>
                 <cntaddr>
-                    <addrtype>Unknown</addrtype>
-                    <city>Unknown</city>
-                    <state>Unknown</state>
-                    <postal>Unknown</postal>
+                    <addrtype>addrtype</addrtype>
+                    <city>city</city>
+                    <state>state</state>
+                    <postal>postal</postal>
                 </cntaddr>
-                <cntvoice>Unknown</cntvoice>
+                <cntvoice>cntvoice</cntvoice>
             </cntinfo>
         </metc>
-        <metstdn>Unknown</metstdn>
-        <metstdv>Unknown</metstdv>
+        <metstdn>metstdn</metstdn>
+        <metstdv>metstdv</metstdv>
     </metainfo>
 </metadata>
 
