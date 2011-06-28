@@ -59,7 +59,24 @@ abstract class InsertOrderNode {
    * @return DOMElement[]
    */
   abstract public function getOrder();
-  //abstract public function constraintMet($repitition = NULL);
+
+  /**
+   * Checks if this node or a child node meets this constraint. 
+   * 
+   * Does not account for occurance constraints.
+   * 
+   * @param DOMElement $element
+   * 
+   * @return boolean
+   */
+  abstract public function constraintMet(DOMElement $element);
+
+  /**
+   * Has this constraint matched it's max number of occurances.
+   * 
+   * @return boolean
+   */
+  abstract function maximumConstraintsMet();
   //abstract public function matchesConstraint(DOMElement $element);
   //abstract public function matches(DOMElement $element);
 }
@@ -111,12 +128,54 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
   }
 
   /**
+   * Create new Occurance of this compositor.
+   * 
+   * @return boolean
+   */
+  public function createOccurance() {
+    if (!$this->maximumConstraintsMet()) {
+      $new = clone $this->children[0];
+      $this->children[] = $new;
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Has this constraint matched it's max number of constraints.
+   * 
+   * @return boolean
+   */
+  public function maximumConstraintsMet() {
+    $count = count($this->children);
+    return is_numeric($this->max) ? $count == $this->max : FALSE;
+  }
+
+  /**
    * Attempts to store the given DOMElement in a matched constraint.
    * 
    * @param DOMElement $element
    * @return boolean
    */
   public function storeMatch(DOMElement $element) {
+    if ($this->constraintMet($element)) { // A child constraint matches this element.
+      if ($this->attemptStore($element)) {
+        return TRUE;
+      }
+      else if ($this->createOccurrence()) {
+        return $this->attemptStore($element); // Attempt to store.
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * A helper function used by store match that attempts to store.
+   * 
+   * @param DOMElement $element
+   * @return type 
+   */
+  private function attemptStore(DOMElement $element) {
     $count = count($this->children);
     for ($i = 0; $i < $count; $i++) {
       foreach ($this->children[$i] as $child) {
@@ -142,6 +201,24 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
       }
     }
     return $order;
+  }
+
+  /**
+   * Checks if this node or a child node meets this constraint. 
+   * 
+   * Does not account for occurance constraints.
+   * 
+   * @param DOMElement $element
+   * 
+   * @return boolean
+   */
+  public function constraintMet(DOMElement $element) {
+    foreach ($this->children[0] as $child) {
+      if ($child->constraintMet()) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
@@ -205,94 +282,53 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 }
 
 /**
- * 
+ * stuff.......
  */
 class InsertOrderAll extends InsertOrderCompositor {
 
+  /**
+   * Create a InsertOrderAll node.
+   * 
+   * @param mixed $min (integer or 'unbounded')
+   * @param mixed $max (integer or 'unbounded')
+   * @param InsertOrderCompositor $parent 
+   */
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
-  }
-
-  public function storeMatch(DOMElement $element) {
-    
-  }
-
-  public function getOrder() {
-    
   }
 
 }
 
 /**
- * 
+ * dude.......
  */
 class InsertOrderChoice extends InsertOrderCompositor {
 
+  /**
+   * Create a InsertOrderChoice node.
+   * 
+   * @param mixed $min (integer or 'unbounded')
+   * @param mixed $max (integer or 'unbounded')
+   * @param InsertOrderCompositor $parent 
+   */
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
-  }
-
-  public function reachedMaxNumberOfMatches() {
-    $count = count($this->children);
-    return is_numeric($this->max) ? $count == $this->max : FALSE;
-  }
-
-  public function constraintMet() { // Not being used at the moment!
-    $count = count($this->children);
-    $within_min_range = $this->min <= $count;
-    $within_max_range = is_numeric($this->max) ? $count <= $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
-    if ($within_max_range && $within_min_range) {
-      for ($i = 0; $i < $count; $i++) {
-        $constraint_met = FALSE;
-        foreach ($this->children as $child) {
-          if ($child->constraintMet()) {
-            $constraint_met = TRUE;
-            break;
-          }
-        }
-        if ($constraint_met == FALSE) {
-          return FALSE;
-        }
-      }
-      return TRUE; // Each repeated set of children contains at least one Node that has its constraints matched.
-    }
-    return FALSE;
-  }
-
-  public function storeMatchInChild(DOMElement $element) {
-    for ($i = 0; $i < $count; $i++) {
-      if (!$this->constraintMet($i)) {
-        
-      }
-      foreach ($this->children[$i] as $child) {
-        if ($child->storeMatch($element)) {
-          return TRUE;
-        }
-      }
-    }
-    return FALSE;
-  }
-
-  public function storeMatch(DOMElement $element) {
-    if ($this->containsConstraintFor($element)) {
-      if ($this->storeMatchInChild($element)) {
-        return TRUE;
-      }
-      else if ($this->canCloneChildren()) { // Choice compositor can repeat.
-        $this->cloneChildren(); // Choices can
-        $this->storeMatch($element); // Store in the repeated choice.
-      }
-    }
-    return FALSE;
   }
 
 }
 
 /**
- * 
+ * ........
  */
 class InsertOrderSequence extends InsertOrderCompositor {
 
+  /**
+   * Create a InsertOrderSequence node.
+   * 
+   * @param mixed $min (integer or 'unbounded')
+   * @param mixed $max (integer or 'unbounded')
+   * @param InsertOrderCompositor $parent 
+   */
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
   }
@@ -307,7 +343,7 @@ class InsertOrderSequence extends InsertOrderCompositor {
     $count = count($this->children);
     for ($i = 0; $i < $count; $i++) {
       // NEED TO DETERMINE WHEN TO DUPLICATE ELEMENTS.
-      // Stuff
+
       foreach ($this->children[$i] as $child) {
         if ($child->storeMatch($element)) {
           return TRUE;

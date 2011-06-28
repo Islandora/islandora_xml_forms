@@ -14,6 +14,11 @@ module_load_include('inc', 'php_lib', 'DOMHelpers');
 abstract class XMLSchemaNode {
 
   /**
+   *
+   * @var type 
+   */
+  protected static $nodes = array();
+  /**
    * The top level schema.
    * 
    * @var XMLSchema
@@ -26,6 +31,41 @@ abstract class XMLSchemaNode {
   protected $protected;
 
   /**
+   *
+   * @param XMLSchemaNode $node 
+   */
+  public static function register(XMLSchemaNode $node) {
+    self::$nodes[] = $node;
+  }
+
+  /**
+   *
+   * @param DOMElement $element
+   * @return boolean
+   */
+  public static function isRegistered(DOMElement $element) {
+    foreach (self::$nodes as $node) {
+      if ($element->isSameNode($node->node)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   *
+   * @param DOMElement $element 
+   */
+  public static function find(DOMElement $element) {
+    foreach (self::$nodes as $node) {
+      if ($element->isSameNode($node->node)) {
+        return $node;
+      }
+    }
+    return NULL;
+  }
+
+  /**
    * Create a XMLSchemaNode
    * 
    * @param DOMElement $node 
@@ -34,6 +74,7 @@ abstract class XMLSchemaNode {
     $this->validateConstructorArguments($node);
     $this->schema = $schema;
     $this->protected = new ReadOnlyProtectedMembers(array('node' => $node));
+    self::register($this);
   }
 
   /**
@@ -156,7 +197,11 @@ abstract class XMLSchemaNode {
    */
   protected function createNodeTypedObject(DOMElement $node) {
     $class_name = "XMLSchema{$node->localName}";
-    if (class_exists($class_name)) {
+    $object = self::find($node);
+    if (isset($object)) {
+      return $object;
+    }
+    else if (class_exists($class_name)) {
       return new $class_name($this->schema, $node);
     }
     return NULL;
