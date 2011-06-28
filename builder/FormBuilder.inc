@@ -225,7 +225,8 @@ class FormBuilder {
   public static function TransformPropertiesToJSON($form_name) {
     if (self::HasFormDefinition($form_name)) {
       module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-      $properties = XMLFormDefinition::GetFormProperties(self::GetFormDefinition($form_name));
+      $definition = self::GetFormDefinition($form_name);
+      $properties = XMLFormDefinition::GetFormProperties($definition);
       $document_properties = $properties['document'];
       $namespaces = isset($document_properties['namespaces']) ? $document_properties['namespaces'] : array();
       $properties = array(
