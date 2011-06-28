@@ -59,9 +59,7 @@ class Path {
       }
       $parent = $parent->parent;
     }
-    $type = $element->type;
-    $title = $element->title;
-    throw new Exception("The Form Element '{$title}' of type '{$type}' specifies a xpath context of parent but none is defined.");
+    throw new Exception("The Form Element '{$element->title}' of type '{$element->type}' specifies a xpath context of parent but none is defined.");
   }
 
   private function getSelf(NodeRegistry $registry, FormElement $element) {

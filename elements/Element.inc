@@ -31,7 +31,7 @@ class Element {
     $form = new XMLForm($form_state);
     $original = $form->findElement($duplicate);
     $new_element = $form->duplicateOriginal($duplicate);
-    $original->parent[] = $new_element;
+    $original->parent->adopt($new_element);
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
