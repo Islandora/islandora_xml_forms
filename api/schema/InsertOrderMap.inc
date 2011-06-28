@@ -621,7 +621,7 @@ class InsertOrderMap {
    */
   public function insert($path, DOMElement $parent, DOMElement $new) {
     $map = $this->getInsertOrderMap($path);
-    $remaining_children = $this->populateInsertOrderMap($map, $this->getChildrenToReorder());
+    $remaining_children = $this->populateInsertOrderMap($map, $this->getChildrenToReorder($parent, $new));
     $insert_order = $this->getChildrenInsertOrder($map, $remaining_children);
     $this->removeChildElements($parent);
     $this->appendChildElements($parent, $insert_order);
@@ -635,7 +635,7 @@ class InsertOrderMap {
    * 
    * @return array
    */
-  private function populateInsertOrderMap(InsertOrderMap $map, array $children) {
+  private function populateInsertOrderMap(InsertOrderNode $map, array $children) {
     do {
       $matches = FALSE;
       foreach ($children as $key => $child) {
@@ -670,7 +670,7 @@ class InsertOrderMap {
    * 
    * @return array
    */
-  private function getChildrenInsertOrder(InsertOrderMap $map, array $remaining_children) {
+  private function getChildrenInsertOrder(InsertOrderNode $map, array $remaining_children) {
     // Now use the map to generate the new order for elements. This doesn't work with mixed content!
     $insert_order = array();
     $insert_order = $map->getOrder();

@@ -79,9 +79,9 @@ class XMLSchemaExtension extends XMLSchemaNode {
     if ($this->extendsComplexContent()) {
       list($min, $max) = $this->getMinMaxOccurs();
       $map_node = new InsertOrderSequence($min, $max, $parent);
-      $map_node->children[] = $this->base->asInsertOrderNode(); // Base class.
+      $map_node->addChild($this->base->asInsertOrderNode()); // Base class.
       foreach ($this->children as $child) {
-        $map_node->children[] = $child->asInsertOrderNode($map_node);
+        $map_node->addChild($child->asInsertOrderNode($map_node));
       }
       return $map_node;
     }

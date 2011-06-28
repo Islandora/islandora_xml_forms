@@ -52,7 +52,7 @@ class XMLSchemaChoice extends XMLSchemaNode {
     list($min, $max) = $this->getMinMaxOccurs();
     $map_node = new InsertOrderChoice($min, $max, $parent);
     foreach ($this->children as $child) {
-      $map_node->children[] = $child->asInsertOrderNode($map_node);
+      $map_node->addChild($child->asInsertOrderNode($map_node));
     }
     return $map_node;
   }
