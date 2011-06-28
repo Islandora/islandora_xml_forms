@@ -627,7 +627,7 @@
                                                   <context>parent</context>
                                                   <schema>/xsd:schema/xsd:element[@name="keywords"]</schema>
                                                   <type>element</type>
-                                                  <value>tabpanel</value>
+                                                  <value>theme</value>
                                                 </create>
                                                 <read>
                                                   <path>theme</path>
