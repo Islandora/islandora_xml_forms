@@ -10,6 +10,10 @@ module_load_include('inc', 'xml_form_api', 'NodeRegistry');
 module_load_include('inc', 'xml_schema_api', 'Schema');
 
 class XMLDocument {
+  /**
+   * Constants
+   */
+  const xmlns = 'http://www.w3.org/2000/xmlns/';
 
   /**
    * The xml string that this document was created from. It can be NULL.
@@ -107,7 +111,10 @@ class XMLDocument {
       return $this->createFromExistingDocument();
     }
     $document = new DOMDocument();
-    $document->appendChild($this->createRootElement());
+    $root = $document->appendChild($this->createRootElement());
+    foreach ($this->namespaces as $prefix => $uri) {
+      $root->setAttributeNS(self::xmlns, $prefix, $uri);
+    }
     return $document;
   }
 
@@ -132,7 +139,8 @@ class XMLDocument {
     $prefix = $this->root['prefix'];
     $name = $this->root['local_name'];
     $uri = $this->root['uri'];
-    $name = isset($prefix) ? "{$prefix}:{$name}" : $name;
+    $has_prefix = isset($prefix) && $prefix != '';
+    $name = $has_prefix ? "{$prefix}:{$name}" : $name;
     return new DOMElement($name, NULL, $uri);
   }
 

@@ -3,13 +3,11 @@
         <document>
             <root>
                 <local_name>metadata</local_name>
-                <prefix>fgdc</prefix>
                 <uri>http://localhost/</uri>
             </root>
             <namespaces>
-                <namespace prefix="xsi">http://www.w3.org/2001/XMLSchema-instance</namespace>
-                <namespace prefix="xmlns">http://www.w3.org/2000/xmlns</namespace>
-                <namespace prefix="fgdc">http://localhost/</namespace>
+                <namespace prefix="xmlns:xsi">http://www.w3.org/2001/XMLSchema-instance</namespace>
+                <namespace prefix="xmlns:fgdc">http://localhost/</namespace>
             </namespaces>
             <schema>/Users/nbanks/Projects/DGI/fgdc/fgdc-std-001-1998.xsd</schema>
         </document>

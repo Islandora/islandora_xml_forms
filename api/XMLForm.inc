@@ -141,6 +141,8 @@ class XMLForm extends Form {
     module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
     $form_values = new FormValues($form_state, $form);
     $processor = new XMLFormProcessor($form_values, $this->document);
+    var_dump($this->document->document->saveXML());
+    exit();
     return $processor->process($this->root);
   }
 

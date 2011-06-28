@@ -299,7 +299,7 @@
     <xs:complexType name="namespaceType">
         <xs:simpleContent>
             <xs:extension base="xs:anyURI">
-                <xs:attribute name="prefix" type="xs:NCName"/>
+                <xs:attribute name="prefix" type="xs:string"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
