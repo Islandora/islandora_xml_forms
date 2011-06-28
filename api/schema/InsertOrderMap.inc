@@ -11,26 +11,34 @@ module_load_include('inc', 'xml_schema_api', 'Schema');
 module_load_include('inc', 'xml_schema_api', 'Element');
 
 /**
- * How do I do this...
- *  
- * Build a list of possible sequences for a given number of child elements?
- * 
- * foreach element node create
- * 
- * Generate a valid sequence for given set of elements.
- * 
- * 
- */
-
-/**
- * Maybe a different node type for each kind of constraint.
+ * Models Insert order constraints.
  */
 abstract class InsertOrderNode {
 
-  public $parent; // Parent Node.
-  public $min; // Occurs
-  public $max; // Occurs
+  /**
+   * The parent of this InsertOrderNode.
+   * 
+   * @var InsertOrderNode
+   */
+  public $parent;
+  /**
+   * 
+   * @var mixed (integer or 'unbounded')
+   */
+  public $min;
+  /**
+   * 
+   * @var mixed (integer or 'unbounded')
+   */
+  public $max;
 
+  /**
+   * Create an InsertOrderNode.
+   * 
+   * @param mixed $min (integer or 'unbounded')
+   * @param mixed $max (integer or 'unbounded')
+   * @param InsertOrderNode $parent 
+   */
   public function __construct($min, $max, InsertOrderNode $parent = NULL) {
     $this->min = $min;
     $this->max = $max;
@@ -38,30 +46,52 @@ abstract class InsertOrderNode {
   }
 
   /**
+   * Attempts to store the given DOMElement in a matched constraint.
    * 
+   * @param DOMElement $element
+   * @return boolean
    */
+  abstract public function storeMatch(DOMElement $element);
+
+  /**
+   * Gets an array of DOMElements in their correct insert order.
+   * 
+   * @return DOMElement[]
+   */
+  abstract public function getOrder();
   //abstract public function constraintMet($repitition = NULL);
   //abstract public function matchesConstraint(DOMElement $element);
   //abstract public function matches(DOMElement $element);
-  
-  abstract public function storeMatch(DOMElement $element);
-
-  abstract public function getOrder();
 }
 
 /**
- * 
+ * Models a generic compositor constraint either All, Sequence or Choice.
  */
 abstract class InsertOrderCompositor extends InsertOrderNode {
 
+  /**
+   * Child Insert Order Constraints. Compositor's can repeat.
+   * 
+   * @var InsertOrderNode[][]
+   */
   public $children;
 
+  /**
+   * Create an InsertOrderCompositor.
+   * 
+   * @param mixed $min (integer or 'unbounded')
+   * @param mixed $max (integer or 'unbounded')
+   * @param InsertOrderCompositor $parent 
+   */
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
     $this->children = array();
     $this->children[0] = array();
   }
 
+  /**
+   * If a parent InsertOrderCompositor, gets repeated this will be called.
+   */
   public function __clone() {
     $children = $this->children[0];
     $this->children = array();
@@ -71,39 +101,38 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
     }
   }
 
-  public function constraintMet($repetition = NULL) {
-    
-  }
-
-  protected function canCloneChildren() {
-    $count = count($this->children);
-    $within_max_range = is_numeric($this->max) ? $count < $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
-    return $within_max_range;
-  }
-
-  protected function cloneChildren() {
-    $count = count($this->children);
-    foreach ($this->children[0] as $child) {
-      $this->children[$count][] = clone $child;
-    }
-  }
-
-  public function matchesConstraint(DOMElement $element) {
-    
-  }
-
-  public function matches(DOMElement $element) {
-    
-  }
-
-  public function storeMatch(DOMElement $element) {
-    
-  }
-
+  /**
+   * Add a child to the Compositor's definition.
+   * 
+   * @param InsertOrderNode $child 
+   */
   public function addChild(InsertOrderNode $child) {
     $this->children[0][] = $child;
   }
 
+  /**
+   * Attempts to store the given DOMElement in a matched constraint.
+   * 
+   * @param DOMElement $element
+   * @return boolean
+   */
+  public function storeMatch(DOMElement $element) {
+    $count = count($this->children);
+    for ($i = 0; $i < $count; $i++) {
+      foreach ($this->children[$i] as $child) {
+        if ($child->storeMatch($element)) {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Gets an array of DOMElements in their correct insert order.
+   * 
+   * @return DOMElement[]
+   */
   public function getOrder() {
     $order = array();
     $count = count($this->children);
@@ -115,25 +144,64 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
     return $order;
   }
 
-  public function containsConstraintFor(DOMElement $element) {
+  /**
+   * ...
+   *
+    public function constraintMet() {
+
+    }
+
+    /**
+   * ...
+   *
+    protected function canCloneChildren() {
+    $count = count($this->children);
+    $within_max_range = is_numeric($this->max) ? $count < $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
+    return $within_max_range;
+    }
+
+    /**
+   * ...
+   *
+    protected function cloneChildren() {
+    $count = count($this->children);
+    foreach ($this->children[0] as $child) {
+    $this->children[$count][] = clone $child;
+    }
+    }
+
+    /**
+   * ...
+   *
+    public function matchesConstraint(DOMElement $element) {
+
+    }
+
+    /**
+   * ...
+   *
+    public function matches(DOMElement $element) {
+
+    }
+
+    public function containsConstraintFor(DOMElement $element) {
     $count = count($this->children);
     for ($i = 0; $i < $count; $i++) {
-      foreach ($this->children[$i] as $child) {
-        if ($child instanceof InsertOrderElement) {
-          if ($child->name == $element->localName) {
-            return TRUE;
-          }
-        }
-        else {
-          if ($child->containsConstraintFor($element)) {
-            return TRUE;
-          }
-        }
-      }
+    foreach ($this->children[$i] as $child) {
+    if ($child instanceof InsertOrderElement) {
+    if ($child->name == $element->localName) {
+    return TRUE;
+    }
+    }
+    else {
+    if ($child->containsConstraintFor($element)) {
+    return TRUE;
+    }
+    }
+    }
     }
     return FALSE;
-  }
-
+    } */
 }
 
 /**
@@ -143,18 +211,6 @@ class InsertOrderAll extends InsertOrderCompositor {
 
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
-  }
-
-  public function matchesConstraint(DOMElement $element) {
-    return TRUE; // 
-  }
-
-  public function constraintMet() {
-    
-  }
-
-  public function matches(DOMElement $element) {
-    
   }
 
   public function storeMatch(DOMElement $element) {
@@ -241,110 +297,247 @@ class InsertOrderSequence extends InsertOrderCompositor {
     parent::__construct($min, $max, $parent);
   }
 
-  public function constraintMet() {
+  /**
+   * Attempts to store the given DOMElement in a matched constraint.
+   * 
+   * @param DOMElement $element
+   * @return boolean
+   */
+  public function storeMatch(DOMElement $element) {
     $count = count($this->children);
-    if ($count < $this->min) {
-      return FALSE;
-    }
     for ($i = 0; $i < $count; $i++) {
+      // NEED TO DETERMINE WHEN TO DUPLICATE ELEMENTS.
+      // Stuff
       foreach ($this->children[$i] as $child) {
-        if (!$child->constraintMet()) {
-          return FALSE;
+        if ($child->storeMatch($element)) {
+          return TRUE;
         }
-      }
-    }
-    return TRUE;
-  }
-
-  public function matchesConstraint(DOMElement $element) {
-    foreach ($this->children as $child) {
-      if ($child instanceof InsertOrderElement) {
-        $child->constraintMet();
-      }
-      if ($child->matchesConstraint($element)) {
-        return TRUE;
       }
     }
     return FALSE;
   }
 
+//  public function constraintMet() {
+//    $count = count($this->children);
+//    if ($count < $this->min) {
+//      return FALSE;
+//    }
+//    for ($i = 0; $i < $count; $i++) {
+//      foreach ($this->children[$i] as $child) {
+//        if (!$child->constraintMet()) {
+//          return FALSE;
+//        }
+//      }
+//    }
+//    return TRUE;
+//  }
+//
+//  public function matchesConstraint(DOMElement $element) {
+//    foreach ($this->children as $child) {
+//      if ($child instanceof InsertOrderElement) {
+//        $child->constraintMet();
+//      }
+//      if ($child->matchesConstraint($element)) {
+//        return TRUE;
+//      }
+//    }
+//    return FALSE;
+//  }
 }
 
 /**
- * 
+ * Models the Elements constraints, DOMElements get stored as matches in this Object.
  */
 class InsertOrderElement extends InsertOrderNode {
 
+  /**
+   * The name of the Element that this models.
+   * 
+   * @var string
+   */
   public $name;
-  public $matches; // The nodes that matched this element
+  /**
+   * The DOMElement's that match this constraint.
+   * 
+   * @var DOMElement[]
+   */
+  public $matches;
 
+  /**
+   *
+   * @param string $name
+   * @param mixed $min (integer or 'unbounded')
+   * @param mixed $max (integer or 'unbounded')
+   * @param InsertOrderCompositor $parent 
+   */
   public function __construct($name, $min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
     $this->name = $name;
     $this->matches = array();
   }
 
+  /**
+   * Don't copy the matched DOMElement's.
+   */
   public function __clone() {
     $this->matches = array();
   }
 
-  public function reachedMaxNumberOfMatches() {
+  /**
+   * Has this constraint matched it's max number of constraints.
+   * 
+   * @return boolean
+   */
+  public function maximumConstraintsMet() {
     $count = count($this->matches);
     return is_numeric($this->max) ? $count == $this->max : FALSE;
   }
 
-  public function constraintMet() { // Not being used at the moment!
+  /**
+   * Has the minimum set of constraints been met for this InsertOrderNode.
+   * 
+   * @return boolean
+   */
+  public function minimumConstraintsMet() { // Not being used at the moment!
     $count = count($this->matches);
     $within_min_range = $this->min <= $count;
     $within_max_range = is_numeric($this->max) ? $count <= $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
     return $within_min_range && $meets_max_range;
   }
 
-  public function matchesConstraint(DOMElement $element) {
+  /**
+   * Does the given DOMElement match this element's non occurance constraints.
+   * 
+   * @param DOMElement $element
+   * @return boolean 
+   */
+  public function constraintMet(DOMElement $element) {
     return $element->localName == $this->name;
   }
 
+  /**
+   * Attempt to store DOMElement if it mets this Insert Order Node's constraints.
+   * 
+   * @param DOMElement $element
+   * @return boolean
+   */
   public function storeMatch(DOMElement $element) {
-    if ($this->matchesConstraint($element) && !$this->reachedMaxNumberOfMatches()) {
+    if ($this->constraintMet($element) && !$this->maximumConstraintsMet()) {
       $this->matches[] = $element;
       return TRUE;
     }
     return FALSE;
   }
 
+  /**
+   * Gets the DOMElement's matched by this constraint.
+   * 
+   * @return DOMElement[]
+   */
   public function getOrder() {
     return $this->matches;
   }
 
 }
 
+/**
+ * Models the Any Element constraint. DOMElements get stored as matches in this Object.
+ */
 class InsertOrderAny extends InsertOrderNode {
 
+  /**
+   * The names of the Element's that this models.
+   * 
+   * @var string[]
+   */
   public $names;
+  /**
+   * The DOMElement's that match this constraint.
+   * 
+   * @var DOMElement[]
+   */
+  public $matches;
 
+  /**
+   * Create an Any Constraint
+   * 
+   * @param array $names
+   * @param mixed $min (integer or 'unbounded')
+   * @param mixed $max (integer or 'unbounded')
+   * @param InsertOrderNode $parent 
+   */
   public function __construct(array $names, $min, $max, InsertOrderNode $parent = NULL) {
     parent::__construct($min, $max, $parent);
     $this->names = $names;
+    $this->matches = array();
   }
 
-  public function constraintMet() {
-    
+  /**
+   * Don't copy the matched DOMElement's.
+   */
+  public function __clone() {
+    $this->matches = array();
   }
 
-  public function matchesConstraint(DOMElement $element) {
-    
+  /**
+   * Has this constraint matched it's max number of constraints.
+   * 
+   * @return boolean
+   */
+  public function maximumConstraintsMet() {
+    $count = count($this->matches);
+    return is_numeric($this->max) ? $count == $this->max : FALSE;
   }
 
-  public function matches(DOMElement $element) {
-    
+  /**
+   * Has the minimum set of constraints been met for this InsertOrderNode.
+   * 
+   * @return boolean
+   */
+  public function minimumConstraintsMet() { // Not being used at the moment!
+    $count = count($this->matches);
+    $within_min_range = $this->min <= $count;
+    $within_max_range = is_numeric($this->max) ? $count <= $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
+    return $within_min_range && $meets_max_range;
   }
 
+  /**
+   * Does the given DOMElement match this element's non occurance constraints.
+   * 
+   * @param DOMElement $element
+   * @return boolean 
+   */
+  public function constraintMet(DOMElement $element) {
+    $local_name = $element->localName;
+    foreach ($this->names as $name) {
+      if ($name == $local_name) {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Attempt to store DOMElement if it mets this Insert Order Node's constraints.
+   * 
+   * @param DOMElement $element
+   * @return boolean
+   */
   public function storeMatch(DOMElement $element) {
-    
+    if ($this->constraintMet($element) && !$this->maximumConstraintsMet()) {
+      $this->matches[] = $element;
+      return TRUE;
+    }
+    return FALSE;
   }
 
+  /**
+   * Gets the DOMElement's matched by this constraint.
+   * 
+   * @return DOMElement[]
+   */
   public function getOrder() {
-    
+    return $this->matches;
   }
 
 }
@@ -357,14 +550,9 @@ class InsertOrderMap {
   /**
    * The schema.
    *
-   * @var Schema
+   * @var XMLSchema
    */
   protected $schema;
-  /**
-   *
-   * @var XMLSchemaInsertOrderMapNode 
-   */
-  public $map;
 
   /**
    * Create an InsertOrderMap
@@ -377,6 +565,9 @@ class InsertOrderMap {
   }
 
   /**
+   * Gets a tree of InsertOrderNode's that defines how to arrange the insert order of DOMElements.
+   * 
+   * @param string $path
    * 
    * @return InsertOrderNode
    */
@@ -388,14 +579,27 @@ class InsertOrderMap {
   /**
    * Inserts the given child element into the right positon of its parent element.
    * 
+   * @param string $path
    * @param DOMElement $parent
    * @param DOMElement $new
    */
   public function insert($path, DOMElement $parent, DOMElement $new) {
-    $children = dom_node_children($parent, 'DOMElement'); // Child Elements.
-    $children[] = $new; // Add the new child to the set of children.
-    // Match constaints. The map stores the matched constaints.
     $map = $this->getInsertOrderMap($path);
+    $remaining_children = $this->populateInsertOrderMap($map, $this->getChildrenToReorder());
+    $insert_order = $this->getChildrenInsertOrder($map, $remaining_children);
+    $this->removeChildElements($parent);
+    $this->appendChildElements($parent, $insert_order);
+  }
+
+  /**
+   * Stores children DOMElement's insert order. Any remaining DOMElements are returned.
+   * 
+   * @param InsertOrderMap $map
+   * @param array $children 
+   * 
+   * @return array
+   */
+  private function populateInsertOrderMap(InsertOrderMap $map, array $children) {
     do {
       $matches = FALSE;
       foreach ($children as $key => $child) {
@@ -405,138 +609,69 @@ class InsertOrderMap {
         }
       }
     } while ($matches == TRUE);
+    return $children;
+  }
+
+  /**
+   * Gets a list of child DOMElements to reorder.
+   * 
+   * @param DOMElement $parent
+   * @param DOMElement $new
+   * 
+   * @return DOMElement[]
+   */
+  private function getChildrenToReorder(DOMElement $parent, DOMElement $new) {
+    $children = dom_node_children($parent, 'DOMElement'); // Existing child elements.
+    $children[] = $new; // Add the new child to the set of children.
+    return $children;
+  }
+
+  /**
+   * Get an array of child DOMElements in there correct insert order.
+   * 
+   * @param InsertOrderMap $map
+   * @param array $remaining_children 
+   * 
+   * @return array
+   */
+  private function getChildrenInsertOrder(InsertOrderMap $map, array $remaining_children) {
     // Now use the map to generate the new order for elements. This doesn't work with mixed content!
-    $ordered_children = array();
-    $ordered_children = $map->getOrder();
+    $insert_order = array();
+    $insert_order = $map->getOrder();
     /**
      * Allows for out of order composition, when the final element is
      * added this block should not be entered.
      */
-    if (count($children) > 0) {
-      $ordered_children = array_merge($ordered_children, $children);
+    if (count($remaining_children) > 0) {
+      $insert_order = array_merge($insert_order, $remaining_children);
     }
-    // Remove all child elements
+    return $insert_order;
+  }
+
+  /**
+   * Remove all child elements
+   * 
+   * @param DOMElement $parent 
+   */
+  private function removeChildElements(DOMElement $parent) {
     $children = dom_node_children($parent, 'DOMElement'); // Child Elements.
     foreach ($children as $child) {
       if (isset($child->parentNode)) {
         $child->parentNode->removeChild($child);
       }
     }
-    // Re-insert the child elements, in the correct order.
-    foreach ($ordered_children as $child) {
+  }
+
+  /**
+   * Re-insert the child elements, in the correct order.
+   * 
+   * @param DOMElement $parent
+   * @param array $children 
+   */
+  private function appendChildElements(DOMElement $parent, array $children) {
+    foreach ($children as $child) {
       $parent->appendChild($child);
     }
-    /**
-     *  We aren't iterating over the children, we are iterating of the map of constaints.
-     *  When we encounter a node that excepts a given child, we move that child off the
-     *  Children list and append it to the "Ordered Children's" list.
-     * 
-     *  The node must be aware that it matched the given element, so that the following children may not,
-     *  be incorrectly matched to it.
-     * 
-     *  For a particular 
-     * 
-     * We could iterate over the children repeatedly until none were removed from the list. When that occured move to the next constraint.
-     * 
-     * 
-     * Only the final case really matters, when all elements are created that the order needs to be determined, 
-     * We must assume that it is possible...
-     */
-    // Walk through the map eating children of parent until we find a suitable resting place for child.
-    // How are we gonna do this.
-    /**
-     * foreach child we attempt to match it to a position in the map. Storing our current positon in the map, 
-     * when we come across a element node that excepts the type our child is (identified by local_name). 
-     * 
-     * At position.
-     * 
-     * Match child with position. If position is fully occupied move on to next position.
-     *   Potential problems:
-     *     + Nothing obvious...
-     * 
-     * If child doesn't match the current position, but a match is required to proceed what should we do? // aka out of order construction...
-     * Options:
-     *   Ignore it? 
-     *     + Continue trying to match the following children to this position in the map.
-     *       Potential problems: 
-     *         - One of the following children may match to this position but is supposed to match to a later position. 
-     *            + Is this really important? They will be of the same type, order dependance of a element is a syntatic difference not a semantic one, under the same parent in XML?
-     *         - 
-     *     + Move to the next position in the map with the same child trying to find a match.
-     * 
-     * If child doesn't match the current position, but a match isn't required to proceed?
-     * Options:
-     *    + Continue trying to match the following children to this position in the map.
-     *       Potential problems:
-     *        - Any time we editing or creating a element we should be able to assume it was in the correct order to the best of its ability (missing elements), when we process it?
-     *    + Ignore and continue to the next node in the map with the same child.
-     *       Potential problems:
-     *        - If we can't assume that the existing children were already in the correct order to the best of their ability, then we could end up with a dangling element, one 
-     *          that followed after the current but was supposed to be matched to this positon, messing up the rest of our processing.
-     *
-     * How to deal with compositors.
-     *    If <xs:all> is present just insert at the end of the element.
-     *
-     *    Choices can contain sequences...
-     * 
-     *    We require intelligent backtracking to deal with choices. As the choices can appear out of order and an 'unbounded' amount of times. 
-     *    What of unbounded sequences? Their components have to appear in order if the first element is present.
-     * 
-     * What does it mean to be out of order what can we expect to find later, out of order, how does that affect what I'm currently processing?
-     * 
-     * Match then test if we can insert the new child?
-     * 
-     * We test if we can insert it into this position. How???
-     * 
-     * If the following element in the child array is not of the same type as the child.
-     * 
-     * Topology and discrete mathematics would come in handy now.
-     * 
-     * -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----*
-     * Could we just collect all the children at each insertion and reorder the elements, not just find the 
-     * insert position for the new element ???
-     * 
-     * This is dependant on the order having no semantic value for the same types. A schema could assume this. But it would be
-     * up to the users to enforce it, as xsd's don't allow for different typed elements sharing the same name under an element.
-     * I think we can safely assume that schema designers wouldn't create this semantic difference under the same parent.
-     * 
-     * Is this actually easier than determining the insert positon of the new child?
-     * 
-     * Maybe. if we just assume no order of children at the begining of processing and match them to their first matching positon.
-     * 
-     * So the processing should be like so.
-     * 
-     * At position.
-     * 
-     * Attempt to match all children (including the new one) to the given position, once the position is full or all elements have been run though
-     * move to the next position regardless if the current position has been filed (Out of order!). 
-     * 
-     * Continue on building the new order of all children.
-     * 
-     * Still have to be weary of the rules surrounding compositors, When determining if we can move to the next node. 
-     * 
-     * Or do we?
-     * 
-     * If we move our positon only to compositors (Not to the depth of the element requirements)... 
-     *   We run though all elements untill the compositor can take no more children, then move to the next compositor, at the same depth...
-     * 
-     *   So what happens if we say have a sequence that contains a choice that contains an element and a sequence. 
-     *   How do we traverse it???  
-     *  
-     *   How to deal with these constraints...
-     * 
-     *  Choice/Sequence ...
-     *  
-     * We encounter a choice, that has min=max=1, it has two elements.
-     * 
-     * One element matches the first, so the constraint has been filled. Move on to the sibling composition.
-     * 
-     * If element and its min/max has been filled, move to the next.
-     * 
-     * Need some way to model the constaints and the order of elements
-     *   
-     * -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----* -----*
-     */
   }
 
 }
