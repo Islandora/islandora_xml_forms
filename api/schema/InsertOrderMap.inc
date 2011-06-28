@@ -214,75 +214,17 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
    */
   public function constraintMet(DOMElement $element) {
     foreach ($this->children[0] as $child) {
-      if ($child->constraintMet()) {
+      if ($child->constraintMet($element)) {
         return TRUE;
       }
     }
     return FALSE;
   }
 
-  /**
-   * ...
-   *
-    public function constraintMet() {
-
-    }
-
-    /**
-   * ...
-   *
-    protected function canCloneChildren() {
-    $count = count($this->children);
-    $within_max_range = is_numeric($this->max) ? $count < $this->max : TRUE; // If max is non-numeric its assumed to be 'unbounded'.
-    return $within_max_range;
-    }
-
-    /**
-   * ...
-   *
-    protected function cloneChildren() {
-    $count = count($this->children);
-    foreach ($this->children[0] as $child) {
-    $this->children[$count][] = clone $child;
-    }
-    }
-
-    /**
-   * ...
-   *
-    public function matchesConstraint(DOMElement $element) {
-
-    }
-
-    /**
-   * ...
-   *
-    public function matches(DOMElement $element) {
-
-    }
-
-    public function containsConstraintFor(DOMElement $element) {
-    $count = count($this->children);
-    for ($i = 0; $i < $count; $i++) {
-    foreach ($this->children[$i] as $child) {
-    if ($child instanceof InsertOrderElement) {
-    if ($child->name == $element->localName) {
-    return TRUE;
-    }
-    }
-    else {
-    if ($child->containsConstraintFor($element)) {
-    return TRUE;
-    }
-    }
-    }
-    }
-    return FALSE;
-    } */
 }
 
 /**
- * stuff.......
+ * 
  */
 class InsertOrderAll extends InsertOrderCompositor {
 
@@ -332,53 +274,6 @@ class InsertOrderSequence extends InsertOrderCompositor {
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
   }
-
-  /**
-   * Attempts to store the given DOMElement in a matched constraint.
-   * 
-   * @param DOMElement $element
-   * @return boolean
-   */
-  public function storeMatch(DOMElement $element) {
-    $count = count($this->children);
-    for ($i = 0; $i < $count; $i++) {
-      // NEED TO DETERMINE WHEN TO DUPLICATE ELEMENTS.
-
-      foreach ($this->children[$i] as $child) {
-        if ($child->storeMatch($element)) {
-          return TRUE;
-        }
-      }
-    }
-    return FALSE;
-  }
-
-//  public function constraintMet() {
-//    $count = count($this->children);
-//    if ($count < $this->min) {
-//      return FALSE;
-//    }
-//    for ($i = 0; $i < $count; $i++) {
-//      foreach ($this->children[$i] as $child) {
-//        if (!$child->constraintMet()) {
-//          return FALSE;
-//        }
-//      }
-//    }
-//    return TRUE;
-//  }
-//
-//  public function matchesConstraint(DOMElement $element) {
-//    foreach ($this->children as $child) {
-//      if ($child instanceof InsertOrderElement) {
-//        $child->constraintMet();
-//      }
-//      if ($child->matchesConstraint($element)) {
-//        return TRUE;
-//      }
-//    }
-//    return FALSE;
-//  }
 }
 
 /**
