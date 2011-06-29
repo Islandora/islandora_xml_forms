@@ -95,7 +95,7 @@ class Create implements Action {
    */
   public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
     $results = $this->path->query($registry, $element);
-    if ($results) {
+    if ($results && $results->length > 0) {
       $document = $registry->document;
       $parent = $results->item(0);
       $created = $this->create($document, $value);
