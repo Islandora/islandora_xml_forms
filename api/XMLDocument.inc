@@ -81,7 +81,6 @@ class XMLDocument {
       $this->schema = NULL;
       drupal_set_message($e->getMessage());
     }
-    $this->schema = is_non_empty_string($schema) ? new XMLSchema($schema) : NULL;
     $this->xml = $xml;
     $this->registry = new NodeRegistry($this);
     $this->document = $this->createDocument();
