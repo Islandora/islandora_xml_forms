@@ -27,7 +27,7 @@ class XMLSchemaGroup extends XMLSchemaNode {
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
-    $this->protected->add(
+    $this->protected->addMembers(
         array(
           'all' => $this->createType(XMLSchemaAll::LocalName),
           'choice' => $this->createType(XMLSchemaChoice::LocalName),

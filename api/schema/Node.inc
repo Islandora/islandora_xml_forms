@@ -7,6 +7,7 @@
  *
  */
 module_load_include('inc', 'php_lib', 'DOMHelpers');
+module_load_include('inc', 'php_lib', 'LazyMembers');
 
 /**
  * Contains functions common to the all schema element tags.
@@ -71,10 +72,10 @@ abstract class XMLSchemaNode {
    * @param DOMElement $node 
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
+    $this->protected = new LazyMembers(array('node' => $node));
+    self::register($this);
     $this->validateConstructorArguments($node);
     $this->schema = $schema;
-    $this->protected = new ReadOnlyProtectedMembers(array('node' => $node));
-    self::register($this);
   }
 
   /**

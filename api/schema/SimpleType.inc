@@ -28,7 +28,7 @@ class XMLSchemaSimpleType extends XMLSchemaNode {
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
-    $this->protected->add(
+    $this->protected->addMembers(
         array(
           'restriction' => $this->createChild(XMLSchemaRestriction::LocalName),
           'list' => $this->createChild(XMLSchemaList::LocalName),

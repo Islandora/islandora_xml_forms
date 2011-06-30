@@ -120,14 +120,15 @@ class XMLSchema {
    */
   private function loadSchema($filename) {
     $this->schema = new DOMDocument();
-    if (is_non_empty_string($filename) && $this->schema->load($filename)) {
+    if (!$this->schema->load($filename)) {
+      throw new Exception('Failed to Find Schema.');
+    }
+    else {
       $this->configureXPath();
       $this->loadIncludedFiles();
       $this->loadImportedFiles();
       return TRUE;
     }
-    $this->schema = NULL;
-    return FALSE;
   }
 
   /**

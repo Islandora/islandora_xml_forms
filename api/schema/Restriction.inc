@@ -29,7 +29,7 @@ class XMLSchemaRestriction extends XMLSchemaNode {
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
     $base = $node->getAttribute('base');
-    $this->protected->add(
+    $this->protected->addMembers(
         array(
           'base' => $this->findExtension($base),
           'all' => $this->createChild(XMLSchemaAll::LocalName),

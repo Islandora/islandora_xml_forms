@@ -9,30 +9,6 @@
 module_load_include('inc', 'xml_form_api', 'XMLForm');
 
 /**
- * Implementation of Hook Menu.
- *
- * @return array
- */
-function xml_form_api_menu() {
-  $items['test'] = array(
-    'title' => 'Test',
-    'description' => 'test',
-    'page callback' => 'xml_form_api_test',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );
-  $items['foo'] = array(
-    'title' => 'foo',
-    'description' => 'foo',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('foo_form'),
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK,
-  );
-  return $items;
-}
-
-/**
  * Register classes for FormProperties.
  * 
  * @return array
@@ -47,19 +23,40 @@ function xml_form_api_objectify_properties() {
   return $properties;
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+// Test Code
+//----------------------------------------------------------------------------------------------------------------------
+
 /**
- * Menu Callback, returns FormDefinition.xsd
+ * Implementation of Hook Menu.
+ *
+ * @return array
  */
-function xml_form_api_get_form_defintion() {
-  
+function xml_form_api_menu() {
+  $items['test'] = array(
+    'title' => 'Test',
+    'description' => 'test',
+    'page callback' => 'xml_form_api_test',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
 }
 
+/**
+ * Helper test function
+ * @return string
+ */
 function getTestDefinition() {
   $document = new DOMDocument();
   $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/definitions/fgdc.xml');
   return $document->saveXML();
 }
 
+/**
+ * Helper test function
+ * @return string
+ */
 function getTestDocument() {
   $document = new DOMDocument();
   $document->load(drupal_get_path('module', 'xml_form_api') . '/tests/data/documents/fgdc.xml');
@@ -73,6 +70,11 @@ function xml_form_api_test() {
   return drupal_get_form('xml_form');
 }
 
+/**
+ *
+ * @param type $form_state
+ * @return type 
+ */
 function xml_form(&$form_state) {
   $xml_form = new XMLForm($form_state);
   if (!$xml_form->isInitialized()) { // Was initialized from storage.
@@ -82,7 +84,7 @@ function xml_form(&$form_state) {
     $form = XMLFormDefinition::GetDrupalForm($xml);
     $properties = XMLFormDefinition::GetFormProperties($xml);
     $properties = $properties['document'];
-    $test = getTestDocument();
+    $test = NULL;//getTestDocument();
     $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema'], $test);
     $xml_form->initialize($form, $document);
   }
@@ -91,55 +93,14 @@ function xml_form(&$form_state) {
 }
 
 function xml_form_validate($form, &$form_state) {
-  //$form = new Form($form_state);
-  //$form->validate($form_state);
+  $xml_form = new XMLForm($form_state);
+  $xml_form->validate($form, $form_state);
 }
 
-function xml_form_submit($drupal_form, &$form_state) {
-  $form = new XMLForm($form_state);
-  $doc = $form->submit($drupal_form, $form_state);
+function xml_form_submit($form, &$form_state) {
+  $xml_form = new XMLForm($form_state);
+  $doc = $xml_form->submit($form, $form_state);
   $document = $doc->document;
   dom_document_pretty_print($document);
   exit();
-//  Requires some check to make sure its not a ahah callback...
-//  $form = new Form($form_state);
-//  $document = $form->submit($form_state);
-//  Utils::prettyPrintDocument($document);
-//  exit();
-}
-
-function foo_form(array &$form_state) {
-  $definition = array(
-    'first' => array(
-      '#type' => 'fieldset',
-      '#title' => 'first',
-      'blah' => array(
-        '#type' => 'tabs',
-        '#title' => 'First',
-        '#tree' => TRUE,
-        'second' => array(
-          '#type' => 'tabpanel',
-          'third' => array(
-            '#type' => 'textfield',
-            '#title' => 'third'
-          )
-        )
-      )
-    )
-  );
-  $xml_form = new XMLForm($form_state);
-  if (!$xml_form->isInitialized()) {
-    $form = $definition;
-    $root = array('prefix' => '', 'local_name' => '', 'uri' => '');
-    $namespaces = array();
-    $schema = '';
-    $document = new XMLDocument($root, $namespaces, $schema);
-    $xml_form->initialize($form, $document);
-  }
-  $output = $xml_form->toArray();
-  return $output;
-}
-
-function foo_form_submit($form, $form_state) {
-  $form_state['rebuild'] = TRUE;
 }

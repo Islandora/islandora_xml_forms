@@ -26,7 +26,7 @@ class XMLSchemaSequence extends XMLSchemaNode {
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
-    $this->protected->add(array(
+    $this->protected->addMembers(array(
       'element' => $this->createChildren(XMLSchemaElement::LocalName),
       'choice' => $this->createChildren(XMLSchemaChoice::LocalName),
       'sequence' => $this->createChildren(XMLSchemaSequence::LocalName),

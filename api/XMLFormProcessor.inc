@@ -35,7 +35,7 @@ class XMLFormProcessAction {
    * 
    * @var Action
    */
-  protected $action;
+  public $action;
   /**
    * Type of action defined by Action::CONST.
    * 

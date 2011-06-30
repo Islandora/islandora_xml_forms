@@ -39,30 +39,21 @@ class XMLSchemaElement extends XMLSchemaNode {
 
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
-    $xml = $node->ownerDocument->saveXML($node);
-    $type = $this->createType();
-    $this->protected->add('type', $type);
-    if ($type instanceof XMLSchemaComplexType) {
-      $this->protected->add('complexType', $type);
+    $type = new LazyMember(array($this, 'createType'));
+    $this->protected->addMember('type', $type);
+    if ($this->getType()->localName == 'complexType') {
+      $this->protected->addMember('complexType', $type);
     }
-    else if ($type instanceof XMLSchemaSimpleType) {
-      $this->protected->add('simpleType', $type);
+    else if ($this->getType()->localName == 'simpleType') {
+      $this->protected->addMember('simpleType', $type);
     }
-    /*
-    $this->protected->add(
-        array(
-        //'key' => @todo Implement...
-        //'keyRef' => @todo Implement...
-        //'unique' => @todo Implement...
-        )
-    );*/
   }
 
   /**
    *
    * @return XMLSchemaNode
    */
-  private function createType() {
+  public function createType() {
     $node = $this->getType();
     return isset($node) ? $this->createNodeTypedObject($node) : NULL;
   }

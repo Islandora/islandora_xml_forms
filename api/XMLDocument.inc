@@ -73,6 +73,14 @@ class XMLDocument {
   public function __construct(array &$root, array &$namespaces, $schema, &$xml = NULL) {
     $this->root = $root;
     $this->namespaces = $namespaces;
+    try {
+      if (is_non_empty_string($schema)) {
+        $this->schema = new XMLSchema($schema);
+      }
+    } catch (Exception $e) {
+      $this->schema = NULL;
+      drupal_set_message($e->getMessage());
+    }
     $this->schema = is_non_empty_string($schema) ? new XMLSchema($schema) : NULL;
     $this->xml = $xml;
     $this->registry = new NodeRegistry($this);
@@ -141,6 +149,7 @@ class XMLDocument {
     $uri = $this->root['uri'];
     $has_prefix = isset($prefix) && $prefix != '';
     $name = $has_prefix ? "{$prefix}:{$name}" : $name;
+    $uri = $uri != '' ? $uri : NULL;
     return new DOMElement($name, NULL, $uri);
   }
 

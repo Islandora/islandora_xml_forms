@@ -3,7 +3,6 @@
         <document>
             <root>
                 <local_name>metadata</local_name>
-                <uri>http://localhost/</uri>
             </root>
             <namespaces>
                 <namespace prefix="xmlns:xsi">http://www.w3.org/2001/XMLSchema-instance</namespace>
@@ -26,7 +25,7 @@
                     <collapsed>true</collapsed>
                     <actions>
                         <create>
-                            <path>/metadata/</path>
+                            <path>/metadata</path>
                             <context>document</context>
                             <schema>/xsd:schema/xsd:element[@name="metadata"]</schema>
                             <type>element</type>

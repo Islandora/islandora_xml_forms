@@ -31,7 +31,7 @@ class XMLSchemaComplexType extends XMLSchemaNode {
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
-    $this->protected->add(
+    $this->protected->addMembers(
         array(
           'complexContent' => $this->createChild(XMLSchemaComplexContent::LocalName),
           'simpleContent' => $this->createChild(XMLSchemaSimpleContent::LocalName),

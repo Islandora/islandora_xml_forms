@@ -26,7 +26,7 @@ class XMLSchemaAll extends XMLSchemaNode {
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
-    $this->protected->add('element', $this->createChildren(XMLSchemaElement::LocalName));
+    $this->protected->addMembers('element', $this->createChildren(XMLSchemaElement::LocalName));
   }
 
   /**
