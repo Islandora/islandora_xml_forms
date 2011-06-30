@@ -120,7 +120,7 @@ class XMLSchema {
    */
   private function loadSchema($filename) {
     $this->schema = new DOMDocument();
-    @$loaded = $this->schema->load($filename);
+    $loaded = @$this->schema->load($filename);
     if (!$loaded) {
       throw new Exception("Failed to Find Schema. '{$filename}'");
     }
