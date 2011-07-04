@@ -50,8 +50,8 @@ Ext.formbuilder.createPropertiesForm = function() {
                 id: 'name',
                 name: 'name',
                 fieldLabel: 'Local Name',
-                anchor: '100%',
-                allowBlank: false
+                allowBlank: false,
+                anchor: '100%'
             },{
                 xtype: 'textfield',
                 name: 'prefix',

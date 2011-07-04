@@ -50,8 +50,9 @@ Ext.formbuilder = (function() {
          *
          */
         showPreview: function () {
-            var display = this.displayPanel.layout;
-            display.setActiveItem(0);
+            this.refreshPreviewPanel(url);
+        //var display = this.displayPanel.layout;
+        //display.setActiveItem(0);
         },
         /**
          *

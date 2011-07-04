@@ -6,6 +6,37 @@
 /**
  * Create the Application
  */
+Ext.formbuilder.save = function(showPreview) {
+    var url = window.location.pathname + '/save';
+    var properties_record = Ext.formbuilder.propertiesStore.getAt(0);
+    var data = {
+        properties: properties_record.data, 
+        elements: []
+    };
+    var root = Ext.formbuilder.elementStore.getRootNode();//.getChildAt(0);
+    root.eachChild(function(child) {
+        var elements = this;
+        elements.push(child.data);
+        var last = elements.length-1;
+        this[last].elements = [];
+        child.eachChild(arguments.callee, elements[last].elements);
+    }, data.elements);
+    Ext.Ajax.request({
+        url: url,
+        params: {
+            data: Ext.encode(data)
+        },
+        success: function(response) {
+            if(showPreview) {
+                Ext.formbuilder.showPreview();
+            }
+        }
+    });
+};
+
+/**
+ * Create
+ */
 Ext.formbuilder.createMainPanel = function(children){
     return Ext.create('Ext.panel.Panel', {
         width: 960,
@@ -32,7 +63,7 @@ Ext.formbuilder.createMainPanel = function(children){
                 xtype: 'button',
                 text: 'Save & Preview',
                 handler: function() {
-                    Ext.formbuilder.showPreview();
+                    Ext.formbuilder.save(true);
                 }
             },{
                 xtype: 'tbseparator'
@@ -40,30 +71,7 @@ Ext.formbuilder.createMainPanel = function(children){
                 xtype: 'button',
                 text: 'Save',
                 handler: function() {
-                    var url = window.location.pathname + '/save';
-                    var properties_record = Ext.formbuilder.propertiesStore.getAt(0);
-                    var data = {
-                        properties: properties_record.data, 
-                        elements: []
-                    };
-                    var root = Ext.formbuilder.elementStore.getRootNode();//.getChildAt(0);
-                    root.eachChild(function(child) {
-                        var elements = this;
-                        elements.push(child.data);
-                        var last = elements.length-1;
-                        this[last].elements = [];
-                        child.eachChild(arguments.callee, elements[last].elements);
-                    }, data.elements);
-
-                    Ext.Ajax.request({
-                        url: url,
-                        params: {
-                            data: Ext.encode(data)
-                        },
-                        success: function(response){
-                            
-                        }
-                    });
+                    Ext.formbuilder.save(false);
                 }
             }]
         }

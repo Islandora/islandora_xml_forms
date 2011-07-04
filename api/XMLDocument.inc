@@ -79,7 +79,7 @@ class XMLDocument {
       }
     } catch (Exception $e) {
       $this->schema = NULL;
-      drupal_set_message($e->getMessage());
+      drupal_set_message($e->getMessage(), 'error');
     }
     $this->xml = $xml;
     $this->registry = new NodeRegistry($this);
