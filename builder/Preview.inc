@@ -40,3 +40,12 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
   $output = $xml_form->toArray();
   return $output;
 }
+
+function xml_form_builder_preview_submit(array $form, array &$form_state) {
+  module_load_include('inc', 'xml_form_api', 'XMLForm');
+  $xml_form = new XMLForm($form_state);
+  $doc = $xml_form->submit($form, $form_state);
+  $document = $doc->document;
+  dom_document_pretty_print($document);
+  exit();
+}

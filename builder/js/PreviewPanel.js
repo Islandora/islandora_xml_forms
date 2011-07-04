@@ -26,5 +26,11 @@ Ext.formbuilder.createPreviewPanel =  function(url) { // Use an iframe...
 Ext.formbuilder.refreshPreviewPanel =  function(url) { // Use an iframe...
     var display = this.displayPanel.layout;
     var preview = display.setActiveItem(0);
-    preview.update(Ext.formbuilder.getPreviewURL(url));
+    if(preview) {
+        preview.update(Ext.formbuilder.getPreviewURL(url));
+    }
+    else {
+        preview = display.getActiveItem();
+        preview.update(Ext.formbuilder.getPreviewURL(url));
+    }
 };

@@ -22,7 +22,7 @@ Ext.formbuilder = (function() {
             this.elementForm = this.createElementForm(); // Defined in ElementForm.js
             this.previewPanel = this.createPreviewPanel(url); // Defined in PreviewPanel.js
             this.displayPanel = this.createDisplayPanel([this.previewPanel, this.elementForm, this.propertiesForm]); // Defined in DisplayPanel.js
-            this.displayPanel.activeItem = 1;// TODO: remove.
+            this.displayPanel.activeItem = 0;// TODO: remove.
             /* Create Tree Panel */
             this.treePanel = this.createTreePanel(); // Defined in TreePanel.js
             this.treePanel.expandAll();
