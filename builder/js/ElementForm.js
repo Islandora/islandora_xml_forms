@@ -445,6 +445,26 @@ Ext.formbuilder.createElementForm = function () {
                 title: 'Advanced Form Controls',
                 autoScroll: true,
                 items: [{
+                    xtype: 'checkbox',
+                    id: 'access',
+                    name: 'access',
+                    fieldLabel: 'Access',
+                    checked: true,
+                    inputValue: true,
+                    listeners: {
+                        render: function() {
+                            Ext.create('Ext.tip.ToolTip', {
+                                target: 'access',
+                                anchor: 'left',
+                                html:  '<h3><a name="access" id="access"></a>#access</h3>' +
+                            '<p><strong>Used by</strong>: All elements and forms</p>' +
+                            '<p><strong>Description</strong>: Whether the element is accessible or not; when FALSE, the element is not rendered and the user submitted value is not taken into consideration.</p>' +
+                            '<p><strong>Values</strong>: TRUE or FALSE.</p>'
+                            });
+                        }
+                    }
+                }, {
+                    
                     xtype: 'textfield',
                     id: 'autocomplete_path',
                     name: 'autocomplete_path',
@@ -1101,32 +1121,18 @@ Ext.formbuilder.createElementForm = function () {
                             });
                         }
                     }
-                }, {
-                    xtype: 'checkbox',
-                    id: 'access',
-                    name: 'access',
-                    fieldLabel: 'Access',
-                    checked: true,
-                    inputValue: true,
-                    listeners: {
-                        render: function() {
-                            Ext.create('Ext.tip.ToolTip', {
-                                target: 'access',
-                                anchor: 'left',
-                                html:  '<h3><a name="access" id="access"></a>#access</h3>' +
-                            '<p><strong>Used by</strong>: All elements and forms</p>' +
-                            '<p><strong>Description</strong>: Whether the element is accessible or not; when FALSE, the element is not rendered and the user submitted value is not taken into consideration.</p>' +
-                            '<p><strong>Values</strong>: TRUE or FALSE.</p>'
-                            });
-                        }
-                    }
-                }, {
+                }]
+            }, {
+                title: 'Grids',
+                autoScroll: true,
+                items: [{
                     xtype: 'formgrid',
                     id: 'attributes',
                     name: 'attributes',
                     title: 'Attributes',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createMapStore(),
                     modelInitTmpl: {
                         key: '',
@@ -1170,6 +1176,7 @@ Ext.formbuilder.createElementForm = function () {
                     title: 'Element Validate',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createArrayStore(),
                     modelInitTmpl: {
                         value: ''
@@ -1203,6 +1210,7 @@ Ext.formbuilder.createElementForm = function () {
                     name: 'process',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createArrayStore(),
                     modelInitTmpl: {
                         value: ''
@@ -1235,6 +1243,7 @@ Ext.formbuilder.createElementForm = function () {
                     name: 'pre_render',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createArrayStore(),
                     modelInitTmpl: {
                         value: ''
@@ -1272,6 +1281,7 @@ Ext.formbuilder.createElementForm = function () {
                     name: 'post_render',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createArrayStore(),
                     modelInitTmpl: {
                         value: ''
@@ -1309,6 +1319,7 @@ Ext.formbuilder.createElementForm = function () {
                     name: 'after_build',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createArrayStore(),
                     modelInitTmpl: {
                         value: ''
@@ -1341,6 +1352,7 @@ Ext.formbuilder.createElementForm = function () {
                     title: 'Options',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createMapStore(),
                     modelInitTmpl: {
                         key: '',
@@ -1383,6 +1395,7 @@ Ext.formbuilder.createElementForm = function () {
                     name: 'user_data',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createMapStore(),
                     modelInitTmpl: {
                         key: '',
@@ -1425,6 +1438,7 @@ Ext.formbuilder.createElementForm = function () {
                     name: 'submit',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createArrayStore(),
                     modelInitTmpl: {
                         value: ''
@@ -1458,6 +1472,7 @@ Ext.formbuilder.createElementForm = function () {
                     name: 'validate',
                     height: 150,
                     collapsible: true,
+                    collapsed: true,
                     store: this.createArrayStore(),
                     modelInitTmpl: {
                         value: ''
