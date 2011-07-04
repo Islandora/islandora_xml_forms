@@ -45,8 +45,6 @@ class XMLForm extends Form {
   private function initializeFromStorage() {
     $this->root = $this->storage->root;
     $this->document = $this->storage->document;
-    //$this->registry = $this->storage->registry;
-    //$this->elements = $this->storage->elements;
   }
 
   /**
@@ -55,8 +53,6 @@ class XMLForm extends Form {
   private function storePersistantMembers() {
     $this->storage->root = $this->root;
     $this->storage->document = $this->document;
-    //$this->storage->registry = $this->registry;
-    //$this->storage->elements = $this->elements;
     $this->storage->initialized = TRUE;
   }
 
@@ -74,9 +70,6 @@ class XMLForm extends Form {
     if (!$this->initialized) {
       $this->root = $this->createRoot($form);
       $this->document = $document;
-      //$this->registry = Registry::getInstance();
-      //$this->registry->nodes = new NodeRegistry($document);
-      //$this->elements = clone $form_definition->elements;
       $this->generate(); // Register nodes and generate new elements.
       $this->prePopulate();
       $this->storePersistantMembers();

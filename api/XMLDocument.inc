@@ -149,6 +149,9 @@ class XMLDocument {
     $has_prefix = isset($prefix) && $prefix != '';
     $name = $has_prefix ? "{$prefix}:{$name}" : $name;
     $uri = $uri != '' ? $uri : NULL;
+    if (empty($name) && $name == '') {
+      throw new Exception('Missing local name for the root element in the form properties.');
+    }
     return new DOMElement($name, NULL, $uri);
   }
 

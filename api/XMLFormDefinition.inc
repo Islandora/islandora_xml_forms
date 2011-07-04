@@ -30,17 +30,17 @@ class XMLFormDefinition {
     if (is_string($definition)) {
       $document = new DOMDocument();
       $document->loadXML($definition);
-      return $document->schemaValidate($path);
+      return @$document->schemaValidate($path);
     }
     else if (get_class($definition) == 'DOMDocument') {
-      return $definition->schemaValidate($path);
+      return @$definition->schemaValidate($path);
     }
     else if (get_class($definition) == 'SimpleXMLElement') {
       $form = dom_import_simplexml($definition);
       $document = new DOMDocument('1.0');
       $form = $document->importNode($form, true);
       $form = $document->appendChild($form);
-      return $document->schemaValidate($path);
+      return @$document->schemaValidate($path);
     }
     return FALSE;
   }

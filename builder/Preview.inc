@@ -29,7 +29,12 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
     $form = XMLFormDefinition::GetDrupalForm($xml_definition);
     $properties = XMLFormDefinition::GetFormProperties($xml_definition);
     $properties = $properties['document'];
-    $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema']);
+    try {
+      $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema']);
+    } catch (Exception $e) {
+      drupal_set_message($e->getMessage(), 'error');
+      return array(); // Empty Form.
+    }
     $xml_form->initialize($form, $document);
   }
   $output = $xml_form->toArray();
