@@ -51,8 +51,6 @@ Ext.formbuilder = (function() {
          */
         showPreview: function () {
             this.refreshPreviewPanel(url);
-        //var display = this.displayPanel.layout;
-        //display.setActiveItem(0);
         },
         /**
          *
@@ -60,6 +58,8 @@ Ext.formbuilder = (function() {
         showElementForm: function () {
             var display = this.displayPanel.layout;
             display.setActiveItem(1);
+            var element = Ext.getCmp('xml-form-builder-element-form-tab-panel');
+            element.setActiveTab(0);
         },
         /**
          *

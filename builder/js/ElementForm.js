@@ -31,6 +31,7 @@ Ext.formbuilder.createElementForm = function () {
         }, {
             xtype: 'tabpanel',
             height: 640,
+            id: 'xml-form-builder-element-form-tab-panel',
             plain: true,
             unstyled: true,
             defaults: {
