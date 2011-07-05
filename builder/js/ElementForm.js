@@ -1520,7 +1520,7 @@ Ext.formbuilder.createElementForm = function () {
                     // Normal Form Fields
                     var values = form.getValues();
                     for(var i in values) {
-                        if(record.data[i] != undefined) {
+                        if(record.data[i] !== undefined) {
                             record.set(i, values[i]);
                         }
                     }
