@@ -65,7 +65,9 @@ class XMLFormPrePopulator {
    * @param FormElement $element 
    */
   private function setDefaultValue(FormElement $element, $value) {
-    $element->default_value = $value;
+    if (isset($value)) {
+      $element->default_value = $value;
+    }
   }
 
   /**
