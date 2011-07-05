@@ -21,12 +21,6 @@ class XMLForm extends Form {
    * @var XMLDocument
    */
   protected $document;
-  /**
-   * Stores node references.
-   * 
-   * @var NodeRegistry
-   */
-  protected $nodeRegistry;
 
   /**
    *
@@ -71,7 +65,7 @@ class XMLForm extends Form {
       $this->root = $this->createRoot($form);
       $this->document = $document;
       $this->generate(); // Register nodes and generate new elements.
-      $this->prePopulate();
+      $this->prepopulate();
       $this->storePersistantMembers();
     }
     else {
@@ -105,10 +99,10 @@ class XMLForm extends Form {
    * @param FormElements $elements
    * @return type 
    */
-  public function prePopulate() {
+  public function prepopulate() {
     module_load_include('inc', 'xml_form_api', 'XMLFormPrePopulator');
     $populator = new XMLFormPrePopulator($this->document);
-    $populator->prePopulate($this->root);
+    $populator->prepopulate($this->root);
   }
 
   /**

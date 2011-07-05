@@ -82,7 +82,7 @@ class XMLDocument {
       drupal_set_message($e->getMessage(), 'error');
     }
     $this->xml = $xml;
-    $this->registry = new NodeRegistry($this);
+      $this->registry = new NodeRegistry($this);
     $this->document = $this->createDocument();
     $this->xpath = new DOMXPath($this->document);
     $this->registerNamespaces();

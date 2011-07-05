@@ -7,6 +7,7 @@
  *
  */
 module_load_include('inc', 'xml_form_api', 'XMLDocument');
+module_load_include('inc', 'php_lib', 'DOMHelpers');
 
 /**
  * 
@@ -84,7 +85,7 @@ class XMLFormPrePopulator {
       case 'DOMAttr':
         return $node->nodeValue;
       case 'DOMElement':
-        if (!Utils::hasChildDOMElements($node)) {
+        if (!dom_element_has_child_elements($node)) {
           return $node->nodeValue; // May not be good...
         }
       default:
