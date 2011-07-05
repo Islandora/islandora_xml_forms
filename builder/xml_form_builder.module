@@ -7,6 +7,7 @@
  *
  */
 module_load_include('inc', 'xml_form_builder', 'Edit'); // Needed to make use of AHAH functions...
+module_load_include('inc', 'xml_form_builder', 'Preview'); // Needed to make use of AHAH functions...
 
 /**
  * Implements hook_menu. Register menus.
