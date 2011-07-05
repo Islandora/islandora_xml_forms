@@ -31,8 +31,8 @@ class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
    * setUp() performs any pre-requisite tasks that need to happen. 
    */
   public function setUp() {
-    parent::setUp('schema_api');
-    module_load_include('inc', 'schema_api', 'Schema');
+    parent::setUp('xml_schema_api');
+    module_load_include('inc', 'xml_schema_api', 'Schema');
   }
 
   /**
@@ -42,7 +42,7 @@ class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
     /**
      * Basic Create.
      */
-    $path = drupal_get_path('module', 'schema_api');
+    $path = drupal_get_path('module', 'xml_schema_api');
     $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
   }

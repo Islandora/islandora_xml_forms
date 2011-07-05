@@ -32,16 +32,16 @@ class SchemaAPI_ComplexType_TestCase extends DrupalUnitTestCase {
    */
   public function setUp() {
     // Enable any modules required for the test.
-    parent::setUp('schema_api');
-    module_load_include('inc', 'schema_api', 'Schema');
-    module_load_include('inc', 'schema_api', 'Element');
+    parent::setUp('xml_schema_api');
+    module_load_include('inc', 'xml_schema_api', 'Schema');
+    module_load_include('inc', 'xml_schema_api', 'Element');
   }
 
   /**
    *
    */
   public function test() {
-    $path = drupal_get_path('module', 'schema_api');
+    $path = drupal_get_path('module', 'xml_schema_api');
     $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
     $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.

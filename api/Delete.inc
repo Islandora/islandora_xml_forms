@@ -8,7 +8,7 @@
  */
 module_load_include('inc', 'xml_form_api', 'ActionInterface');
 module_load_include('inc', 'xml_form_api', 'Path');
-module_load_include('inc', 'xml_form_api', 'Utils');
+module_load_include('inc', 'php_lib', 'DOMHelpers');
 
 /**
  * 
@@ -60,7 +60,7 @@ class Delete implements Action {
    */
   public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
     $results = $this->path->query($registry, $element);
-    $results = Utils::DOMNodelistToArray($results);
+    $results = dom_node_list_to_array($results);
     foreach ($results as $node) {
       $this->delete($node);
     }

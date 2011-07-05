@@ -32,15 +32,15 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
    */
   public function setUp() {
     // Enable any modules required for the test.
-    parent::setUp('schema_api');
-    module_load_include('inc', 'schema_api', 'InsertOrderMap');
+    parent::setUp('xml_schema_api');
+    module_load_include('inc', 'xml_schema_api', 'InsertOrderMap');
   }
 
   /**
    *
    */
   public function test() {
-    $data_path = drupal_get_path('module', 'schema_api') . '/tests/data';
+    $data_path = drupal_get_path('module', 'xml_schema_api') . '/tests/data';
     $schema = new XMLSchema($data_path . '/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
     $insert_map = new InsertOrderMap($schema);
@@ -52,7 +52,7 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $this->assertEqual($map->min, 1, 'Min value set correctly');
     $this->assertEqual($map->max, 1, 'Max value set correctly');
     $this->assertEqual($map instanceof InsertOrderSequence, 'Set top level type correctly');
-    $this->assertEqual(count($map->children), 14, 'Correct Number of children.');
+    $this->assertEqual(count($map->children[0]), 14, 'Correct Number of children.');
     $order = $map->getOrder();
     $this->assertEqual($order, array(), 'getOrder returns an empty array if no constaints were matched.');
 
