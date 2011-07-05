@@ -16,7 +16,7 @@ Ext.define('Properties', {
         }  
     },
     fields: [{
-        name: 'name',
+        name: 'localName',
         type: 'string'
     }, {
         name: 'prefix',

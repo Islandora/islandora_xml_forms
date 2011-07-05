@@ -47,7 +47,7 @@ class JSONForm {
       'document' => array(
         'root' => array(
           'prefix' => $properties->prefix,
-          'local_name' => $properties->name,
+          'local_name' => $properties->localName,
           'uri' => $properties->uri
         ),
         'namespaces' => $namespaces,

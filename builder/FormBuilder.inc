@@ -230,7 +230,7 @@ class FormBuilder {
       $document_properties = $properties['document'];
       $namespaces = isset($document_properties['namespaces']) ? $document_properties['namespaces'] : array();
       $properties = array(
-        'name' => $document_properties['root']['local_name'],
+        'localName' => $document_properties['root']['local_name'],
         'prefix' => $document_properties['root']['prefix'],
         'uri' => $document_properties['root']['uri'],
         'namespaces' => $namespaces,
