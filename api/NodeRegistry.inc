@@ -77,6 +77,8 @@ class NodeRegistry { // implements IteratorAggregate {
    * @param DOMNode $node 
    */
   public function register($hash, DOMNode $node) {
+    $name = $node->nodeName;
+    $parent = $node->parentNode;
     $this->registered[$hash] = $node;
   }
 

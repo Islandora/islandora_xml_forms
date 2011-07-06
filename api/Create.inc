@@ -101,7 +101,9 @@ class Create implements Action {
       $created = $this->create($document, $value);
       $this->append($document, $created, $parent);
       $registry->register($element->hash, $created);
+      return true;
     }
+    return false;
   }
 
   /**

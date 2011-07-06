@@ -75,8 +75,9 @@ class XMLFormProcessAction {
    */
   public function execute() {
     if ($this->action) {
-      $this->action->execute($this->registry, $this->element, $this->value);
+      return $this->action->execute($this->registry, $this->element, $this->value);
     }
+    return true;
   }
 
 }
@@ -173,9 +174,15 @@ class XMLFormProcessor {
    * @return Document
    */
   private function performActions(array &$actions) {
-    foreach ($actions as $action) {
-      $action->execute();
-    }
+    do {
+      $continue = false;
+      foreach ($actions as $key => $action) {
+        if ($action->execute()) {
+          $continue = true;
+          unset($actions[$key]);
+        }
+      }
+    } while ($continue);
     return $this->registry->document;
   }
 

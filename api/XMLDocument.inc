@@ -8,6 +8,7 @@
  */
 module_load_include('inc', 'xml_form_api', 'NodeRegistry');
 module_load_include('inc', 'xml_schema_api', 'Schema');
+module_load_include('inc', 'php_lib', 'String');
 
 class XMLDocument {
   /**
@@ -82,7 +83,7 @@ class XMLDocument {
       drupal_set_message($e->getMessage(), 'error');
     }
     $this->xml = $xml;
-      $this->registry = new NodeRegistry($this);
+    $this->registry = new NodeRegistry($this);
     $this->document = $this->createDocument();
     $this->xpath = new DOMXPath($this->document);
     $this->registerNamespaces();
@@ -170,7 +171,7 @@ class XMLDocument {
    * @return boolean
    */
   public function exists() {
-    return isset($this->xml);
+    return is_non_empty_string($this->xml);
   }
 
   /**
