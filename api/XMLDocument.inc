@@ -121,6 +121,7 @@ class XMLDocument {
     $document = new DOMDocument();
     $root = $document->appendChild($this->createRootElement());
     foreach ($this->namespaces as $prefix => $uri) {
+      $prefix = preg_match('/xmlns/', $prefix) ? $prefix : "xmlns:$prefix";
       $root->setAttributeNS(self::xmlns, $prefix, $uri);
     }
     return $document;
