@@ -192,8 +192,7 @@ class XMLSchema {
     $this->imports = array();
     $imported_files = $this->getImportedFiles();
     foreach ($imported_files as $import_file) {
-      list($location, $namespace) = $import_file;
-      $filename = "$this->location/$location";
+      list($filename, $namespace) = $import_file;
       if (empty(self::$schemas[$filename])) {
         $this->imports[$filename] = new XMLSchema($filename, $namespace);
       }
