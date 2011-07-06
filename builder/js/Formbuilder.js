@@ -80,6 +80,136 @@ Ext.formbuilder = (function() {
                 });
             }
             Ext.getCmp('namespaces').store.loadData(namespaces, false);
+        },
+        saveElementForm: function() {
+            var form = this.elementForm.getForm();
+            if (form.isValid()) {
+                var record = form.getRecord();
+                record.beginEdit();
+                // Normal Form Fields
+                var values = form.getValues();
+                for(var i in values) {
+                    if(record.data[i] !== undefined) {
+                        record.set(i, values[i]);
+                    }
+                }
+                /* Form Array Grids */
+                var form_array_grids = [ 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'submit', 'validate' ];
+                var toArray = function(store) {
+                    var output = [];
+                    store.each(function(item){
+                        item = item.data;
+                        output.push(item.value);
+                    });
+                    return output;
+                }
+                form_array_grids.forEach(function(name) {
+                    var store = Ext.getCmp(name).store;
+                    record.set(name, toArray(store));
+                });
+                /* Form Map Grids */
+                var form_map_grids = [ 'attributes', 'options', 'user_data' ];
+                var toObject = function(store) {
+                    var output = {};
+                    store.each(function(item){
+                        item = item.data;
+                        output[item.key] = item.value;
+                    });
+                    return output;
+                }
+                form_map_grids.forEach(function(name) {
+                    var store = Ext.getCmp(name).store;
+                    record.set(name, toObject(store));
+                });
+                /* Ahah */
+                if(values['ahah'] == "on") {
+                    var ahah = {
+                        effect: values['ahah_effect'],
+                        event: values['ahah_event'],
+                        method: values['ahah_method'],
+                        path: values['ahah_path'],
+                        wrapper: values['ahah_wrapper'],
+                        keypress: values['ahah_keypress']
+                    };
+                    if(values['ahah_progress'] == "on") {
+                        ahah.progress = {
+                            type: values['ahah_progress_type'],
+                            message: values['ahah_progress_message'],
+                            url: values['ahah_progress_url'],
+                            interval: values['ahah_progress_interval']
+                        };
+                    }
+                    record.set('ahah', ahah);
+                }
+                var actions = {};
+                var has_actions = false;
+                if(values['actions_create'] == "on") {
+                    has_actions = true;
+                    actions.create = {
+                        context: values['actions_create_context'],
+                        path: values['actions_create_path'],
+                        schema: values['actions_create_schema'],
+                        type: values['actions_create_type'],
+                        value: values['actions_create_value']
+                    };
+                }
+                if(values['actions_read'] == "on") {
+                    has_actions = true;
+                    actions.read = {
+                        context: values['actions_read_context'],
+                        path: values['actions_read_path']
+                    };
+                }
+                if(values['actions_update'] == "on") {
+                    has_actions = true;
+                    actions.update = {
+                        context: values['actions_update_context'],
+                        path: values['actions_update_path'],
+                        schema: values['actions_update_schema']
+                    };
+                }
+                if(values['actions_delete'] == "on") {
+                    has_actions = true;
+                    actions['delete'] = {
+                        context: values['actions_delete_context'],
+                        path: values['actions_delete_path']
+                    };
+                }
+                if(has_actions) {
+                    record.set('actions', actions);
+                }
+                record.set('text', values.key + ' (' + values.type + ')');
+                record.endEdit();
+                record.commit();
+                record.store.sync();
+                Ext.formbuilder.elementStore.sync();
+            }
+        },
+        savePropertiesForm: function() {
+            var form = this.propertiesForm.getForm();
+            if (form.isValid()) {
+                var record = form.getRecord();
+                // Start
+                record.beginEdit();
+                // Normal form fields
+                var values = form.getValues();
+                for(var i in values) {
+                    record.set(i, values[i]);
+                }
+                // Grids
+                var toObject = function(store) {
+                    var output = {};
+                    store.each(function(item){
+                        item = item.data;
+                        output[item.key] = item.value;
+                    });
+                    return output;
+                }
+                var store = Ext.getCmp('namespaces').store;
+                record.set('namespaces', toObject(store));
+                // End
+                record.endEdit();
+            }
         }
     };
     return that;

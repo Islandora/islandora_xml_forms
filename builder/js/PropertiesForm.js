@@ -12,36 +12,6 @@ Ext.formbuilder.createPropertiesForm = function() {
         region: 'center',
         margin: '1 1 1 0',
         frame: true,
-        buttons: [{
-            text: 'Save',
-            handler: function() {
-                var form = this.up('form').getForm();
-                if (form.isValid()) {
-                    var record = form.getRecord();
-                    // Start
-                    record.beginEdit();
-                    // Normal form fields
-                    var values = form.getValues();
-                    for(var i in values) {
-                        record.set(i, values[i]);
-                    }
-                    // Grids
-                    var toObject = function(store) {
-                        var output = {};
-                        store.each(function(item){
-                            item = item.data;
-                            output[item.key] = item.value;
-                        });
-                        return output;
-                    }
-                    var store = Ext.getCmp('namespaces').store;
-                    record.set('namespaces', toObject(store));
-                    // End
-                    record.endEdit();
-                }
-                
-            }
-        }],
         items:  [{
             xtype: 'fieldset',
             title: 'Root Element',
@@ -104,6 +74,11 @@ Ext.formbuilder.createPropertiesForm = function() {
                     type: 'textfield'
                 }
             }]
-        }]
+        }],
+        listeners: {
+            hide: function() {
+                Ext.formbuilder.savePropertiesForm();
+            }     
+        }
     });
 };

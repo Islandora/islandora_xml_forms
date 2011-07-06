@@ -32,7 +32,7 @@ function xml_form_builder_create(array &$form_state) {
       '#type' => 'file',
       '#title' => t('Form Definition'),
       '#size' => 64,
-      '#description' => t('An XML Form Definition, to associate with this file.'),
+      '#description' => t('An XML form definition template.'),
     ),
     'create' => array(
       '#type' => 'submit',

@@ -86,6 +86,7 @@ Ext.formbuilder.createTreePanel = function() {
                 Ext.formbuilder.showElementForm();
             },
             selectionchange: function(view, selections) {
+                Ext.formbuilder.saveElementForm();
                 if(selections.length > 0) {
                     var record = selections[0];
                     // Load by name...
