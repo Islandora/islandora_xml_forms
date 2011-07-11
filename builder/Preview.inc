@@ -4,11 +4,13 @@
 
 /**
  * @file
- *
+ * 
+ * Provides hooks for render and processing the Preview form.
  */
 
 /**
- *
+ * Render the preview form.
+ * 
  * @param array $form_state
  * @param string $form_name 
  * @return array
@@ -46,6 +48,12 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
   return $output;
 }
 
+/**
+ * Process the preview form and pretty print the resulting document.
+ *
+ * @param array $form
+ * @param array $form_state 
+ */
 function xml_form_builder_preview_submit(array $form, array &$form_state) {
   module_load_include('inc', 'xml_form_api', 'XMLForm');
   try {
