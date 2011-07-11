@@ -36,6 +36,10 @@ function xml_form_elements_elements() {
     '#input' => TRUE,
     '#process' => array('xml_form_elements_process_tag'),
   );
+  $type['datepicker'] = array(
+    '#input' => TRUE,
+    '#process' => array('xml_form_elements_process_datepicker'),
+  );
   return $type;
 }
 
@@ -63,7 +67,11 @@ function xml_form_elements_theme() {
     'tag' => array(
       'arguments' => array('element'),
       'file' => 'Tag.inc'
-    )
+    ),
+    'datepicker' => array(
+      'arguments' => array('element'),
+      'file' => 'Datepicker.inc'
+    ),
   );
 }
 
@@ -227,3 +235,16 @@ function xml_form_elements_process_tag(array $element, $edit, array &$form_state
   module_load_include('inc', 'xml_form_elements', 'TabPanel');
   return Tag::Process($element, $edit, $form_state, $complete_form);
 }
+
+/**
+ *
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form 
+ */
+function xml_form_elements_process_datepicker(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'Datepicker');
+  return Datepicker::Process($element, $edit, $form_state, $complete_form);
+}
+

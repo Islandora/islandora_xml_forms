@@ -26,7 +26,7 @@ class Tabs {
       drupal_add_js("$path/js/Tabs.js");
       drupal_add_css("$path/theme/ui.core.css");
       drupal_add_css("$path/theme/ui.tabs.css");
-      drupal_add_css("$path/stylesheets/ui.theme.css");
+      drupal_add_css("$path/theme/ui.theme.css");
       drupal_add_css("$path/stylesheets/Tabs.css");
       $add_files = FALSE;
     }
