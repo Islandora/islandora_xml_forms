@@ -7,6 +7,8 @@
  * Create the Application
  */
 Ext.formbuilder.save = function(showPreview) {
+    Ext.formbuilder.savePropertiesForm();
+    Ext.formbuilder.saveElementForm();
     var url = window.location.pathname + '/save';
     var properties_record = Ext.formbuilder.propertiesStore.getAt(0);
     var data = {
