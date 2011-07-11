@@ -29,6 +29,8 @@ Ext.formbuilder.createTreePanel = function() {
                     var selection = selectionModel.getSelection();
                     if(selection.length > 0) {
                         var element = new Element({
+                            key: 'new element',
+                            type: 'textfield',
                             text: 'new element',
                             children: []
                         });
@@ -95,7 +97,6 @@ Ext.formbuilder.createTreePanel = function() {
                     //var data = Ext.clone(record.data);
                     var data = record.data;
                     form.loadRecord(record);
-                    form.setValues({type: data.type});
                     //attributes
                     var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];
                     form_grids.forEach(function(name) {
