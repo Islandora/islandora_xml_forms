@@ -42,7 +42,8 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
     }
     $output = $xml_form->toArray();
   } catch (Exception $e) {
-    drupal_set_message($e->getMessage(), 'error');
+    $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
+    drupal_set_message($msg, 'error');
     return array();
   }
   return $output;
@@ -62,7 +63,8 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
     $document = $doc->document;
     dom_document_pretty_print($document);
   } catch (Exception $e) {
-    drupal_set_message($e->getMessage(), 'error');
+    $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
+    drupal_set_message($msg, 'error');
   }
   exit();
 }

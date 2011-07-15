@@ -94,7 +94,7 @@ class Create implements Action {
    * @param mixed $value 
    */
   public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    $results  = $this->path->query($registry, $element);  
+    $results = $this->path->query($registry, $element);
     if ($results && $results->length > 0) {
       $document = $registry->document;
       $parent = $results->item(0);
@@ -126,9 +126,10 @@ class Create implements Action {
   private function createElement(XMLDocument $document, $value) {
     $namespace = $document->getNamespace($this->prefix);
     $name = isset($namespace) ? "{$this->prefix}:{$this->value}" : $this->value;
+    $doc = $document->document;
     return isset($namespace) ?
-        new DOMElement($name, $value, $namespace) :
-        new DOMElement($name, $value);
+        $doc->createElement($namespace, $name, $value) :
+        $doc->createElement($name, $value);
   }
 
   /**
@@ -163,7 +164,9 @@ class Create implements Action {
    * @param DOMElement $parent 
    */
   private function append(XMLDocument $document, DOMNode $child, DOMElement $parent) {
-    if (isset($document->schema)) {
+    $has_schema = isset($document->schema);
+    $has_schema_path = isset($this->schema_path) && trim($this->schema_path) != '';
+    if ($has_schema && $has_schema_path) {
       $insert_order = new InsertOrderMap($document->schema);
       $insert_order->insert($this->schema_path, $parent, $child);
     }
