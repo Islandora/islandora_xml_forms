@@ -53,7 +53,7 @@ class Path {
     $parent = $element->parent;
     while ($parent) {
       // Check to see if it defines a read property.
-      if (isset($parent->actions->read)) {
+      if (isset($parent->actions->read) || isset($parent->actions->create)) {
         $node = $registry->getNode($parent->hash);
         return isset($node) ? $node : FALSE; // Parent was not read from the document.
       }
