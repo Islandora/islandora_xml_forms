@@ -39,7 +39,7 @@ class XMLDocument {
    * 
    * @var array 
    */
-  protected $namespaces;
+  public $namespaces;
   /**
    * The uri to the schema.
    * 

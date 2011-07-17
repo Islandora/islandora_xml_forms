@@ -155,7 +155,21 @@ class Create implements Action {
    * @param DOMElement $value 
    */
   private function createXML(XMLDocument $document, $value) {
-    // @todo Implement Me !!!!
+    // Sigh... Oh DOM-API, your so backwards and useless.
+    // We have to do this for namespaces to work correctly, there is no clean work around for this.
+    $xml = strtr($this->value, array('%value%' => $value));
+    $doc = $document->document;
+    $root_attributes = '';
+    foreach ($document->namespaces as $prefix => $uri) {
+      $attribute = is_non_empty_string($prefix) ?
+          "xmlns:$prefix" :
+          "xmlns";
+      $root_attributes .= "$attribute = '$uri' ";
+    }
+    $xml = "<root {$root_attributes}>$xml</root>";
+    $this->fragment = $doc->createDocumentFragment();
+    $this->fragment->appendXML($xml);
+    return $this->fragment->childNodes->item(0)->childNodes->item(0);
   }
 
   /**
