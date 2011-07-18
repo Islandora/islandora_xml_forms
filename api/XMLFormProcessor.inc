@@ -50,7 +50,7 @@ class XMLFormProcessAction {
    * @param mixed $value
    */
   public function __construct(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    $this->registry = $registry;
+    $this->nodeRegistry = $registry;
     $this->element = $element;
     $this->value = $value;
     list($this->type, $this->action) = $this->getTypeAndAction($registry, $element, $value);
@@ -71,11 +71,21 @@ class XMLFormProcessAction {
   }
 
   /**
+   *
+   * @param int $type
+   * @param Action $action 
+   */
+  public function setTypeAndAction($type, Action $action) {
+    $this->type = $type;
+    $this->action = $action;
+  }
+
+  /**
    * 
    */
   public function execute() {
     if ($this->action) {
-      return $this->action->execute($this->registry, $this->element, $this->value);
+      return $this->action->execute($this->nodeRegistry, $this->element, $this->value);
     }
     return true;
   }
@@ -95,9 +105,14 @@ class XMLFormProcessor {
   protected $values;
   /**
    *
-   * @var Document 
+   * @var NodeRegistry
    */
-  protected $registry;
+  protected $nodeRegistry;
+  /**
+   *
+   * @var FormElementRegistry
+   */
+  protected $elementRegistry;
 
   /**
    *
@@ -106,7 +121,8 @@ class XMLFormProcessor {
    */
   public function __construct(FormValues $values, XMLDocument $document) {
     $this->values = $values;
-    $this->registry = $document->registry;
+    $this->nodeRegistry = $document->registry;
+    $this->elementRegistry = FormElementRegistry::getInstance();
   }
 
   /**
@@ -126,9 +142,55 @@ class XMLFormProcessor {
    */
   private function &createActions(FormElement $element) {
     $actions = new ArrayObject();
-    // @todo add a system that catches all removed form elements that have registered nodes, remove those elements from the form! 
     $element->each(array($this, 'createAction'), $actions);
+    $this->addDeleteActionsForRemovedFormElements($element, $actions);
     return $actions;
+  }
+
+  /**
+   * If the registered node's element is no longer in the form, 
+   * add an action to delete it.
+   * 
+   * @param XMLFormProcessAction $actions 
+   */
+  private function addDeleteActionsForRemovedFormElements(FormElement $element, $actions) {
+    $remaning_elements = $this->getRemainingElements($element);
+    $registered = $this->nodeRegistry->registered;
+    foreach ($registered as $hash => $node) {
+      if (array_search($hash, $remaning_elements) === FALSE) {
+        $element = $this->elementRegistry->get($hash);
+        $delete = $element->actions->delete;
+        if (isset($delete)) {
+          $action = new XMLFormProcessAction($this->nodeRegistry, $element);
+          $action->setTypeAndAction(Action::Delete, $delete);
+          $actions[] = $action;
+        }
+      }
+    }
+  }
+
+  /**
+   * Gets an array of hash identifier for the FormElements that are still in the Form.
+   * 
+   * @param FormElement $element
+   * @return array
+   */
+  public function getRemainingElements(FormElement $element) {
+    $remaining_elements = new ArrayObject();
+    $element->each(array($this, 'storeHash'), $remaining_elements);
+    return $remaining_elements->getArrayCopy();
+  }
+
+  /**
+   * Stores the hash for the given element in the provided array object.
+   * 
+   * @param FormElement $element
+   * @param ArrayObject $hashes
+   * @return boolean
+   */
+  public function storeHash(FormElement $element, ArrayObject $hashes) {
+    $hashes[] = $element->hash;
+    return TRUE;
   }
 
   /**
@@ -138,7 +200,7 @@ class XMLFormProcessor {
    */
   public function createAction(FormElement $element, $actions) {
     $value = $this->values->getValue($element->hash);
-    $actions[] = new XMLFormProcessAction($this->registry, $element, $value);
+    $actions[] = new XMLFormProcessAction($this->nodeRegistry, $element, $value);
     return TRUE;
   }
 
@@ -183,7 +245,7 @@ class XMLFormProcessor {
         }
       }
     } while ($continue);
-    return $this->registry->document;
+    return $this->nodeRegistry->document;
   }
 
 }

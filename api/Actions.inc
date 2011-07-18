@@ -84,21 +84,6 @@ class Actions implements FormPropertyInterface {
   }
 
   /**
-   * Create Actions.
-   * 
-   * @param Create $create
-   * @param Read $read
-   * @param Update $update
-   * @param Delete $delete 
-   *
-    public function __construct(Create $create = NULL, Read $read = NULL, Update $update = NULL, Delete $delete = NULL) {
-    $this->create = $create;
-    $this->read = $read;
-    $this->update = $update;
-    $this->delete = $delete;
-    } */
-
-  /**
    * Get the appropriate Action to perform.
    * 
    * This is called by the FormProcesor, depending on the state of certian variables one of 
