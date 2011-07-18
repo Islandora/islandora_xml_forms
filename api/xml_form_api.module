@@ -84,7 +84,7 @@ function xml_form(&$form_state) {
     $form = XMLFormDefinition::GetDrupalForm($xml);
     $properties = XMLFormDefinition::GetFormProperties($xml);
     $properties = $properties['document'];
-    $test = NULL;//getTestDocument();
+    $test = getTestDocument();
     $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema'], $test);
     $xml_form->initialize($form, $document);
   }

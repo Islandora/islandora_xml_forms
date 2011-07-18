@@ -5,6 +5,8 @@
         <citation>
             <citeinfo>
                 <origin>origin</origin>
+                <origin>origintwo</origin>
+                <origin>originthree</origin>
                 <pubdate>Unknown</pubdate>
                 <title>title</title>
             </citeinfo>
@@ -37,6 +39,13 @@
             <theme>
                 <themekt>themekt</themekt>
                 <themekey>themekey</themekey>
+                <themekey>themekey1</themekey>
+                <themekey>themekey2</themekey>
+            </theme>
+            <theme>
+                <themekt>themekt2</themekt>
+                <themekey>themekey4</themekey>
+                <themekey>themekey5</themekey>
             </theme>
         </keywords>
         <accconst>acconst</accconst>
@@ -51,6 +60,18 @@
                 </cntperp>
                 <cntaddr>
                     <addrtype>addrtype</addrtype>
+                    <city>city</city>
+                    <state>state</state>
+                    <postal>postal</postal>
+                </cntaddr>
+                <cntaddr>
+                    <addrtype>addrtypetwo</addrtype>
+                    <city>city</city>
+                    <state>state</state>
+                    <postal>postal</postal>
+                </cntaddr>
+                <cntaddr>
+                    <addrtype>addrtypethree</addrtype>
                     <city>city</city>
                     <state>state</state>
                     <postal>postal</postal>

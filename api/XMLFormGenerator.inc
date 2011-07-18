@@ -55,9 +55,18 @@ class XMLFormGenerator {
   public function processElement(FormElement $element) {
     if (!$this->registry->isElementRegistered($element->hash)) {
       $nodes = $this->findNodes($element);
-      $form_elements = $this->createDuplicates($element, count($nodes));
-      $this->registerNodes($form_elements, $nodes);
+      $node = array_shift($nodes);
+      if (isset($node)) {
+        $this->registry->register($element->hash, $node);
+        $duplicates = $this->createDuplicates($element, count($nodes));
+        $this->registerDuplicates($duplicates, $nodes);
+        foreach ($duplicates as $duplicate) {
+          $duplicate->eachDecendant(array($this, 'processElement'));
+        }
+      }
+      return TRUE;
     }
+    return FALSE;
   }
 
   /**
@@ -83,8 +92,8 @@ class XMLFormGenerator {
    * @param integer $count 
    */
   private function createDuplicates(FormElement $element, $count) {
-    $output = array($element);
-    for ($i = 1; $i < $count; $i++) {
+    $output = array();
+    for ($i = 0; $i < $count; $i++) {
       $clone = $this->form->duplicateOriginal($element->hash);
       $element->parent[] = $clone;
       $output[] = $clone;
@@ -97,7 +106,7 @@ class XMLFormGenerator {
    * @param array $elements
    * @param array $nodes 
    */
-  private function registerNodes(array $elements, array $nodes) {
+  private function registerDuplicates(array $elements, array $nodes) {
     $iterator = new MultipleIterator();
     $iterator->attachIterator(new ArrayIterator($elements));
     $iterator->attachIterator(new ArrayIterator($nodes));
