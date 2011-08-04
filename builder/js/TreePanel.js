@@ -29,9 +29,6 @@ Ext.formbuilder.createTreePanel = function() {
                     var selection = selectionModel.getSelection();
                     if(selection.length > 0) {
                         var element = new Element({
-                            key: 'new element',
-                            type: 'textfield',
-                            text: 'new element',
                             children: []
                         });
                         var selected = selection[0];

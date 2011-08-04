@@ -86,16 +86,4 @@ class Update implements Action {
     $node->nodeValue = $value;
   }
 
-  /**
-   * 
-   * @return DOMElement
-   */
-  public function asNode(DOMDocument $document) {
-    $update = $document->createElement('update');
-    if (isset($this->path)) {
-      $update->appendChild($this->path->asNode());
-    }
-    return $update;
-  }
-
 }

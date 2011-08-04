@@ -39,10 +39,25 @@ class Create implements Action {
    */
   protected $type;
   /**
-   * The namespace for the Element or Attribute we are creating.
+   * The full name for the Element or Attribute we are creating.
+   * @var string
+   */
+  protected $name;
+  /**
+   * The namespace prefix for the Element or Attribute we are creating.
    * @var string
    */
   protected $prefix;
+  /**
+   * The local name for the Element or Attribute we are creating.
+   * @var string
+   */
+  protected $local_name;
+  /**
+   * The XML Snippit we are creating.
+   * @var string
+   */
+  protected $xml;
   /**
    * The value used to create the Element, Attribute or XML Snippit.
    * @var string
@@ -56,9 +71,24 @@ class Create implements Action {
   public function __construct(array &$params) {
     $this->path = new Path($params['path'], $params['context']);
     $this->schema_path = isset($params['schema']) ? $params['schema'] : NULL;
-    $this->type = $params['type'];
-    $this->prefix = isset($params['prefix']) ? $params['prefix'] : NULL;
     $this->value = $params['value'];
+    $this->type = $params['type'];
+    switch ($this->type) {
+      case self::XML:
+        $this->xml = $this->value;
+        break;
+      case self::Element:
+      case self::Attribute:
+        $this->name = $this->value;
+        $tag_name = explode(':', $this->name);
+        if (count($tag_name) > 1) {
+          list($this->prefix, $this->local_name) = $tag_name;
+        }
+        else {
+          list($this->local_name) = $tag_name;
+        }
+        break;
+    }
   }
 
   /**
@@ -124,12 +154,20 @@ class Create implements Action {
    * @return DOMElement
    */
   private function createElement(XMLDocument $document, $value) {
-    $namespace = $document->getNamespace($this->prefix);
-    $name = isset($namespace) ? "{$this->prefix}:{$this->value}" : $this->value;
-    $doc = $document->document;
-    return isset($namespace) ?
-        $doc->createElement($namespace, $name, $value) :
-        $doc->createElement($name, $value);
+    if (isset($this->prefix)) {
+      $uri = $document->getNamespaceURI($this->prefix);
+      if (empty($uri)) {
+        $msg = "Failed to find namespace uri for the prefix $this->prefix, used by the element $this->name. Please define this namespace in the form properties.";
+        throw new Exception($msg);
+      }
+      return $document->document->createElementNS($uri, $this->name, $value);
+    }
+    else {
+      $uri = $document->getNamespaceURI(); // Get Default URI.
+      return (isset($uri)) ?
+          $document->document->createElementNS($uri, $this->name, $value) :
+          $document->document->createElement($this->name, $value);
+    }
   }
 
   /**
@@ -139,7 +177,7 @@ class Create implements Action {
    * @return DOMAttr 
    */
   private function createAttribute(XMLDocument $document, $value) {
-    $namespace = $document->getNamespace($this->prefix);
+    $namespace = $document->getNamespaceURI($this->prefix);
     $doc = $document->document;
     $name = isset($namespace) ? "{$this->prefix}:{$this->create}" : $this->value;
     $attribute = isset($namespace) ?
@@ -187,39 +225,6 @@ class Create implements Action {
     else {
       $parent->appendChild($child);
     }
-  }
-
-  /**
-   * 
-   * @return DOMElement
-   */
-  public function asNode(DOMDocument $document) {
-    $create = $document->createElement('create');
-    if (isset($this->path)) {
-      $create->appendChild($this->path->asNode());
-    }
-    // @todo Add schema info to the out put...
-    switch ($this->type) {
-      case Create::Attribute:
-        $attribute = $document->createElement('attribute', $this->value);
-        if (isset($this->prefix)) {
-          $attribute->setAttribute('prefix', $this->prefix);
-        }
-        $create->appendChild($attribute);
-        break;
-      case Create::Element:
-        $element = $document->createElement('element', $this->value);
-        if (isset($this->prefix)) {
-          $element->setAttribute('prefix', $this->prefix);
-        }
-        $create->appendChild($element);
-        break;
-      case Create::XML:
-        $xml = $document->createElement('xml', $this->value);
-        $create->appendChild($xml);
-        break;
-    }
-    return $create;
   }
 
 }

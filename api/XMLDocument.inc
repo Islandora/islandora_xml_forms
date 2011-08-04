@@ -181,8 +181,16 @@ class XMLDocument {
    * @param string $prefix 
    * @return string
    */
-  public function getNamespace($prefix) {
-    return isset($this->namespaces[$prefix]) ? $this->namespaces[$prefix] : NULL;
+  public function getNamespaceURI($prefix = NULL) {
+    if (isset($prefix)) {
+      return isset($this->namespaces[$prefix]) ? $this->namespaces[$prefix] : NULL;
+    }
+    else {
+      if (isset($this->root['uri'])) {
+        return $this->root['uri'];
+      }
+      return NULL;
+    }
   }
 
   /**

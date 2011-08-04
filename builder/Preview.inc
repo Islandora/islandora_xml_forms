@@ -62,9 +62,10 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
     $doc = $xml_form->submit($form, $form_state);
     $document = $doc->document;
     dom_document_pretty_print($document);
+    exit();
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message($msg, 'error');
+    $form_state['rebuild'] = true;
   }
-  exit();
 }

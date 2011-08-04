@@ -129,14 +129,15 @@ Ext.define('Element', {
     fields: [{
         name: 'key', // This objects key in the form elements array.
         type: 'string',
-        defaultValue: ''
+        defaultValue: 'new element'
     }, {
         name: 'text', // The title that appears on the tree view.
         type: 'string',
-        defaultValue: ''
+        defaultValue: 'new element'
     }, {
         name: 'type', // The type of form element this is.
-        type: 'string'
+        type: 'string',
+        defaultValue: 'textfield'
     }, {
         name: 'access', // Access Form Control
         type: 'boolean',

@@ -39,7 +39,7 @@ class Delete implements Action {
       'context' => $this->path->context,
     );
   }
-  
+
   /**
    * 
    * @param NodeRegistry $registry
@@ -73,18 +73,6 @@ class Delete implements Action {
    */
   private function delete(DOMNode $node) {
     $node->parentNode->removeChild($node);
-  }
-
-  /**
-   * 
-   * @return DOMElement
-   */
-  public function asNode(DOMDocument $document) {
-    $delete = $document->createElement('delete');
-    if (isset($this->path)) {
-      $delete->appendChild($this->path->asNode());
-    }
-    return $delete;
   }
 
 }
