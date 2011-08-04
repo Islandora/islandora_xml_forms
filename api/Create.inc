@@ -195,8 +195,7 @@ class Create implements Action {
   private function createXML(XMLDocument $document, $value) {
     // Sigh... Oh DOM-API, your so backwards and useless.
     // We have to do this for namespaces to work correctly, there is no clean work around for this.
-    $xml = strtr($this->value, array('%value%' => $value));
-    $doc = $document->document;
+    // User will have to put both the prefix and namespace on elements where they want the prefix to stay.
     $default_uri = $document->getNamespaceURI();
     $root_attributes = ($default_uri) ? "xmlns = '$default_uri' " : '';
     foreach ($document->namespaces as $prefix => $uri) {
@@ -205,10 +204,12 @@ class Create implements Action {
           "xmlns";
       $root_attributes .= "$attribute = '$uri' ";
     }
+    $xml = strtr($this->value, array('%value%' => $value));
     $xml = "<root {$root_attributes}>$xml</root>";
-    $this->fragment = $doc->createDocumentFragment();
+    $this->fragment = $document->document->createDocumentFragment();
     $this->fragment->appendXML($xml);
-    return $this->fragment->childNodes->item(0)->childNodes->item(0);
+    $default_uri = $document->getNamespaceURI();
+    return $this->fragment->firstChild->firstChild;
   }
 
   /**
