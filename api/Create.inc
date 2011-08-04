@@ -197,7 +197,8 @@ class Create implements Action {
     // We have to do this for namespaces to work correctly, there is no clean work around for this.
     $xml = strtr($this->value, array('%value%' => $value));
     $doc = $document->document;
-    $root_attributes = '';
+    $default_uri = $document->getNamespaceURI();
+    $root_attributes = ($default_uri) ? "xmlns = '$default_uri' " : '';
     foreach ($document->namespaces as $prefix => $uri) {
       $attribute = is_non_empty_string($prefix) ?
           "xmlns:$prefix" :
