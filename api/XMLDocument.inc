@@ -213,9 +213,17 @@ class XMLDocument {
    * @return DOMNodeList 
    */
   public function query($path, DOMNode $context = NULL) {
+    libxml_use_internal_errors(TRUE);
     $results = isset($context) ?
         $this->xpath->query($path, $context) :
         $this->xpath->query($path);
+    $error = libxml_get_last_error();
+    libxml_use_internal_errors(FALSE);
+    if ($error !== FALSE) {
+      $msg = "Invalid Query: $path";
+      $msg .= isset($context) ? ", at context {$contex->tagname}" : '';
+      throw new Exception($msg);
+    }
     return $results;
   }
 

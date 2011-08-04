@@ -59,7 +59,7 @@ class Path {
       }
       $parent = $parent->parent;
     }
-    throw new Exception("The Form Element '{$element->title}' of type '{$element->type}' specifies a xpath context of parent but none is defined.");
+    throw new Exception("The Form Element <br/>index: '{$element->getIndex()}' <br/>title: '{$element->title}' </br>type: '{$element->type}'.</br> Specifies a xpath context of parent but none is defined.");
   }
 
   private function getSelf(NodeRegistry $registry, FormElement $element) {
@@ -76,17 +76,6 @@ class Path {
       return $registry->document->query($this->path, $context);
     }
     return FALSE;
-  }
-
-  /**
-   * 
-   * @return DOMElement
-   */
-  public function asNode() {
-    $path = new DOMElement('path');
-    $path->appendChild(new DOMText($this->path));
-    $path->setAttribute('context', $this->context);
-    return $path;
   }
 
 }
