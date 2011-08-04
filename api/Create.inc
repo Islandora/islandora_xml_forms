@@ -144,7 +144,13 @@ class Create implements Action {
    */
   private function create(XMLDocument $document, $value) {
     $action = array(self::Element => 'createElement', self::Attribute => 'createAttribute', self::XML => 'createXML');
-    return call_user_method($action[$this->type], $this, $document, $value);
+    try {
+      return call_user_method($action[$this->type], $this, $document, $value);
+    } catch (Exception $e) {
+      $value = htmlentities($this->value);
+      $msg = "Failed to create {$this->type} with value {$value} . Error: {$e->getMessage()}";
+      throw new Exception($msg);
+    }
   }
 
   /**
@@ -177,14 +183,34 @@ class Create implements Action {
    * @return DOMAttr 
    */
   private function createAttribute(XMLDocument $document, $value) {
-    $namespace = $document->getNamespaceURI($this->prefix);
-    $doc = $document->document;
-    $name = isset($namespace) ? "{$this->prefix}:{$this->create}" : $this->value;
-    $attribute = isset($namespace) ?
-        $doc->createAttributeNS($namespace, $name) :
-        $doc->createAttribute($name);
-    $attribute->value = $value;
-    return $attribute;
+    if (isset($this->prefix)) {
+      $uri = $document->getNamespaceURI($this->prefix);
+      if (empty($uri)) {
+        $msg = "Failed to find namespace uri for the prefix $this->prefix, used by the attribute $this->name. Please define this namespace in the form properties.";
+        throw new Exception($msg);
+      }
+      $attribute = $document->document->createAttributeNS($uri, $this->name);
+      $attribute->value = $value;
+      return $attribute;
+    }
+    else {
+      $uri = $document->getNamespaceURI(); // Get Default URI.
+      $attribute = isset($uri) ?
+          $document->document->createAttributeNS($uri, $this->name) :
+          $document->document->createAttribute($this->name);
+      $attribute->value = $value;
+      return $attribute;
+    }
+    /*
+      $namespace = $document->getNamespaceURI($this->prefix);
+      $doc = $document->document;
+      $name = isset($namespace) ? "{$this->prefix}:{$this->create}" : $this->value;
+      $attribute = isset($namespace) ?
+      $doc->createAttributeNS($namespace, $name) :
+      $doc->createAttribute($name);
+      $attribute->value = $value;
+      return $attribute;
+     */
   }
 
   /**
