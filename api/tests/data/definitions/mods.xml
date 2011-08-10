@@ -1,52 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../XMLFormDefinition.xsd">
+<?xml version="1.0"?>
+<definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <properties>
         <document>
             <root>
                 <local_name>mods</local_name>
-                <prefix>mods</prefix>
                 <uri>http://www.loc.gov/mods/v3</uri>
             </root>
             <namespaces>
                 <namespace prefix="mods">http://www.loc.gov/mods/v3</namespace>
                 <namespace prefix="xlink">http://www.w3.org/1999/xlink</namespace>
                 <namespace prefix="xsi">http://www.w3.org/2001/XMLSchema-instance</namespace>
-                <namespace prefix="xmlns">http://www.w3.org/2000/xmlns</namespace>
             </namespaces>
             <schema>http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>
         </document>
     </properties>
     <form>
         <properties>
+            <type>form</type>
+            <access>true</access>
             <attributes>
                 <enctype>multipart/form-data</enctype>
             </attributes>
+            <tree>true</tree>
         </properties>
         <children>
-            <!-- File Upload
-            <element name="indicator">
-                <children>
-                    <element name="ingest-file-location">
-                        <properties>
-                            <type>file</type>
-                            <title>Upload Document</title>
-                            <size>48</size>
-                            <description>Select file to be added the the object.</description>
-                        </properties>
-                    </element>
-                </children>
-            </element> -->
-            <!-- Co-Alliance form. -->
             <element name="title">
                 <properties>
                     <type>textfield</type>
-                    <title>Title</title>
+                    <access>true</access>
                     <required>true</required>
+                    <title>Title</title>
+                    <tree>true</tree>
                     <actions>
                         <create>
                             <path>/mods:mods</path>
                             <context>document</context>
-                            <xml>&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;</xml>
+                            <schema/>
+                            <type>xml</type>
+                            <value>&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;</value>
                         </create>
                         <read>
                             <path>/mods:mods/mods:titleInfo[not(@type)]/mods:title</path>
@@ -58,16 +49,21 @@
                         </update>
                     </actions>
                 </properties>
+                <children/>
             </element>
             <element name="alternative_title">
                 <properties>
                     <type>textfield</type>
+                    <access>true</access>
                     <title>Alternative Title</title>
+                    <tree>true</tree>
                     <actions>
                         <create>
                             <path>/mods:mods</path>
                             <context>document</context>
-                            <xml>&lt;titleInfo type='alternative'&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;</xml>
+                            <schema/>
+                            <type>xml</type>
+                            <value>&lt;titleInfo type='alternative'&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;</value>
                         </create>
                         <read>
                             <path>/mods:mods/mods:titleInfo[@type='alternative']/mods:title</path>
@@ -79,225 +75,163 @@
                         </update>
                     </actions>
                 </properties>
+                <children/>
             </element>
-            <element name="creator">
+            <element name="creators">
                 <properties>
-                    <type>tabs</type>
-                    <title>Creator</title>
-                    <collapsed>false</collapsed>
-                    <collapsible>true</collapsible>
-                    <actions>
-                        <create>
-                            <path>/mods:mods</path>
-                            <context>document</context>
-                            <xml>&lt;name type='personal'&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;creator&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</xml>
-                        </create>
-                        <read>
-                            <path>(/mods:mods/mods:name[@type='personal']/mods:role[mods:roleTerm='creator']/..)</path>
-                            <context>document</context>
-                        </read>
-                        <update>
-                            <path>self::node()</path>
-                            <context>self</context>
-                        </update>
-                    </actions>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>Creators</title>
+                    <tree>true</tree>
                 </properties>
                 <children>
-                    <element>
+                    <element name="0">
                         <properties>
-                            <type>tabpanel</type>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;name type='personal'&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;creator&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:name[@type='personal']/mods:role[mods:roleTerm='creator']/../mods:namePart[not(@type)]</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
                         </properties>
-                        <children>
-                            <element name="namePart">
-                                <properties>
-                                    <type>textfield</type>
-                                    <title>Creator</title>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <element>namePart</element>
-                                        </create>
-                                        <read>
-                                            <path>mods:namePart[not(@type)]</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                    </actions>
-                                </properties>
-                            </element>
-                        </children>
                     </element>
                 </children>
             </element>
-            <element name="contributor">
+            <element name="contributors">
                 <properties>
-                    <type>tabs</type>
-                    <title>Contributor</title>
-                    <collapsed>false</collapsed>
-                    <collapsible>true</collapsible>
-                    <actions>
-                        <create>
-                            <path>/mods:mods</path>
-                            <context>document</context>
-                            <xml>&lt;name type='personal'&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;contributor&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</xml>
-                        </create>
-                        <read>
-                            <path>(/mods:mods/mods:name[@type='personal']/mods:role[mods:roleTerm='contributor']/..)</path>
-                            <context>document</context>
-                        </read>
-                        <update>
-                            <path>self::node()</path>
-                            <context>self</context>
-                        </update>
-                    </actions>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>Contributors</title>
+                    <tree>true</tree>
                 </properties>
                 <children>
-                    <element>
+                    <element name="0">
                         <properties>
-                            <type>tabpanel</type>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;name type='personal'&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;contributor&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:name[@type='personal']/mods:role[mods:roleTerm='contributor']/../mods:namePart[not(@type)]</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
                         </properties>
-                        <children>
-                            <element>
-                                <properties>
-                                    <type>textfield</type>
-                                    <title>Contributor</title>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <element>namePart</element>
-                                        </create>
-                                        <read>
-                                            <path>mods:namePart[not(@type)]</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                    </actions>
-                                </properties>
-                            </element>
-                        </children>
                     </element>
                 </children>
             </element>
-            <element name="corporate_creator">
+            <element name="corporate_creators">
                 <properties>
-                    <type>tabs</type>
-                    <title>Corporate Creator</title>
-                    <collapsed>false</collapsed>
-                    <collapsible>true</collapsible>
-                    <actions>
-                        <create>
-                            <path>/mods:mods</path>
-                            <context>document</context>
-                            <xml>&lt;name type='corporate'&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;creator&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</xml>
-                        </create>
-                        <read>
-                            <path>(/mods:mods/mods:name[@type='corporate']/mods:role[mods:roleTerm='creator']/..)</path>
-                            <context>document</context>
-                        </read>
-                        <update>
-                            <path>self::node()</path>
-                            <context>self</context>
-                        </update>
-                    </actions>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>Corporate Creators</title>
+                    <tree>true</tree>
                 </properties>
                 <children>
-                    <element>
+                    <element name="0">
                         <properties>
-                            <type>tabpanel</type>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;name type='corporate'&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;creator&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:name[@type='corporate']/mods:role[mods:roleTerm='creator']/../mods:namePart[not(@type)]</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <update>
+                                    <path>self::node()/..</path>
+                                    <context>self</context>
+                                </update>
+                            </actions>
                         </properties>
-                        <children>
-                            <element>
-                                <properties>
-                                    <type>textfield</type>
-                                    <title>Creator</title>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <element>namePart</element>
-                                        </create>
-                                        <read>
-                                            <path>mods:namePart[not(@type)]</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                    </actions>
-                                </properties>
-                            </element>
-                        </children>
                     </element>
                 </children>
             </element>
-            <element name="corporate_contributor">
+            <element name="corporate_contributors">
                 <properties>
-                    <type>tabs</type>
-                    <title>Corporate Contributor</title>
+                    <type>tags</type>
+                    <access>true</access>
                     <collapsed>false</collapsed>
                     <collapsible>true</collapsible>
-                    <actions>
-                        <create>
-                            <path>/mods:mods</path>
-                            <context>document</context>
-                            <xml>&lt;name type='corporate'&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;contributor&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</xml>
-                        </create>
-                        <read>
-                            <path>(/mods:mods/mods:name[@type='corporate']/mods:role[mods:roleTerm='contributor']/..)</path>
-                            <context>document</context>
-                        </read>
-                        <update>
-                            <path>self::node()</path>
-                            <context>self</context>
-                        </update>
-                    </actions>
+                    <title>Corporate Contributors</title>
+                    <tree>true</tree>
                 </properties>
                 <children>
-                    <element>
+                    <element name="0">
                         <properties>
-                            <type>tabpanel</type>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;name type='corporate'&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;contributor&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:name[@type='corporate']/mods:role[mods:roleTerm='contributor']/../mods:namePart[not(@type)]</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
                         </properties>
-                        <children>
-                            <element>
-                                <properties>
-                                    <type>textfield</type>
-                                    <title>Contributor</title>
-                                    <actions>
-                                        <create>
-                                            <path>self::node()</path>
-                                            <context>parent</context>
-                                            <element>namePart</element>
-                                        </create>
-                                        <read>
-                                            <path>mods:namePart[not(@type)]</path>
-                                            <context>parent</context>
-                                        </read>
-                                        <update>
-                                            <path>self::node()</path>
-                                            <context>self</context>
-                                        </update>
-                                    </actions>
-                                </properties>
-                            </element>
-                        </children>
                     </element>
                 </children>
             </element>
             <element name="type">
                 <properties>
                     <type>select</type>
-                    <title>Type of Resource</title>
+                    <access>true</access>
                     <options>
-                        <option key="NULL">Please Select One...</option>
                         <option key="text">text</option>
                         <option key="cartographic">cartographic</option>
                         <option key="sound recording">sound recording</option>
@@ -306,10 +240,14 @@
                         <option key="mixed material">mixed material</option>
                     </options>
                     <required>true</required>
+                    <title>Type of Resource</title>
+                    <tree>true</tree>
                     <actions>
                         <create>
                             <path>/mods:mods</path>
                             <context>document</context>
+                            <type>element</type>
+                            <value>typeOfResource</value>
                         </create>
                         <read>
                             <path>/mods:mods/mods:typeOfResource</path>
@@ -321,16 +259,20 @@
                         </update>
                     </actions>
                 </properties>
+                <children/>
             </element>
             <element name="origin_information">
                 <properties>
                     <type>fieldset</type>
+                    <access>true</access>
                     <title>Origin Information</title>
+                    <tree>true</tree>
                     <actions>
                         <create>
                             <path>/mods:mods</path>
                             <context>document</context>
-                            <element>originInfo</element>
+                            <type>element</type>
+                            <value>originInfo</value>
                         </create>
                         <read>
                             <path>/mods:mods/mods:originInfo</path>
@@ -342,45 +284,65 @@
                     <element name="place">
                         <properties>
                             <type>textfield</type>
+                            <access>true</access>
                             <title>Place of Publication</title>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
-                                    <xml>&lt;place&gt;&lt;placeTerm type='text'&gt;%value%&lt;/placeTerm&gt;&lt;/place&gt;</xml>
+                                    <type>xml</type>
+                                    <value>&lt;place&gt;&lt;placeTerm type='text'&gt;%value%&lt;/placeTerm&gt;&lt;/place&gt;</value>
                                 </create>
                                 <read>
                                     <path>mods:place/mods:placeTerm[@type='text']</path>
                                     <context>parent</context>
                                 </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
                             </actions>
                         </properties>
+                        <children/>
                     </element>
                     <element name="publisher">
-                       <properties>
-                           <type>textfield</type>
-                           <title>Publisher</title>
-                           <actions>
-                               <create>
-                                   <path>self::node()</path>
-                                   <context>parent</context>
-                                   <element>publisher</element>
-                               </create>
-                               <read>
-                                   <path>mods:publisher</path>
-                                   <context>parent</context>
-                               </read>
-                           </actions>
-                       </properties>
-                   </element>
-                    <element name="issued">
                         <properties>
                             <type>textfield</type>
-                            <title>Date Issued</title>
+                            <access>true</access>
+                            <title>Publisher</title>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>publisher</value>
+                                </create>
+                                <read>
+                                    <path>mods:publisher</path>
+                                    <context>parent</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                            </actions>
+                        </properties>
+                        <children/>
+                    </element>
+                    <element name="issued">
+                        <properties>
+                            <type>textfield</type>
+                            <access>true</access>
+                            <title>Date Issued</title>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>self::node()</path>
+                                    <context>parent</context>
+                                    <type>element</type>
+                                    <value>dateIssued</value>
                                 </create>
                                 <read>
                                     <path>mods:dateIssued</path>
@@ -396,12 +358,16 @@
                     <element name="created">
                         <properties>
                             <type>textfield</type>
-                            <title>Date Created</title>
+                            <access>true</access>
                             <required>true</required>
+                            <title>Date Created</title>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>xml</type>
+                                    <value>&lt;dateCreated keyDate="yes"&gt;%value%&lt;/dateCreated&gt;</value>
                                 </create>
                                 <read>
                                     <path>mods:dateCreated</path>
@@ -417,11 +383,15 @@
                     <element name="copyright">
                         <properties>
                             <type>textfield</type>
+                            <access>true</access>
                             <title>Copyright Date</title>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>copyrightDate</value>
                                 </create>
                                 <read>
                                     <path>mods:copyrightDate</path>
@@ -433,20 +403,24 @@
                                 </update>
                             </actions>
                         </properties>
+                        <children/>
                     </element>
                     <element name="other">
                         <properties>
                             <type>textfield</type>
+                            <access>true</access>
                             <title>Other Date</title>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
-                                    <element>dateOther</element>
+                                    <type>element</type>
+                                    <value>dateOther</value>
                                 </create>
                                 <read>
                                     <path>mods:dateOther</path>
-                                    <context>parent</context>                                    
+                                    <context>parent</context>
                                 </read>
                                 <update>
                                     <path>self::node()</path>
@@ -455,18 +429,59 @@
                             </actions>
                         </properties>
                     </element>
+                    <element>
+                        <properties>
+                            <type>tags</type>
+                            <access>true</access>
+                            <title>Frequency</title>
+                            <tree>true</tree>
+                        </properties>
+                        <children>
+                            <element>
+                                <properties>
+                                    <type>tag</type>
+                                    <access>true</access>
+                                    <tree>true</tree>
+                                    <actions>
+                                        <create>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                            <type>element</type>
+                                            <value>frequency</value>
+                                        </create>
+                                        <read>
+                                            <path>mods:frequency</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
+                                </properties>
+                            </element>
+                        </children>
+                    </element>
                 </children>
             </element>
             <element name="genre">
                 <properties>
                     <type>textfield</type>
+                    <access>true</access>
+                    <description>MARC Genre Term List (marcgt):
+                        http://www.loc.gov/standards/valuelist/marcgt.html</description>
                     <title>Genre</title>
-                    <description>MARC Genre Term List (marcgt): http://www.loc.gov/standards/valuelist/marcgt.html</description>
+                    <tree>true</tree>
                     <actions>
                         <create>
                             <path>/mods:mods</path>
                             <context>document</context>
-                            <xml>&lt;genre authority="marcgt"&gt;%value%&lt;/genre&gt;</xml>
+                            <type>xml</type>
+                            <value>&lt;genre authority="marcgt"&gt;%value%&lt;/genre&gt;</value>
                         </create>
                         <read>
                             <path>/mods:mods/mods:genre[@type='marcgt']</path>
@@ -478,16 +493,20 @@
                         </update>
                     </actions>
                 </properties>
+                <children/>
             </element>
             <element name="language">
                 <properties>
                     <type>textfield</type>
+                    <access>true</access>
                     <title>Language</title>
+                    <tree>true</tree>
                     <actions>
                         <create>
                             <path>/mods:mods</path>
                             <context>document</context>
-                            <xml>&lt;language&gt;&lt;languageTerm type="text"&gt;%value%&lt;/languageTerm&gt;&lt;/language&gt;</xml>
+                            <type>xml</type>
+                            <value>&lt;language&gt;&lt;languageTerm type="text"&gt;%value%&lt;/languageTerm&gt;&lt;/language&gt;</value>
                         </create>
                         <read>
                             <path>/mods:mods/mods:language/mods:languageTerm</path>
@@ -503,14 +522,17 @@
             <element name="physical_description">
                 <properties>
                     <type>fieldset</type>
-                    <title>Physical Description</title>
+                    <access>true</access>
                     <collapsed>false</collapsed>
                     <collapsible>true</collapsible>
+                    <title>Physical Description</title>
+                    <tree>true</tree>
                     <actions>
                         <create>
                             <path>/mods:mods</path>
                             <context>document</context>
-                            <element>physicalDescription</element>
+                            <type>element</type>
+                            <value>physicalDescription</value>
                         </create>
                         <read>
                             <path>/mods:mods/mods:physicalDescription</path>
@@ -526,32 +548,41 @@
                     <element name="extent">
                         <properties>
                             <type>textfield</type>
-                            <title>Extent</title>
+                            <access>true</access>
                             <description>Include units (e.g., pages)</description>
+                            <title>Extent</title>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>extent</value>
                                 </create>
                                 <read>
                                     <path>mods:extent</path>
-                                    <context>parent</context>                                    
+                                    <context>parent</context>
                                 </read>
                                 <update>
                                     <path>self::node()</path>
-                                    <context>self</context>                                    
+                                    <context>self</context>
                                 </update>
                             </actions>
                         </properties>
+                        <children/>
                     </element>
                     <element name="form">
                         <properties>
                             <type>textfield</type>
+                            <access>true</access>
                             <title>Form</title>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>form</value>
                                 </create>
                                 <read>
                                     <path>mods:form</path>
@@ -563,23 +594,27 @@
                                 </update>
                             </actions>
                         </properties>
+                        <children/>
                     </element>
                     <element name="origin">
                         <properties>
                             <type>select</type>
-                            <title>Digitial Origin</title>
+                            <access>true</access>
                             <options>
-                                <option key="NULL">Please Select One...</option>
                                 <option key="born digital">born digital</option>
                                 <option key="reformatted digital">reformatted digital</option>
                                 <option key="digitized microfilm">digitized microfilm</option>
                                 <option key="digitized other analog">digitized other analog</option>
                             </options>
                             <required>true</required>
+                            <title>Digitial Origin</title>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>self::node()</path>
                                     <context>parent</context>
+                                    <type>element</type>
+                                    <value>digitalOrigin</value>
                                 </create>
                                 <read>
                                     <path>mods:digitalOrigin</path>
@@ -591,29 +626,48 @@
                                 </update>
                             </actions>
                         </properties>
+                        <children/>
                     </element>
-                    <element name="physical_note">
+                    <element name="notes">
                         <properties>
                             <type>tabs</type>
-                            <title>Physical Note</title>
+                            <access>true</access>
+                            <title>Physical Notes</title>
+                            <tree>true</tree>
                         </properties>
                         <children>
-                            <element>
+                            <element name="0">
                                 <properties>
                                     <type>tabpanel</type>
+                                    <access>true</access>
+                                    <tree>true</tree>
+                                    <actions>
+                                        <read>
+                                            <path>mods:note[not(@type)]</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <delete>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </delete>
+                                    </actions>
                                 </properties>
                                 <children>
-                                    <element>
+                                    <element name="0">
                                         <properties>
                                             <type>textarea</type>
+                                            <access>true</access>
                                             <title>Note</title>
+                                            <tree>true</tree>
                                             <actions>
                                                 <create>
                                                     <path>self::node()</path>
                                                     <context>parent</context>
+                                                    <type>element</type>
+                                                    <value>note</value>
                                                 </create>
                                                 <read>
-                                                    <path>mods:note</path>
+                                                    <path>self::node()</path>
                                                     <context>parent</context>
                                                 </read>
                                                 <update>
@@ -622,6 +676,7 @@
                                                 </update>
                                             </actions>
                                         </properties>
+                                        <children/>
                                     </element>
                                 </children>
                             </element>
@@ -632,11 +687,15 @@
             <element name="description">
                 <properties>
                     <type>textarea</type>
+                    <access>true</access>
                     <title>Description</title>
+                    <tree>true</tree>
                     <actions>
                         <create>
                             <path>/mods:mods</path>
                             <context>document</context>
+                            <type>element</type>
+                            <value>abstract</value>
                         </create>
                         <read>
                             <path>/mods:mods/mods:abstract</path>
@@ -648,21 +707,27 @@
                         </update>
                     </actions>
                 </properties>
+                <children/>
             </element>
             <element name="target_audience">
                 <properties>
                     <type>tags</type>
+                    <access>true</access>
                     <title>Target Audience</title>
+                    <tree>true</tree>
                 </properties>
                 <children>
-                    <element>
+                    <element name="0">
                         <properties>
                             <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
                             <actions>
                                 <create>
                                     <path>/mods:mods</path>
                                     <context>document</context>
-                                    <element>targetAudience</element>
+                                    <type>element</type>
+                                    <value>targetAudience</value>
                                 </create>
                                 <read>
                                     <path>/mods:mods/mods:targetAudience</path>
@@ -672,37 +737,53 @@
                                     <path>self::node()</path>
                                     <context>self</context>
                                 </update>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
                             </actions>
                         </properties>
+                        <children/>
                     </element>
                 </children>
             </element>
             <element name="notes">
                 <properties>
                     <type>tabs</type>
+                    <access>true</access>
                     <title>Notes</title>
+                    <tree>true</tree>
                 </properties>
                 <children>
-                    <element>
+                    <element name="0">
                         <properties>
                             <type>tabpanel</type>
+                            <access>true</access>
+                            <tree>true</tree>
                             <actions>
                                 <read>
                                     <path>/mods:mods/mods:note[not(@type)]</path>
                                     <context>document</context>
                                 </read>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
                             </actions>
                         </properties>
                         <children>
-                            <element>
+                            <element name="0">
                                 <properties>
                                     <type>textarea</type>
+                                    <access>true</access>
                                     <title>Note</title>
+                                    <tree>true</tree>
                                     <actions>
                                         <create>
                                             <path>/mods:mods</path>
                                             <context>document</context>
-                                            <element>note</element>
+                                            <type>element</type>
+                                            <value>note</value>
                                         </create>
                                         <read>
                                             <path>self::node()</path>
@@ -714,285 +795,538 @@
                                         </update>
                                     </actions>
                                 </properties>
+                                <children/>
                             </element>
                         </children>
                     </element>
                 </children>
             </element>
-            
+            <element name="admin_notes">
+                <properties>
+                    <type>tabs</type>
+                    <access>true</access>
+                    <title>Administrative Notes</title>
+                    <tree>true</tree>
+                </properties>
+                <children>
+                    <element name="0">
+                        <properties>
+                            <type>tabpanel</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <read>
+                                    <path>/mods:mods/mods:note[@type='admin']</path>
+                                    <context>document</context>
+                                </read>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
+                        </properties>
+                        <children>
+                            <element name="0">
+                                <properties>
+                                    <type>textarea</type>
+                                    <access>true</access>
+                                    <title>Note</title>
+                                    <tree>true</tree>
+                                    <actions>
+                                        <create>
+                                            <path>/mods:mods</path>
+                                            <context>document</context>
+                                            <type>xml</type>
+                                            <value>&lt;note type="admin"&gt;%value%&lt;/note&gt;</value>
+                                        </create>
+                                        <read>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                    </actions>
+                                </properties>
+                                <children/>
+                            </element>
+                        </children>
+                    </element>
+                </children>
+            </element>
+            <element name="funding_notes">
+                <properties>
+                    <type>tabs</type>
+                    <access>true</access>
+                    <title>Funding Notes</title>
+                    <tree>true</tree>
+                </properties>
+                <children>
+                    <element name="0">
+                        <properties>
+                            <type>tabpanel</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <read>
+                                    <path>/mods:mods/mods:note[@type='funding']</path>
+                                    <context>document</context>
+                                </read>
+                                <delete>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
+                        </properties>
+                        <children>
+                            <element name="0">
+                                <properties>
+                                    <type>textarea</type>
+                                    <access>true</access>
+                                    <title>Note</title>
+                                    <tree>true</tree>
+                                    <actions>
+                                        <create>
+                                            <path>/mods:mods</path>
+                                            <context>document</context>
+                                            <type>xml</type>
+                                            <value>&lt;note type="funding"&gt;%value%&lt;/note&gt;</value>
+                                        </create>
+                                        <read>
+                                            <path>self::node()</path>
+                                            <context>parent</context>
+                                        </read>
+                                        <update>
+                                            <path>self::node()</path>
+                                            <context>self</context>
+                                        </update>
+                                    </actions>
+                                </properties>
+                                <children/>
+                            </element>
+                        </children>
+                    </element>
+                </children>
+            </element>
+            <element name='topics'>
+                <properties>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>Topics</title>
+                    <tree>true</tree>
+                </properties>
+                <children>
+                    <element name="0">
+                        <properties>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;subject&gt;&lt;topic&gt;%value%&lt;/topic&gt;&lt;/subject&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:subject/mods:topic</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
+                        </properties>
+                    </element>
+                </children>
+            </element>
+            <element name='places'>
+                <properties>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>Places</title>
+                    <tree>true</tree>
+                </properties>
+                <children>
+                    <element name="0">
+                        <properties>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;subject&gt;&lt;geographic&gt;%value%&lt;/geographic&gt;&lt;/subject&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:subject/mods:geographic</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
+                        </properties>
+                    </element>
+                </children>
+            </element>
+            <element name='dates'>
+                <properties>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>Dates</title>
+                    <tree>true</tree>
+                </properties>
+                <children>
+                    <element name="0">
+                        <properties>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;subject&gt;&lt;temporal&gt;%value%&lt;/temporal&gt;&lt;/subject&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:subject/mods:temporal</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
+                        </properties>
+                    </element>
+                </children>
+            </element>
+            <element name='people'>
+                <properties>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>People</title>
+                    <tree>true</tree>
+                </properties>
+                <children>
+                    <element name="0">
+                        <properties>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;subject&gt;&lt;name type="personal"&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;/name&gt;&lt;/subject&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:subject/mods:name[@type='personal']/mods:namePart</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/../..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
+                        </properties>
+                    </element>
+                </children>
+            </element>
+            <element name='organizations'>
+                <properties>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>Organizations</title>
+                    <tree>true</tree>
+                </properties>
+                <children>
+                    <element name="0">
+                        <properties>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;subject&gt;&lt;name type="corporate"&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;/name&gt;&lt;/subject&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:subject/mods:name[@type='corporate']/mods:namePart</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/../..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
+                        </properties>
+                    </element>
+                </children>
+            </element>
+            <element name='subject_genre'>
+                <properties>
+                    <type>tags</type>
+                    <access>true</access>
+                    <title>Subject Genre</title>
+                    <tree>true</tree>
+                </properties>
+                <children>
+                    <element name="0">
+                        <properties>
+                            <type>tag</type>
+                            <access>true</access>
+                            <tree>true</tree>
+                            <actions>
+                                <create>
+                                    <path>/mods:mods</path>
+                                    <context>document</context>
+                                    <type>xml</type>
+                                    <value>&lt;subject&gt;&lt;genre&gt;%value%&lt;/genre&gt;&lt;/subject&gt;</value>
+                                </create>
+                                <read>
+                                    <path>/mods:mods/mods:subject/mods:genre</path>
+                                    <context>document</context>
+                                </read>
+                                <update>
+                                    <path>self::node()</path>
+                                    <context>self</context>
+                                </update>
+                                <delete>
+                                    <path>self::node()/..</path>
+                                    <context>self</context>
+                                </delete>
+                            </actions>
+                        </properties>
+                    </element>
+                </children>
+            </element>
+            <element name='host_title'>
+                <properties>
+                    <type>textfield</type>
+                    <access>true</access>
+                    <title>Host Title</title>
+                    <tree>true</tree>
+                    <actions>
+                        <create>
+                            <path>/mods:mods</path>
+                            <context>document</context>
+                            <type>xml</type>
+                            <value>&lt;relatedItem type='host'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</value>
+                        </create>
+                        <read>
+                            <path>/mods:mods/mods:relatedItem[@type='host']/mods:titleInfo/mods:title</path>
+                            <context>document</context>
+                        </read>
+                        <update>
+                            <path>self::node()</path>
+                            <context>self</context>
+                        </update>
+                    </actions>
+                </properties>
+            </element>
+            <element name='constituent_title'>
+                <properties>
+                    <type>textfield</type>
+                    <access>true</access>
+                    <title>Constituent Title</title>
+                    <tree>true</tree>
+                    <actions>
+                        <create>
+                            <path>/mods:mods</path>
+                            <context>document</context>
+                            <type>xml</type>
+                            <value>&lt;relatedItem type='constituent'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</value>
+                        </create>
+                        <read>
+                            <path>/mods:mods/mods:relatedItem[@type='constituent']/mods:titleInfo/mods:title</path>
+                            <context>document</context>
+                        </read>
+                        <update>
+                            <path>self::node()</path>
+                            <context>self</context>
+                        </update>
+                    </actions>
+                </properties>
+            </element>
+            <element name='series_title'>
+                <properties>
+                    <type>textfield</type>
+                    <access>true</access>
+                    <title>Series Title</title>
+                    <tree>true</tree>
+                    <actions>
+                        <create>
+                            <path>/mods:mods</path>
+                            <context>document</context>
+                            <type>xml</type>
+                            <value>&lt;relatedItem type='series'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</value>
+                        </create>
+                        <read>
+                            <path>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</path>
+                            <context>document</context>
+                        </read>
+                        <update>
+                            <path>self::node()</path>
+                            <context>self</context>
+                        </update>
+                    </actions>
+                </properties>
+            </element>
+            <element name='local_identifier'>
+                <properties>
+                    <type>textfield</type>
+                    <access>true</access>
+                    <title>Local Identifiers</title>
+                    <tree>true</tree>
+                    <actions>
+                        <create>
+                            <path>/mods:mods</path>
+                            <context>document</context>
+                            <type>xml</type>
+                            <value>&lt;identifier type='local'&gt;%value%&lt;/identifier&gt;</value>
+                        </create>
+                        <read>
+                            <path>/mods:mods/mods:identifier[@type='local']</path>
+                            <context>document</context>
+                        </read>
+                        <update>
+                            <path>self::node()</path>
+                            <context>self</context>
+                        </update>
+                    </actions>
+                </properties>
+            </element>
+            <element name='isbn'>
+                <properties>
+                    <type>textfield</type>
+                    <access>true</access>
+                    <title>ISBN</title>
+                    <tree>true</tree>
+                    <actions>
+                        <create>
+                            <path>/mods:mods</path>
+                            <context>document</context>
+                            <type>xml</type>
+                            <value>&lt;identifier type='isbn'&gt;%value%&lt;/identifier&gt;</value>
+                        </create>
+                        <read>
+                            <path>/mods:mods/mods:identifier[@type='isbn']</path>
+                            <context>document</context>
+                        </read>
+                        <update>
+                            <path>self::node()</path>
+                            <context>self</context>
+                        </update>
+                    </actions>
+                </properties>
+            </element>
+            <element name='issn'>
+                <properties>
+                    <type>textfield</type>
+                    <access>true</access>
+                    <title>ISSN</title>
+                    <tree>true</tree>
+                    <actions>
+                        <create>
+                            <path>/mods:mods</path>
+                            <context>document</context>
+                            <type>xml</type>
+                            <value>&lt;identifier type='issn'&gt;%value%&lt;/identifier&gt;</value>
+                        </create>
+                        <read>
+                            <path>/mods:mods/mods:identifier[@type='issn']</path>
+                            <context>document</context>
+                        </read>
+                        <update>
+                            <path>self::node()</path>
+                            <context>self</context>
+                        </update>
+                    </actions>
+                </properties>
+            </element>
+            <element name='rights'>
+                <properties>
+                    <type>textfield</type>
+                    <access>true</access>
+                    <title>Rights Statement</title>
+                    <tree>true</tree>
+                    <actions>
+                        <create>
+                            <path>/mods:mods</path>
+                            <context>document</context>
+                            <type>xml</type>
+                            <value>&lt;accessCondition type='useAndReproduction'&gt;%value%&lt;/accessCondition&gt;</value>
+                        </create>
+                        <read>
+                            <path>/mods:mods/mods:accessCondition[@type='useAndReproduction']</path>
+                            <context>document</context>
+                        </read>
+                        <update>
+                            <path>self::node()</path>
+                            <context>self</context>
+                        </update>
+                    </actions>
+                </properties>
+            </element>
+            <element name='record_info'>
+                <properties>
+                    <type>hidden</type>
+                    <access>true</access>
+                    <tree>true</tree>
+                    <actions>
+                        <create>
+                            <path>/mods:mods</path>
+                            <context>document</context>
+                            <type>xml</type>
+                            <value>&lt;recordInfo&gt;&lt;languageOfCataloging&gt;&lt;languageTerm type="text" authority="iso639-2b"&gt;English&lt;/languageTerm&gt;&lt;languageTerm type="code" authority="iso639-2b"&gt;eng&lt;/languageTerm&gt;&lt;/languageOfCataloging&gt;&lt;/recordInfo&gt;</value>
+                        </create>
+                        <read>
+                            <path>/mods:mods/mods:recordInfo</path>
+                            <context>document</context>
+                        </read>
+                    </actions>
+                </properties>
+            </element>
             <element name="submit">
                 <properties>
                     <type>submit</type>
+                    <access>true</access>
+                    <tree>true</tree>
                     <value>Submit</value>
                 </properties>
+                <children/>
             </element>
-            <!--
-      <tabpanel>
-        <title>Notes</title>
-        <content>
-          <textarea>
-            <title>Note</title>
-            <form_builder>
-              <xpath>
-                <path full="false">self::node()</path>
-                <element/>
-              </xpath>
-              <require_value>false</require_value>
-            </form_builder>
-          </textarea>
-        </content>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:note[not(@type)]</path>
-            <parent_path>/mods:mods</parent_path>
-            <element>note</element>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </tabpanel>
-      <tabpanel>
-        <title>Administrative Notes</title>
-        <content>
-          <textarea>
-            <title>Note</title>
-            <form_builder>
-              <xpath>
-                <path full="false">self::node()</path>
-                <element/>
-              </xpath>
-              <require_value>false</require_value>
-            </form_builder>
-          </textarea>
-        </content>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:note[@type='admin']</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;note type="admin"&gt;%value%&lt;/note&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </tabpanel>
-      <tabpanel>
-        <title>Funding Notes</title>
-        <content>
-          <textarea>
-            <title>Note</title>
-            <form_builder>
-              <xpath>
-                <path full="false">self::node()</path>
-                <element/>
-              </xpath>
-              <require_value>false</require_value>
-            </form_builder>
-          </textarea>
-        </content>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:note[@type='funding']</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;note type="funding"&gt;%value%&lt;/note&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </tabpanel>
-      <set>
-        <title>Topics</title>
-        <required>true</required>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:subject/mods:topic</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;subject&gt;&lt;topic&gt;%value%&lt;/topic&gt;&lt;/subject&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </set>
-      <set>
-        <title>Places</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:subject/mods:geographic</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;subject&gt;&lt;geographic&gt;%value%&lt;/geographic&gt;&lt;/subject&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </set>
-      <set>
-        <title>Dates</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:subject/mods:temporal</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;subject&gt;&lt;temporal&gt;%value%&lt;/temporal&gt;&lt;/subject&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </set>
-      <set>
-        <title>People</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:subject/mods:name[@type='personal']</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;subject&gt;&lt;name type="personal"&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;/name&gt;&lt;/subject&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </set>
-      <set>
-        <title>Organizations</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:subject/mods:name[@type='corporate']</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;subject&gt;&lt;name type="corporate"&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;/name&gt;&lt;/subject&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </set>
-      <set>
-        <title>Subject Genre</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:subject/mods:genre</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;subject&gt;&lt;genre&gt;&lt;/genre&gt;&lt;/subject&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </set>
-      <textfield>
-        <title>Host Title</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:relatedItem[@type='host']/mods:titleInfo/mods:title</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;relatedItem type='host'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </textfield>
-      <set>
-        <title>Constituent Title</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:relatedItem[@type='constituent']/mods:titleInfo/mods:title</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;relatedItem type='constituent'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </set>
-      <textfield>
-        <title>Series Title</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;relatedItem type='series'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </textfield>
-      <set>
-        <title>Local Identifier</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:identifier[@type='local']</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;identifier type='local'&gt;%value%&lt;/identifier&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </set>
-      <textfield>
-        <title>ISBN</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:identifier[@type='isbn']</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;identifier type='isbn'&gt;%value%&lt;/identifier&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </textfield>
-      <textfield>
-        <title>ISSN</title>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:identifier[@type='issn']</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;identifier type='issn'&gt;%value%&lt;/identifier&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </textfield>
-      <textarea>
-        <title>Rights Statement</title>
-        <required>true</required>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:accessCondition[@type='useAndReproduction']</path>
-            <parent_path>/mods:mods</parent_path>
-            <xml>&lt;accessCondition type='useAndReproduction'&gt;%value%&lt;/accessCondition&gt;</xml>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </textarea>
-      <hidden>
-        <value/>
-        <content>
-          <hidden>
-            <value/>
-            <content>
-              <hidden>
-                <value>English</value>
-                <form_builder>
-                  <xpath>
-                    <path full="false">mods:languageTerm[@type="text" and @authority="iso639-2b"]</path>
-                    <xml>&lt;languageTerm type="text" authority="iso639-2b"&gt;%value%&lt;/languageTerm&gt;</xml>
-                  </xpath>
-                  <require_value>false</require_value>
-                </form_builder>
-              </hidden>
-              <hidden>
-                <value>eng</value>
-                <form_builder>
-                  <xpath>
-                    <path full="false">mods:languageTerm[@type="code" and @authority="iso639-2b"]</path>
-                    <xml>&lt;languageTerm type="code" authority="iso639-2b"&gt;%value%&lt;/languageTerm&gt;</xml>
-                  </xpath>
-                  <require_value>false</require_value>
-                </form_builder>
-              </hidden>
-            </content>
-            <form_builder>
-              <xpath>
-                <path full="false">mods:languageOfCataloging</path>
-                <element>languageOfCataloging</element>
-              </xpath>
-              <require_value>false</require_value>
-            </form_builder>
-          </hidden>
-        </content>
-        <form_builder>
-          <xpath>
-            <path full="true">/mods:mods/mods:recordInfo</path>
-            <parent_path>/mods:mods</parent_path>
-            <element>recordInfo</element>
-          </xpath>
-          <require_value>false</require_value>
-        </form_builder>
-      </hidden>
-            -->
-            
-            
-            
-            
-            
         </children>
     </form>
 </definition>
-
