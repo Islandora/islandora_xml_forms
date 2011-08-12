@@ -26,7 +26,7 @@ class Delete implements Action {
    * @param array $params 
    */
   public function __construct(array &$params) {
-    $this->path = new Path($params['path'], $params['context']);
+    $this->path = new Path($params['path'], new Context(new ContextType($params['context'])));
   }
 
   /**

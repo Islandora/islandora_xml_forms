@@ -28,7 +28,7 @@ class Read implements Action {
    *   The parameters that initialize this object.
    */
   public function __construct(array &$params) {
-    $this->path = new Path($params['path'], $params['context']);
+    $this->path = new Path($params['path'], new Context(new ContextType($params['context'])));
   }
 
   /**

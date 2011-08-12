@@ -21,6 +21,7 @@ class Update implements Action {
    * @var Path 
    */
   protected $path;
+
   /**
    * Path to the element's definition within its schema.
    * 
@@ -33,7 +34,7 @@ class Update implements Action {
    * @param array $params 
    */
   public function __construct(array &$params) {
-    $this->path = new Path($params['path'], $params['context']);
+    $this->path = new Path($params['path'], new Context(new ContextType($params['context'])));
     $this->schema = isset($params['schema']) ? $params['schema'] : NULL;
   }
 
@@ -69,11 +70,16 @@ class Update implements Action {
    */
   public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
     $results = $this->path->query($registry, $element);
-    $results = dom_node_list_to_array($results);
-    foreach ($results as $node) {
-      $this->update($node, $value);
+    if ($results !== FALSE) {
+      $results = dom_node_list_to_array($results);
+      foreach ($results as $node) {
+        $this->update($node, $value);
+      }
+      return true;
     }
-    return true;
+    else {
+      throw new Exception("Failed to update {$element->getIndex()} <br/>path: {$this->path->path}<br/>context: {$this->path->context}");
+    }
   }
 
   /**

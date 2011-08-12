@@ -23,18 +23,21 @@ class Actions implements FormPropertyInterface {
    * @var Create
    */
   public $create;
+
   /**
    * If executed this object will read one or more DOMNodes in the Document. It is used to populate the form.
    * 
    * @var Read
    */
   public $read;
+
   /**
    * If executed this object will update one or more DOMNodes values in the Document.
    * 
    * @var Update
    */
   public $update;
+
   /**
    * If executed this object will delete one or more DOMNodes in the Document.
    * @var Delete
@@ -42,31 +45,9 @@ class Actions implements FormPropertyInterface {
   public $delete;
 
   /**
-   * Create a Actions object from an XML Definition defined by FormDefinition.xsd
+   * Creates and Actions instance.
    * 
-   * @param string $xml_definition
-   * @return Actions
-   */
-  public static function createFromXMLDefiniton($xml_definition) {
-    return self::createFromSimpleXML(simplexml_load_string($xml_definition));
-  }
-
-  /**
-   * Create a Actions object from an XML Definition defined by FormDefinition.xsd
-   * 
-   * @param SimpleXMLElement $actions 
-   * @return Actions
-   */
-  public static function createFromSimpleXML(SimpleXMLElement $actions) {
-    $create = isset($actions->create) ? Create::createFromSimpleXML($actions->create) : NULL;
-    $read = isset($actions->read) ? Read::createFromSimpleXML($actions->read) : NULL;
-    $update = isset($actions->update) ? Update::createFromSimpleXML($actions->update) : NULL;
-    $delete = isset($actions->delete) ? Delete::createFromSimpleXML($actions->delete) : NULL;
-    return new self($create, $read, $update, $delete);
-  }
-
-  /**
-   * 
+   * @param array $value
    */
   public function __construct($value) {
     if (isset($value['create']) && is_array($value['create'])) {
@@ -103,12 +84,12 @@ class Actions implements FormPropertyInterface {
    * @param DOMNode $node
    * @param mixed $value
    * 
-   * @return Action type and Action
+   * @return array
+   *  Gets the action type and the Action object. Example: 
+   *    array(string, Action);
    */
   public function getAppropriateAction(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    $node = $registry->getNode($element->hash);
-    $modify_or_delete = isset($node);
-    if ($modify_or_delete) {
+    if ($registry->isElementRegistered($element->hash)) { // Node exists.
       if ($this->shouldDelete($registry, $element, $value)) {
         return array(Action::Delete, $this->delete);
       }
@@ -116,7 +97,7 @@ class Actions implements FormPropertyInterface {
         return array(Action::Update, $this->update);
       }
     }
-    else if ($this->shouldCreate($registry, $element, $value)) {
+    else if ($this->shouldCreate($registry, $element, $value)) { // Node is not registered
       return array(Action::Create, $this->create);
     }
   }
@@ -127,6 +108,7 @@ class Actions implements FormPropertyInterface {
    * @param NodeRegistry $registry
    * @param FormElement $element
    * @param mixed $value
+   * 
    * @return boolean
    */
   private function shouldDelete(NodeRegistry $registry, FormElement $element, $value = NULL) {
@@ -157,6 +139,7 @@ class Actions implements FormPropertyInterface {
    * @param NodeRegistry $registry
    * @param FormElement $element
    * @param mixed $value
+   * 
    * @return boolean
    */
   private function shouldCreate(NodeRegistry $registry, FormElement $element, $value = NULL) {
@@ -167,7 +150,8 @@ class Actions implements FormPropertyInterface {
   }
 
   /**
-   *
+   * Converts the object to its array form.
+   * 
    * @return array
    */
   public function getValue() {

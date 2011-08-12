@@ -11,7 +11,6 @@
                 <namespace prefix="xlink">http://www.w3.org/1999/xlink</namespace>
                 <namespace prefix="xsi">http://www.w3.org/2001/XMLSchema-instance</namespace>
             </namespaces>
-            <schema>http://www.loc.gov/standards/mods/v3/mods-3-4.xsd</schema>
         </document>
     </properties>
     <form>

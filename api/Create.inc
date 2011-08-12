@@ -69,7 +69,7 @@ class Create implements Action {
    * @param array $params 
    */
   public function __construct(array &$params) {
-    $this->path = new Path($params['path'], $params['context']);
+    $this->path = new Path($params['path'], new Context(new ContextType($params['context'])));
     $this->schema_path = isset($params['schema']) ? $params['schema'] : NULL;
     $this->value = $params['value'];
     $this->type = $params['type'];
@@ -145,7 +145,7 @@ class Create implements Action {
   private function create(XMLDocument $document, $value) {
     $action = array(self::Element => 'createElement', self::Attribute => 'createAttribute', self::XML => 'createXML');
     try {
-      return call_user_method($action[$this->type], $this, $document, $value);
+      return $this->$action[$this->type]($document, $value);
     } catch (Exception $e) {
       $value = htmlentities($this->value);
       $msg = "Failed to create {$this->type} with value {$value} . Error: {$e->getMessage()}";

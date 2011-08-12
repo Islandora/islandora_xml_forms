@@ -6,17 +6,12 @@
  * @file
  *
  */
+module_load_include('inc', 'xml_form_api', 'Context');
 
 /**
  * A class used to store/query XPath's.
  */
 class Path {
-  /**
-   * Constants that define the possible contexts for this path to be executed in.
-   */
-  const DocumentContext = 'document';
-  const ParentContext = 'parent'; // Only works if this element is nested within an element that has a full path.
-  const SelfContext = 'self'; // Only works if a node is registered, with the given element.
 
   /**
    * XPath to query with.
@@ -24,6 +19,7 @@ class Path {
    * @var string
    */
   public $path;
+
   /**
    * Query Context, either document, parent or self.
    * 
@@ -31,51 +27,40 @@ class Path {
    */
   public $context;
 
-  public function __construct($path, $context) {
+  /**
+   * Creates a Path instance.
+   * 
+   * @param string $path
+   * @param Context $context 
+   */
+  public function __construct($path, Context $context) {
     $this->path = $path;
     $this->context = $context;
   }
 
-  private function getContext(NodeRegistry $registry, FormElement $element) {
-    switch ($this->context) {
-      case self::DocumentContext:
-        return NULL;
-      case self::ParentContext:
-        return $this->getParent($registry, $element);
-      case self::SelfContext:
-        return $this->getSelf($registry, $element);
-      default:
-        throw new Exception("Invalid Context. {$this->context}");
-    }
-  }
-
-  private function getParent(NodeRegistry $registry, FormElement $element) {
-    $parent = $element->parent;
-    while ($parent) {
-      // Check to see if it defines a read property.
-      if (isset($parent->actions->read) || isset($parent->actions->create)) {
-        $node = $registry->getNode($parent->hash);
-        return isset($node) ? $node : FALSE; // Parent was not read from the document.
-      }
-      $parent = $parent->parent;
-    }
-    throw new Exception("The Form Element <br/>index: '{$element->getIndex()}' <br/>title: '{$element->title}' </br>type: '{$element->type}'.</br> Specifies a xpath context of parent but none is defined.");
-  }
-
-  private function getSelf(NodeRegistry $registry, FormElement $element) {
-    $node = $registry->getNode($element->hash);
-    if ($node) {
-      return $node;
-    }
-    throw new Exception('Context Self is not defined.');
-  }
-
+  /**
+   * Queries the path with the defined context as defined by the provided FormElement
+   * 
+   * @param NodeRegistry $registry
+   * @param FormElement $element
+   * 
+   * @throws 
+   * @see Context::getNode
+   * 
+   * @return DOMNodeList
+   */
   public function query(NodeRegistry $registry, FormElement $element) {
-    $context = $this->getContext($registry, $element);
-    if ($context !== FALSE) {
+    $context = $this->context->getNode($registry, $element);
+    try {
       return $registry->document->query($this->path, $context);
+    } catch (Exception $e) {
+      $msg = $e->getMessage();
+      $location = $element->getLocation();
+      $path = $this->path;
+      $context = $this->context;
+      $msg .= "</br>Element: $location<br/>Path: $path<br/>Context: $context";
+      throw new Exception($msg);
     }
-    return FALSE;
   }
 
 }

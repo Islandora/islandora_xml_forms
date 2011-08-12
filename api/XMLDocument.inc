@@ -22,6 +22,7 @@ class XMLDocument {
    * @var string
    */
   protected $xml;
+
   /**
    * A array of properties related to the root element of the document.
    * 
@@ -32,6 +33,7 @@ class XMLDocument {
    * @var array
    */
   protected $root;
+
   /**
    * A map of the namespaces used in the generated XML document.
    * 
@@ -40,23 +42,27 @@ class XMLDocument {
    * @var array 
    */
   public $namespaces;
+
   /**
    * The uri to the schema.
    * 
    * @var string
    */
   public $schema;
+
   /**
    * Stores associations between form elements and DOMNodes.
    * 
    * @var NodeRegisty
    */
   public $registry;
+
   /**
    * 
    * @var DOMDocument
    */
   public $document;
+
   /**
    * 
    * @var DOMXPath
@@ -107,7 +113,7 @@ class XMLDocument {
     $this->document = $this->createDocument();
     $this->xpath = new DOMXPath($this->document);
     $this->registerNamespaces();
-    $this->registry->wakeup();
+    $this->registry->wakeup($this);
   }
 
   /**
@@ -213,15 +219,20 @@ class XMLDocument {
    * @return DOMNodeList 
    */
   public function query($path, DOMNode $context = NULL) {
-    libxml_use_internal_errors(TRUE);
+    libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.
     $results = isset($context) ?
         $this->xpath->query($path, $context) :
         $this->xpath->query($path);
+    $error = FALSE;
     $error = libxml_get_last_error();
-    libxml_use_internal_errors(FALSE);
-    if ($error !== FALSE) {
-      $msg = "Invalid Query: $path";
-      $msg .= isset($context) ? ", at context {$contex->tagname}" : '';
+    libxml_use_internal_errors(FALSE); // Allow Drupal to catch errors.s
+    $failed = ($results === FALSE) || ($error !== FALSE);
+    if ($failed) {
+      $msg = ($results === FALSE) ?
+          "XPath query failed, either the expression is malformed or the contextnode is invalid." :
+          $error->message;
+      $msg .= '</br>Path: ' . $path;
+      $msg .= isset($context) ? '</br>Context: ' . ($context->tagName) : '';
       throw new Exception($msg);
     }
     return $results;

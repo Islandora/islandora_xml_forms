@@ -12,7 +12,7 @@ module_load_include('inc', 'php_lib', 'DOMHelpers');
 /**
  * Tracks the nodes FormElements repersent.
  */
-class NodeRegistry { // implements IteratorAggregate {
+class NodeRegistry {
 
   /**
    * Only valid when we serialize this object. It stores the paths to registered nodes 
@@ -56,13 +56,19 @@ class NodeRegistry { // implements IteratorAggregate {
     foreach ($this->registered as $key => $node) {
       $this->paths[$key] = get_dom_node_xpath($node);
     }
-    return array('paths', 'document');
+    return array('paths');
   }
 
   /**
-   * Reinitialize this object after it has be unserialized.
+   * Reinitialize this object after it has be unserialized. 
+   * 
+   * Note that this is not the magic function __wakeup, instead this is called from from its owner object.
+   * XMLDocument during its __wakeup. It should NOT be called from any other location.
+   * 
+   * @param XMLDocument $document
    */
-  public function wakeup() {
+  public function wakeup(XMLDocument $document) {
+    $this->document = $document;
     $this->registered = array();
     foreach ($this->paths as $key => $path) {
       $result = $this->document->query($path);
