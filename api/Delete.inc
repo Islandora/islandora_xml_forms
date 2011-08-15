@@ -49,7 +49,11 @@ class Delete implements Action {
    * @return boolean
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
-    return FALSE;//isset($value) && $value == '';
+    /**
+     * @todo add additonal parameters to determine if an element should be deleted, at the moment,
+     * the elements are only deleted if they are removed from the form.
+     */
+    return FALSE;
   }
 
   /**

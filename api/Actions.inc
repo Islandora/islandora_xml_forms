@@ -63,10 +63,6 @@ class Actions implements FormPropertyInterface {
       $this->delete = new Delete($value['delete']);
     }
   }
-  
-  public function __destruct() {
-    drupal_set_message('destruct Actions');
-  }
 
   /**
    * Get the appropriate Action to perform.
@@ -93,13 +89,11 @@ class Actions implements FormPropertyInterface {
    *    array(string, Action);
    */
   public function getAppropriateAction(XMLDocument $document, FormElement $element, $value = NULL) {
-    if ($document->registry->isElementRegistered($element->hash)) { // Node exists.
-      if ($this->shouldDelete($document, $element, $value)) {
-        return array(Action::Delete, $this->delete);
-      }
-      else if ($this->shouldUpdate($document, $element, $value)) {
-        return array(Action::Update, $this->update);
-      }
+    if ($this->shouldDelete($document, $element, $value)) {
+      return array(Action::Delete, $this->delete);
+    }
+    else if ($this->shouldUpdate($document, $element, $value)) {
+      return array(Action::Update, $this->update);
     }
     else if ($this->shouldCreate($document, $element, $value)) { // Node is not registered
       return array(Action::Create, $this->create);

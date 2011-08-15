@@ -59,7 +59,7 @@ class Update implements Action {
    * @return boolean
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
-    return $document->registry->isElementRegistered($element->hash); // Under what cases should we not update an existing value? It must have been read first.
+    return TRUE;
   }
 
   /**
@@ -70,30 +70,12 @@ class Update implements Action {
    * @param mixed $value 
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
-    drupal_set_message('Update (Action)');
-    drupal_set_message('&nbsp;->Location: ' . $element->getLocation());
-    drupal_set_message('&nbsp;->' . $this->path);
     $results = $this->path->query($document, $element);
-    if ($results->length) {
-      $result = $results->item(0);
-      drupal_set_message('&nbsp;->Result: ' . $result->tagName);
+    $results = dom_node_list_to_array($results);
+    foreach ($results as $node) {
+      $this->update($node, $value);
     }
-    else {
-      drupal_set_message('&nbsp;->Result: None');
-    }
-    $results = $this->path->query($document, $element);
-    if ($results !== FALSE) {
-      //drupal_set_message('Context: ' . $context->tagName);
-      $results = dom_node_list_to_array($results);
-      foreach ($results as $node) {
-        //drupal_set_message('Update: ' . $node->tagName);
-        //$this->update($node, $value);
-      }
-      return true;
-    }/*
-      else {
-      throw new Exception("Failed to update {$element->getIndex()} <br/>path: {$this->path->path}<br/>context: {$this->path->context}");
-      } */
+    return true;
   }
 
   /**

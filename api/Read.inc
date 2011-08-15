@@ -50,7 +50,7 @@ class Read implements Action {
    * @return boolean 
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
-    return TRUE;
+    return TRUE; // Its always safe to read!
   }
 
   /**
@@ -60,9 +60,9 @@ class Read implements Action {
    * @param mixed $value 
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
-    drupal_set_message('Read (Action)');
-    drupal_set_message('&nbsp;->Location: ' . $element->getLocation());
-    drupal_set_message('&nbsp;->' . $this->path);
+    //drupal_set_message('Read (Action)');
+    //drupal_set_message('&nbsp;->Location: ' . $element->getLocation());
+    //drupal_set_message('&nbsp;->' . $this->path);
     try {
       $results = $this->path->query($document, $element);
     } catch (XMLFormsContextNotFoundException $e) {
@@ -72,13 +72,13 @@ class Read implements Action {
        */
       $results = new DOMNodeList();
     }
-    if ($results->length) {
+    /*if ($results->length) {
       $result = $results->item(0);
       drupal_set_message('&nbsp;->Result: ' . $result->tagName);
     }
     else {
       drupal_set_message('&nbsp;->Result: None');
-    }
+    }*/
     return $results;
   }
 

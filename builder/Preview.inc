@@ -64,13 +64,9 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
   module_load_include('inc', 'xml_form_api', 'XMLForm');
   try {
     $xml_form = new XMLForm($form_state);
-    $doc = $xml_form->submit($form, $form_state);
-    drupal_set_message('the fuck');
-    $document = new DOMDocument();
-    $document->loadXML('<root>testing</root>');
-    dom_document_pretty_print($document);
-    //drupal_set_message('is this');
-    //exit();
+    $document = $xml_form->submit($form, $form_state);
+    dom_document_pretty_print($document->document);
+    exit();
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message($msg, 'error');

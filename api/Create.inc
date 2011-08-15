@@ -27,37 +27,44 @@ class Create implements Action {
    * @var Path
    */
   protected $path;
+
   /**
    * Path the this elements definition in the schema.
    * 
    * @var path
    */
   protected $schema_path;
+
   /**
    * Either Create::Element, Create::Attribute, Create::XML 
    * @var integer
    */
   protected $type;
+
   /**
    * The full name for the Element or Attribute we are creating.
    * @var string
    */
   protected $name;
+
   /**
    * The namespace prefix for the Element or Attribute we are creating.
    * @var string
    */
   protected $prefix;
+
   /**
    * The local name for the Element or Attribute we are creating.
    * @var string
    */
   protected $local_name;
+
   /**
    * The XML Snippit we are creating.
    * @var string
    */
   protected $xml;
+
   /**
    * The value used to create the Element, Attribute or XML Snippit.
    * @var string
@@ -114,8 +121,11 @@ class Create implements Action {
    * @return boolean 
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
-    //drupal_set_message($element->getLocation() . '->' . $this->path->path);
-    return TRUE;
+    /**
+     * @todo add additonal parameters to determine if an element should be created.
+     * At the moment we create elements if it did not exist when the form was first rendered.
+     */
+    return $document->registry->isElementRegistered($element->hash) === FALSE;
   }
 
   /**
@@ -125,25 +135,13 @@ class Create implements Action {
    * @param mixed $value 
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
-    drupal_set_message('Create (Action)');
-    drupal_set_message('&nbsp;->Location: ' . $element->getLocation());
-    drupal_set_message('&nbsp;->' . $this->path);
     $results = $this->path->query($document, $element);
-    if ($results->length) {
-      $result = $results->item(0);
-      drupal_set_message('&nbsp;->Result: ' . $result->tagName);
-    }
-    else {
-      drupal_set_message('&nbsp;->Result: None');
-    }
-    //$results = $this->path->query($document, $element);
     if ($results && $results->length > 0) {
       $parent = $results->item(0);
       $created = $this->create($document, $value);
       $this->append($document, $created, $parent);
-      drupal_set_message('&nbsp;->Created: ' . $created->tagName);
       $document->registry->register($element->hash, $created);
-      return true; 
+      return true;
     }
     return false;
   }

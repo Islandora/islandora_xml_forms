@@ -37,7 +37,7 @@ class Path {
     $this->path = $path;
     $this->context = $context;
   }
-
+  
   /**
    * Queries the path with the defined context as defined by the provided FormElement
    * 
@@ -52,16 +52,6 @@ class Path {
   public function query(XMLDocument $document, FormElement $element) {
     $context = $this->context->getNode($document, $element);
     return $document->query($this->path, $context);
-    //try {
-    //return $document->query($this->path, $context);
-    /*} catch (Exception $e) {
-      $msg = $e->getMessage();
-      $location = $element->getLocation();
-      $path = $this->path;
-      $context = $this->context;
-      $msg .= "</br>Element: $location<br/>Path: $path<br/>Context: $context";
-      throw new Exception($msg);
-    }*/
   }
   
   /**

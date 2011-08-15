@@ -114,7 +114,7 @@ class Context {
    * @return DOMNode
    */
   private function getSelf(XMLDocument $document, FormElement $element) {
-    if ($document->registry->isElementRegistered($hash)) {
+    if ($document->registry->isElementRegistered($element->hash)) {
       return $document->registry->getNode($element->hash);
     }
     throw new XMLFormsContextNotFoundException($this->type, $element);
@@ -170,7 +170,7 @@ class XMLFormsContextDefinitionException extends XMLFormsContextException {
 class XMLFormsContextNotFoundException extends XMLFormsContextException {
 
   public function __construct(ContextType $type, FormElement $element) {
-    $message = "The DOMNode associated with the context {$type->val} was not be found.";
+    $message = "The DOMNode associated with the context {$type->val} was not found.";
     parent::__construct($type, $element, $message);
   }
 

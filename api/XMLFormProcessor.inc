@@ -9,15 +9,16 @@
 module_load_include('inc', 'xml_form_api', 'XMLDocument');
 
 /**
- * 
+ * Encapsulates the required data to perform a CRUD action.
  */
 class XMLFormProcessAction {
 
   /**
-   *
-   * @var XMLDocument
+   * Action to perform.
+   * 
+   * @var Action
    */
-  public $document;
+  public $action;
 
   /**
    * FormElement to be processed.
@@ -34,64 +35,27 @@ class XMLFormProcessAction {
   public $value;
 
   /**
-   * Action to perform.
+   * Creates a XMLFormProcessAction instance.
    * 
-   * @var Action
-   */
-  public $action;
-
-  /**
-   * Type of action defined by Action::CONST.
-   * 
-   * @var mixed 
-   */
-  public $type;
-
-  /**
-   *
-   * @param NodeRegistry $registry
+   * @param Action $action
    * @param FormElement $element
    * @param mixed $value
    */
-  public function __construct(XMLDocument $document, FormElement $element, $value = NULL) {
-    $this->document = $document;
+  public function __construct(Action $action, FormElement $element, $value = NULL) {
+    $this->action = $action;
     $this->element = $element;
     $this->value = $value;
-    list($this->type, $this->action) = $this->getTypeAndAction($document, $element, $value);
   }
 
   /**
-   *
-   * @param XMLDocument $document
-   * @param FormElement $element
-   * @param mixed $value
-   * @return array
-   */
-  private function getTypeAndAction(XMLDocument $document, FormElement $element, $value = NULL) {
-    if (isset($element->actions)) {
-      return $element->actions->getAppropriateAction($document, $element, $value);
-    }
-    return array(Action::Undefined, NULL);
-  }
-
-  /**
-   *
-   * @param int $type
-   * @param Action $action 
-   */
-  public function setTypeAndAction($type, Action $action) {
-    $this->type = $type;
-    $this->action = $action;
-  }
-
-  /**
+   * Executes the action.
    * 
+   * @param XMLDocument $document
+   * 
+   * @return boolean
    */
-  public function execute() {
-    if ($this->action) {
-      return $this->action->execute($this->document, $this->element, $this->value);
-    }
-    return true;
+  public function execute(XMLDocument $document) {
+    return $this->action->execute($document, $this->element, $this->value);
   }
 
 }
@@ -107,7 +71,7 @@ class XMLFormProcessor {
    * @var FormValues 
    */
   protected $values;
-  
+
   /**
    * 
    * @var XMLDocument
@@ -143,135 +107,90 @@ class XMLFormProcessor {
    * @param FormElement $element 
    */
   public function process(FormElement $element) {
-    $actions = &$this->createActions($element);
-    $actions = &$this->sortActions($actions);
-    return $this->performActions($actions);
+    /**
+     * The order of action execution here is important, create actions should take place before update, 
+     * newly created elements can be registered as we can update newly created elements. Delete must come 
+     * last as we want the update actions to run on elements that may then later be removed.
+     */
+    $elements = $element->flatten();
+    $this->createNodes($this->getActions($elements, 'create'));
+    $this->modifyNodes($this->getActions($elements, 'update'));
+    $this->modifyNodes($this->getActions($elements, 'delete'));
+    $this->modifyNodes($this->getRemovedFormElementsDeleteActions($element));
+    return $this->document;
   }
 
   /**
    *
-   * @param FormElements $elements
+   * @param array $elements 
+   * @param string $type
+   * 
    * @return array
    */
-  private function &createActions(FormElement $element) {
-    $actions = new ArrayObject();
-    $element->each(array($this, 'createAction'), $actions);
-    $this->addDeleteActionsForRemovedFormElements($element, $actions);
+  private function getActions(array &$elements, $type) {
+    $actions = array();
+    foreach ($elements as $key => $element) {
+      $value = $this->values->getValue($element->hash);
+      $action = isset($element->actions->$type) ? $element->actions->$type : NULL;
+      if (isset($action) && $action->shouldExecute($this->document, $element, $value)) {
+        $actions[] = new XMLFormProcessAction($action, $element, $value);
+        unset($elements[$key]); // Remove from the list of actionable elements.
+      }
+    }
     return $actions;
+  }
+
+  /**
+   * Creates DOMNodes in the document.
+   * 
+   * @param array $actions
+   */
+  private function createNodes(array $actions) {
+    /**
+     * The create actions are loop in a while statement to allow for out of order construction of elements.
+     */
+    do {
+      $continue = false;
+      foreach ($actions as $key => $action) {
+        if ($action->execute($this->document)) {
+          $continue = true;
+          unset($actions[$key]);
+        }
+      }
+    } while ($continue);
+  }
+
+  /**
+   * Updates/Delete's DOMNodes in the document.
+   * 
+   * @param array $actions
+   */
+  private function modifyNodes(array $actions) {
+    foreach ($actions as $action) {
+      $action->execute($this->document);
+    }
   }
 
   /**
    * If the registered node's element is no longer in the form, 
    * add an action to delete it.
    * 
-   * @param XMLFormProcessAction $actions 
+   * @param array $actions 
    */
-  private function addDeleteActionsForRemovedFormElements(FormElement $element, $actions) {
-    $remaning_elements = $this->getRemainingElements($element);
+  private function getRemovedFormElementsDeleteActions(FormElement $element) {
+    $actions = array();
+    $elements = $element->flatten();
     $registered = $this->nodeRegistry->registered;
     foreach ($registered as $hash => $node) {
-      if (array_search($hash, $remaning_elements) === FALSE) {
+      if (isset($elements[$hash]) === FALSE) {
         $element = $this->elementRegistry->get($hash);
-        $delete = $element->actions->delete;
+        $delete = isset($element->actions->delete) ? $element->actions->delete : NULL;
         if (isset($delete)) {
-          $action = new XMLFormProcessAction($this->nodeRegistry, $element);
-          $action->setTypeAndAction(Action::Delete, $delete);
-          $actions[] = $action;
+          $actions[] = new XMLFormProcessAction($delete, $element);
         }
       }
     }
-  }
-
-  /**
-   * Gets an array of hash identifier for the FormElements that are still in the Form.
-   * 
-   * @param FormElement $element
-   * @return array
-   */
-  public function getRemainingElements(FormElement $element) {
-    $remaining_elements = new ArrayObject();
-    $element->each(array($this, 'storeHash'), $remaining_elements);
-    return $remaining_elements->getArrayCopy();
-  }
-
-  /**
-   * Stores the hash for the given element in the provided array object.
-   * 
-   * @param FormElement $element
-   * @param ArrayObject $hashes
-   * @return boolean
-   */
-  public function storeHash(FormElement $element, ArrayObject $hashes) {
-    $hashes[] = $element->hash;
-    return TRUE;
-  }
-
-  /**
-   *
-   * @param FormElement $element
-   * @return XMLFormProcessAction 
-   */
-  public function createAction(FormElement $element, $actions) {
-    $value = $this->values->getValue($element->hash);
-    $actions[] = new XMLFormProcessAction($this->document, $element, $value);
-    return TRUE;
-  }
-
-  /**
-   *
-   * @param array $actions
-   * @return array
-   */
-  private function &sortActions($actions) {
-    $delete = array();
-    $update = array();
-    $create = array();
-    foreach ($actions as $action) {
-      switch ($action->type) {
-        case Action::Create:
-          $create[] = $action;
-          break;
-        case Action::Update:
-          $update[] = $action;
-          break;
-        case Action::Delete:
-          $delete[] = $action;
-          break;
-      }
-    }
-    $actions = array('create' => $create, 'update' => $update, 'delete' => $delete);
     return $actions;
-  }
-
-  /**
-   *
-   * @param array $actions
-   * @return Document
-   */
-  private function performActions(array &$actions) {
-    /**
-     * The create actions are loop in a while statement to allow for out of order construction of elements.
-     * 
-     * The order of action execution here is important, create actions should take place before update, 
-     * as we can update newly created elements. Delete must come last as we want the update actions to run on elements 
-     * that may then later be removed.
-     */
-    do {
-      $continue = false;
-      foreach ($actions['create'] as $key => $action) {
-        if ($action->execute()) {
-          $continue = true;
-          unset($actions['create'][$key]);
-        }
-      }
-    } while ($continue);
-    foreach ($actions['update'] as $key => $action) {
-      $action->execute();
-    }/*
-    foreach ($actions['delete'] as $key => $action) {
-      $action->execute();
-    }*/
-    return $this->document;
   }
 
 }
