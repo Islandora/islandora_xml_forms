@@ -49,7 +49,7 @@ class Read implements Action {
    * @param mixed $value
    * @return boolean 
    */
-  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
+  public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
     return TRUE;
   }
 
@@ -59,8 +59,8 @@ class Read implements Action {
    * @param FormElement $element
    * @param mixed $value 
    */
-  public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    return $this->path->query($registry, $element);
+  public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
+    return $this->path->query($document, $element);
   }
 
 }

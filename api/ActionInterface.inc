@@ -27,7 +27,7 @@ interface Action {
    * @param FormElement $element
    * @param mixed $value
    */
-  public function execute(NodeRegistry $registry, FormElement $element, $value = NULL);
+  public function execute(XMLDocument $document, FormElement $element, $value = NULL);
 
   /**
    * Check to see if this action should be performed.
@@ -36,7 +36,7 @@ interface Action {
    * @param FormElement $element
    * @param mixed $value 
    */
-  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL);
+  public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL);
 
   /**
    * 

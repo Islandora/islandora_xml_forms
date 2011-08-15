@@ -58,18 +58,19 @@ class Update implements Action {
    * 
    * @return boolean
    */
-  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    return $registry->isElementRegistered($element->hash); // Under what cases should we not update an existing value? It must have been read first.
+  public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
+    return $document->registry->isElementRegistered($element->hash); // Under what cases should we not update an existing value? It must have been read first.
   }
 
   /**
-   *
+   * Update the document.
+   * 
    * @param NodeRegistry $registry
    * @param FormElement $element
    * @param mixed $value 
    */
-  public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    $results = $this->path->query($registry, $element);
+  public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
+    $results = $this->path->query($document, $element);
     if ($results !== FALSE) {
       $results = dom_node_list_to_array($results);
       foreach ($results as $node) {

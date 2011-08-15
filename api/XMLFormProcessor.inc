@@ -15,27 +15,31 @@ class XMLFormProcessAction {
 
   /**
    *
-   * @var NodeRegistry
+   * @var XMLDocument
    */
-  public $registry;
+  public $document;
+
   /**
    * FormElement to be processed.
    * 
    * @var FormElement 
    */
   public $element;
+
   /**
    * Submitted Form Value.
    * 
    * @var mixed 
    */
   public $value;
+
   /**
    * Action to perform.
    * 
    * @var Action
    */
   public $action;
+
   /**
    * Type of action defined by Action::CONST.
    * 
@@ -49,23 +53,23 @@ class XMLFormProcessAction {
    * @param FormElement $element
    * @param mixed $value
    */
-  public function __construct(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    $this->nodeRegistry = $registry;
+  public function __construct(XMLDocument $document, FormElement $element, $value = NULL) {
+    $this->document = $document;
     $this->element = $element;
     $this->value = $value;
-    list($this->type, $this->action) = $this->getTypeAndAction($registry, $element, $value);
+    list($this->type, $this->action) = $this->getTypeAndAction($document, $element, $value);
   }
 
   /**
    *
-   * @param NodeRegistry $registry
+   * @param XMLDocument $document
    * @param FormElement $element
    * @param mixed $value
    * @return array
    */
-  private function getTypeAndAction(NodeRegistry $registry, FormElement $element, $value = NULL) {
+  private function getTypeAndAction(XMLDocument $document, FormElement $element, $value = NULL) {
     if (isset($element->actions)) {
-      return $element->actions->getAppropriateAction($registry, $element, $value);
+      return $element->actions->getAppropriateAction($document, $element, $value);
     }
     return array(Action::Undefined, NULL);
   }
@@ -85,7 +89,7 @@ class XMLFormProcessAction {
    */
   public function execute() {
     if ($this->action) {
-      return $this->action->execute($this->nodeRegistry, $this->element, $this->value);
+      return $this->action->execute($this->document, $this->element, $this->value);
     }
     return true;
   }
@@ -103,11 +107,19 @@ class XMLFormProcessor {
    * @var FormValues 
    */
   protected $values;
+  
+  /**
+   * 
+   * @var XMLDocument
+   */
+  protected $document;
+
   /**
    *
    * @var NodeRegistry
    */
   protected $nodeRegistry;
+
   /**
    *
    * @var FormElementRegistry
@@ -121,6 +133,7 @@ class XMLFormProcessor {
    */
   public function __construct(FormValues $values, XMLDocument $document) {
     $this->values = $values;
+    $this->document = $document;
     $this->nodeRegistry = $document->registry;
     $this->elementRegistry = FormElementRegistry::getInstance();
   }
@@ -200,7 +213,7 @@ class XMLFormProcessor {
    */
   public function createAction(FormElement $element, $actions) {
     $value = $this->values->getValue($element->hash);
-    $actions[] = new XMLFormProcessAction($this->nodeRegistry, $element, $value);
+    $actions[] = new XMLFormProcessAction($this->document, $element, $value);
     return TRUE;
   }
 
@@ -226,7 +239,7 @@ class XMLFormProcessor {
           break;
       }
     }
-    $actions = array_merge($update, $delete, $create);
+    $actions = array('create' => $create, 'update' => $update, 'delete' => $delete);
     return $actions;
   }
 
@@ -236,16 +249,29 @@ class XMLFormProcessor {
    * @return Document
    */
   private function performActions(array &$actions) {
+    /**
+     * The create actions are loop in a while statement to allow for out of order construction of elements.
+     * 
+     * The order of action execution here is important, create actions should take place before update, 
+     * as we can update newly created elements. Delete must come last as we want the update actions to run on elements 
+     * that may then later be removed.
+     */
     do {
       $continue = false;
-      foreach ($actions as $key => $action) {
+      foreach ($actions['create'] as $key => $action) {
         if ($action->execute()) {
           $continue = true;
-          unset($actions[$key]);
+          unset($actions['create'][$key]);
         }
       }
     } while ($continue);
-    return $this->nodeRegistry->document;
+    foreach ($actions['update'] as $key => $action) {
+      $action->execute();
+    }
+    foreach ($actions['delete'] as $key => $action) {
+      $action->execute();
+    }
+    return $this->document;
   }
 
 }

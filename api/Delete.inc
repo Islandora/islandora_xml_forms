@@ -48,18 +48,18 @@ class Delete implements Action {
    * 
    * @return boolean
    */
-  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    return isset($value) && $value == '';
+  public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
+    return FALSE;//isset($value) && $value == '';
   }
 
   /**
    *
-   * @param NodeRegistry $registry
+   * @param XMLDc $registry
    * @param FormElement $element
    * @param mixed $value 
    */
-  public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    $results = $this->path->query($registry, $element);
+  public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
+    $results = $this->path->query($document, $element);
     $results = dom_node_list_to_array($results);
     foreach ($results as $node) {
       $this->delete($node);

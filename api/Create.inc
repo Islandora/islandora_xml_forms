@@ -113,7 +113,8 @@ class Create implements Action {
    * @param mixed $value
    * @return boolean 
    */
-  public function shouldExecute(NodeRegistry $registry, FormElement $element, $value = NULL) {
+  public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
+    //drupal_set_message($element->getLocation() . '->' . $this->path->path);
     return TRUE;
   }
 
@@ -123,15 +124,15 @@ class Create implements Action {
    * @param FormElement $element
    * @param mixed $value 
    */
-  public function execute(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    $results = $this->path->query($registry, $element);
+  public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
+    //drupal_set_message($element->getLocation() . '->' . $this->path->path);
+    $results = $this->path->query($document, $element);
     if ($results && $results->length > 0) {
-      $document = $registry->document;
       $parent = $results->item(0);
       $created = $this->create($document, $value);
       $this->append($document, $created, $parent);
-      $registry->register($element->hash, $created);
-      return true;
+      $document->registry->register($element->hash, $created);
+      return true; 
     }
     return false;
   }

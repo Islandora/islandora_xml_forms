@@ -49,10 +49,10 @@ class Path {
    * 
    * @return DOMNodeList
    */
-  public function query(NodeRegistry $registry, FormElement $element) {
-    $context = $this->context->getNode($registry, $element);
+  public function query(XMLDocument $document, FormElement $element) {
+    $context = $this->context->getNode($document->registry, $element);
     try {
-      return $registry->document->query($this->path, $context);
+      return $document->query($this->path, $context);
     } catch (Exception $e) {
       $msg = $e->getMessage();
       $location = $element->getLocation();

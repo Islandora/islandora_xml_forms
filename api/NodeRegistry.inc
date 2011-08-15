@@ -13,15 +13,7 @@ module_load_include('inc', 'php_lib', 'DOMHelpers');
  * Tracks the nodes FormElements repersent.
  */
 class NodeRegistry {
-
-  /**
-   * Only valid when we serialize this object. It stores the paths to registered nodes 
-   * so they can be properly reinitialized on unserialize.
-   * 
-   * @var array
-   */
-
-  protected $paths;
+  
   /**
    * A map of FormElements to the DOMNodes the repersent. These nodes are used for populating the form elements
    * as well as a reference to what DOMNodes need to be modified/removed on submit.
@@ -29,49 +21,50 @@ class NodeRegistry {
    * @var array
    */
   public $registered;
-  /**
-   * The document that the registered nodes come from.
-   * 
-   * @var document
-   */
-  public $document;
 
   /**
    * Create the node registry.
    * 
    * @param Document $document 
    */
-  public function __construct(XMLDocument $document) {
-    $this->document = $document;
+  public function __construct() {
     $this->registered = array();
   }
 
   /**
-   * Determine what member variables to serialize.
+   * Serialize this object.
    * 
    * @return array
    */
   public function __sleep() {
-    $this->paths = array();
-    foreach ($this->registered as $key => $node) {
-      $this->paths[$key] = get_dom_node_xpath($node);
-    }
-    return array('paths');
+    return array();
   }
 
   /**
-   * Reinitialize this object after it has be unserialized. 
+   * Prepare this object to be unserialized. 
    * 
-   * Note that this is not the magic function __wakeup, instead this is called from from its owner object.
-   * XMLDocument during its __wakeup. It should NOT be called from any other location.
-   * 
-   * @param XMLDocument $document
+   * Note that this is not the magic function __sleep, instead this is called from from its owner object.
+   * XMLDocument during its __sleep. It should NOT be called from any other location.
    */
-  public function wakeup(XMLDocument $document) {
-    $this->document = $document;
+  public function export() {
+    $paths = array();
+    foreach ($this->registered as $key => $node) {
+      $paths[$key] = get_dom_node_xpath($node);
+    }
+    return $paths;
+  }
+
+  /**
+   * Restore this objects state.
+   * 
+   * @param DOMDocument $document
+   * @param array $paths 
+   */
+  public function import(DOMDocument $document, array $paths) {
+    $xpath = new DOMXPath($document);
     $this->registered = array();
-    foreach ($this->paths as $key => $path) {
-      $result = $this->document->query($path);
+    foreach ($paths as $key => $path) {
+      $result = $xpath->query($path);
       $this->registered[$key] = $result->item(0);
     }
   }

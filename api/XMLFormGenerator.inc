@@ -21,6 +21,11 @@ class XMLFormGenerator {
    */
   protected $form;
   /**
+   * 
+   * @var XMLDocument
+   */
+  protected $document;
+  /**
    *
    * @var NodeRegistry
    */
@@ -34,6 +39,7 @@ class XMLFormGenerator {
    */
   public function __construct(XMLForm $form, XMLDocument $document) {
     $this->form = $form;
+    $this->document = $document;
     $this->registry = $document->registry;
   }
 
@@ -78,7 +84,7 @@ class XMLFormGenerator {
     $actions = $element->actions;
     $reader = $actions ? $actions->read : NULL;
     if ($reader) {
-      $results = $reader->execute($this->registry, $element);
+      $results = $reader->execute($this->document, $element);
       if ($results) {
         return dom_node_list_to_array($results);
       }

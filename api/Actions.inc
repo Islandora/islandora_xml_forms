@@ -80,7 +80,7 @@ class Actions implements FormPropertyInterface {
    * Delete
    *  The FormElement in question, no longer exists in the form and it has a registered DOMNode.
    * 
-   * @param FormElement $element
+   * @param XMLDocument $document
    * @param DOMNode $node
    * @param mixed $value
    * 
@@ -88,32 +88,33 @@ class Actions implements FormPropertyInterface {
    *  Gets the action type and the Action object. Example: 
    *    array(string, Action);
    */
-  public function getAppropriateAction(NodeRegistry $registry, FormElement $element, $value = NULL) {
-    if ($registry->isElementRegistered($element->hash)) { // Node exists.
-      if ($this->shouldDelete($registry, $element, $value)) {
+  public function getAppropriateAction(XMLDocument $document, FormElement $element, $value = NULL) {
+    if ($document->registry->isElementRegistered($element->hash)) { // Node exists.
+      if ($this->shouldDelete($document, $element, $value)) {
         return array(Action::Delete, $this->delete);
       }
-      else if ($this->shouldUpdate($registry, $element, $value)) {
+      else if ($this->shouldUpdate($document, $element, $value)) {
         return array(Action::Update, $this->update);
       }
     }
-    else if ($this->shouldCreate($registry, $element, $value)) { // Node is not registered
+    else if ($this->shouldCreate($document, $element, $value)) { // Node is not registered
       return array(Action::Create, $this->create);
     }
+    return array(Action::Undefined, NULL);
   }
 
   /**
    * Check the Delete Action's properties to determine if we should remove this FormElement.
    * 
-   * @param NodeRegistry $registry
+   * @param XMLDocument $document
    * @param FormElement $element
    * @param mixed $value
    * 
    * @return boolean
    */
-  private function shouldDelete(NodeRegistry $registry, FormElement $element, $value = NULL) {
+  private function shouldDelete(XMLDocument $document, FormElement $element, $value = NULL) {
     if (isset($this->delete)) {
-      return $this->delete->shouldExecute($registry, $element, $value);
+      return $this->delete->shouldExecute($document, $element, $value);
     }
     return FALSE;
   }
@@ -121,14 +122,14 @@ class Actions implements FormPropertyInterface {
   /**
    * Check the Update Action's properties to determine if we should update this FormElement.
    * 
-   * @param NodeRegistry $registry
+   * @param XMLDocument $document
    * @param FormElement $element
    * @param mixed $value
    * @return boolean
    */
-  private function shouldUpdate(NodeRegistry $registry, FormElement $element, $value = NULL) {
+  private function shouldUpdate(XMLDocument $document, FormElement $element, $value = NULL) {
     if (isset($this->update)) {
-      return $this->update->shouldExecute($registry, $element, $value);
+      return $this->update->shouldExecute($document, $element, $value);
     }
     return FALSE;
   }
@@ -136,15 +137,15 @@ class Actions implements FormPropertyInterface {
   /**
    * Check the Create Action's properties to determine if we should create this FormElement.
    * 
-   * @param NodeRegistry $registry
+   * @param XMLDocument $document
    * @param FormElement $element
    * @param mixed $value
    * 
    * @return boolean
    */
-  private function shouldCreate(NodeRegistry $registry, FormElement $element, $value = NULL) {
+  private function shouldCreate(XMLDocument $document, FormElement $element, $value = NULL) {
     if (isset($this->create)) {
-      return $this->create->shouldExecute($registry, $element, $value);
+      return $this->create->shouldExecute($document, $element, $value);
     }
     return FALSE;
   }

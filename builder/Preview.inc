@@ -33,7 +33,12 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
       $properties = XMLFormDefinition::GetFormProperties($xml_definition);
       $properties = $properties['document'];
       try {
-        $document = new XMLDocument($properties['root'], $properties['namespaces'], $properties['schema']);
+        $root = $properties['root'];
+        $root_name = $root['local_name']; // @todo change to name.
+        $default_uri = $root['uri'];
+        $schema_uri = $properties['schema'];
+        $namespaces = $properties['namespaces'];
+        $document = new XMLDocument($root_name, $default_uri, $schema_uri, $namespaces);
       } catch (Exception $e) {
         drupal_set_message($e->getMessage(), 'error');
         return array(); // Empty Form.
@@ -60,8 +65,11 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
   try {
     $xml_form = new XMLForm($form_state);
     $doc = $xml_form->submit($form, $form_state);
-    $document = $doc->document;
-    dom_document_pretty_print($document);
+    //drupal_set_message('the fuck');
+    $document = new DOMDocument();
+    $document->loadXML('<root>testing</root>');
+    //dom_document_pretty_print($document);
+    //drupal_set_message('is this');
     exit();
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
