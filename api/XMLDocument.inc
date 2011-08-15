@@ -94,7 +94,7 @@ class XMLDocument {
     $this->schema = $this->createSchema($schema_uri);
     $this->document = $this->createDocument($root_name, $default_uri, $xml);
     $this->xpath = new DOMXPath($this->document);
-    $this->registry = new NodeRegistry($this->document);
+    $this->registry = new NodeRegistry();
     //$this->registerNamespaces();
   }
 
@@ -196,7 +196,7 @@ class XMLDocument {
    * @return DOMNodeList 
    */
   public function query($path, DOMNode $context = NULL) {
-    libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.
+    libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.  
     $results = $this->xpath->query($path, $context);
     $error = FALSE;
     $error = libxml_get_last_error();

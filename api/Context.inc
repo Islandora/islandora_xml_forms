@@ -40,51 +40,69 @@ class Context {
   }
 
   /**
-   * Gets the node defined by this context in relation to the given form element.
+   * Checks to see if the context node exists for the given FormElement.
    * 
-   * @param NodeRegistry $registry
+   * @param XMLDocument $document
    * @param FormElement $element
    * 
-   * @throws Exception
-   *   If the parent context is not defined.
+   * @return boolean
+   */
+  public function exists(XMLDocument $document, FormElement $element) {
+    try {
+      $node = $this->getNode($document->registry, $element);
+      return TRUE;
+    } catch (XMLFormsContextException $e) {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Gets the node defined by this context in relation to the given form element.
+   * 
+   * @throws XMLFormsContextException
+   * 
+   * @param XMLDocument $document
+   * @param FormElement $element
    * 
    * @return DOMNode
    *   If the context node is found it is returned, NULL otherwise.
    */
-  public function getNode(NodeRegistry $registry, FormElement $element) {
+  public function getNode(XMLDocument $document, FormElement $element) {
     switch ($this->type->val) {
       case ContextType::Document:
         return NULL;
       case ContextType::Parent:
-        return $this->getParent($registry, $element);
+        return $this->getParent($document, $element);
       case ContextType::Self:
-        return $this->getSelf($registry, $element);
+        return $this->getSelf($document, $element);
     }
   }
 
   /**
    * Gets the parent context node of the provided FormElement.
    * 
-   * @param NodeRegistry $registry
+   * @param XMLDocument $document
    * @param FormElement $element
-   * 
    * @throws Exception
    *   If no parent form element defines a create or read action an exception is thrown.
    * 
    * @return DOMNode
    *   If found the parent node is returned, otherwise NULL.
    */
-  private function getParent(NodeRegistry $registry, FormElement $element) {
+  private function getParent(XMLDocument $document, FormElement $element) {
     $parent = $element->parent;
     while ($parent) {
       $selected_node = isset($parent->actions->read);
       $created_node = isset($parent->actions->create);
       if ($selected_node || $created_node) { // We've found a parent that should have a node registered
-        return $registry->getNode($parent->hash);
+        if ($document->registry->isElementRegistered($parent->hash)) {
+          return $document->registry->getNode($parent->hash);
+        }
+        throw new XMLFormsContextNotFoundException($this->type, $element);
       }
       $parent = $parent->parent; // Check next Parent.
     }
-    throw new Exception("The Form Element <br/>at: '{$element->getLocation()}' <br/>title: '{$element->title}' </br>type: '{$element->type}'.</br> Specifies a xpath context of parent but none is defined. Check the form defintion.");
+    throw new XMLFormsContextDefinitionException($this->type, $element);
   }
 
   /**
@@ -95,9 +113,11 @@ class Context {
    * 
    * @return DOMNode
    */
-  private function getSelf(NodeRegistry $registry, FormElement $element) {
-    $node = $registry->getNode($element->hash);
-    return $node;
+  private function getSelf(XMLDocument $document, FormElement $element) {
+    if ($document->registry->isElementRegistered($hash)) {
+      return $document->registry->getNode($element->hash);
+    }
+    throw new XMLFormsContextNotFoundException($this->type, $element);
   }
 
   /**
@@ -106,7 +126,52 @@ class Context {
    * @return string
    */
   public function __toString() {
-    return $this->type->val;
+    return (string) $this->type;
+  }
+
+}
+
+/**
+ * Class repersenting Exceptions that can occur when looking for the context DOMNode.
+ */
+class XMLFormsContextException extends Exception {
+
+  public function __construct(ContextType $type, FormElement $element, $message) {
+    $variable_description = "The Form Element<br/>";
+    $variable_description .= "&nbsp;Location: '{$element->getLocation()}'<br/>";
+    $variable_description .= "&nbsp;Title: '{$element->title}'</br>";
+    $variable_description .= "&nbsp;Type: '{$element->type}'</br>";
+    $variable_description .= "&nbsp;Context: '$type->val'</br>";
+    $message = $variable_description . 'Error: ' . $message;
+    parent::__construct($message, 0);
+  }
+
+  public function __toString() {
+    return __CLASS__ . ": [{$this->code}]: {$this->message}\n";
+  }
+
+}
+
+/**
+ * Class repersenting Exceptions that can be attributed directly to a misconfigured element context definition.
+ */
+class XMLFormsContextDefinitionException extends XMLFormsContextException {
+
+  public function __construct(ContextType $type, FormElement $element) {
+    $message = "Specifies a xpath context of {$type} but none is defined. Check the form defintion";
+    parent::__construct($type, $element, $message);
+  }
+
+}
+
+/**
+ * The given context DOMNode could not be found. In some cases this is acceptible in others it is not.
+ */
+class XMLFormsContextNotFoundException extends XMLFormsContextException {
+
+  public function __construct(ContextType $type, FormElement $element) {
+    $message = "The DOMNode associated with the context {$type->val} was not be found.";
+    parent::__construct($type, $element, $message);
   }
 
 }

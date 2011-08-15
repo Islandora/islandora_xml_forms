@@ -61,6 +61,7 @@ class Delete implements Action {
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
     $results = $this->path->query($document, $element);
     $results = dom_node_list_to_array($results);
+    drupal_set_message('DELETE!!');
     foreach ($results as $node) {
       $this->delete($node);
     }

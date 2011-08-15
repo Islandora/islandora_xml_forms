@@ -63,6 +63,10 @@ class Actions implements FormPropertyInterface {
       $this->delete = new Delete($value['delete']);
     }
   }
+  
+  public function __destruct() {
+    drupal_set_message('destruct Actions');
+  }
 
   /**
    * Get the appropriate Action to perform.

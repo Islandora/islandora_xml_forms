@@ -125,12 +125,23 @@ class Create implements Action {
    * @param mixed $value 
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
-    //drupal_set_message($element->getLocation() . '->' . $this->path->path);
+    drupal_set_message('Create (Action)');
+    drupal_set_message('&nbsp;->Location: ' . $element->getLocation());
+    drupal_set_message('&nbsp;->' . $this->path);
     $results = $this->path->query($document, $element);
+    if ($results->length) {
+      $result = $results->item(0);
+      drupal_set_message('&nbsp;->Result: ' . $result->tagName);
+    }
+    else {
+      drupal_set_message('&nbsp;->Result: None');
+    }
+    //$results = $this->path->query($document, $element);
     if ($results && $results->length > 0) {
       $parent = $results->item(0);
       $created = $this->create($document, $value);
       $this->append($document, $created, $parent);
+      drupal_set_message('&nbsp;->Created: ' . $created->tagName);
       $document->registry->register($element->hash, $created);
       return true; 
     }

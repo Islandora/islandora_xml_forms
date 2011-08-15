@@ -50,17 +50,25 @@ class Path {
    * @return DOMNodeList
    */
   public function query(XMLDocument $document, FormElement $element) {
-    $context = $this->context->getNode($document->registry, $element);
-    try {
-      return $document->query($this->path, $context);
-    } catch (Exception $e) {
+    $context = $this->context->getNode($document, $element);
+    return $document->query($this->path, $context);
+    //try {
+    //return $document->query($this->path, $context);
+    /*} catch (Exception $e) {
       $msg = $e->getMessage();
       $location = $element->getLocation();
       $path = $this->path;
       $context = $this->context;
       $msg .= "</br>Element: $location<br/>Path: $path<br/>Context: $context";
       throw new Exception($msg);
-    }
+    }*/
+  }
+  
+  /**
+   * 
+   */
+  public function __toString() {
+    return 'Path: ' . $this->path . ' Context: ' . $this->context;
   }
 
 }

@@ -267,10 +267,10 @@ class XMLFormProcessor {
     } while ($continue);
     foreach ($actions['update'] as $key => $action) {
       $action->execute();
-    }
+    }/*
     foreach ($actions['delete'] as $key => $action) {
       $action->execute();
-    }
+    }*/
     return $this->document;
   }
 

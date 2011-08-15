@@ -13,7 +13,7 @@ module_load_include('inc', 'php_lib', 'DOMHelpers');
  * Tracks the nodes FormElements repersent.
  */
 class NodeRegistry {
-  
+
   /**
    * A map of FormElements to the DOMNodes the repersent. These nodes are used for populating the form elements
    * as well as a reference to what DOMNodes need to be modified/removed on submit.
@@ -65,6 +65,9 @@ class NodeRegistry {
     $this->registered = array();
     foreach ($paths as $key => $path) {
       $result = $xpath->query($path);
+      if ($result === FALSE) {
+        drupal_set_message($path);
+      }
       $this->registered[$key] = $result->item(0);
     }
   }
@@ -87,7 +90,7 @@ class NodeRegistry {
    * @param DOMNode $node 
    * @return boolean
    *   TRUE if the given DOMNode is already registered 
-   */
+   *
   public function isNodeRegistered(DOMNode $node) {
     $hash = $this->getElementHash($node);
     if (isset($hash)) {
@@ -104,7 +107,7 @@ class NodeRegistry {
    *   TRUE if the element is registered FALSE otherwise.
    */
   public function isElementRegistered($hash) {
-    return $this->getNode($hash) != NULL;
+    return isset($this->registered[$hash]);
   }
 
   /**
@@ -112,10 +115,10 @@ class NodeRegistry {
    * 
    * @param DOMNode $node
    * @return hash
-   */
+   *
   public function getElementHash(DOMNode $node) {
     $result = array_filter($this->registered, array($node, 'isSameNode'));
-    if (count($result) == 1) {
+    if (count($result) >= 1) {
       $keys = array_keys($result);
       return array_shift($keys);
     }

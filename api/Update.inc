@@ -70,17 +70,30 @@ class Update implements Action {
    * @param mixed $value 
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
+    drupal_set_message('Update (Action)');
+    drupal_set_message('&nbsp;->Location: ' . $element->getLocation());
+    drupal_set_message('&nbsp;->' . $this->path);
     $results = $this->path->query($document, $element);
-    if ($results !== FALSE) {
-      $results = dom_node_list_to_array($results);
-      foreach ($results as $node) {
-        $this->update($node, $value);
-      }
-      return true;
+    if ($results->length) {
+      $result = $results->item(0);
+      drupal_set_message('&nbsp;->Result: ' . $result->tagName);
     }
     else {
-      throw new Exception("Failed to update {$element->getIndex()} <br/>path: {$this->path->path}<br/>context: {$this->path->context}");
+      drupal_set_message('&nbsp;->Result: None');
     }
+    $results = $this->path->query($document, $element);
+    if ($results !== FALSE) {
+      //drupal_set_message('Context: ' . $context->tagName);
+      $results = dom_node_list_to_array($results);
+      foreach ($results as $node) {
+        //drupal_set_message('Update: ' . $node->tagName);
+        //$this->update($node, $value);
+      }
+      return true;
+    }/*
+      else {
+      throw new Exception("Failed to update {$element->getIndex()} <br/>path: {$this->path->path}<br/>context: {$this->path->context}");
+      } */
   }
 
   /**
