@@ -31,18 +31,10 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
       $xml_definition = FormBuilder::GetFormDefinition($form_name);
       $form = XMLFormDefinition::GetDrupalForm($xml_definition);
       $properties = XMLFormDefinition::GetFormProperties($xml_definition);
-      $properties = $properties['document'];
-      try {
-        $root = $properties['root'];
-        $root_name = $root['local_name']; // @todo change to name.
-        $default_uri = $root['uri'];
-        $schema_uri = $properties['schema'];
-        $namespaces = $properties['namespaces'];
-        $document = new XMLDocument($root_name, $default_uri, $schema_uri, $namespaces);
-      } catch (Exception $e) {
-        drupal_set_message($e->getMessage(), 'error');
-        return array(); // Empty Form.
-      }
+      $root_name = $properties['root_name']; // @todo change to name.
+      $schema_uri = $properties['schema_uri'];
+      $namespaces = new Namespaces($properties['namespaces'], $properties['default_uri']);
+      $document = new XMLDocument($root_name, $namespaces, $schema_uri);
       $xml_form->initialize($form, $document);
     }
     $output = $xml_form->toArray();

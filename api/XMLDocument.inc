@@ -7,14 +7,11 @@
  *
  */
 module_load_include('inc', 'xml_form_api', 'NodeRegistry');
+module_load_include('inc', 'xml_form_api', 'Namespaces');
 module_load_include('inc', 'xml_schema_api', 'Schema');
 module_load_include('inc', 'php_lib', 'String');
 
 class XMLDocument {
-  /**
-   * Constants
-   */
-  const xmlns = 'http://www.w3.org/2000/xmlns/';
 
   /**
    * When this object is put to sleep, the current state of the document is stored in this variable.
@@ -22,7 +19,7 @@ class XMLDocument {
    * @var string
    */
   protected $xml;
-  
+
   /**
    * When this object is put to sleep, the current state of the registry is stored in this variable.
    * 
@@ -31,22 +28,16 @@ class XMLDocument {
   protected $paths;
 
   /**
-   * A array of properties related to the root element of the document.
+   * A string that defines the name of the root node.
    * 
-   * $root['local_name'] = The local name of the root element;
-   * $root['prefix'] = The namespace prefix of the root element;
-   * $root['uri'] = The local name of the root element;
-   * 
-   * @var array
+   * @var string
    */
-  protected $root;
+  protected $root_name;
 
   /**
-   * A map of the namespaces used in the generated XML document.
+   * All of the namespaces required for the document.
    * 
-   * array('prefix' => 'uri');
-   * 
-   * @var array 
+   * @var Namespaces 
    */
   public $namespaces;
 
@@ -83,16 +74,14 @@ class XMLDocument {
    * Create an XMLDocument.
    * 
    * @param string $root_name
-   * @param string $default_uri
    * @param array $namespaces
    * @param string $schema
    * @param string $xml 
    */
-  public function __construct($root_name, $default_uri, $schema_uri, array &$namespaces, &$xml = NULL) {
+  public function __construct($root_name, Namespaces $namespaces, $schema_uri, $xml = NULL) {
     $this->namespaces = $namespaces;
-    $this->defaultURI = $default_uri;
     $this->schema = $this->createSchema($schema_uri);
-    $this->document = $this->createDocument($root_name, $default_uri, $xml);
+    $this->document = $this->createDocument($root_name, $namespaces, $xml);
     $this->xpath = new DOMXPath($this->document);
     $this->registry = new NodeRegistry();
     //$this->registerNamespaces();
@@ -108,7 +97,7 @@ class XMLDocument {
   public function __sleep() {
     $this->xml = $this->document->saveXML();
     $this->paths = $this->registry->export();
-    return array('namespaces', 'defaultURI', 'schema', 'registry', 'xml', 'paths');
+    return array('namespaces', 'schema', 'registry', 'xml', 'paths');
   }
 
   /**
@@ -145,21 +134,17 @@ class XMLDocument {
    * Creates a DOMDocument either from a provided xml string or from scratch.
    * 
    * @param string $root_name
-   * @param string $default_uri
+   * @param Namespaces $default_uri
    * @param string $xml
    * 
    * @return DOMDocument
    */
-  private function createDocument($root_name, $default_uri, $xml) {
+  private function createDocument($root_name, Namespaces $namespaces, $xml) {
     $document = new DOMDocument();
     isset($xml) ? // Load from XML or create the root node.
             $document->loadXML($xml) :
-            $document->appendChild(new DOMElement($root_name, NULL, $default_uri));
-    $root = $document->documentElement; // Make sure the required namespaces exist.
-    foreach ($this->namespaces as $prefix => $uri) {
-      $prefix = preg_match('/xmlns:/', $prefix) ? $prefix : "xmlns:$prefix";
-      $root->setAttributeNS(self::xmlns, $prefix, $uri);
-    }
+            $document->appendChild(new DOMElement($root_name, NULL, $namespaces->getDefaultUri()));
+    $this->namespaces->addNamespacesAttributesTo($document->documentElement);
     return $document;
   }
 

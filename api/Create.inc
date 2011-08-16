@@ -171,15 +171,11 @@ class Create implements Action {
    */
   private function createElement(XMLDocument $document, $value) {
     if (isset($this->prefix)) {
-      $uri = $document->getNamespaceURI($this->prefix);
-      if (empty($uri)) {
-        $msg = "Failed to find namespace uri for the prefix $this->prefix, used by the element $this->name. Please define this namespace in the form properties.";
-        throw new Exception($msg);
-      }
+      $uri = $document->namespaces->getURI($this->prefix);
       return $document->document->createElementNS($uri, $this->name, $value);
     }
     else {
-      $uri = $document->getNamespaceURI(); // Get Default URI.
+      $uri = $document->namespaces->getDefaultURI();
       return (isset($uri)) ?
           $document->document->createElementNS($uri, $this->name, $value) :
           $document->document->createElement($this->name, $value);
@@ -194,33 +190,16 @@ class Create implements Action {
    */
   private function createAttribute(XMLDocument $document, $value) {
     if (isset($this->prefix)) {
-      $uri = $document->getNamespaceURI($this->prefix);
-      if (empty($uri)) {
-        $msg = "Failed to find namespace uri for the prefix $this->prefix, used by the attribute $this->name. Please define this namespace in the form properties.";
-        throw new Exception($msg);
-      }
+      $uri = $document->namespaces->getURI($this->prefix);
       $attribute = $document->document->createAttributeNS($uri, $this->name);
       $attribute->value = $value;
       return $attribute;
     }
     else {
-      $uri = $document->getNamespaceURI(); // Get Default URI.
-      $attribute = isset($uri) ?
-          $document->document->createAttributeNS($uri, $this->name) :
-          $document->document->createAttribute($this->name);
+      $attribute = $document->document->createAttribute($this->name);
       $attribute->value = $value;
       return $attribute;
     }
-    /*
-      $namespace = $document->getNamespaceURI($this->prefix);
-      $doc = $document->document;
-      $name = isset($namespace) ? "{$this->prefix}:{$this->create}" : $this->value;
-      $attribute = isset($namespace) ?
-      $doc->createAttributeNS($namespace, $name) :
-      $doc->createAttribute($name);
-      $attribute->value = $value;
-      return $attribute;
-     */
   }
 
   /**
@@ -232,7 +211,7 @@ class Create implements Action {
     // Sigh... Oh DOM-API, your so backwards and useless.
     // We have to do this for namespaces to work correctly, there is no clean work around for this.
     // User will have to put both the prefix and namespace on elements where they want the prefix to stay.
-    $default_uri = $document->getNamespaceURI();
+    $default_uri = $document->namespaces->getDefaultURI();
     $root_attributes = ($default_uri) ? "xmlns = '$default_uri' " : '';
     foreach ($document->namespaces as $prefix => $uri) {
       $attribute = is_non_empty_string($prefix) ?
@@ -244,7 +223,6 @@ class Create implements Action {
     $xml = "<root {$root_attributes}>$xml</root>";
     $this->fragment = $document->document->createDocumentFragment();
     $this->fragment->appendXML($xml);
-    $default_uri = $document->getNamespaceURI();
     return $this->fragment->firstChild->firstChild;
   }
 

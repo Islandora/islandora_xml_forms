@@ -62,32 +62,20 @@ class XMLFormDefinition {
    */
   private static function AddPropertiesToDefinition(SimpleXMLElement $definition, array &$properties) {
     $form_properties = $definition->addChild('properties');
-    if (isset($properties['document'])) {
-      $document_properties = $form_properties->addChild('document');
-      if (isset($properties['document']['root'])) {
-        $root = $document_properties->addChild('root');
-        $prefix = $properties['document']['root']['prefix'];
-        if (is_non_empty_string($prefix)) {
-          $root->addChild('prefix', $prefix);
-        }
-        $local_name = $properties['document']['root']['local_name'];
-        if (is_non_empty_string($local_name)) {
-          $root->addChild('local_name', $local_name);
-        }
-        $uri = $properties['document']['root']['uri'];
-        if (is_non_empty_string($uri)) {
-          $root->addChild('uri', $uri);
-        }
-      }
-      if (isset($properties['document']['namespaces'])) {
-        $namespaces = $document_properties->addChild('namespaces');
-        foreach ($properties['document']['namespaces'] as $prefix => $uri) {
-          $namespace = $namespaces->addChild('namespace', $uri);
-          $namespace->addAttribute('prefix', $prefix);
-        }
-      }
-      if (isset($properties['document']['schema'])) {
-        $document_properties->addChild('schema', $properties['document']['schema']);
+    if (isset($properties['root_name'])) {
+      $form_properties->addChild('root_name', $properties['root_name']);
+    }
+    if (isset($properties['schema_uri'])) {
+      $form_properties->addChild('schema_uri', $properties['schema_uri']);
+    }
+    $namespaces = $document_properties->addChild('namespaces');
+    if ($properties['default_uri']) {
+      $namespaces->addAttribute('default', $properties['default_uri']);
+    }
+    if (isset($properties['namespaces'])) {
+      foreach ($properties['namespaces'] as $prefix => $uri) {
+        $namespace = $namespaces->addChild('namespace', $uri);
+        $namespace->addAttribute('prefix', $prefix);
       }
     }
   }
@@ -157,38 +145,33 @@ class XMLFormDefinition {
    */
   public static function GetFormProperties(&$xml_definition) {
     if (!self::isValid($xml_definition)) {
-      return array('document' => array(
-          'root' => array(
-            'prefix' => NULL,
-            'local_name' => NULL,
-            'uri' => NULL,
-          ),
-          'namespaces' => array(),
-          'schema' => NULL
-      ));
+      return array(
+        'root_name' => NULL,
+        'schema_uri' => NULL,
+        'namespaces' => array(),
+        'default_uri' => $default_uri
+      );
     }
     $definition = simplexml_load_string($xml_definition);
-    $document = $definition->properties->document;
-    $root = array(
-      'prefix' => (string) $document->root->prefix,
-      'local_name' => (string) $document->root->local_name,
-      'uri' => (string) $document->root->uri,
-    );
+    $properties = $definition->properties;
+    $root_name = (string) $properties->root_name;
+    $schema_uri = isset($properties->schema_uri) ? (string) $properties->schema_uri : NULL;
     $namespaces = array();
-    if (isset($document->namespaces)) {
-      $children = $document->namespaces->children();
+    $default_uri = NULL;
+    if (isset($properties->namespaces)) {
+      $default_uri = isset($properties->namespaces['default']) ? (string) $properties->namespaces['default'] : NULL;
+      $children = $properties->namespaces->children();
       foreach ($children as $namespace) {
         $prefix = (string) $namespace['prefix'];
         $namespaces[$prefix] = (string) $namespace;
       }
     }
-    $schema = (string) $definition->properties->document->schema;
     return array(
-      'document' => array(
-        'root' => $root,
-        'namespaces' => $namespaces,
-        'schema' => $schema
-    ));
+      'root_name' => $root_name,
+      'schema_uri' => $schema_uri,
+      'namespaces' => $namespaces,
+      'default_uri' => $default_uri,
+    );
   }
 
   /**
