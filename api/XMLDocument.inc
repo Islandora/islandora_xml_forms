@@ -182,7 +182,7 @@ class XMLDocument {
    */
   public function query($path, DOMNode $context = NULL) {
     libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.  
-    $results = $this->xpath->query($path, $context);
+    $results = isset($context) ? $this->xpath->query($path, $context) : $this->xpath->query($path);
     $error = FALSE;
     $error = libxml_get_last_error();
     libxml_use_internal_errors(FALSE); // Allow Drupal to catch errors
