@@ -28,23 +28,58 @@ class Tags {
     $element['#tree'] = TRUE;
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
-    $element[self::AddButton] = self::createAddButton($element, $complete_form);
+    foreach (element_children($element) as $key) {
+      $child = $element[$key];
+      $hash = $child['#hash'];
+      $element['controls']['edit'][$hash] = self::createEditButton($element, $child);
+      $element['controls']['remove'][$hash] = self::createRemoveButton($element, $child);
+    }
+    $element['controls']['add'] = self::createAddButton($element);
     return $element;
   }
 
-  private static function createAddButton(array &$element, array &$complete_form) {
-    $add['#type'] = 'submit';
-    $add['#weight'] = 4;
-    $add['#size'] = 30;
-    $add['#value'] = 'Add';
-    $add['#attributes'] = array('style' => 'display:none');
-    $add['#ahah'] = array(
+  private static function createAddButton(array &$element) {
+    $button['#type'] = 'submit';
+    $button['#weight'] = 4;
+    $button['#size'] = 30;
+    $button['#attributes'] = array('style' => 'display:none');
+    $button['#value'] = 'Add';
+    $button['#attributes'] = array('style' => 'display:none');
+    $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/add/{$element['#hash']}",
       'wrapper' => $element['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replace',
       'effect' => 'fade'
     );
-    return $add;
+    return $button;
+  }
+
+  private static function createRemoveButton(array &$element, array &$child) {
+    $button['#type'] = 'submit';
+    $button['#weight'] = 4;
+    $button['#size'] = 30;
+    $button['#attributes'] = array('style' => 'display:none');
+    $button['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/tag/remove/{$child['#hash']}",
+      'wrapper' => $element['#hash'],
+      'method' => 'replace',
+      'effect' => 'fade'
+    );
+    return $button;
+  }
+
+  private static function createEditButton(array &$element, array &$child) {
+    $button['#type'] = 'submit';
+    $button['#weight'] = 4;
+    $button['#size'] = 30;
+    $button['#attributes'] = array('style' => 'display:none');
+    $button['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/tag/edit/{$child['#hash']}",
+      'wrapper' => $element['#hash'],
+      'method' => 'replace',
+      'effect' => 'fade'
+    );
+    return $button;
   }
 
 }
@@ -57,13 +92,15 @@ class Tags {
 function xml_form_elements_preprocess_tags(&$vars) {
   global $base_url;
   $tags = &$vars[0];
-  $vars['add'] = $tags[Tags::AddButton]; 
+  $vars['add'] = $tags['controls']['add'];
+  $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL;
+  $vars['remove'] = isset($tags['controls']['remove']) ? $tags['controls']['remove'] : NULL;
   // Create tags.
   $vars['tags'] = array();
   $children = element_children($tags);
   foreach ($children as $key) {
     $child = $tags[$key];
-    if ($child['#type'] == 'tag') {
+    if (isset($child['#type']) && $child['#type'] == 'tag') {
       $vars['tags'][$key] = $child;
     }
   }

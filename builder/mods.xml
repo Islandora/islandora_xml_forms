@@ -1,92 +1,115 @@
 
-<mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">
-          <titleInfo>
-            <title>test</title>
-          </titleInfo>
-          <titleInfo type="alternative">
-            <title></title>
-          </titleInfo>
-          <name type="personal">
-            <namePart></namePart>
-            <role>
-              <roleTerm authority="marcrelator" type="text">creator</roleTerm>
-            </role>
-          </name>
-          <name type="personal">
-            <namePart></namePart>
-            <role>
-              <roleTerm authority="marcrelator" type="text">contributor</roleTerm>
-            </role>
-          </name>
-          <name type="corporate">
-            <namePart></namePart>
-            <role>
-              <roleTerm authority="marcrelator" type="text">creator</roleTerm>
-            </role>
-          </name>
-          <name type="corporate">
-            <namePart></namePart>
-            <role>
-              <roleTerm authority="marcrelator" type="text">contributor</roleTerm>
-            </role>
-          </name>
-          <typeOfResource>text</typeOfResource>
-          <originInfo><place><placeTerm type="text"></placeTerm></place><publisher></publisher><dateIssued></dateIssued><dateCreated keyDate="yes">asdf</dateCreated><copyrightDate></copyrightDate><dateOther></dateOther><frequency></frequency></originInfo>
-          <genre authority="marcgt"></genre>
-          <language>
-            <languageTerm type="text"></languageTerm>
-          </language>
-          <physicalDescription><extent></extent><form></form><digitalOrigin>born digital</digitalOrigin><note></note></physicalDescription>
-          <abstract></abstract>
-          <targetAudience></targetAudience>
-          <note></note>
-          <note type="admin"></note>
-          <note type="funding"></note>
-          <subject>
-            <topic></topic>
-          </subject>
-          <subject>
-            <geographic></geographic>
-          </subject>
-          <subject>
-            <temporal></temporal>
-          </subject>
-          <subject>
-            <name type="personal">
-              <namePart></namePart>
-            </name>
-          </subject>
-          <subject>
-            <name type="corporate">
-              <namePart></namePart>
-            </name>
-          </subject>
-          <subject>
-            <genre></genre>
-          </subject>
-          <relatedItem type="host">
-            <titleInfo>
-              <title></title>
-            </titleInfo>
-          </relatedItem>
-          <relatedItem type="constituent">
-            <titleInfo>
-              <title></title>
-            </titleInfo>
-          </relatedItem>
-          <relatedItem type="series">
-            <titleInfo>
-              <title></title>
-            </titleInfo>
-          </relatedItem>
-          <identifier type="local"></identifier>
-          <identifier type="isbn"></identifier>
-          <identifier type="issn"></identifier>
-          <accessCondition type="useAndReproduction"></accessCondition>
-          <recordInfo>
-            <languageOfCataloging>
-              <languageTerm type="text" authority="iso639-2b">English</languageTerm>
-              <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
-            </languageOfCataloging>
-          </recordInfo>
-        </mods>
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3"
+  xmlns:xlink="http://www.w3.org/1999/xlink">
+  <titleInfo>
+    <title>test</title>
+  </titleInfo>
+  <titleInfo type="alternative">
+    <title/>
+  </titleInfo>
+  <name type="personal">
+    <namePart>one</namePart>
+    <role>
+      <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+    </role>
+  </name>
+  <name type="personal">
+    <namePart>two</namePart>
+    <role>
+      <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+    </role>
+  </name>
+  <name type="personal">
+    <namePart/>
+    <role>
+      <roleTerm authority="marcrelator" type="text">contributor</roleTerm>
+    </role>
+  </name>
+  <name type="corporate">
+    <namePart/>
+    <role>
+      <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+    </role>
+  </name>
+  <name type="corporate">
+    <namePart/>
+    <role>
+      <roleTerm authority="marcrelator" type="text">contributor</roleTerm>
+    </role>
+  </name>
+  <typeOfResource>text</typeOfResource>
+  <originInfo>
+    <place>
+      <placeTerm type="text"/>
+    </place>
+    <publisher/>
+    <dateIssued/>
+    <dateCreated keyDate="yes">asdf</dateCreated>
+    <copyrightDate/>
+    <dateOther/>
+    <frequency/>
+  </originInfo>
+  <genre authority="marcgt"/>
+  <language>
+    <languageTerm type="text"/>
+  </language>
+  <physicalDescription>
+    <extent/>
+    <form/>
+    <digitalOrigin>born digital</digitalOrigin>
+    <note>testing</note>
+    <note>two</note>
+  </physicalDescription>
+  <abstract/>
+  <targetAudience/>
+  <note/>
+  <note type="admin"/>
+  <note type="funding"/>
+  <subject>
+    <topic/>
+  </subject>
+  <subject>
+    <geographic/>
+  </subject>
+  <subject>
+    <temporal/>
+  </subject>
+  <subject>
+    <name type="personal">
+      <namePart/>
+    </name>
+  </subject>
+  <subject>
+    <name type="corporate">
+      <namePart/>
+    </name>
+  </subject>
+  <subject>
+    <genre/>
+  </subject>
+  <relatedItem type="host">
+    <titleInfo>
+      <title/>
+    </titleInfo>
+  </relatedItem>
+  <relatedItem type="constituent">
+    <titleInfo>
+      <title/>
+    </titleInfo>
+  </relatedItem>
+  <relatedItem type="series">
+    <titleInfo>
+      <title/>
+    </titleInfo>
+  </relatedItem>
+  <identifier type="local"/>
+  <identifier type="isbn"/>
+  <identifier type="issn"/>
+  <accessCondition type="useAndReproduction"/>
+  <recordInfo>
+    <languageOfCataloging>
+      <languageTerm type="text" authority="iso639-2b">English</languageTerm>
+      <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+    </languageOfCataloging>
+  </recordInfo>
+</mods>

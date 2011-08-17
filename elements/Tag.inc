@@ -44,39 +44,8 @@ class Tag {
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $element['#id'] = $element['#hash'];
-    $element[self::EditButton] = self::createEditButton($element, $complete_form);
-    $element[self::RemoveButton] = self::createRemoveButton($element, $complete_form);
+    $tags = &get_form_element_parent($element, $complete_form);
     return $element;
-  }
-
-  private static function createRemoveButton(array &$element, array &$complete_form) {
-    $tags = get_form_element_parent($element, $complete_form);
-    $add['#type'] = 'submit';
-    $add['#weight'] = 4;
-    $add['#size'] = 30;
-    $add['#attributes'] = array('style' => 'display:none');
-    $add['#ahah'] = array(
-      'path' => "xml/form/elements/ahah/tag/remove/{$element['#hash']}",
-      'wrapper' => $tags['#hash'], // The parents wrapper is set to the parents hash.
-      'method' => 'replace',
-      'effect' => 'fade'
-    );
-    return $add;
-  }
-
-  private static function createEditButton(array &$element, array &$complete_form) {
-    $tags = get_form_element_parent($element, $complete_form);
-    $add['#type'] = 'submit';
-    $add['#weight'] = 4;
-    $add['#size'] = 30;
-    $add['#attributes'] = array('style' => 'display:none');
-    $add['#ahah'] = array(
-      'path' => "xml/form/elements/ahah/tag/edit/{$element['#hash']}",
-      'wrapper' => $tags['#hash'], // The parents wrapper is set to the parents hash.
-      'method' => 'replace',
-      'effect' => 'fade'
-    );
-    return $add;
   }
 
   /**

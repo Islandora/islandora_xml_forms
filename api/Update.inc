@@ -59,7 +59,7 @@ class Update implements Action {
    * @return boolean
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
-    return TRUE;
+    return isset($value);
   }
 
   /**
@@ -70,12 +70,9 @@ class Update implements Action {
    * @param mixed $value 
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
-    //error_log('Update: ' . $element->getLocation());
     $results = $this->path->query($document, $element);
     $results = dom_node_list_to_array($results);
     foreach ($results as $node) {
-      //error_log('Path: ' . get_dom_node_xpath($node));
-      //error_log('Value: ' . $value);
       $this->update($node, $value);
     }
     return true;
