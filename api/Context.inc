@@ -5,6 +5,8 @@
 /**
  * @file
  *
+ * Defines the three types of XPath context that can be used when defining forms (document, parent, self). Also 
+ * it defines a Class for determining which DOMNode a given context refers to.
  */
 module_load_include('inc', 'php_lib', 'Enum');
 
@@ -19,14 +21,14 @@ class ContextType extends Enum {
 }
 
 /**
- * 
+ * Stores the type of context a Path uses, and retrieve the DOMNode a context refers to.
  */
 class Context {
 
   /**
-   * The type of context, restricted to this classes constants.
+   * The type of context this class repersents.
    * 
-   * @var string
+   * @var ContextType
    */
   protected $type;
 
@@ -40,7 +42,7 @@ class Context {
   }
 
   /**
-   * Checks to see if the context node exists for the given FormElement.
+   * Checks to see if the DOMNode this context repersents exists for the given FormElement.
    * 
    * @param XMLDocument $document
    * @param FormElement $element
