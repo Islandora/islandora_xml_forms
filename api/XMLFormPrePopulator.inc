@@ -55,7 +55,7 @@ class XMLFormPrePopulator {
    * @param FormElement $element
    */
   private function getDefaultValue(FormElement $element) {
-    $node = $this->registry->getNode($element->hash);
+    $node = $this->registry->get($element->hash);
     return $this->getNodeValue($node);
   }
 

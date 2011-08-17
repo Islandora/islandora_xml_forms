@@ -59,7 +59,7 @@ class XMLFormGenerator {
    * @param FormElement $element 
    */
   public function processElement(FormElement $element) {
-    if (!$this->registry->isElementRegistered($element->hash)) {
+    if (!$this->registry->isRegistered($element->hash)) {
       $nodes = $this->findNodes($element);
       $node = array_shift($nodes);
       if (isset($node)) {

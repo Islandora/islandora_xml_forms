@@ -180,7 +180,7 @@ class XMLFormProcessor {
   private function getRemovedFormElementsDeleteActions(FormElement $element) {
     $actions = array();
     $elements = $element->flatten();
-    $registered = $this->nodeRegistry->registered;
+    $registered = $this->nodeRegistry->getRegistered();
     foreach ($registered as $hash => $node) {
       if (isset($elements[$hash]) === FALSE) {
         $element = $this->elementRegistry->get($hash);

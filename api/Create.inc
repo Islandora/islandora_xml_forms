@@ -125,7 +125,7 @@ class Create implements Action {
      * @todo add additonal parameters to determine if an element should be created.
      * At the moment we create elements if it did not exist when the form was first rendered.
      */
-    return $document->registry->isElementRegistered($element->hash) === FALSE;
+    return $document->registry->isRegistered($element->hash) === FALSE;
   }
 
   /**

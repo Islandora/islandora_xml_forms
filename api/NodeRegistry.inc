@@ -5,124 +5,113 @@
 /**
  * @file
  *
+ * Defines a Class for associating DOMNodes with the 'self' context of FormElements.
  */
-module_load_include('inc', 'xml_form_api', 'XMLDocument');
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 
 /**
- * Tracks the nodes FormElements repersent.
+ * Registers the DOMNodes that defined the 'self' context of FormElements. A FormElement can have at most one DOMNode 
+ * repersenting its 'self' context, but a DOMNode can repersent the 'self' context for multiple FormElements.
  */
-class NodeRegistry {
+class NodeRegistry implements Serializable {
 
   /**
-   * A map of FormElements to the DOMNodes the repersent. These nodes are used for populating the form elements
-   * as well as a reference to what DOMNodes need to be modified/removed on submit.
+   * A map of FormElements to the DOMNodes that repersent the FormElements 'self' context.
+   * Where the keys of the array are the unique #hash property of a FormElement, and the value is the DOMNode 
+   * repersenting the 'self' context of the FormElement.
+   * 
+   * When this object is serialized the registered DOMNodes are converted to xpaths (since we can't serialize resources).
+   * Upon unserializing this object NodeRegistry::restored() must be called to convert the xpaths back to DOMNodes.
    * 
    * @var array
    */
-  public $registered;
+  protected $registered;
 
   /**
-   * Create the node registry.
+   * TRUE if this object needs to be restored. FALSE otherwise.
    * 
-   * @param Document $document 
+   * To restore this object call the NodeRegistry::restored() function.
+   * 
+   * @var boolean
+   */
+  protected $restoredRequired;
+
+  /**
+   * Creates an instance of the NodeRegistry.
    */
   public function __construct() {
     $this->registered = array();
+    $this->restoredRequired = FALSE;
   }
 
   /**
-   * Serialize this object.
+   * Serializes this object.
    * 
-   * @return array
-   */
-  public function __sleep() {
-    return array();
-  }
-
-  /**
-   * Prepare this object to be unserialized. 
+   * The registered DOMNodes are converted into xpaths, since DOMNodes cannot be serialized.
    * 
-   * Note that this is not the magic function __sleep, instead this is called from from its owner object.
-   * XMLDocument during its __sleep. It should NOT be called from any other location.
+   * @return string
    */
-  public function export() {
-    $paths = array();
+  public function serialize() {
+    $data = array();
     foreach ($this->registered as $key => $node) {
-      $paths[$key] = get_dom_node_xpath($node);
+      $data[$key] = get_dom_node_xpath($node);
     }
-    return $paths;
+    return serialize($data);
   }
 
   /**
-   * Restore this objects state.
+   * Unserializes this object. 
    * 
-   * @param DOMDocument $document
-   * @param array $paths 
+   * Note that for this object to be fully functional NodeRegistry::restore() must also be called after unserialization.
+   * 
+   * @param string $serialized 
    */
-  public function import(DOMDocument $document, array $paths) {
-    $xpath = new DOMXPath($document);
-    $this->registered = array();
-    foreach ($paths as $key => $path) {
-      $result = $xpath->query($path);
-      if ($result === FALSE) {
-        drupal_set_message($path);
+  public function unserialize($serialized) {
+    $this->registered = unserialize($serialized);
+    $this->restoredRequired = TRUE;
+  }
+
+  /**
+   * Restores the registry, querying the registered xpaths and replacing them with the actual DOMNodes 
+   * that they repersent.
+   * 
+   * @param DOMDocument $document 
+   */
+  public function restore(DOMDocument $document) {
+    if ($this->restoredRequired) {
+      $xpath = new DOMXPath($document);
+      foreach ($this->registered as $key => $path) {
+        $result = $xpath->query($path);
+        $this->registered[$key] = $result->item(0);
       }
-      $this->registered[$key] = $result->item(0);
+      $this->restoredRequired = FALSE;
     }
   }
 
   /**
-   * Register a relationship between a FormElement and a DOMNode.
+   * Registers a 'self' context relationship between a FormElement identified by its 
+   * unique #hash property and the given DOMNode.
    * 
    * @param hash $hash
    * @param DOMNode $node 
    */
   public function register($hash, DOMNode $node) {
-    $name = $node->nodeName;
-    $parent = $node->parentNode;
+    if ($this->restoredRequired) {
+      throw new Exception("DOMNodes can not be registered until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
+    }
     $this->registered[$hash] = $node;
   }
 
   /**
-   * Is the given DOMNode registered?
-   * 
-   * @param DOMNode $node 
-   * @return boolean
-   *   TRUE if the given DOMNode is already registered 
-   *
-  public function isNodeRegistered(DOMNode $node) {
-    $hash = $this->getElementHash($node);
-    if (isset($hash)) {
-      return TRUE;
-    }
-    return FALSE;
-  }
-
-  /**
-   * Is the given FormElement registered?
+   * Checks if a the given FormElement is registered.
    * 
    * @param hash $hash
+   * 
    * @return boolean
    *   TRUE if the element is registered FALSE otherwise.
    */
-  public function isElementRegistered($hash) {
+  public function isRegistered($hash) {
     return isset($this->registered[$hash]);
-  }
-
-  /**
-   * Find the hash for the element that corresponds to the given DOMNode.
-   * 
-   * @param DOMNode $node
-   * @return hash
-   *
-  public function getElementHash(DOMNode $node) {
-    $result = array_filter($this->registered, array($node, 'isSameNode'));
-    if (count($result) >= 1) {
-      $keys = array_keys($result);
-      return array_shift($keys);
-    }
-    return NULL;
   }
 
   /**
@@ -131,11 +120,25 @@ class NodeRegistry {
    * @param hash $hash
    * @return DOMNode
    */
-  public function getNode($hash) {
-    if (isset($this->registered[$hash])) {
-      return $this->registered[$hash];
+  public function get($hash) {
+    if ($this->restoredRequired) {
+      throw new Exception("DOMNodes can not be retrieved until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
     }
-    return NULL;
+    return $this->isRegistered($hash) ? $this->registered[$hash] : NULL;
+  }
+
+  /**
+   * Gets all the registered DOMNodes.
+   * 
+   * @return array
+   *   An array containing all registered DOMNodes where the array keys are the 
+   *   FormElement's hashes and the values are the registered DOMNodes.
+   */
+  public function getRegistered() {
+    if ($this->restoredRequired) {
+      throw new Exception("DOMNodes can not be retrieved until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
+    }
+    return $this->registered;
   }
 
 }

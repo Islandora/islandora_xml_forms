@@ -95,8 +95,8 @@ class Context {
       $selected_node = isset($parent->actions->read);
       $created_node = isset($parent->actions->create);
       if ($selected_node || $created_node) { // We've found a parent that should have a node registered
-        if ($document->registry->isElementRegistered($parent->hash)) {
-          return $document->registry->getNode($parent->hash);
+        if ($document->registry->isRegistered($parent->hash)) {
+          return $document->registry->get($parent->hash);
         }
         throw new XMLFormsContextNotFoundException($this->type, $element);
       }
@@ -114,8 +114,8 @@ class Context {
    * @return DOMNode
    */
   private function getSelf(XMLDocument $document, FormElement $element) {
-    if ($document->registry->isElementRegistered($element->hash)) {
-      return $document->registry->getNode($element->hash);
+    if ($document->registry->isRegistered($element->hash)) {
+      return $document->registry->get($element->hash);
     }
     throw new XMLFormsContextNotFoundException($this->type, $element);
   }

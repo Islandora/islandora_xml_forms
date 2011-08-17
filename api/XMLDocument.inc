@@ -21,13 +21,6 @@ class XMLDocument {
   protected $xml;
 
   /**
-   * When this object is put to sleep, the current state of the registry is stored in this variable.
-   * 
-   * @var array
-   */
-  protected $paths;
-
-  /**
    * A string that defines the name of the root node.
    * 
    * @var string
@@ -95,8 +88,7 @@ class XMLDocument {
    */
   public function __sleep() {
     $this->xml = $this->document->saveXML();
-    $this->paths = $this->registry->export();
-    return array('namespaces', 'schema', 'registry', 'xml', 'paths');
+    return array('namespaces', 'schema', 'registry', 'xml');
   }
 
   /**
@@ -106,7 +98,7 @@ class XMLDocument {
     $this->document = new DOMDocument();
     $this->document->loadXML($this->xml);
     $this->xpath = new DOMXPath($this->document);
-    $this->registry->import($this->document, $this->paths);
+    $this->registry->restore($this->document);
   }
 
   /**
