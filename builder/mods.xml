@@ -1,0 +1,92 @@
+
+<mods xmlns="http://www.loc.gov/mods/v3" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <titleInfo>
+            <title>test</title>
+          </titleInfo>
+          <titleInfo type="alternative">
+            <title></title>
+          </titleInfo>
+          <name type="personal">
+            <namePart></namePart>
+            <role>
+              <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+            </role>
+          </name>
+          <name type="personal">
+            <namePart></namePart>
+            <role>
+              <roleTerm authority="marcrelator" type="text">contributor</roleTerm>
+            </role>
+          </name>
+          <name type="corporate">
+            <namePart></namePart>
+            <role>
+              <roleTerm authority="marcrelator" type="text">creator</roleTerm>
+            </role>
+          </name>
+          <name type="corporate">
+            <namePart></namePart>
+            <role>
+              <roleTerm authority="marcrelator" type="text">contributor</roleTerm>
+            </role>
+          </name>
+          <typeOfResource>text</typeOfResource>
+          <originInfo><place><placeTerm type="text"></placeTerm></place><publisher></publisher><dateIssued></dateIssued><dateCreated keyDate="yes">asdf</dateCreated><copyrightDate></copyrightDate><dateOther></dateOther><frequency></frequency></originInfo>
+          <genre authority="marcgt"></genre>
+          <language>
+            <languageTerm type="text"></languageTerm>
+          </language>
+          <physicalDescription><extent></extent><form></form><digitalOrigin>born digital</digitalOrigin><note></note></physicalDescription>
+          <abstract></abstract>
+          <targetAudience></targetAudience>
+          <note></note>
+          <note type="admin"></note>
+          <note type="funding"></note>
+          <subject>
+            <topic></topic>
+          </subject>
+          <subject>
+            <geographic></geographic>
+          </subject>
+          <subject>
+            <temporal></temporal>
+          </subject>
+          <subject>
+            <name type="personal">
+              <namePart></namePart>
+            </name>
+          </subject>
+          <subject>
+            <name type="corporate">
+              <namePart></namePart>
+            </name>
+          </subject>
+          <subject>
+            <genre></genre>
+          </subject>
+          <relatedItem type="host">
+            <titleInfo>
+              <title></title>
+            </titleInfo>
+          </relatedItem>
+          <relatedItem type="constituent">
+            <titleInfo>
+              <title></title>
+            </titleInfo>
+          </relatedItem>
+          <relatedItem type="series">
+            <titleInfo>
+              <title></title>
+            </titleInfo>
+          </relatedItem>
+          <identifier type="local"></identifier>
+          <identifier type="isbn"></identifier>
+          <identifier type="issn"></identifier>
+          <accessCondition type="useAndReproduction"></accessCondition>
+          <recordInfo>
+            <languageOfCataloging>
+              <languageTerm type="text" authority="iso639-2b">English</languageTerm>
+              <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+            </languageOfCataloging>
+          </recordInfo>
+        </mods>

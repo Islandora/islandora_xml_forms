@@ -112,6 +112,7 @@ class XMLFormProcessor {
      * newly created elements can be registered as we can update newly created elements. Delete must come 
      * last as we want the update actions to run on elements that may then later be removed.
      */
+    error_log('Memory: ' . memory_get_usage());
     $elements = $element->flatten();
     $this->createNodes($this->getActions($elements, 'create'));
     $this->modifyNodes($this->getActions($elements, 'update'));
@@ -133,6 +134,7 @@ class XMLFormProcessor {
       $value = $this->values->getValue($element->hash);
       $action = isset($element->actions->$type) ? $element->actions->$type : NULL;
       if (isset($action) && $action->shouldExecute($this->document, $element, $value)) {
+        error_log('Create Action: ' . $type . ' For ' . $element->getLocation());
         $actions[] = new XMLFormProcessAction($action, $element, $value);
         unset($elements[$key]); // Remove from the list of actionable elements.
       }
