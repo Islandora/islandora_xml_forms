@@ -39,7 +39,7 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
       $document = new XMLDocument($root_name, $namespaces, $schema_uri, $doc->saveXML());
       $xml_form->initialize($form, $document);
     }
-    $output = $xml_form->toArray();
+    $output = $xml_form->toArray($form_state);
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message($msg, 'error');

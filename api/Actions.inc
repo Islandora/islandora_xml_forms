@@ -149,16 +149,17 @@ class Actions implements FormPropertyInterface {
   }
 
   /**
-   * Converts the object to its array form.
+   * Converts this object to a Drupal Form Property value.
    * 
-   * @return array
+   * @return mixed
+   *   Returns the array repersentation of this class, which can be used within a Drupal Form.
    */
-  public function getValue() {
+  public function toDrupalForm() {
     return array(
-      'create' => isset($this->create) ? $this->create->getValue() : NULL,
-      'read' => isset($this->read) ? $this->read->getValue() : NULL,
-      'update' => isset($this->update) ? $this->update->getValue() : NULL,
-      'delete' => isset($this->delete) ? $this->delete->getValue() : NULL,
+      'create' => isset($this->create) ? $this->create->toDrupalForm() : NULL,
+      'read' => isset($this->read) ? $this->read->toDrupalForm() : NULL,
+      'update' => isset($this->update) ? $this->update->toDrupalForm() : NULL,
+      'delete' => isset($this->delete) ? $this->delete->toDrupalForm() : NULL,
     );
   }
 

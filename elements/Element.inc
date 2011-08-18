@@ -11,7 +11,6 @@ module_load_include('inc', 'xml_form_api', 'Utils');
 module_load_include('inc', 'xml_form_api', 'XMLForm');
 module_load_include('inc', 'objective_forms', 'Utils');
 module_load_include('inc', 'objective_forms', 'FormPopulator');
-//module_load_include('inc', 'objective_forms', 'FormElementRegistry');
 
 /**
  * A collection of generic static functions that can be used for AHAH callbacks.

@@ -43,7 +43,7 @@ class Update implements Action {
    * 
    * @return array
    */
-  public function getValue() {
+  public function toDrupalForm() {
     return array(
       'path' => $this->path->path,
       'context' => $this->path->context,

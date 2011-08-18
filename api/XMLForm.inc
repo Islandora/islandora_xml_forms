@@ -62,7 +62,7 @@ class XMLForm extends Form {
    */
   public function initialize(array &$form, XMLDocument $document) {
     if (!$this->initialized) {
-      $this->root = $this->createRoot($form);
+      $this->root = new FormElement($form);
       $this->document = $document;
       $this->generate(); // Register nodes and generate new elements.
       $this->prepopulate();

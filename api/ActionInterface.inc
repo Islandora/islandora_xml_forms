@@ -39,8 +39,10 @@ interface Action {
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL);
 
   /**
+   * Converts this object to a Drupal Form Property value.
    * 
-   * @return array
+   * @return mixed
+   *   Returns an array repersentation of this class, which can be used within a Drupal Form Property '#actions'.
    */
-  public function getValue();
+  public function toDrupalForm();
 }
