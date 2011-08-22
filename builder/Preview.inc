@@ -33,10 +33,8 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
       $properties = XMLFormDefinition::GetFormProperties($xml_definition);
       $root_name = $properties['root_name']; // @todo change to name.
       $schema_uri = $properties['schema_uri'];
-      $doc = new DOMDocument();
-      $doc->load(drupal_get_path('module', 'xml_form_builder') . '/mods.xml');
       $namespaces = new Namespaces($properties['namespaces'], $properties['default_uri']);
-      $document = new XMLDocument($root_name, $namespaces, $schema_uri, $doc->saveXML());
+      $document = new XMLDocument($root_name, $namespaces, $schema_uri);
       $xml_form->initialize($form, $document);
     }
     $output = $xml_form->toArray($form_state);
