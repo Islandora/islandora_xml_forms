@@ -38,12 +38,22 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
       $xml_form->initialize($form, $document);
     }
     $output = $xml_form->toArray($form_state);
+    $output['#action'] = url("admin/content/xml/form/$form_name/view");
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message($msg, 'error');
     return array();
   }
   return $output;
+}
+
+/**
+ *
+ * @param array $form
+ * @param array $form_state 
+ */
+function xml_form_builder_preview_validate(array $form, array &$form_state) {
+  
 }
 
 /**
