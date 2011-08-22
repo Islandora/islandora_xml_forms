@@ -227,14 +227,13 @@ class FormBuilder {
       module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
       $definition = self::GetFormDefinition($form_name);
       $properties = XMLFormDefinition::GetFormProperties($definition);
-      $document_properties = $properties['document'];
-      $namespaces = isset($document_properties['namespaces']) ? $document_properties['namespaces'] : array();
+      $namespaces = isset($properties['namespaces']) ? $properties['namespaces'] : array();
       $properties = array(
-        'localName' => $document_properties['root']['local_name'],
-        'prefix' => $document_properties['root']['prefix'],
-        'uri' => $document_properties['root']['uri'],
+        'localName' => $properties['root_name'],
+        'prefix' => '',
+        'uri' => $properties['default_uri'],
         'namespaces' => $namespaces,
-        'schema' => $document_properties['schema']
+        'schema' => $properties['schema_uri']
       );
       return json_encode(array($properties));
     }
@@ -278,7 +277,7 @@ class FormBuilder {
       $name = str_replace('#', '', $name); // Remove the Hash.
       $value = $control;
       if ($value instanceof FormPropertyInterface) {
-        $value = $value->getValue();
+        $value = $value->toDrupalForm();
       }
       if (is_array($value)) {
         $value = self::TransformArray($value);
