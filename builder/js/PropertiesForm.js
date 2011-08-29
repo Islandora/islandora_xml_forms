@@ -19,7 +19,7 @@ Ext.formbuilder.createPropertiesForm = function() {
                 xtype: 'textfield',
                 id: 'localName',
                 name: 'localName',
-                fieldLabel: 'Local Name',
+                fieldLabel: 'Root Element Name',
                 allowBlank: false,
                 anchor: '100%'
             },{
