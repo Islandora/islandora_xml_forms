@@ -44,15 +44,11 @@ class JSONForm {
     $properties = $this->json->properties;
     $namespaces = $this->convertStdClassToArray($properties->namespaces);
     return array(
-      'document' => array(
-        'root' => array(
-          'prefix' => $properties->prefix,
-          'local_name' => $properties->localName,
-          'uri' => $properties->uri
-        ),
-        'namespaces' => $namespaces,
-        'schema' => $properties->schema
-    ));
+      'root_name' => $properties->localName,
+      'schema_uri' => $properties->schema,
+      'namespaces' => $namespaces,
+      'default_uri' => $properties->uri
+    );
   }
 
   /**

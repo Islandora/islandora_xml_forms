@@ -49,8 +49,13 @@ function xml_form_builder_edit($form_name) {
 function xml_form_builder_edit_save($form_name) {
   module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   module_load_include('inc', 'xml_form_builder', 'JSONForm');
-  $json_form = new JSONForm($form_name);
-  FormBuilder::SetFormDefinition($form_name, $json_form->getFormDefinition());
+  try {
+    $json_form = new JSONForm($form_name);
+    FormBuilder::SetFormDefinition($form_name, $json_form->getFormDefinition());
+  } catch (Exception $e) {
+    $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
+    drupal_set_message($msg, 'error');
+  }
 }
 
 /**

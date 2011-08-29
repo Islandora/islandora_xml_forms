@@ -68,7 +68,7 @@ class XMLFormDefinition {
     if (isset($properties['schema_uri'])) {
       $form_properties->addChild('schema_uri', $properties['schema_uri']);
     }
-    $namespaces = $document_properties->addChild('namespaces');
+    $namespaces = $form_properties->addChild('namespaces');
     if ($properties['default_uri']) {
       $namespaces->addAttribute('default', $properties['default_uri']);
     }
@@ -149,7 +149,7 @@ class XMLFormDefinition {
         'root_name' => NULL,
         'schema_uri' => NULL,
         'namespaces' => array(),
-        'default_uri' => $default_uri
+        'default_uri' => NULL
       );
     }
     $definition = simplexml_load_string($xml_definition);

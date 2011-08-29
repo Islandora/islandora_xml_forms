@@ -1,7 +1,6 @@
 <definition>
     <properties>
-        <document>
-        </document>
+        <root_name>changeme</root_name>
     </properties>
     <form>
     </form>

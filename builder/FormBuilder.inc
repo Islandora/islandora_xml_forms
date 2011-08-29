@@ -230,7 +230,6 @@ class FormBuilder {
       $namespaces = isset($properties['namespaces']) ? $properties['namespaces'] : array();
       $properties = array(
         'localName' => $properties['root_name'],
-        'prefix' => '',
         'uri' => $properties['default_uri'],
         'namespaces' => $namespaces,
         'schema' => $properties['schema_uri']

@@ -24,11 +24,6 @@ Ext.formbuilder.createPropertiesForm = function() {
                 anchor: '100%'
             },{
                 xtype: 'textfield',
-                name: 'prefix',
-                fieldLabel: 'Namespace Prefix',
-                anchor: '100%'
-            },{
-                xtype: 'textfield',
                 id: 'uri',
                 name: 'uri',
                 fieldLabel: 'Namespace URI',
