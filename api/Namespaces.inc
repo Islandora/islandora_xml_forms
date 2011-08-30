@@ -97,7 +97,7 @@ class Namespaces {
    */
   public function addNamespacesAttributesTo(DOMElement $element) {
     if (isset($this->default)) {
-      $element->setAttributeNS(self::xmlns, 'xmlns', $this->default);
+      $element->setAttribute('xmlns', $this->default);
     }
     foreach ($this->namespaces as $prefix => $uri) {
       $element->setAttributeNS(self::xmlns, 'xmlns:' . $prefix, $uri);
