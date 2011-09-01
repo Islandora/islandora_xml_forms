@@ -105,7 +105,7 @@ class Create implements Action {
   public function toDrupalForm() {
     return array(
       'path' => $this->path->path,
-      'context' => $this->path->context,
+      'context' => (string) $this->path->context,
       'schema' => $this->schema_path,
       'type' => $this->type,
       'prefix' => $this->prefix,

@@ -37,7 +37,7 @@ class Path {
     $this->path = $path;
     $this->context = $context;
   }
-  
+
   /**
    * Queries the path with the defined context as defined by the provided FormElement
    * 
@@ -53,12 +53,12 @@ class Path {
     $context = $this->context->getNode($document, $element);
     return $document->query($this->path, $context);
   }
-  
+
   /**
    * 
    */
   public function __toString() {
-    return 'Path: ' . $this->path . ' Context: ' . $this->context;
+    return $this->path;
   }
 
 }

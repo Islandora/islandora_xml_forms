@@ -36,7 +36,7 @@ class Delete implements Action {
   public function toDrupalForm() {
     return array(
       'path' => $this->path->path,
-      'context' => $this->path->context,
+      'context' => (string) $this->path->context,
     );
   }
 

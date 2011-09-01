@@ -99,7 +99,7 @@ class XMLFormDefinition {
 
   private static function AddFormControlToProperties(SimpleXMLElement $properties, $key, $value) {
     if ($value instanceof FormPropertyInterface) {
-      $value = $value->getValue();
+      $value = $value->toDrupalForm();
     }
     if (is_bool($value)) {
       $value = $value ? 'true' : 'false';

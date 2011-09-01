@@ -21,11 +21,13 @@ abstract class InsertOrderNode {
    * @var InsertOrderNode
    */
   public $parent;
+
   /**
    * 
    * @var mixed (integer or 'unbounded')
    */
   public $min;
+
   /**
    * 
    * @var mixed (integer or 'unbounded')
@@ -274,6 +276,7 @@ class InsertOrderSequence extends InsertOrderCompositor {
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
   }
+
 }
 
 /**
@@ -287,6 +290,7 @@ class InsertOrderElement extends InsertOrderNode {
    * @var string
    */
   public $name;
+
   /**
    * The DOMElement's that match this constraint.
    * 
@@ -382,6 +386,7 @@ class InsertOrderAny extends InsertOrderNode {
    * @var string[]
    */
   public $names;
+
   /**
    * The DOMElement's that match this constraint.
    * 
@@ -504,7 +509,9 @@ class InsertOrderMap {
    */
   public function getInsertOrderMap($path) {
     $element = new XMLSchemaElement($this->schema, $this->schema->getUniqueNode($path));
-    return $element->complexType->asInsertOrderNode();
+    if (isset($element->complexType)) {
+      return $element->complexType->asInsertOrderNode();
+    }
   }
 
   /**
