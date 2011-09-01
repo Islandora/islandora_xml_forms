@@ -53,7 +53,7 @@ class Namespaces {
    */
   public function __construct(array &$namespaces = NULL, $default = NULL) {
     $this->default = $default;
-    $this->namespaces = $namespaces;
+    $this->namespaces = isset($namespaces) ? $namespaces : array();
   }
 
   /**
