@@ -211,8 +211,7 @@ class Create implements Action {
     // Sigh... Oh DOM-API, your so backwards and useless.
     // We have to do this for namespaces to work correctly, there is no clean work around for this.
     // User will have to put both the prefix and namespace on elements where they want the prefix to stay.
-    $default_uri = $document->namespaces->getDefaultURI();
-    $root_attributes = ($default_uri) ? "xmlns = '$default_uri' " : '';
+    $root_attributes = '';
     foreach ($document->namespaces as $prefix => $uri) {
       $attribute = is_non_empty_string($prefix) ?
           "xmlns:$prefix" :
@@ -223,7 +222,8 @@ class Create implements Action {
     $xml = "<root {$root_attributes}>$xml</root>";
     $this->fragment = $document->document->createDocumentFragment();
     $this->fragment->appendXML($xml);
-    return $this->fragment->firstChild->firstChild;
+    $root = $this->fragment->firstChild->firstChild;
+    return $root;
   }
 
   /**

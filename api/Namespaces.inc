@@ -21,7 +21,7 @@ class XMLFormsNamespaceException extends Exception {
 /**
  * This class is meant to encapsulate namespaces.
  */
-class Namespaces {
+class Namespaces implements IteratorAggregate {
   /**
    * Constants
    */
@@ -102,6 +102,19 @@ class Namespaces {
     foreach ($this->namespaces as $prefix => $uri) {
       $element->setAttributeNS(self::xmlns, 'xmlns:' . $prefix, $uri);
     }
+  }
+
+  /**
+   * Gets an iterator that allows the user to iterate over the namespaces.
+   * 
+   * @return ArrayIterator 
+   */
+  public function getIterator() {
+    $namespaces = $this->namespaces;
+    if (isset($this->default)) {
+      $namespaces[''] = $this->default;
+    } 
+    return new ArrayIterator($namespaces);
   }
 
 }
