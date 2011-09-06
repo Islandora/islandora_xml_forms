@@ -43,6 +43,7 @@ class Tags {
     $button['#type'] = 'submit';
     $button['#weight'] = 4;
     $button['#size'] = 30;
+    $button['#id'] = $element['#hash'] . '-add';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#value'] = 'Add';
     $button['#attributes'] = array('style' => 'display:none');
@@ -59,6 +60,7 @@ class Tags {
     $button['#type'] = 'submit';
     $button['#weight'] = 4;
     $button['#size'] = 30;
+    $button['#id'] = $child['#hash'] . '-remove';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/remove/{$child['#hash']}",
@@ -73,6 +75,7 @@ class Tags {
     $button['#type'] = 'submit';
     $button['#weight'] = 4;
     $button['#size'] = 30;
+    $button['#id'] = $child['#hash'] . '-edit';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/edit/{$child['#hash']}",

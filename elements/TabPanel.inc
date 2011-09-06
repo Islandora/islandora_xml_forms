@@ -65,6 +65,7 @@ class TabPanel {
     $add['#type'] = 'submit';
     $add['#weight'] = 4;
     $add['#size'] = 30;
+    $add['#id'] = $element['#hash'] . '-add';
     $add['#value'] = 'Add';
     $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
     $add['#suffix'] = '</div>';
@@ -88,6 +89,7 @@ class TabPanel {
     $delete['#type'] = 'submit';
     $delete['#weight'] = 4;
     $delete['#size'] = 30;
+    $delete['#id'] = $element['#hash'] . '-remove';
     $delete['#value'] = 'Delete';
     $delete['#attributes'] = array(
       'style' => 'display:none' // Triggered via javascript.
