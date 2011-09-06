@@ -24,6 +24,7 @@ class Tags {
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $path = drupal_get_path('module', 'xml_form_elements');
     drupal_add_css("$path/stylesheets/tags.css");
+    drupal_add_js("$path/js/XMLFormElements.js");
     $element['#id'] = $element['#hash'];
     $element['#tree'] = TRUE;
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";

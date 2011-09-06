@@ -76,9 +76,6 @@ $(document).ready(function() {
     xml_form_elements.tabpanel.enableActions();
     $("body").ajaxComplete(function(event, request, settings) {
         xml_form_elements.tabpanel.loadPanels(false);
-        var response = eval("(" + request.responseText + ")");
-        jQuery.extend(Drupal.settings, response.settings);
-        Drupal.attachBehaviors();
     });
 });
 
