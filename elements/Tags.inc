@@ -112,4 +112,5 @@ function xml_form_elements_preprocess_tags(&$vars) {
   $vars['input'] = array_shift($vars['tags']);
   $vars['label'] = $tags['#title'];
   $vars['image_path'] = "$base_url/{$vars['directory']}/images";
+  $vars['description'] = $tags['#description'];
 }

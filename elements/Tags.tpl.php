@@ -16,6 +16,7 @@
       <input type="hidden" name="<?php print $tag['#name'] ?>" id="<?php print $tag['#id'] ?>" value="<?php print "{$tag['#value']}" ?>">
     <?php endforeach ?>
   </div>
+  <div><?php print $description ?></div>
   <ui class="tag-list">
     <?php foreach ($tags as $tag): ?>
       <li title="<?php print "{$tag['#value']}" ?>">
