@@ -260,8 +260,8 @@ class FormBuilder {
       $form_element['#type'] = 'form';
       //$elements['children'][] = self::TransformElement($form_element);
       $elements = self::TransformElement($form_element);
-      $elements['key'] = 'Root';
-      $elements['text'] = "Form ({$elements['type']})";
+      $elements['key'] = empty($elements['key']) ? 'Root' : $elements['key'];
+      $elements['text'] = "{$elements['key']} ({$elements['type']})";
       return json_encode(array('expanded' => true, 'children' => $elements));
     }
     else {

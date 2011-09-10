@@ -43,3 +43,7 @@
 #xml-form-builder-editor fieldset {
     background: none;
 }
+
+.x-boundlist-item {
+  background: none;
+}
