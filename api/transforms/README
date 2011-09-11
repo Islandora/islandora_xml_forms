@@ -1,0 +1,11 @@
+This folder contains XSL transformations. Where the file is named for the version it transforms the document into.
+
+So if the documents have version numbers like the ones below.
+
+1.0.xsl
+1.1.xsl
+1.2.xsl
+
+It means that documents with no version can be transformed into version 1.0 by using the 1.0.xsl. Documents that are version 
+1.0 can be transformed into 1.1 with 1.1.xsl and so on. The highest number in this folder will represent the latest version of the 
+XML Form Definition.
