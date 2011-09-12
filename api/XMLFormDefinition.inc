@@ -56,9 +56,7 @@ class XMLFormDefinitionVersion {
       $files = scandir($path);
       foreach ($files as $filename) {
         $version = str_replace('.xsd', '', $filename);
-        if ($version != 'latest') { // Maybe remove
-          $versions[] = (int) $version;
-        }
+        $versions[] = (int) $version;
       }
       asort($version);
     }
@@ -189,11 +187,14 @@ class XMLFormDefinitionVersion {
    */
   public function getTransform() {
     $filename = $this->getTansformFileName();
-    $xsl = new DOMDocument();
-    $xsl->load($filename);
-    $xslt = new XSLTProcessor();
-    $xslt->importStyleSheet($xsl);
-    return $xslt;
+    if (file_exists($filename)) {
+      $xsl = new DOMDocument();
+      $xsl->load($filename);
+      $xslt = new XSLTProcessor();
+      $xslt->importStyleSheet($xsl);
+      return $xslt;
+    }
+    return FALSE;
   }
 
 }
@@ -202,6 +203,13 @@ class XMLFormDefinitionVersion {
  * This class is used to validate and transform XML Form Definitions into 
  */
 class XMLFormDefinition {
+
+  /**
+   * The DOMDocument that repersents the Form Definition.
+   * 
+   * @var DOMDocument
+   */
+  public $definition;
 
   /**
    * Gets the version number of the XML Form Definition.
@@ -281,16 +289,169 @@ class XMLFormDefinition {
    * Repeatedly upgrades the XML Form Definition, till it reaches the latest version.
    * 
    * @param DOMDocument $definition 
-   *   The XML Form Definition to upgrade. This may be modified by this function.
+   *   The XML Form Definition to upgrade.
    * 
-   * @return XMLFormDefinitionVersion
-   *   The upgraded version of the XML Form Definition.
+   * @return XMLFormDefinition
+   *   The upgraded XML Form Definition.
    */
-  public static function upgradeToLatestVersion(DOMDocument &$definition) {
+  public static function upgradeToLatestVersion(DOMDocument $definition) {
     do {
       $version = self::upgradeVersion($definition);
     } while (!$version->isLatestVersion());
-    return $version;
+    return $definition;
+  }
+
+  /**
+   * Creates an instance of the XMLFormDefinition.
+   * 
+   * @param DOMDocument $definition 
+   */
+  public function __construct(DOMDocument $definition) {
+    $this->definition = self::upgradeToLatestVersion($definition);
+    if (self::isValid($this->definition)) {
+      $this->properties = $this->getProperties();
+      $this->form = $this->getForm();
+    }
+    else {
+      throw new Exception('Unable to Create XMLFormDefinition.');
+    }
+  }
+
+  /**
+   * Extracts the properties section of the definition into a array.
+   * 
+   * @return array
+   *   The extracted properties from the XML Form Definition.
+   */
+  private function getProperties() {
+    $paths = array(
+      'root_name' => '/document/properties/root_name',
+      'default_uri' => '/document/properties/namespaces/@default',
+      'schema_uri' => '/document/properties/schema_uri'
+    );
+    $properties = array();
+    $xpath = new DOMXPath($this->definition);
+    foreach ($paths as $key => $path) {
+      $results = $xpath->query($path);
+      if ($results->length) {
+        $properties[$key] = $results->item(0)->nodeValue;
+      }
+    }
+    $results = $xpath->query('/document/properties/namespaces/namespace');
+    $count = $results->length;
+    for ($i = 0; $i < $count; $i++) {
+      $node = $results->item($i);
+      $prefix = $node->getAttribute('prefix');
+      $properties['namespaces'][$prefix] = $node->nodeValue;
+    }
+    return $properties;
+  }
+
+  /**
+   * Extracts the form section of the definition into a array.
+   * 
+   * @return array
+   *   The extracted form declaration from the XML Form Definition. This is also a valid Drupal form.
+   */
+  private function getForm() {
+    $definition = simplexml_load_string($this->definition);
+    return $this->getElement($definition->form);
+  }
+
+  /**
+   * Gets the array repersentation of an Element from the XML Form Definition.
+   * 
+   * @param SimpleXMLElement $element 
+   *   The element declaration to transform into its Drupal form.
+   * 
+   * @return array
+   *   The Drupal form equivalent of the XML Form Definition element declaration.
+   */
+  private function getElement(SimpleXMLElement $element) {
+    $properties = $this->getElementProperties($element);
+    return array_merge($properties, $this->getElementChildren($element));
+  }
+
+  /**
+   * Transforms the properties section of an element declaration to its drupal repersentation.
+   * 
+   * @param SimpleXMLElement $element
+   *   An element declaration from the XML Form Definition.
+   * 
+   * @return array
+   *   The Drupal repersentation of this element's properties declaration.
+   */
+  private function getElementProperties(SimpleXMLElement $element) {
+    $output = array();
+    if (isset($element->properties)) {
+      $properties = $element->properties->children();
+      foreach ($properties as $property) {
+        $name = $property->getName();
+        $output["#$name"] = $this->getElementProperty($property);
+      }
+    }
+    return $output;
+  }
+
+  /**
+   * Gets the value of a property declared within the properties section of an element declaration 
+   * from the XML Form Definition.
+   * 
+   * @param SimpleXMLElement $property
+   *   An element property declaration from the XML Form Definition.
+   * 
+   * @return mixed
+   *   The value of the property.
+   */
+  private function getElementProperty(SimpleXMLElement $property) {
+    $children = $property->children();
+    if (count($children) == 0) {
+      return cast_string_to_boolean((string) $property); // If cast fails the string is returned.
+    }
+    $output = array();
+    foreach ($children as $child) {
+      $name = $this->getElementPropertyName($child);
+      $output[$name] = $this->getElementProperty($child);
+    }
+    return $output;
+  }
+
+  /**
+   * Gets the name of the property to use as the array index of the property in the Drupal form.
+   * 
+   * @param SimpleXMLElement $property
+   *   An element property declaration from the XML Form Definition.
+   * 
+   * @return string
+   *   The property name.
+   */
+  private function getElementPropertyName(SimpleXMLElement $property) {
+    if (isset($property['key'])) {
+      $key = (string) $property['key'];
+      return strcasecmp($key, 'NULL') == 0 ? NULL : $key;
+    }
+    return $property->getName();
+  }
+
+  /**
+   * Transforms all the child declarations of the given element into their Drupal form repersentations.
+   * 
+   * @param SimpleXMLElement $element
+   *   The element declaration to transform into its Drupal form.
+   * 
+   * @return array 
+   *  All the transformed child declarations.
+   */
+  private function getElementChildren(SimpleXMLElement $element) {
+    $output = array();
+    if (isset($element->children)) {
+      $elements = $element->children->children();
+      foreach ($elements as $element) {
+        $key = isset($element['name']) ? (string) $element['name'] : NULL;
+        array_add($output, $key, $this->getElement($element));
+      }
+    }
+    return $output;
   }
 
 }
