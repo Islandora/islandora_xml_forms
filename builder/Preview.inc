@@ -27,18 +27,14 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
     $xml_form = new XMLForm($form_state);
     if (!$xml_form->isInitialized()) { // Was initialized from storage.
       module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-      module_load_include('inc', 'xml_form_api', 'XMLDocument');
-      $xml_definition = FormBuilder::GetFormDefinition($form_name);
-      $form = XMLFormDefinition::GetDrupalForm($xml_definition);
-      $properties = XMLFormDefinition::GetFormProperties($xml_definition);
-      $root_name = $properties['root_name']; // @todo change to name.
-      $schema_uri = $properties['schema_uri'];
-      $namespaces = new Namespaces($properties['namespaces'], $properties['default_uri']);
-      $document = new XMLDocument($root_name, $namespaces, $schema_uri);
+      $definition = FormBuilder::GetFormDefinition($form_name);
+      $definition = new XMLFormDefinition($definition);
+      $form = $definition->getForm();
+      $document = $definition->createXMLDocument();
       $xml_form->initialize($form, $document);
     }
     $output = $xml_form->toArray($form_state);
-    $output['#action'] = url("admin/content/xml/form/$form_name/view");
+    $output['#action'] = url("admin/content/xml/form/$form_name/view"); // Deals with a bug in drupals AHAH, where the user would be redirected to a different page.
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message($msg, 'error');

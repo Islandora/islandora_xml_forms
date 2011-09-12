@@ -308,13 +308,38 @@ class XMLFormDefinition {
    */
   public function __construct(DOMDocument $definition) {
     $this->definition = self::upgradeToLatestVersion($definition);
-    if (self::isValid($this->definition)) {
-      $this->properties = $this->getProperties();
-      $this->form = $this->getForm();
-    }
-    else {
+    if (!self::isValid($this->definition)) {
       throw new Exception('Unable to Create XMLFormDefinition.');
     }
+  }
+
+  /**
+   * Extracts the form section of the definition into a array.
+   * 
+   * @return array
+   *   The extracted form declaration from the XML Form Definition. This is also a valid Drupal form.
+   */
+  public function getForm() {
+    $definition = simplexml_load_string($this->definition);
+    return $this->getElement($definition->form);
+  }
+
+  /**
+   * Creates an XMLDocument instance from the properties stored within the XML Form Definition.
+   * 
+   * @param string $xml 
+   *   The metadata to initalize the XMLDocument with.
+   * 
+   * @return XMLDocument
+   *   An initialized XMLDocument.
+   */
+  public function createXMLDocument($xml = NULL) {
+    module_load_include('inc', 'xml_form_api', 'XMLDocument');
+    $properties = $this->getProperties();
+    $root_name = $properties['root_name']; // @todo change to name.
+    $schema_uri = $properties['schema_uri'];
+    $namespaces = new Namespaces($properties['namespaces'], $properties['default_uri']);
+    return new XMLDocument($root_name, $namespaces, $schema_uri, $xml);
   }
 
   /**
@@ -345,17 +370,6 @@ class XMLFormDefinition {
       $properties['namespaces'][$prefix] = $node->nodeValue;
     }
     return $properties;
-  }
-
-  /**
-   * Extracts the form section of the definition into a array.
-   * 
-   * @return array
-   *   The extracted form declaration from the XML Form Definition. This is also a valid Drupal form.
-   */
-  private function getForm() {
-    $definition = simplexml_load_string($this->definition);
-    return $this->getElement($definition->form);
   }
 
   /**
