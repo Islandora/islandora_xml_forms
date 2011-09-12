@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="2">
     <xs:element name="definition">
         <xs:complexType>
             <xs:sequence>
@@ -22,6 +22,7 @@
                 </xs:element>
                 <xs:element name="form" minOccurs="1" type="elementType"/>
             </xs:sequence>
+            <xs:attribute name="version" type="xs:nonNegativeInteger" use="required"/>
         </xs:complexType>
     </xs:element>
     <xs:complexType name="elementsDefinition">

@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="0">
     <xs:element name="definition">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="properties">
                     <xs:complexType>
                         <xs:all>
-                            <xs:element name="root_name" type="xs:Name"/>
-                            <xs:element minOccurs="0" name="schema_uri" type="xs:anyURI"/>
-                            <xs:element minOccurs="0" name="namespaces">
+                            <xs:element name="document">
                                 <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element maxOccurs="unbounded" name="namespace"
-                                            type="namespaceType" minOccurs="0"> </xs:element>
-                                    </xs:sequence>
-                                    <xs:attribute name="default" type="xs:anyURI"/>
+                                    <xs:all>
+                                        <xs:element name="root" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:all>
+                                                  <xs:element minOccurs="0" name="prefix"
+                                                  type="xs:NCName"/>
+                                                  <xs:element name="local_name" type="xs:NCName"
+                                                  minOccurs="1"/>
+                                                  <xs:element minOccurs="0" name="uri"
+                                                  type="xs:anyURI"/>
+                                                </xs:all>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element minOccurs="0" name="namespaces">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element maxOccurs="unbounded" name="namespace"
+                                                  type="namespaceType" minOccurs="0"> </xs:element>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                        <xs:element minOccurs="0" name="schema" type="schemaType">
+                                        </xs:element>
+                                    </xs:all>
                                 </xs:complexType>
                             </xs:element>
                         </xs:all>
@@ -22,7 +39,6 @@
                 </xs:element>
                 <xs:element name="form" minOccurs="1" type="elementType"/>
             </xs:sequence>
-            <xs:attribute name="version" type="float" use="required"/>
         </xs:complexType>
     </xs:element>
     <xs:complexType name="elementsDefinition">
@@ -283,13 +299,7 @@
     <xs:complexType name="namespaceType">
         <xs:simpleContent>
             <xs:extension base="xs:anyURI">
-                <xs:attribute name="prefix" use="required">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:NCName">
-                            <xs:whiteSpace value="collapse"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:attribute>
+                <xs:attribute name="prefix" type="xs:string"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
