@@ -31,7 +31,7 @@ class JSONForm {
     $this->json = json_decode($_POST['data']);
     $properties = $this->createProperties();
     $form = $this->createDrupalForm();
-    $definition = XMLFormDefinition::Create($properties, $form['Root']);
+    $definition = XMLFormDefinitionGenerator::Create($properties, $form['Root']);
     $this->definition = new DOMDocument();
     $this->definition->loadXML($definition->asXML());
   }
