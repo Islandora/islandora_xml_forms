@@ -12,37 +12,38 @@ module_load_include('inc', 'php_lib', 'Misc');
 module_load_include('inc', 'xml_form_api', 'Actions');
 
 /**
- * Builds a form from a JSON object posted to the server by the form builder.
+ * Given some JSON it retrieve the form properties and a Drupal form.
  */
-class JSONForm {
+class JSONFormDefinition {
 
   /**
-   *
-   * @var stdClass
+   * Instantiates the JSONForm definition.
+   * 
+   * @param string $json 
+   *   The posted encoded JSON data.
    */
-  protected $json;
-  protected $definition;
-
-  /**
-   * Create a FormDefintion from Posted JSON data.
-   */
-  public function __construct($form_name) {
-    module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-    $this->json = json_decode($_POST['data']);
-    $properties = $this->createProperties();
-    $form = $this->createDrupalForm();
-    $definition = XMLFormDefinitionGenerator::Create($properties, $form['Root']);
-    $this->definition = new DOMDocument();
-    $this->definition->loadXML($definition->asXML());
+  public function __construct($json) {
+    $this->json = json_decode($json); // $this->json = json_decode($_POST['data']);
   }
 
   /**
-   *
-   * @return FormProperties 
+   * Gets both the form properties and the form.
+   * 
+   * @return array
+   *   An array were the first item is the form properties and the second is the form.
    */
-  private function createProperties() {
+  public function getPropertiesAndForm() {
+    return array($this->getProperties(), $this->getForm());
+  }
+
+  /**
+   * Gets the Form Properties.
+   * 
+   * @return array
+   */
+  public function getProperties() {
     $properties = $this->json->properties;
-    $namespaces = $this->convertStdClassToArray($properties->namespaces);
+    $namespaces = object_as_array($properties->namespaces);
     return array(
       'root_name' => $properties->localName,
       'schema_uri' => $properties->schema,
@@ -52,27 +53,33 @@ class JSONForm {
   }
 
   /**
-   *
-   * @return FormElements
+   * Gets the Drupal repersentation of this JSON form.
+   * 
+   * @return array 
+   *   A Drupal form.
    */
-  private function createDrupalForm() {
-    $elements = $this->json->elements;
-    $output = array();
+  public function getForm() {
+    $root = $this->json->elements[0];
+    list($key, $value) = $this->getElement($root);
+    $form = array();
+    
     foreach ($elements as $element) {
-      list($key, $value) = $this->createDrupalFormElement($element);
-      array_add($output, $key, $value);
+      
+      array_add($form, $key, $value);
     }
-    return $output;
+    return $form;
   }
 
   /**
+   * Gets the array repersentation of an Element from the JSON Form Definition.
    * 
+   * @param stdClass $element 
    */
-  private function createDrupalFormElement($element) {
+  private function getElement(stdClass $element) {
     $key = isset($element->key) ? $element->key : NULL;
-    $controls = $this->getDrupalFormControls($element);
-    $children = $this->getDrupalFormChildElements($element);
-    return array($key, array_merge($controls, $children));
+    $properties = $this->getElementProperties($element);
+    $children = $this->getElementChildren($element);
+    return array($key, array_merge($properties, $children));
   }
 
   /**
@@ -80,14 +87,14 @@ class JSONForm {
    * @param array $element
    * @return array
    */
-  private function getDrupalFormControls($element) {
+  private function getElementProperties($element) {
     $ignore = array('key', 'text', 'root', 'leaf', 'id', 'parentId', 'icon', 'cls', 'qtip', 'qtitle',
       'iconCls', 'href', 'hrefTarget', 'elements', 'index', 'depth', 'expanded', 'checked',
       'isLast', 'isFirst', 'allowDrop', 'allowDrag', 'loaded', 'loading');
     $controls = array();
     foreach ($element as $key => $value) {
       $is_control = array_search($key, $ignore) === FALSE;
-      $is_valid = $this->validateFormControl($key, $value);
+      $is_valid = $this->validateProperty($key, $value);
       $value = is_object($value) ? object_as_array($value) : $value;
       if ($is_control && $is_valid) {
         $controls["#$key"] = $value;
@@ -97,63 +104,19 @@ class JSONForm {
   }
 
   /**
-   *
-   * @param array $element
-   * @return array 
-   */
-  private function getDrupalFormChildElements($element) {
-    $children = array();
-    if (isset($element->elements)) {
-      foreach ($element->elements as $child) {
-        list($key, $value) = $this->createDrupalFormElement($child);
-        array_add($children, $key, $value);
-      }
-    }
-    return $children;
-  }
-
-  /**
+   * Checks if the given property and its value are valid.
    * 
-   * @return array
-   */
-  private function createElements(array $elements) {
-    $output = array();
-    foreach ($elements as $element) {
-      $element = $this->createElement($element);
-      $output[$element->name] = $element;
-    }
-    return $output;
-  }
-
-  /**
-   *
-   * @param stdClass $element
-   * @return FormElement
-   */
-  private function createElement($element) {
-    $key = isset($element->key) ? $element->key : NULL;
-
-    exit();
-    $controls = $this->createFormControls($element);
-    $actions = $this->createActions($element);
-    $children = $this->createElements($element->elements);
-    $element = new FormElement();
-    $element->name = (isset($key) && $key != "") ? $key : NULL;
-    $element->controls = $controls;
-    $element->actions = $actions;
-    foreach ($children as $child) {
-      $element[$child->name] = $child;
-    }
-    return $element;
-  }
-
-  /**
-   *
+   * This may be cast to the wayside at a later time...
+   * 
    * @param string $name
+   *   The name of the element property.
    * @param mixed $value
+   *   The value of the element property.
+   * 
    * @return boolean 
+   *   TRUE if the property name and its value are valid.
    */
-  private function validateFormControl($name, $value) {
+  private function validateProperty($name, $value) {
     $controls = array(
       'type' => 'is_non_empty_string',
       'access' => 'is_bool',
@@ -206,103 +169,37 @@ class JSONForm {
     return TRUE; // Assume valid for non specified controls.
   }
 
-  function convertStdClassToArray($object) {
-    $array = array();
-    if (is_object($object) || is_array($object)) {
-      foreach ($object as $key => $value) {
-        $array[$key] = is_object($value) ? $this->convertStdClassToArray($value) : $value;
-      }
-      return $array;
-    }
-    return $object;
-  }
-
   /**
-   * Extjs treats arrays kinda funky so we need to normalize them.
+   * Gets an array of the child elements of the given element.
    * 
-   * @param array $control 
-   */
-  private function convertFormControlToArray(array $control) {
-    $output = array();
-    foreach ($control as $item) {
-      $output[] = $item[0];
-    }
-    return $output;
-  }
-
-  /**
-   * Extjs treats arrays kinda funky so we need to normalize them.
-   * 
-   * @param array $control 
-   */
-  private function convertFormControlToMap(array $control) {
-    $output = array();
-    foreach ($control as $item) {
-      $output[] = $item[0];
-    }
-    return $output;
-  }
-
-  /**
-   *
-   * @param mixed $ahah 
-   * @return array
-   */
-  private function convertAhah($ahah) {
-    if (is_string($ahah)) {
-      return array();
-    }
-    else {
-      $output = array(
-        'wrapper' => isset($ahah->wrapper) ? $ahah->wrapper : NULL,
-        'effect' => isset($ahah->effect) ? $ahah->effect : NULL,
-        'method' => isset($ahah->method) ? $ahah->method : NULL,
-        'path' => isset($ahah->path) ? $ahah->path : NULL,
-        'keypress' => isset($ahah->keypress) ? $ahah->keypress : NULL,
-        'progress' => empty($ahah->progress) ? NULL : array(
-          'type' => isset($ahah->progress->type) ? $ahah->progress->type : NULL,
-          'message' => isset($ahah->progress->message) ? $ahah->progress->message : NULL,
-          'url' => isset($ahah->progress->url) ? $ahah->progress->url : NULL,
-          'interval' => isset($ahah->progress->interval) ? $ahah->progress->interval : NULL)
-      );
-      return $output;
-    }
-  }
-
-  /**
-   *
-   * @param array $value
-   * @return type 
-   */
-  private function arrayIsNotEmpty(array $value) {
-    return count($value) > 0;
-  }
-
-  /**
-   *
-   * @param type $value
-   * @return type 
-   */
-  private function stringIsNotEmpty($value) {
-    return strlen($value) > 0;
-  }
-
-  /**
-   *
    * @param stdClass $element 
-   * @return Actions
    */
-  private function createActions($element) {
-    return NULL;
+  private function getElementChildren(stdClass $element) {
+    $children = array();
+    if (isset($element->elements)) {
+      foreach ($element->elements as $child) {
+        list($key, $value) = $this->getElement($child);
+        array_add($children, $key, $value);
+      }
+    }
+    return $children;
   }
 
+}
+
+/**
+ * Generates a JSON object that can be used by the GUI.
+ */
+class JSONFormDefinitionGenerator {
+
   /**
-   * Get the form definition ready for storage.
+   * Instantiates the JSONForm definition.
    * 
-   * @return DOMDocument 
+   * @param string $json 
+   *   The posted encoded JSON data.
    */
-  public function getFormDefinition() {
-    return $this->definition;
+  public function __construct($json) {
+    
   }
 
 }

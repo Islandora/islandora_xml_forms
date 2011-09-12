@@ -66,9 +66,13 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
   if ($file_uploaded) {
     if ($_FILES['files']['type']['file'] == 'text/xml') {
       module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-      $definition = new DOMDocument();
-      $definition->load($_FILES['files']['tmp_name']['file']);
-      if (!XMLFormDefinition::isValid($definition)) {
+      try {
+        $filename = $_FILES['files']['tmp_name']['file'];
+        $dom = new DOMDocument();
+        $dom->load($filename);
+        $dom = XMLFormDefinition::upgradeToLatestVersion($dom);
+        $dom->save($filename);
+      } catch (Exception $e) {
         form_set_error('files', "The given form definition is not valid.");
       }
     }

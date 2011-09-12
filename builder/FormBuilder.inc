@@ -225,8 +225,11 @@ class FormBuilder {
   public static function TransformPropertiesToJSON($form_name) {
     if (self::HasFormDefinition($form_name)) {
       module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-      $definition = self::GetFormDefinition($form_name);
-      $properties = XMLFormDefinition::GetFormProperties($definition);
+      $xml = self::GetFormDefinition($form_name);
+      $definition = new DOMDocument();
+      $definition->loadXML($xml);
+      $definition = new XMLFormDefinition($definition);
+      $properties = $definition->getProperties();
       $namespaces = isset($properties['namespaces']) ? $properties['namespaces'] : array();
       $properties = array(
         'localName' => $properties['root_name'],
@@ -248,7 +251,10 @@ class FormBuilder {
       if (self::HasFormDefinition($form_name)) {
         $xml = self::GetFormDefinition($form_name);
         if (isset($xml)) {
-          $root = XMLFormDefinition::GetDrupalForm($xml);
+          $definition = new DOMDocument();
+          $definition->loadXML($xml);
+          $definition = new XMLFormDefinition($definition);
+          $root = $definition->getForm();
         }
       }
       $elements = array(

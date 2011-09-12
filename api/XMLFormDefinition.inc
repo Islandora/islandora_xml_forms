@@ -331,6 +331,16 @@ class XMLFormDefinition {
   }
 
   /**
+   * Gets the definition.
+   * 
+   * @return DOMDocument
+   *  
+   */
+  public function get() {
+    return $this->definition;
+  }
+
+  /**
    * Extracts the form section of the definition into a array.
    * 
    * @return array
@@ -354,7 +364,7 @@ class XMLFormDefinition {
     module_load_include('inc', 'xml_form_api', 'XMLDocument');
     $properties = $this->getProperties();
     $root_name = $properties['root_name']; // @todo change to name.
-    $schema_uri = $properties['schema_uri'];
+    $schema_uri = isset($properties['schema_uri']) ? $properties['schema_uri'] : NULL;
     $default_uri = isset($properties['default_uri']) ? $properties['default_uri'] : NULL;
     $namespaces = new Namespaces($properties['namespaces'], $default_uri);
     return new XMLDocument($root_name, $namespaces, $schema_uri, $xml);
@@ -366,7 +376,7 @@ class XMLFormDefinition {
    * @return array
    *   The extracted properties from the XML Form Definition.
    */
-  private function getProperties() {
+  public function getProperties() {
     $paths = array(
       'root_name' => '/definition/properties/root_name',
       'default_uri' => '/definition/properties/namespaces/@default',
@@ -501,13 +511,19 @@ class XMLFormDefinitionGenerator {
    * 
    * @param array $form 
    *   A Drupal form.
+   *
+   * @return DOMDocument
+   *   An XML Form Definition.
    */
   public static function Create(array &$properties, array &$form) {
     $latest = XMLFormDefinitionVersion::getLatestVersion();
     $definition = new SimpleXMLElement("<definition xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' version='{$latest->get()}'/>");
     self::AddProperties($definition, $properties);
-    $form = $definition->addChild('form');
-    self::AddElement($form, new FormElement($form));
+    self::AddElement($definition->addChild('form'), new FormElement($form));
+    $xml = $definition->asXML();
+    echo $xml;
+    $definition = new DOMDocument();
+    $definition->loadXML($xml);
     return $definition;
   }
 
@@ -552,10 +568,11 @@ class XMLFormDefinitionGenerator {
     foreach ($element->controls as $key => $value) {
       self::AddElementProperty($properties, $key, $value);
     }
-    $children = $form->addChild('children');
-    foreach ($root->children as $key => $child) {
+    $children = $parent->addChild('children');
+    foreach ($element->children as $key => $child) {
       $element = $children->addChild('element');
-      self::AddElement($element, $key, $child);
+      $element->addAttribute('name', 'key');
+      self::AddElement($element, $child);
     }
   }
 
@@ -588,7 +605,7 @@ class XMLFormDefinitionGenerator {
       foreach ($value as $index => $item) {
         $index = trim($index, '#');
         $name = ($key == 'options') ? 'option' : $index; // Hacktastic...
-        self::AddFormControlToProperties($property, $name, $item);
+        self::AddElementProperty($property, $name, $item);
       }
     }
   }
