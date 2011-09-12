@@ -22,6 +22,7 @@
                 </xs:element>
                 <xs:element name="form" minOccurs="1" type="elementType"/>
             </xs:sequence>
+            <xs:attribute name="version" type="float" use="required"/>
         </xs:complexType>
     </xs:element>
     <xs:complexType name="elementsDefinition">

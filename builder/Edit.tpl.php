@@ -1,4 +1,3 @@
-<?php ?>
 <div id="xml-form-builder-edit-page">
   <!-- Tree -->
   <div id="xml-form-builder-edit-tree">

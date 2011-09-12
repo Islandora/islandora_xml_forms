@@ -13,9 +13,145 @@ module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'php_lib', 'Array');
 
 /**
- * Describes a form
+ * This class is used to validate and transform XML Form Definitions into 
  */
 class XMLFormDefinition {
+
+  /**
+   * The path to the directory where all the schema definitions are stored.
+   * 
+   * @return string
+   */
+  public static function getPathToSchemaDefinitionDirectory() {
+    return drupal_get_path('module', 'xml_form_api') . '/definitions';
+  }
+
+  /**
+   * Gets a list of all the known versions of a XML Form Definition.
+   * 
+   * @return Array
+   *   An array where all the values correspond to the defined versions of an XML Form Definition. 
+   *   In order from oldest to most recent.
+   */
+  public static function getAllVersions() {
+    static $versions = NULL;
+    if (empty($versions)) {
+      $path = self::getPathToSchemaDefinitionDirectory();
+      $files = scandir($path);
+      foreach ($files as $filename) {
+        $version = str_replace('.xsd', '', $filename);
+        if ($version != 'latest') { // Maybe remove
+          $versions[] = (float) $version;
+        }
+      }
+      
+    }
+    return $versions;
+  }
+
+  /**
+   * Gets the latest schema version number.
+   * 
+   * @return float
+   *   The latest version number.
+   */
+  public static function getLatestVersion() {
+    $versions = self::getAllVersions();
+    return array_pop($versions);
+  }
+
+  /**
+   * Gets the version number of the XML Form Definition.
+   * 
+   * Also validates the document against that version number.s
+   * 
+   * @param DOMDocument $definiton
+   *   The XML Form Definition.
+   * 
+   * @return float
+   *   The version of the XML Form Definition, if the XML Form Definition is not valid FALSE is returned.
+   */
+  public static function getVersion(DOMDocument $definiton) {
+    $declares_version = $definiton->documentElement->hasAttribute('version');
+    if ($declares_version) {
+      $version = (float) $definiton->documentElement->getAttribute('version');
+      return self::isValid($definition, $version);
+    }
+    else { // Files with a version of 0.0 or 1.0 may not have their version declared. Check to see manually.
+      $undeclared_versions = array(0.0, 1.1);
+      foreach ($undeclared_versions as $version) {
+        if (self::isValid($definition, $version)) {
+          return $version;
+        }
+      }
+    }
+    return FALSE; // Could not find the version.
+  }
+
+  /**
+   * Uses the XML Schema associated with the XML Form Definitions version to validate the definition
+   * 
+   * @param DOMDocument $definition
+   *   The XML Form Definition.
+   * @param float $version 
+   *   The schema version number, if none is give the latest is used. 
+   * 
+   * @return boolean
+   *   TRUE if the XML Form Definition is valid, FALSE otherwise.
+   */
+  public static function isValid(DOMDocument $definition, $version = NULL) {
+    $path = self::getPathToSchemaDefinitionDirectory();
+    $filename = isset($version) ? "$version.xsd" : "latest.xsd";
+    $full_filename = $path . '/' . $filename;
+    if (file_exists($full_filename)) {
+      return @$definiton->schemaValidate($path);
+    }
+    return FALSE;
+  }
+
+  /**
+   * Checks to see if the XML Form Definition is at the most recent version.
+   * 
+   * @param DOMDocument $definition
+   *   The XML Form Definition.
+   * 
+   * @return bool
+   *   TRUE if it is the latest, FALSE otherwise.
+   */
+  public static function isLatestVersion(DOMDocument $definition) {
+    return self::isValid($definition);
+  }
+
+  /**
+   * Incrementally upgrades the XML Form Definition, to its next version after its own.
+   *
+   * @param DOMDocument $definition
+   *   The XML Form Definition.
+   * 
+   * @return DOMDocument
+   *   The upgraded version.
+   */
+  public static function upgradeVersion(DOMDocument $definition) {
+    self::getAllVersions();
+  }
+
+  /**
+   *
+   * @param DOMDocument $definition 
+   */
+  public static function upgradeToLatestVersion(DOMDocument $definition) {
+    while (!self::isLatestVersion($definition)) {
+      $definition = self::upgradeVersion($definition);
+    }
+    return $definition;
+  }
+
+}
+
+/**
+ * Describes a form
+ */
+class XMLFormDefinitions {
 
   /**
    * Checks to see if a xml form definition is valid.
