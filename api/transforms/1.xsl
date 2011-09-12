@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
     <!-- 
-        This document transforms a Form Definition of version 0.0 to version 1.0 
+        This document transforms a Form Definition of version 0 to version 1 
     -->
     <xsl:output omit-xml-declaration="yes" indent="yes" method="xml"/>
     <xsl:strip-space elements="*"/>
     <xsl:template match="/definition">
-        <definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0">
+        <definition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <properties>
                 <root_name>
                     <xsl:value-of select="properties/document/root/local_name"/>
