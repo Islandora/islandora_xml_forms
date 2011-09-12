@@ -53,13 +53,16 @@ class XMLFormDefinitionVersion {
   public static function getAllVersions() {
     static $versions = NULL;
     if (empty($versions)) {
+      $versions = array();
       $path = self::getPathToSchemaDefinitionDirectory();
       $files = scandir($path);
       foreach ($files as $filename) {
-        $version = str_replace('.xsd', '', $filename);
-        $versions[] = (int) $version;
+        if (preg_match('/^.*\.xsd$/', $filename)) {
+          $version = str_replace('.xsd', '', $filename);
+          $versions[] = (int) $version;
+        }
       }
-      asort($version);
+      asort($versions);
     }
     return $versions;
   }
@@ -96,16 +99,16 @@ class XMLFormDefinitionVersion {
    * 
    * Also validates the document against that version number.s
    * 
-   * @param DOMDocument $definiton
+   * @param DOMDocument $definition
    *   The XML Form Definition.
    * 
    * @return float
    *   The version of the XML Form Definition, if the XML Form Definition is not valid FALSE is returned.
    */
-  public static function getVersion(DOMDocument $definiton) {
-    $declares_version = $definiton->documentElement->hasAttribute('version');
+  public static function getVersion(DOMDocument $definition) {
+    $declares_version = $definition->documentElement->hasAttribute('version');
     if ($declares_version) {
-      $version = (int) $definiton->documentElement->getAttribute('version');
+      $version = (int) $definition->documentElement->getAttribute('version');
       return self::isValid($definition, $version);
     }
     else { // Files with a version of 0 or 1 may not have their version declared. Check to see manually.
@@ -151,8 +154,8 @@ class XMLFormDefinitionVersion {
    */
   public function getNextVersion() {
     $versions = self::getAllVersions();
-    $position = array_search($current_version, $versions);
-    $next_position = $position++;
+    $position = array_search($this->get(), $versions);
+    $next_position = ++$position;
     if (isset($versions[$next_position])) {
       $next_version = $versions[$next_position];
       return new XMLFormDefinitionVersion($next_version);
@@ -167,7 +170,8 @@ class XMLFormDefinitionVersion {
    *   TRUE if it is the latest, FALSE otherwise.
    */
   public function isLatestVersion() {
-    return $version == self::getLatestVersion();
+    $latest = self::getLatestVersion();
+    return $this->get() == $latest->get();
   }
 
   /**
@@ -177,7 +181,7 @@ class XMLFormDefinitionVersion {
    */
   public function getSchemaFileName() {
     $path = self::getPathToSchemaDefinitionDirectory();
-    return $path . '/' . $version . '.xsd';
+    return $path . '/' . $this->version . '.xsd';
   }
 
   /**
@@ -186,8 +190,8 @@ class XMLFormDefinitionVersion {
    * @return string
    */
   public function getTansformFileName() {
-    $path = self::getPathToSchemaDefinitionDirectory();
-    return $path . '/' . $version . '.xsl';
+    $path = self::getPathToXSLTransformDirectory();
+    return $path . '/' . $this->version . '.xsl';
   }
 
   /**
@@ -226,21 +230,24 @@ class XMLFormDefinition {
    * 
    * Also validates the document against that version number.s
    * 
-   * @param DOMDocument $definiton
+   * @throws Exception
+   *  If the Version can not be determined or if the definition is not valid.
+   * 
+   * @param DOMDocument $definition
    *   The XML Form Definition.
    * 
    * @return float
    *   The version of the XML Form Definition, if the XML Form Definition is not valid FALSE is returned.
    */
-  public static function getVersion(DOMDocument $definiton) {
-    $declares_version = $definiton->documentElement->hasAttribute('version');
+  public static function getVersion(DOMDocument $definition) {
+    $declares_version = $definition->documentElement->hasAttribute('version');
     if ($declares_version) {
-      $version = (int) $definiton->documentElement->getAttribute('version');
+      $version = (int) $definition->documentElement->getAttribute('version');
       $version = new XMLFormDefinitionVersion($version);
       if (self::isValid($definition, $version)) {
         return $version;
       }
-      return FALSE; // The version defined didn't match up with the Schema.
+      throw new Exception(t('XML Form Definition is not valid.'));
     }
     else { // Files with a version of 0 or 1 may not have their version declared. Check to see manually.
       $undeclared_versions = array(
@@ -253,7 +260,7 @@ class XMLFormDefinition {
         }
       }
     }
-    return FALSE; // Could not find the version.
+    throw new Exception(t('Failded to determine the version of the XML Form Definition')); // Could not find the version.
   }
 
   /**
@@ -270,7 +277,7 @@ class XMLFormDefinition {
   public static function isValid(DOMDocument $definition, XMLFormDefinitionVersion $version = NULL) {
     $version = isset($version) ? $version : XMLFormDefinitionVersion::getLatestVersion();
     $file_name = $version->getSchemaFileName();
-    return @$definiton->schemaValidate($file_name);
+    return @$definition->schemaValidate($file_name);
   }
 
   /**
@@ -285,7 +292,7 @@ class XMLFormDefinition {
    *   The upgraded version of the XML Form Definition.
    */
   public static function upgradeVersion(DOMDocument &$definition) {
-    $current = self::getVersion($definiton);
+    $current = self::getVersion($definition);
     $next = $current->getNextVersion();
     if ($next) { // There exists a version to upgrade to.
       $xslt = $next->getTransform();
@@ -330,7 +337,7 @@ class XMLFormDefinition {
    *   The extracted form declaration from the XML Form Definition. This is also a valid Drupal form.
    */
   public function getForm() {
-    $definition = simplexml_load_string($this->definition);
+    $definition = simplexml_import_dom($this->definition);
     return $this->getElement($definition->form);
   }
 
@@ -348,7 +355,8 @@ class XMLFormDefinition {
     $properties = $this->getProperties();
     $root_name = $properties['root_name']; // @todo change to name.
     $schema_uri = $properties['schema_uri'];
-    $namespaces = new Namespaces($properties['namespaces'], $properties['default_uri']);
+    $default_uri = isset($properties['default_uri']) ? $properties['default_uri'] : NULL;
+    $namespaces = new Namespaces($properties['namespaces'], $default_uri);
     return new XMLDocument($root_name, $namespaces, $schema_uri, $xml);
   }
 
@@ -360,9 +368,9 @@ class XMLFormDefinition {
    */
   private function getProperties() {
     $paths = array(
-      'root_name' => '/document/properties/root_name',
-      'default_uri' => '/document/properties/namespaces/@default',
-      'schema_uri' => '/document/properties/schema_uri'
+      'root_name' => '/definition/properties/root_name',
+      'default_uri' => '/definition/properties/namespaces/@default',
+      'schema_uri' => '/definition/properties/schema_uri'
     );
     $properties = array();
     $xpath = new DOMXPath($this->definition);
@@ -372,7 +380,7 @@ class XMLFormDefinition {
         $properties[$key] = $results->item(0)->nodeValue;
       }
     }
-    $results = $xpath->query('/document/properties/namespaces/namespace');
+    $results = $xpath->query('/definition/properties/namespaces/namespace');
     $count = $results->length;
     for ($i = 0; $i < $count; $i++) {
       $node = $results->item($i);

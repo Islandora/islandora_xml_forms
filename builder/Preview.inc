@@ -27,7 +27,8 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
     $xml_form = new XMLForm($form_state);
     if (!$xml_form->isInitialized()) { // Was initialized from storage.
       module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-      $definition = FormBuilder::GetFormDefinition($form_name);
+      $definition = new DOMDocument();
+      $definition->loadXML(FormBuilder::GetFormDefinition($form_name));
       $definition = new XMLFormDefinition($definition);
       $form = $definition->getForm();
       $document = $definition->createXMLDocument();
