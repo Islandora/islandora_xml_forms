@@ -61,13 +61,7 @@ class JSONFormDefinition {
   public function getForm() {
     $root = $this->json->elements[0];
     list($key, $value) = $this->getElement($root);
-    $form = array();
-    
-    foreach ($elements as $element) {
-      
-      array_add($form, $key, $value);
-    }
-    return $form;
+    return $value;
   }
 
   /**

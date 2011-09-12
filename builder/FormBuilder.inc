@@ -233,9 +233,9 @@ class FormBuilder {
       $namespaces = isset($properties['namespaces']) ? $properties['namespaces'] : array();
       $properties = array(
         'localName' => $properties['root_name'],
-        'uri' => $properties['default_uri'],
+        'uri' => isset($properties['default_uri']) ? $properties['default_uri'] : NULL,
         'namespaces' => $namespaces,
-        'schema' => $properties['schema_uri']
+        'schema' => isset($properties['schema_uri']) ? $properties['schema_uri'] : NULL
       );
       return json_encode(array($properties));
     }

@@ -44,14 +44,18 @@ function xml_form_builder_edit($form_name) {
 }
 
 /**
- * Save edits! 
+ * Save edits.
  */
 function xml_form_builder_edit_save($form_name) {
   module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   module_load_include('inc', 'xml_form_builder', 'JSONForm');
+  module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
   try {
-    $json_form = new JSONForm($form_name);
-    FormBuilder::SetFormDefinition($form_name, $json_form->getFormDefinition());
+    $definition = new JSONFormDefinition($_POST['data']);
+    list($properties, $form) = $definition->getPropertiesAndForm();
+    $definition = XMLFormDefinitionGenerator::Create($properties, $form);
+    echo $definition->saveXML();
+    FormBuilder::SetFormDefinition($form_name, $definition);
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message($msg, 'error');

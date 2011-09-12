@@ -518,10 +518,9 @@ class XMLFormDefinitionGenerator {
   public static function Create(array &$properties, array &$form) {
     $latest = XMLFormDefinitionVersion::getLatestVersion();
     $definition = new SimpleXMLElement("<definition xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' version='{$latest->get()}'/>");
-    self::AddProperties($definition, $properties);
+    self::AddProperties($definition, $properties);;
     self::AddElement($definition->addChild('form'), new FormElement($form));
     $xml = $definition->asXML();
-    echo $xml;
     $definition = new DOMDocument();
     $definition->loadXML($xml);
     return $definition;
@@ -571,7 +570,7 @@ class XMLFormDefinitionGenerator {
     $children = $parent->addChild('children');
     foreach ($element->children as $key => $child) {
       $element = $children->addChild('element');
-      $element->addAttribute('name', 'key');
+      $element->addAttribute('name', $key);
       self::AddElement($element, $child);
     }
   }
