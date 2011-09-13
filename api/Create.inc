@@ -158,7 +158,9 @@ class Create implements Action {
       return $this->$action[$this->type]($document, $value);
     } catch (Exception $e) {
       $value = htmlentities($this->value);
-      $msg = "Failed to create {$this->type} with value {$value} . Error: {$e->getMessage()}";
+      $path = (string) $this->path;
+      $context = (string) $this->path->context;
+      $msg = "Failed to create {$this->type}. Value: {$value}.</br> Path: {$path}<br/>Context: {$context}</br> Error: {$e->getMessage()}";
       throw new Exception($msg);
     }
   }

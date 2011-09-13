@@ -4,39 +4,22 @@
 
 /**
  * @file
- *
+ * 
+ * Callbacks and functions used in the Edit Form Page, for rendering the Form Builder GUI.
  */
 
 /**
- *
- * @param array $form_state
+ * Includes all the required CSS/JS files needed to render the Form Builder GUI.
+ *  
  * @param string $form_name 
+ *   The name of the form to edit.
  * 
- * @return array
+ * @return string
+ *   The html where the Form Builder GUI will be rendered.
  */
 function xml_form_builder_edit($form_name) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-  $path = drupal_get_path('module', 'xml_form_builder');
-  drupal_add_css("$path/css/Clear.css");
-  drupal_add_css("$path/css/EditForm.css");
-  drupal_add_css("$path/lib/ext/resources/css/ext-all.css");
-  // Ext JS 4.0
-  drupal_add_js("$path/lib/ext/ext-all.js");
-  // Main Application
-  drupal_add_js("$path/js/Formbuilder.js");
-  // Custom Types
-  drupal_add_js("$path/js/FormGrid.js");
-  drupal_add_js("$path/js/Tooltips.js");
-  // Custom Models
-  drupal_add_js("$path/js/ElementModel.js");
-  drupal_add_js("$path/js/PropertiesModel.js");
-  // Actual Panels that make up the editor.
-  drupal_add_js("$path/js/MainPanel.js");
-  drupal_add_js("$path/js/DisplayPanel.js");
-  drupal_add_js("$path/js/TreePanel.js");
-  drupal_add_js("$path/js/ElementForm.js");
-  drupal_add_js("$path/js/PropertiesForm.js");
-  drupal_add_js("$path/js/PreviewPanel.js");
+  xml_form_builder_edit_include_css();
+  xml_form_builder_edit_include_js();
   xml_form_builder_create_element_type_store();
   xml_form_builder_create_element_store($form_name);
   xml_form_builder_create_properties_store($form_name);
@@ -44,18 +27,65 @@ function xml_form_builder_edit($form_name) {
 }
 
 /**
- * Save edits.
+ * Includes all the required CSS files needed to render the Form Builder GUI.
+ */
+function xml_form_builder_edit_include_css() {
+  $path = drupal_get_path('module', 'xml_form_builder');
+  $ext_path = $path . '/lib/ext/';
+  $css_path = $path . '/css/';
+  $css_files = array(
+    $css_path . 'Clear.css',
+    $css_path . 'EditForm.css',
+    $ext_path . 'resources/css/ext-all.css'
+  );
+  foreach ($css_files as $file) {
+    drupal_add_css($file);
+  }
+}
+
+/**
+ * Includes all the required JS files needed to render the Form Builder GUI.
+ */
+function xml_form_builder_edit_include_js() {
+  $path = drupal_get_path('module', 'xml_form_builder');
+  $ext_path = $path . '/lib/ext/';
+  $js_path = $path . '/js/';
+  $js_files = array(
+    $ext_path . 'ext-all.js',
+    $js_path . 'Formbuilder.js',
+    $js_path . 'FormGrid.js',
+    $js_path . 'Tooltips.js',
+    $js_path . 'ElementModel.js',
+    $js_path . 'PropertiesModel.js',
+    $js_path . 'MainPanel.js',
+    $js_path . 'DisplayPanel.js',
+    $js_path . 'TreePanel.js',
+    $js_path . 'ElementForm.js',
+    $js_path . 'PropertiesForm.js',
+    $js_path . 'PreviewPanel.js',
+  );
+  foreach ($js_files as $file) {
+    drupal_add_js($file);
+  }
+}
+
+/**
+ * Save changes made to the form definition client side.
+ * 
+ * Transforms the submited JSON into a Form Definition which is then stored in the database as an XML Form Definition.
+ * 
+ * @param string $form_name
+ *   The name of the form to update.
  */
 function xml_form_builder_edit_save($form_name) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   module_load_include('inc', 'xml_form_builder', 'JSONForm');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
   try {
     $definition = new JSONFormDefinition($_POST['data']);
     list($properties, $form) = $definition->getPropertiesAndForm();
     $definition = XMLFormDefinitionGenerator::Create($properties, $form);
-    echo $definition->saveXML();
-    FormBuilder::SetFormDefinition($form_name, $definition);
+    XMLFormDatabase::Update($form_name, $definition);
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message($msg, 'error');
@@ -66,7 +96,7 @@ function xml_form_builder_edit_save($form_name) {
  * Create store to be used in Element Type Combo Box.
  */
 function xml_form_builder_create_element_type_store() {
-  $types = Formbuilder::GetElementTypes();
+  $types = xml_form_builder_get_element_types();
   $data = array();
   foreach ($types as $type) {
     $data[] = array('display' => $type, 'value' => $type);
@@ -97,6 +127,7 @@ EOT;
  * @param string $form_name 
  */
 function xml_form_builder_create_properties_store($form_name) {
+  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   $data = Formbuilder::TransformPropertiesToJSON($form_name);
   $js = <<<EOT
   Ext.formbuilder.propertiesStore = Ext.create('Ext.data.Store', {
@@ -123,6 +154,7 @@ EOT;
  * @param string $form_name 
  */
 function xml_form_builder_create_element_store($form_name) {
+  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   $data = Formbuilder::TransformElementsToJSON($form_name);
   $js = <<<EOT
   Ext.formbuilder.elementStore = Ext.create('Ext.data.TreeStore', {
@@ -131,4 +163,32 @@ function xml_form_builder_create_element_store($form_name) {
  });
 EOT;
   drupal_add_js($js, 'inline');
+}
+
+/**
+ * Gets a list of all the existing element types defined by the elements hook.
+ * 
+ * @staticvar array $cache
+ *   The cached list of existing element types.
+ * 
+ * @return array
+ *   A list of all the existing element types. 
+ */
+function xml_form_builder_get_element_types() {
+  static $cache;
+  if (!isset($cache)) {
+    $cache = array();
+    foreach (module_implements('elements') as $module) {
+      $elements = module_invoke($module, 'elements');
+      if (isset($elements) && is_array($elements)) {
+        $cache = array_merge_recursive($cache, $elements);
+      }
+    }
+  }
+  $types = array_keys($cache);
+  $output = array();
+  foreach ($types as $type) {
+    $output[$type] = $type;
+  }
+  return $output;
 }

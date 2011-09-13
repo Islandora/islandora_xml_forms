@@ -39,7 +39,7 @@ function xml_form_builder_menu() {
   $items[MENU_XML_FORM_BUILDER_MAIN] = array(
     'title' => 'XML Form Builder',
     'description' => 'Manage XML Based Forms.',
-    'file' => 'List.inc',
+    'file' => 'Main.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_list'),
@@ -124,21 +124,6 @@ function xml_form_builder_menu() {
     'type' => MENU_CALLBACK,
   );
   return $items;
-}
-
-/**
- * Implements hook_theme. Register themes.
- *
- * @return array
- */
-function xml_form_builder_theme() {
-  return array(
-    'edit_form_page' => array(
-      'arguments' => array('element'),
-      'template' => 'Edit',
-      'file' => 'Edit.inc'
-    ),
-  );
 }
 
 /**

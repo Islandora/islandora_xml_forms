@@ -5,78 +5,93 @@
 /**
  * @file
  *
- * Callbacks and functions for the Copy Form Page.
+ * Callbacks and functions used in the Copy Form Page.
  */
 
 /**
- * Show the Copy Form.
+ * Get the Copy Page Form.
  * 
  * @param array $form_state
+ *   The Drupal Form State.
+ * @param string $form_name
+ *   The name of the form to copy.
+ * 
  * @return array
+ *   The Drupal Form.
  */
-function xml_form_builder_copy(array &$form_state, $original) {
-  if (isset($_POST['op']) && $_POST['op'] == t('Cancel')) {
-    module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-    drupal_goto(FormBuilder::BASE_PATH);
+function xml_form_builder_copy(array &$form_state, $form_name) {
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  if (isset($_POST['cancel'])) {
+    drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
+  }
+  if (!XMLFormDatabase::Exists($form_name)) {
+    drupal_set_message(t('Form "!name" does not exist.', array('!name' => $form_name)), 'error');
+    drupal_not_found();
+    exit();
   }
   return array(
     'original' => array(
       '#type' => 'hidden',
-      '#value' => $original,
+      '#value' => $form_name,
     ),
     'form_name' => array(
       '#type' => 'textfield',
       '#title' => t('Form Name'),
       '#required' => TRUE,
+      '#element_validate' => array('xml_form_builder_copy_validate_name')
     ),
     'copy' => array(
       '#type' => 'submit',
       '#value' => t('Copy'),
+      '#name' => 'copy'
     ),
     'cancel' => array(
       '#type' => 'submit',
       '#value' => t('Cancel'),
+      '#name' => 'cancel'
     ),
   );
 }
 
 /**
- * Validate the copy form. 
+ * Validates the name Drupal Form Element. Ensures that the name doesn't match any existing form names.
  * 
- * Form names must be unique.
- * 
- * @param array $form
+ * @param array $element
+ *   The name Drupal Form Element.
  * @param array $form_state 
+ *   The Drupal Form State.
  */
-function xml_form_builder_copy_validate(array $form, array &$form_state) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
+function xml_form_builder_copy_validate_name(array $element, array &$form_state) {
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   $form_name = &$form_state['values']['form_name'];
-  if (!FormBuilder::IsValidFormName($form_name)) {
-    form_set_error('form_name', "The given form name '$form_name' is invalid. Form names must start with a letter or underscore and they can not contain spaces or special charcters.");
-  }
-  else if (FormBuilder::FormExists($form_name)) {
-    form_set_error('form_name', "The given form name '$form_name' is already in use. Form names must be unique.");
+  if (XMLFormDatabase::Exists($form_name)) {
+    $error_msg = t('The given form name "!name" is already in use. Form names must be unique.', array('!name' => $form_name));
+    form_set_error('form_name', $error_msg);
   }
 }
 
 /**
- * Copy form submitted. Redirect based on what button was clicked.
+ * Submit the Copy form. Copies a existing Form definition within the database.
+ * 
+ * If the form definition was successfully copied, redirect the user to the edit form.
+ * if not or the cancel button was clicked return the user to the main menu.
  * 
  * @param array $form
+ *   The Drupal Form.
  * @param array $form_state 
+ *   The Drupal Form State.
  */
 function xml_form_builder_copy_submit(array $form, array &$form_state) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-  $clicked = $form_state['clicked_button']['#value'];
-  if ($clicked == t('Copy')) {
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  if ($form_state['clicked_button']['#name'] == 'copy') {
     $original = $form_state['values']['original'];
     $form_name = $form_state['values']['form_name'];
-    if (FormBuilder::CopyForm($original, $form_name)) {
-      $form_state['redirect'] = FormBuilder::EditPath($form_name);
-      drupal_set_message("Successfully copied form: $form_name.");
+    if (XMLFormDatabase::Copy($original, $form_name)) {
+      drupal_set_message(t('Successfully copied form: "!name".', array('!name' => $form_name)));
+      $form_state['redirect'] = xml_form_builder_get_edit_form_path($form_name);
       return;
     }
-    drupal_set_message("Failed to copy form: $form_name.", 'error');
+    drupal_set_message(t('Failed to copy form: "!name".', array('!name' => $form_name)), 'error');
   }
-  $form_state['redirect'] = FormBuilder::BASE_PATH;
+  $form_state['redirect'] = MENU_XML_FORM_BUILDER_MAIN;
 }

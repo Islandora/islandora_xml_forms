@@ -5,18 +5,19 @@
 /**
  * @file
  *
- * Callbacks and functions for the Create Form Page.
+ * Callbacks and functions used in the Create Form Page.
  */
 
 /**
- * Show the Create Form.
+ * Get the Create Page Form.
  * 
  * @param array $form_state
+ *   The Drupal Form State.
  * @return array
+ *   The Drupal Form.
  */
 function xml_form_builder_create(array &$form_state) {
-  if (isset($_POST['op']) && $_POST['op'] == t('Cancel')) {
-    module_load_include('inc', 'xml_form_builder', 'FormBuilder');
+  if (isset($_POST['cancel'])) {
     drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
   }
   return array(
@@ -25,7 +26,7 @@ function xml_form_builder_create(array &$form_state) {
     ),
     'form_name' => array(
       '#type' => 'textfield',
-      '#title' => 'Form Name',
+      '#title' => t('Form Name'),
       '#required' => TRUE,
       '#maxlength' => 128,
       '#element_validate' => array('xml_form_builder_create_validate_name')
@@ -39,34 +40,48 @@ function xml_form_builder_create(array &$form_state) {
     'create' => array(
       '#type' => 'submit',
       '#value' => t('Create'),
+      '#name' => 'create'
     ),
     'cancel' => array(
       '#type' => 'submit',
       '#value' => t('Cancel'),
+      '#name' => 'cancel'
     ),
   );
 }
 
+/**
+ * Validates the name Drupal Form Element. Ensures that the name doesn't match any existing form names.
+ * 
+ * @param array $element
+ *   The name Drupal Form Element.
+ * @param array $form_state 
+ *   The Drupal Form State.
+ */
 function xml_form_builder_create_validate_name(array $element, array &$form_state) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   $form_name = &$form_state['values']['form_name'];
   if (XMLFormDatabase::Exists($form_name)) {
-    form_set_error('form_name', "The given form name '$form_name' is already in use. Form names must be unique.");
+    $error_msg = t('The given form name "!name" is already in use. Form names must be unique.', array('!name' => $form_name));
+    form_set_error('form_name', $error_msg);
   }
 }
 
 /**
- * Validate the create form. 
+ * Validate the create form.
  * 
- * Form names must be unique.
+ * Makes sure the uploaded file is valid.
  * 
  * @param array $form
+ *   The Drupal Form.
  * @param array $form_state 
+ *   The Drupal Form State.
  */
 function xml_form_builder_create_validate(array $form, array &$form_state) {
   $file_uploaded = isset($_FILES['files']['error']['file']) && ($_FILES['files']['error']['file'] == 0);
   if ($file_uploaded) {
-    if ($_FILES['files']['type']['file'] == 'text/xml') {
+    $file_is_xml = $_FILES['files']['type']['file'] == 'text/xml';
+    if ($file_is_xml) {
       module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
       $filename = $_FILES['files']['tmp_name']['file'];
       $definition = new DOMDocument();
@@ -74,38 +89,42 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
       try {
         $version = XMLFormDefinition::getVersion($definition);
         if (!XMLFormDefinition::isValid($definition, $version)) {
-          form_set_error('files', "The given form definition is not valid.");
+          form_set_error('files', t('The given form definition is not valid.'));
         }
       } catch (Exception $e) {
         form_set_error('files', $e->getMessage());
       }
     }
     else {
-      form_set_error('files', "Form definitions must have a type of text/xml.");
+      form_set_error('files', t('Form definitions must have a type of text/xml.'));
     }
   }
 }
 
 /**
- * Create form submitted. Redirect based on what button was clicked.
+ * Submit the Create form. Creates a new Form definition in the database.
+ * 
+ * If the form definition was successfully created, redirect the user to the edit form.
+ * if not or the cancel button was clicked return the user to the main menu.
  * 
  * @param array $form
+ *   The Drupal Form.
  * @param array $form_state 
+ *   The Drupal Form State.
  */
 function xml_form_builder_create_submit(array $form, array &$form_state) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   $form_name = $form_state['values']['form_name'];
-  $clicked = $form_state['clicked_button']['#value'];
-  if ($clicked == t('Create')) {
+  if ($form_state['clicked_button']['#name'] == 'create') {
     $definition = xml_form_builder_create_get_uploaded_file();
     $definition = $definition ? $definition : xml_form_api_get_empty_form_definition();
     if (XMLFormDatabase::Create($form_name, $definition)) {
-      drupal_set_message("Successfully created form: $form_name.");
+      drupal_set_message(t('Successfully created form: "!name".', array('!name' => $form_name)));
       $form_state['redirect'] = xml_form_builder_get_edit_form_path($form_name);
       return;
     }
     else {
-      drupal_set_message("Failed to create form: $form_name.", 'error');
+      drupal_set_message(t('Failed to create form: !name.', array('!name' => $form_name)), 'error');
     }
   }
   $form_state['redirect'] = MENU_XML_FORM_BUILDER_MAIN;
