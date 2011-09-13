@@ -5,6 +5,7 @@
 /**
  * @file
  *
+ * Provides a class that repersents a Form with JSON.
  */
 module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'php_lib', 'Array');
@@ -31,6 +32,7 @@ class JSONFormDefinition {
    * 
    * @return array
    *   An array were the first item is the form properties and the second is the form.
+   *   Ex. array($properties, $form)
    */
   public function getPropertiesAndForm() {
     return array($this->getProperties(), $this->getForm());
@@ -40,6 +42,7 @@ class JSONFormDefinition {
    * Gets the Form Properties.
    * 
    * @return array
+   *  The form properties.
    */
   public function getProperties() {
     $properties = $this->json->properties;
@@ -65,9 +68,13 @@ class JSONFormDefinition {
   }
 
   /**
-   * Gets the array repersentation of an Element from the JSON Form Definition.
+   * Gets the array repersentation of an element from the JSON Form Definition.
    * 
-   * @param stdClass $element 
+   * @param stdClass $element
+   *   A JSON repersentation of a Drupal Form Element.
+   * 
+   * @return array
+   *   A Drupal repersentation of form element.
    */
   private function getElement(stdClass $element) {
     $key = isset($element->key) ? $element->key : NULL;
@@ -77,11 +84,15 @@ class JSONFormDefinition {
   }
 
   /**
-   *
-   * @param array $element
+   * Gets the array repersentation of an element's properties from the JSON Form Definition.
+   * 
+   * @param stdClass $element
+   *   A JSON repersentation of a Drupal Form Element.
+   * 
    * @return array
+   *   A Drupal repersentation of form element's properties.
    */
-  private function getElementProperties($element) {
+  private function getElementProperties(stdClass $element) {
     $ignore = array('key', 'text', 'root', 'leaf', 'id', 'parentId', 'icon', 'cls', 'qtip', 'qtitle',
       'iconCls', 'href', 'hrefTarget', 'elements', 'index', 'depth', 'expanded', 'checked',
       'isLast', 'isFirst', 'allowDrop', 'allowDrag', 'loaded', 'loading');
@@ -167,6 +178,10 @@ class JSONFormDefinition {
    * Gets an array of the child elements of the given element.
    * 
    * @param stdClass $element 
+   *   A JSON repersentation of a Drupal Form Element.
+   * 
+   * @return array
+   *   A Drupal repersentation of form element's child form elements.
    */
   private function getElementChildren(stdClass $element) {
     $children = array();

@@ -78,7 +78,7 @@ function xml_form_builder_edit_include_js() {
  *   The name of the form to update.
  */
 function xml_form_builder_edit_save($form_name) {
-  module_load_include('inc', 'xml_form_builder', 'JSONForm');
+  module_load_include('inc', 'xml_form_builder', 'JSONFormDefinition');
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
   try {
