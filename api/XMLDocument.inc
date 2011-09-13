@@ -21,13 +21,6 @@ class XMLDocument {
   protected $xml;
 
   /**
-   * A string that defines the name of the root node.
-   * 
-   * @var string
-   */
-  protected $root_name;
-
-  /**
    * All of the namespaces required for the document.
    * 
    * @var Namespaces 
@@ -133,7 +126,7 @@ class XMLDocument {
     $document = new DOMDocument();
     isset($xml) ? // Load from XML or create the root node.
             $document->loadXML($xml) :
-            $document->appendChild(new DOMElement($root_name, NULL, $namespaces->getDefaultURI()));
+            $document->appendChild(new DOMElement($root_name, NULL, $namespaces->getDefaultURI())); ;
     $this->namespaces->addNamespacesAttributesTo($document->documentElement);
     return $document;
   }
@@ -171,6 +164,7 @@ class XMLDocument {
    * @return DOMNodeList 
    */
   public function query($path, DOMNode $context = NULL) {
+    libxml_clear_errors();
     libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.  
     $results = isset($context) ? $this->xpath->query($path, $context) : $this->xpath->query($path);
     $error = FALSE;
@@ -183,6 +177,7 @@ class XMLDocument {
           $error->message;
       $msg .= '</br>Path: ' . $path;
       $msg .= isset($context) ? '</br>Context: ' . ($context->tagName) : '';
+      $msg .= '</br>' . $this->xml;
       throw new Exception($msg);
     }
     return $results;
