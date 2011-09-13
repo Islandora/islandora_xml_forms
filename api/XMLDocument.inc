@@ -126,7 +126,8 @@ class XMLDocument {
     $document = new DOMDocument();
     isset($xml) ? // Load from XML or create the root node.
             $document->loadXML($xml) :
-            $document->appendChild(new DOMElement($root_name, NULL, $namespaces->getDefaultURI())); ;
+            $document->appendChild(new DOMElement($root_name, NULL, $namespaces->getDefaultURI()));
+    ;
     $this->namespaces->addNamespacesAttributesTo($document->documentElement);
     return $document;
   }
@@ -164,17 +165,18 @@ class XMLDocument {
    * @return DOMNodeList 
    */
   public function query($path, DOMNode $context = NULL) {
-    libxml_clear_errors();
     libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.  
+    $number_of_errors_before_query = count(libxml_get_errors());
     $results = isset($context) ? $this->xpath->query($path, $context) : $this->xpath->query($path);
-    $error = FALSE;
-    $error = libxml_get_last_error();
+    $number_of_errors_after_query = count(libxml_get_errors());
     libxml_use_internal_errors(FALSE); // Allow Drupal to catch errors
-    $failed = ($results === FALSE) || ($error !== FALSE);
-    if ($failed) {
-      $msg = ($results === FALSE) ?
-          "XPath query failed, either the expression is malformed or the contextnode is invalid." :
-          $error->message;
+    $invalid_query = $results === FALSE;
+    $lib_xml_error = $number_of_errors_after_query > $number_of_errors_before_query;
+    $query_failed = $invalid_query || $lib_xml_error;
+    if ($query_failed) {
+      $error = libxml_get_last_error();
+      $invalid_query_msg = "XPath query failed, either the expression is malformed or the contextnode is invalid.";
+      $msg = $invalid_query ? $invalid_query_msg : $error->message;
       $msg .= '</br>Path: ' . $path;
       $msg .= isset($context) ? '</br>Context: ' . ($context->tagName) : '';
       $msg .= '</br>' . $this->xml;
