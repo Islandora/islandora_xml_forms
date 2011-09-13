@@ -214,7 +214,11 @@ class FormBuilder {
     if (self::FormExists($form_name)) {
       header('Content-Type: text/xml', true);
       header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
-      echo self::GetFormDefinition($form_name);
+      $xml = self::GetFormDefinition($form_name);
+      $definition = new DOMDocument();
+      $definition->loadXML($xml);
+      $definition = XMLFormDefinition::upgradeToLatestVersion($definition);
+      echo $definition->saveXML();
       exit();
     }
     else {

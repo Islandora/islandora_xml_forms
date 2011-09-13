@@ -37,7 +37,7 @@ function xml_form_builder_schema() {
       'name' => array(
         'description' => t('The name of the stored form.'),
         'type' => 'varchar',
-        'length' =>128,
+        'length' => 128,
         'not null' => TRUE
       ),
       'form' => array(

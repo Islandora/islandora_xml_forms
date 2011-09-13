@@ -10,6 +10,14 @@ module_load_include('inc', 'xml_form_builder', 'Edit'); // Needed to make use of
 module_load_include('inc', 'xml_form_builder', 'Preview'); // Needed to make use of AHAH functions...
 
 /**
+ * Constants
+ */
+define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
+define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
+define('PERM_XML_FORM_BUILDER_EDIT_FORMS', 'Edit XML Forms');
+define('PERM_XML_FORM_BUILDER_DELETE_FORMS', 'Delete XML Forms');
+
+/**
  * Implements hook_menu. Register menus.
  *
  * @return array 
@@ -27,7 +35,7 @@ function xml_form_builder_menu() {
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_list'),
-    'access arguments' => array(FormBuilder::PERM_LIST_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_NORMAL_ITEM,
   );
   /**
@@ -40,7 +48,7 @@ function xml_form_builder_menu() {
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_preview', 4),
-    'access arguments' => array(FormBuilder::PERM_LIST_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_CALLBACK,
   );
   /**
@@ -51,7 +59,7 @@ function xml_form_builder_menu() {
     'description' => 'Export a form.',
     'page callback' => 'xml_form_builder_export',
     'page arguments' => array(4),
-    'access arguments' => array(FormBuilder::PERM_LIST_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_CALLBACK,
   );
   /**
@@ -64,7 +72,7 @@ function xml_form_builder_menu() {
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_create'),
-    'access arguments' => array(FormBuilder::PERM_CREATE_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
   $items['admin/content/xml/form/%/copy'] = array(
@@ -74,7 +82,7 @@ function xml_form_builder_menu() {
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_copy', 4),
-    'access arguments' => array(FormBuilder::PERM_CREATE_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
   $items['admin/content/xml/form/%/edit'] = array(
@@ -84,7 +92,7 @@ function xml_form_builder_menu() {
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_edit',
     'page arguments' => array(4),
-    'access arguments' => array(FormBuilder::PERM_EDIT_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
   $items['admin/content/xml/form/%/edit/save'] = array(
@@ -94,7 +102,7 @@ function xml_form_builder_menu() {
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_edit_save',
     'page arguments' => array(4),
-    'access arguments' => array(FormBuilder::PERM_EDIT_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
   $items['admin/content/xml/form/%/delete'] = array(
@@ -104,7 +112,7 @@ function xml_form_builder_menu() {
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_delete', 4),
-    'access arguments' => array(FormBuilder::PERM_DELETE_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_DELETE_FORMS),
     'type' => MENU_CALLBACK,
   );
   $items['admin/content/xml/form/ahah/controls'] = array(
@@ -113,7 +121,7 @@ function xml_form_builder_menu() {
     'file' => 'Edit.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_ahah_controls',
-    'access arguments' => array(FormBuilder::PERM_EDIT_FORMS),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
   return $items;
@@ -142,16 +150,18 @@ function xml_form_builder_theme() {
 function xml_form_builder_perm() {
   module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   return array(
-    FormBuilder::PERM_LIST_FORMS,
-    FormBuilder::PERM_CREATE_FORMS,
-    FormBuilder::PERM_EDIT_FORMS,
-    FormBuilder::PERM_DELETE_FORMS,
+    PERM_XML_FORM_BUILDER_LIST_FORMS,
+    PERM_XML_FORM_BUILDER_CREATE_FORMS,
+    PERM_XML_FORM_BUILDER_EDIT_FORMS,
+    PERM_XML_FORM_BUILDER_DELETE_FORMS,
   );
 }
 
 /**
- *
+ * Downloads the XML Form Definition to the clients computer..
+ * 
  * @param string $form_name 
+ *   The name of the form to download.
  */
 function xml_form_builder_export($form_name) {
   module_load_include('inc', 'xml_form_builder', 'FormBuilder');
