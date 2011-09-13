@@ -31,7 +31,7 @@ class XMLFormDefinitionVersion {
    * @return string
    */
   public static function getPathToSchemaDefinitionDirectory() {
-    return drupal_get_path('module', 'xml_form_api') . '/definitions';
+    return drupal_get_path('module', 'xml_form_api') . '/data/schemas';
   }
 
   /**
@@ -40,7 +40,7 @@ class XMLFormDefinitionVersion {
    * @return string
    */
   public static function getPathToXSLTransformDirectory() {
-    return drupal_get_path('module', 'xml_form_api') . '/transforms';
+    return drupal_get_path('module', 'xml_form_api') . '/data/transforms';
   }
 
   /**

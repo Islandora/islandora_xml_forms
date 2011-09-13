@@ -44,6 +44,7 @@ function xml_form_builder_schema() {
         'description' => t('The xml based form definition.'),
         'type' => 'text',
         'size' => 'medium',
+        'not null' => TRUE
       ),
     ),
     'unique keys' => array('name' => array('name')),
