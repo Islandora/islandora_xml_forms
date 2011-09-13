@@ -16,6 +16,14 @@ define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
 define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
 define('PERM_XML_FORM_BUILDER_EDIT_FORMS', 'Edit XML Forms');
 define('PERM_XML_FORM_BUILDER_DELETE_FORMS', 'Delete XML Forms');
+define('MENU_XML_FORM_BUILDER_MAIN', 'admin/content/xml/form');
+define('MENU_XML_FORM_BUILDER_VIEW', 'admin/content/xml/form/%/view');
+define('MENU_XML_FORM_BUILDER_CREATE', 'admin/content/xml/form/create');
+define('MENU_XML_FORM_BUILDER_COPY', 'admin/content/xml/form/%/copy');
+define('MENU_XML_FORM_BUILDER_EDIT', 'admin/content/xml/form/%/edit');
+define('MENU_XML_FORM_BUILDER_DELETE', 'admin/content/xml/form/%/delete');
+define('MENU_CALLBACK_XML_FORM_BUILDER_EXPORT', 'admin/content/xml/form/%/export');
+define('MENU_CALLBACK_XML_FORM_BUILDER_SAVE', 'admin/content/xml/form/%/edit/save');
 
 /**
  * Implements hook_menu. Register menus.
@@ -28,7 +36,7 @@ function xml_form_builder_menu() {
    * Inital page. Lists the existing forms showing a preview of each. The user is provided with links for 
    * creating, editing, deleting, or copying forms.
    */
-  $items['admin/content/xml/form'] = array(
+  $items[MENU_XML_FORM_BUILDER_MAIN] = array(
     'title' => 'XML Form Builder',
     'description' => 'Manage XML Based Forms.',
     'file' => 'List.inc',
@@ -41,7 +49,7 @@ function xml_form_builder_menu() {
   /**
    * View a form.
    */
-  $items['admin/content/xml/form/%/view'] = array(
+  $items[MENU_XML_FORM_BUILDER_VIEW] = array(
     'title' => 'Preview Form',
     'description' => 'Preview a form.',
     'file' => 'Preview.inc',
@@ -54,7 +62,7 @@ function xml_form_builder_menu() {
   /**
    * Export the form.
    */
-  $items['admin/content/xml/form/%/export'] = array(
+  $items[MENU_CALLBACK_XML_FORM_BUILDER_EXPORT] = array(
     'title' => 'Export Form',
     'description' => 'Export a form.',
     'page callback' => 'xml_form_builder_export',
@@ -65,7 +73,7 @@ function xml_form_builder_menu() {
   /**
    * Presents a form that allows the user to create a new form.
    */
-  $items['admin/content/xml/form/create'] = array(
+  $items[MENU_XML_FORM_BUILDER_CREATE] = array(
     'title' => 'Create Form',
     'description' => 'Create a new Form.',
     'file' => 'Create.inc',
@@ -75,7 +83,7 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
-  $items['admin/content/xml/form/%/copy'] = array(
+  $items[MENU_XML_FORM_BUILDER_COPY] = array(
     'title' => 'Copy Form',
     'description' => 'Copy an existing Form.',
     'file' => 'Copy.inc',
@@ -85,7 +93,7 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
-  $items['admin/content/xml/form/%/edit'] = array(
+  $items[MENU_XML_FORM_BUILDER_EDIT] = array(
     'title' => 'Edit Form',
     'description' => 'Edit a Form.',
     'file' => 'Edit.inc',
@@ -95,7 +103,7 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
-  $items['admin/content/xml/form/%/edit/save'] = array(
+  $items[MENU_CALLBACK_XML_FORM_BUILDER_SAVE] = array(
     'title' => 'Edit Form',
     'description' => 'Edit a Form.',
     'file' => 'Edit.inc',
@@ -105,7 +113,7 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
-  $items['admin/content/xml/form/%/delete'] = array(
+  $items[MENU_XML_FORM_BUILDER_DELETE] = array(
     'title' => 'Delete Form',
     'description' => 'Delete a Form.',
     'file' => 'Delete.inc',
@@ -113,15 +121,6 @@ function xml_form_builder_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_delete', 4),
     'access arguments' => array(PERM_XML_FORM_BUILDER_DELETE_FORMS),
-    'type' => MENU_CALLBACK,
-  );
-  $items['admin/content/xml/form/ahah/controls'] = array(
-    'title' => 'Advanced Form Contols',
-    'description' => 'Returns the advanced controls for a given form element type.',
-    'file' => 'Edit.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
-    'page callback' => 'xml_form_builder_ahah_controls',
-    'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
   return $items;
@@ -164,7 +163,24 @@ function xml_form_builder_perm() {
  *   The name of the form to download.
  */
 function xml_form_builder_export($form_name) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-  FormBuilder::Export($form_name);
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  header('Content-Type: text/xml', true);
+  header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
+  $definition = XMLFormDatabase::Get($form_name);
+  echo $definition->saveXML();
+  drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
   exit();
+}
+
+/**
+ * Gets the path to the edit page for the given form name.
+ *  
+ * @param string $form_name
+ *   The form to load the edit page with,
+ * 
+ * @return string
+ *   The path to the edit page.
+ */
+function xml_form_builder_get_edit_form_path($form_name) {
+  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_EDIT);
 }

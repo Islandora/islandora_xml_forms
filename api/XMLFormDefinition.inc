@@ -260,7 +260,8 @@ class XMLFormDefinition {
         }
       }
     }
-    throw new Exception(t('Failded to determine the version of the XML Form Definition')); // Could not find the version.
+    dsm(debug_backtrace());
+    throw new Exception(t('Failed to determine the version of the XML Form Definition')); // Could not find the version.
   }
 
   /**
