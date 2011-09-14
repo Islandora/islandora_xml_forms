@@ -8,56 +8,51 @@
  * Requires some extra logic to be populated and submitted.
  */
 Ext.define('Form.Grid', {
-    extend: 'Ext.grid.Panel',
-    alias: 'widget.formgrid',
-    requires: [
-    'Ext.grid.plugin.CellEditing',
-    'Ext.form.field.Text',
-    'Ext.toolbar.TextItem'
-    ],
-    initComponent: function() {
-        this.editing = Ext.create('Ext.grid.plugin.CellEditing');
-        Ext.apply(this, {
-            iconCls: 'icon-grid',
-            frame: true,
-            plugins: [this.editing],
-            dockedItems: [{
-                xtype: 'toolbar',
-                items: [{
-                    iconCls: 'icon-add',
-                    text: 'Add',
-                    scope: this,
-                    handler: this.onAddClick
-                }, {
-                    iconCls: 'icon-delete',
-                    text: 'Delete',
-                    disabled: true,
-                    itemId: 'delete',
-                    scope: this,
-                    handler: this.onDeleteClick
-                }]
-            }]
-        });
-        this.callParent();
-        this.getSelectionModel().on('selectionchange', this.onSelectChange, this);
-    },
-    onSelectChange: function(selModel, selections){
-        this.down('#delete').setDisabled(selections.length === 0);
-    },
-    onDeleteClick: function(){
-        var selection = this.getView().getSelectionModel().getSelection()[0];
-        if (selection) {
-            this.store.remove(selection);
+  extend: 'Ext.grid.Panel',
+  alias: 'widget.formgrid',
+  initComponent: function() {
+    var me = this;
+    Ext.apply(me, {
+      height: 200,
+      collapsible: true,
+      iconCls: 'icon-grid',
+      selType: 'rowmodel',
+      plugins:[ Ext.create('Ext.grid.plugin.RowEditing', {
+        clicksToEdit: 2
+      })],
+      dockedItems: [{
+        xtype: 'toolbar',
+        items: [{
+          iconCls: 'icon-add',
+          text: 'Add',
+          scope: this,
+          handler: function() {
+            var rec = Ext.ModelManager.create(me.modelInitTmpl, me.store.model.modelName);
+            var plugin = me.getPlugin();
+            plugin.cancelEdit();
+            this.store.insert(0, rec);
+            plugin.startEdit(rec, me.columns[0]);
+          }
+        }, {
+          iconCls: 'icon-delete',
+          text: 'Delete',
+          disabled: true,
+          itemId: 'delete',
+          scope: this,
+          handler: function() {
+            var selection = me.getView().getSelectionModel().getSelection()[0];
+            if (selection) {
+              this.store.remove(selection);
+            }
+          }
+        }]
+      }],
+      listeners: {
+        selectionchange: function(selModel, selections) {
+          this.down('#delete').setDisabled(selections.length === 0);
         }
-    },
-    onAddClick: function(){
-        var rec = Ext.ModelManager.create(this.modelInitTmpl, this.store.model.modelName);
-        var edit = this.editing;
-        edit.cancelEdit();
-        this.store.insert(0, rec);
-        edit.startEditByPosition({
-            row: 0,
-            column: 0
-        });
-    }
+      }
+    });
+    me.callParent();
+  }
 });
