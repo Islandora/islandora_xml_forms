@@ -1,7 +1,5 @@
 <?php
 
-// $Id$
-
 /**
  * @file
  * 
@@ -27,7 +25,7 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_api', 'XMLForm');
   module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
   if (!XMLFormDatabase::Exists($form_name)) {
-    drupal_set_message(t('The form "!name" does not exist.', array('!name' => $form_name)));
+    drupal_set_message(t('The form "%name" does not exist.', array('%name' => $form_name)));
     drupal_not_found();
     exit();
   }
@@ -48,7 +46,7 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
      * Catch any errors that occured and display them to the user so that they may correct their form definition.
      */
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
-    drupal_set_message($msg, 'error');
+    drupal_set_message(check_plain($msg), 'error');
     return array(); // Empty Form.
   }
   return $form;
@@ -73,7 +71,7 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
     exit();
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
-    drupal_set_message($msg, 'error');
-    $form_state['rebuild'] = true;
+    drupal_set_message(check_plain($msg), 'error');
+    $form_state['rebuild'] = TRUE;
   }
 }

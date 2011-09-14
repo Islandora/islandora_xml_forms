@@ -1,7 +1,5 @@
 <?php
 
-// $Id$
-
 /**
  * @file
  *
@@ -62,7 +60,7 @@ function xml_form_builder_create_validate_name(array $element, array &$form_stat
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   $form_name = &$form_state['values']['form_name'];
   if (XMLFormDatabase::Exists($form_name)) {
-    $error_msg = t('The given form name "!name" is already in use. Form names must be unique.', array('!name' => $form_name));
+    $error_msg = t('The given form name "%name" is already in use. Form names must be unique.', array('%name' => $form_name));
     form_set_error('form_name', $error_msg);
   }
 }
@@ -119,12 +117,12 @@ function xml_form_builder_create_submit(array $form, array &$form_state) {
     $definition = xml_form_builder_create_get_uploaded_file();
     $definition = $definition ? $definition : xml_form_api_get_empty_form_definition();
     if (XMLFormDatabase::Create($form_name, $definition)) {
-      drupal_set_message(t('Successfully created form: "!name".', array('!name' => $form_name)));
+      drupal_set_message(t('Successfully created form: "%name".', array('%name' => $form_name)));
       $form_state['redirect'] = xml_form_builder_get_edit_form_path($form_name);
       return;
     }
     else {
-      drupal_set_message(t('Failed to create form: !name.', array('!name' => $form_name)), 'error');
+      drupal_set_message(t('Failed to create form: %name.', array('%name' => $form_name)), 'error');
     }
   }
   $form_state['redirect'] = MENU_XML_FORM_BUILDER_MAIN;

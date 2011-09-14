@@ -1,7 +1,5 @@
 <?php
 
-// $Id$
-
 /**
  * @file
  *
@@ -71,7 +69,7 @@ class JSONFormDefinitionGenerator {
     $elements = self::GetElement($form);
     $elements['key'] = empty($elements['key']) ? 'Root' : $elements['key'];
     $elements['text'] = "{$elements['key']} ({$elements['type']})";
-    return json_encode(array('expanded' => true, 'children' => $elements));
+    return json_encode(array('expanded' => TRUE, 'children' => $elements));
   }
 
   /**

@@ -1,7 +1,5 @@
 <?php
 
-// $Id$
-
 /**
  * @file
  * 
@@ -88,7 +86,7 @@ function xml_form_builder_edit_save($form_name) {
     XMLFormDatabase::Update($form_name, $definition);
   } catch (Exception $e) {
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
-    drupal_set_message($msg, 'error');
+    drupal_set_message(check_plain($msg), 'error');
   }
 }
 

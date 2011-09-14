@@ -1,7 +1,5 @@
 <?php
 
-// $Id$
-
 /**
  * @file
  *
@@ -147,7 +145,7 @@ function xml_form_builder_perm() {
  */
 function xml_form_builder_export($form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
-  header('Content-Type: text/xml', true);
+  header('Content-Type: text/xml', TRUE);
   header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
   $definition = XMLFormDatabase::Get($form_name);
   echo $definition->saveXML();

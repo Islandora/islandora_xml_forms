@@ -1,7 +1,5 @@
 <?php
 
-// $Id$
-
 /**
  * @file
  *
@@ -22,7 +20,7 @@
 function xml_form_builder_delete(array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   if (!XMLFormDatabase::Exists($form_name)) {
-    drupal_set_message(t('Form "!name" does not exist.', array('!name' => $form_name)), 'error');
+    drupal_set_message(t('Form "%name" does not exist.', array('%name' => $form_name)), 'error');
     drupal_not_found();
     exit();
   }
@@ -34,7 +32,7 @@ function xml_form_builder_delete(array &$form_state, $form_name) {
     'description' => array(
       '#type' => 'markup',
       '#prefix' => '<div>',
-      '#value' => t('Are you sure you want to delete the form <b>!name</b>. This action is irreversible.', array('!name' => $form_name)),
+      '#value' => t('Are you sure you want to delete the form <b>%name</b>. This action is irreversible.', array('%name' => $form_name)),
       '#suffix' => '</div>',
     ),
     'delete' => array(
@@ -65,10 +63,10 @@ function xml_form_builder_delete_submit(array $form, array &$form_state) {
     module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
     $form_name = $form_state['values']['form_name'];
     if (XMLFormDatabase::Delete($form_name)) {
-      drupal_set_message(t('Successfully deleted form "!name".', array('!name' => $form_name)));
+      drupal_set_message(t('Successfully deleted form "%name".', array('%name' => $form_name)));
     }
     else {
-      drupal_set_message(t('Failed to deleted form "!name".', array('!name' => $form_name)), 'error');
+      drupal_set_message(t('Failed to deleted form "%name".', array('%name' => $form_name)), 'error');
     }
   }
   $form_state['redirect'] = MENU_XML_FORM_BUILDER_MAIN;
