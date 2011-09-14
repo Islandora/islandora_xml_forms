@@ -92,7 +92,7 @@ function xml_form_builder_main(array &$form_state) {
  * @param array $form_state 
  *   The Drupal Form State.
  */
-function xml_form_builder_list_submit(array $form, array &$form_state) {
+function xml_form_builder_main_submit(array $form, array &$form_state) {
   $clicked = $form_state['clicked_button']['#name'];
   $form_name = $form_state['values']['form_name'];
   $redirect = array(
