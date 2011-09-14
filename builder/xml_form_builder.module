@@ -31,7 +31,6 @@ define('MENU_CALLBACK_XML_FORM_BUILDER_SAVE', 'admin/content/xml/form/%/edit/sav
  * @return array 
  */
 function xml_form_builder_menu() {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   /**
    * Inital page. Lists the existing forms showing a preview of each. The user is provided with links for 
    * creating, editing, deleting, or copying forms.
@@ -132,7 +131,6 @@ function xml_form_builder_menu() {
  * @return array
  */
 function xml_form_builder_perm() {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
   return array(
     PERM_XML_FORM_BUILDER_LIST_FORMS,
     PERM_XML_FORM_BUILDER_CREATE_FORMS,
@@ -158,6 +156,19 @@ function xml_form_builder_export($form_name) {
 }
 
 /**
+ * Gets the path to the copy page for the given form name.
+ *  
+ * @param string $form_name
+ *   The form to load the copy page with,
+ * 
+ * @return string
+ *   The path to the copy page.
+ */
+function xml_form_builder_get_copy_form_path($form_name) {
+  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_COPY);
+}
+
+/**
  * Gets the path to the edit page for the given form name.
  *  
  * @param string $form_name
@@ -168,4 +179,43 @@ function xml_form_builder_export($form_name) {
  */
 function xml_form_builder_get_edit_form_path($form_name) {
   return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_EDIT);
+}
+
+/**
+ * Gets the path to the view page for the given form name.
+ *  
+ * @param string $form_name
+ *   The form to load the view page with,
+ * 
+ * @return string
+ *   The path to the view page.
+ */
+function xml_form_builder_get_view_form_path($form_name) {
+  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_VIEW);
+}
+
+/**
+ * Gets the path to the delete page for the given form name.
+ *  
+ * @param string $form_name
+ *   The form to load the delete page with,
+ * 
+ * @return string
+ *   The path to the delete page.
+ */
+function xml_form_builder_get_export_form_path($form_name) {
+  return str_replace('%', $form_name, MENU_CALLBACK_XML_FORM_BUILDER_EXPORT);
+}
+
+/**
+ * Gets the path to the delete page for the given form name.
+ *  
+ * @param string $form_name
+ *   The form to load the delete page with,
+ * 
+ * @return string
+ *   The path to the delete page.
+ */
+function xml_form_builder_get_delete_form_path($form_name) {
+  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_DELETE);
 }
