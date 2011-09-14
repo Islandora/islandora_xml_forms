@@ -39,7 +39,7 @@ function xml_form_builder_menu() {
     'file' => 'Main.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_list'),
+    'page arguments' => array('xml_form_builder_main'),
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_NORMAL_ITEM,
   );
@@ -80,6 +80,9 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
+  /**
+   * Presents a form that allows the user to copy an existing form.
+   */
   $items[MENU_XML_FORM_BUILDER_COPY] = array(
     'title' => 'Copy Form',
     'description' => 'Copy an existing Form.',
@@ -90,6 +93,9 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
+  /**
+   * Presents a form that allows the user to edit a form.
+   */
   $items[MENU_XML_FORM_BUILDER_EDIT] = array(
     'title' => 'Edit Form',
     'description' => 'Edit a Form.',
@@ -100,6 +106,9 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
+  /**
+   * Callback used by the edit form to save changes made to the form.
+   */
   $items[MENU_CALLBACK_XML_FORM_BUILDER_SAVE] = array(
     'title' => 'Edit Form',
     'description' => 'Edit a Form.',
@@ -110,6 +119,9 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
+  /**
+   * Presents a form that allows the user to delete a new form.
+   */
   $items[MENU_XML_FORM_BUILDER_DELETE] = array(
     'title' => 'Delete Form',
     'description' => 'Delete a Form.',

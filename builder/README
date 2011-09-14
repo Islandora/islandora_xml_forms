@@ -1,0 +1,4 @@
+This Module Provides an interface for Creating/Editing/Copying/Deleting/Exporting XML Based Forms.
+
+XML based form definitions are stored within the Drupal database, and are Created/Copied/Deleted/Exported though HTML 
+forms. XML based form's are edited though an ExtJS application.

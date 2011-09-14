@@ -3,6 +3,7 @@
 /**
  * @file
  *
+ * Defines functions used for the installation of the xml_form_builder module.
  */
 
 /**
@@ -23,6 +24,7 @@ function xml_form_builder_uninstall() {
  * Implementation of hook_schema.
  * 
  * @return array
+ *   The Schema definition
  */
 function xml_form_builder_schema() {
   $schema['xml_forms'] = array(

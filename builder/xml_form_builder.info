@@ -1,6 +1,6 @@
 ; $Id$
 name = XML Form Builder
-description = GUI for defining XML Forms.
+description = Provides an interface for Creating/Editing/Copying/Deleting/Exporting XML Based Forms.
 package = XML Forms
 dependencies[] = xml_form_api
 version = 6.x-$Format:%h$-dev

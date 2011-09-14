@@ -3,16 +3,21 @@
 /**
  * @file
  *
- * Callbacks and functions for the List Forms Page.
+ * Callbacks and functions for the Main Page.
  */
 
 /**
- * Show the List Form.
+ * Show the Main page.
+ * 
+ * Here the user can select which action they would like to do.
  * 
  * @param array $form_state
+ *   The Drupal Form State.
+ * 
  * @return array
+ *   The Drupal form.
  */
-function xml_form_builder_list(array &$form_state) {
+function xml_form_builder_main(array &$form_state) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   $names = XMLFormDatabase::GetNames();
   if (count($names) == 0) { // No forms exist can only create.
@@ -34,8 +39,6 @@ function xml_form_builder_list(array &$form_state) {
     );
   }
   else {
-    //$path = drupal_get_path('module', 'xml_form_builder');
-    //drupal_add_js($path . '/js/Export.js');
     return array(
       array(
         '#type' => 'fieldset',
@@ -67,10 +70,7 @@ function xml_form_builder_list(array &$form_state) {
           '#name' => 'view'
         ),
         'export' => array(
-          '#type' => 'submit', //'button',
-          /*'#attributes' => array(
-            'onclick' => 'return false;'
-          ),*/
+          '#type' => 'submit',
           '#value' => 'Export',
           '#name' => 'export'
         ),
@@ -85,10 +85,12 @@ function xml_form_builder_list(array &$form_state) {
 }
 
 /**
- * Submit list form. Redirect based on what button was clicked.
+ * Submit main form. Redirect based on what button was clicked.
  * 
  * @param array $form
+ *   The Drupal Form.
  * @param array $form_state 
+ *   The Drupal Form State.
  */
 function xml_form_builder_list_submit(array $form, array &$form_state) {
   $clicked = $form_state['clicked_button']['#name'];

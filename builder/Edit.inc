@@ -91,7 +91,9 @@ function xml_form_builder_edit_save($form_name) {
 }
 
 /**
- * Create store to be used in Element Type Combo Box.
+ * Creates an inline javascript file that creates an ExtJS store containing all the possible form field types.
+ * 
+ * Used in the Element Type Combo Box, in the Element form of the Form Builder GUI.
  */
 function xml_form_builder_create_element_type_store() {
   $types = xml_form_builder_get_element_types();
@@ -120,9 +122,12 @@ EOT;
 }
 
 /**
- * Create a properties store.
+ * Creates an inline javascript file that creates an ExtJS store containing the form properties.
+ * 
+ * Used to populate the 'Form Properties' Form.
  * 
  * @param string $form_name 
+ *   The name of the form which properties will be used.
  */
 function xml_form_builder_create_properties_store($form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
@@ -150,9 +155,12 @@ EOT;
 }
 
 /**
- * Create a element store.
+ * Creates an inline javascript file that creates an ExtJS store containing the form elements.
+ * 
+ * Used to populate the 'Elements Tree'.
  * 
  * @param string $form_name 
+ *   The name of the form which will be used.
  */
 function xml_form_builder_create_element_store($form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
