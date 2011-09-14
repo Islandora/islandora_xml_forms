@@ -10,7 +10,6 @@
 module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'php_lib', 'Array');
 module_load_include('inc', 'php_lib', 'Misc');
-module_load_include('inc', 'xml_form_api', 'Actions');
 
 /**
  * Given some JSON it retrieve the form properties and a Drupal form.
@@ -192,23 +191,6 @@ class JSONFormDefinition {
       }
     }
     return $children;
-  }
-
-}
-
-/**
- * Generates a JSON object that can be used by the GUI.
- */
-class JSONFormDefinitionGenerator {
-
-  /**
-   * Instantiates the JSONForm definition.
-   * 
-   * @param string $json 
-   *   The posted encoded JSON data.
-   */
-  public function __construct($json) {
-    
   }
 
 }

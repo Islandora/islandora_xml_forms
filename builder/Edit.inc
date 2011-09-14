@@ -127,8 +127,11 @@ EOT;
  * @param string $form_name 
  */
 function xml_form_builder_create_properties_store($form_name) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-  $data = Formbuilder::TransformPropertiesToJSON($form_name);
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'JSONFormDefinitionGenerator');
+  module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+  $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
+  $data = JSONFormDefinitionGenerator::GetProperties($definition->getProperties());
   $js = <<<EOT
   Ext.formbuilder.propertiesStore = Ext.create('Ext.data.Store', {
     storeId: 'PropertiesStore',
@@ -154,8 +157,11 @@ EOT;
  * @param string $form_name 
  */
 function xml_form_builder_create_element_store($form_name) {
-  module_load_include('inc', 'xml_form_builder', 'FormBuilder');
-  $data = Formbuilder::TransformElementsToJSON($form_name);
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'JSONFormDefinitionGenerator');
+  module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+  $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
+  $data = JSONFormDefinitionGenerator::GetForm($definition->getForm());
   $js = <<<EOT
   Ext.formbuilder.elementStore = Ext.create('Ext.data.TreeStore', {
     model: 'Element',

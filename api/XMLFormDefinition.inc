@@ -504,7 +504,7 @@ class XMLFormDefinition {
 class XMLFormDefinitionGenerator {
 
   /**
-   * Creates an DOMDocument thaasdfadksf;lkfsad;lfkjads
+   * Creates an DOMDocument that defines an XML Form.
    * 
    * @param array $properties
    *   The form properties.
