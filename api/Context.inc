@@ -141,8 +141,8 @@ class XMLFormsContextException extends Exception {
   public function __construct(ContextType $type, FormElement $element, $message) {
     $variable_description = "The Form Element<br/>";
     $variable_description .= "&nbsp;Location: '{$element->getLocation()}'<br/>";
-    $variable_description .= "&nbsp;Title: '{$element->title}'</br>";
-    $variable_description .= "&nbsp;Type: '{$element->type}'</br>";
+    $variable_description .= "&nbsp;Title: '{$element['#title']}'</br>";
+    $variable_description .= "&nbsp;Type: '{$element['#type']}'</br>";
     $variable_description .= "&nbsp;Context: '$type->val'</br>";
     $message = $variable_description . 'Error: ' . $message;
     parent::__construct($message, 0);
