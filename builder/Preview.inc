@@ -21,33 +21,9 @@
  *   A Drupal Form that repersents the given form, identified by $form_name.
  */
 function xml_form_builder_preview(array &$form_state, $form_name) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
-  module_load_include('inc', 'xml_form_api', 'XMLForm');
-  module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-  if (!XMLFormDatabase::Exists($form_name)) {
-    drupal_set_message(t('The form "%name" does not exist.', array('%name' => $form_name)));
-    drupal_not_found();
-    exit();
-  }
-  try {
-    $xml_form = new XMLForm($form_state);
-    if (!$xml_form->isInitialized()) { // Was not initialized from storage.
-      $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
-      $xml_form->initialize($definition->getForm(), $definition->createXMLDocument());
-    }
-    $form = $xml_form->toArray($form_state);
-    /**
-     * Deals with a bug in drupals AHAH, where the user would be redirected to a different page.
-     * This is fixed in Drupal 7.
-     */
-    $form['#action'] = url("admin/content/xml/form/$form_name/view"); // AHAH bug workaround.
-  } catch (Exception $e) {
-    /**
-     * Catch any errors that occured and display them to the user so that they may correct their form definition.
-     */
-    $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
-    drupal_set_message(filter_xss($msg), 'error');
-    return array(); // Empty Form.
+  $form = xml_form_builder_get_form($form_state, $form_name);
+  if ($form === FALSE) {
+    return array();
   }
   return $form;
 }
