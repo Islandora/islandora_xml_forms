@@ -46,7 +46,7 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
      * Catch any errors that occured and display them to the user so that they may correct their form definition.
      */
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
-    drupal_set_message(check_plain($msg), 'error');
+    drupal_set_message(filter_xss($msg), 'error');
     return array(); // Empty Form.
   }
   return $form;
@@ -70,8 +70,9 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
     dom_document_pretty_print($document->document);
     exit();
   } catch (Exception $e) {
-    $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
-    drupal_set_message(check_plain($msg), 'error');
+    drupal_set_message(check_plain("File: {$e->getFile()}"), 'error');
+    drupal_set_message(check_plain("Line: {$e->getLine()}"), 'error');
+    drupal_set_message(check_plain("Error: {$e->getMessage()}"), 'error');
     $form_state['rebuild'] = TRUE;
   }
 }

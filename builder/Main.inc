@@ -62,7 +62,14 @@ function xml_form_builder_main(array &$form_state) {
         'edit' => array(
           '#type' => 'submit',
           '#value' => t('Edit'),
-          '#name' => 'edit'
+          /**
+           * PHP is ridiculous. This was failing when the #name was edit due to this line 
+           *  else if (isset($_REQUEST['edit']['destination'])) { #317 from common.inc
+           * 
+           * This like returned TRUE, despite the fact that $_REQUEST['edit'] was a string not an array.
+           * I'm surpise any useful software can be build in such a enviroment.
+           */
+          '#name' => 'editor' 
         ),
         'view' => array(
           '#type' => 'submit',
@@ -98,7 +105,7 @@ function xml_form_builder_main_submit(array $form, array &$form_state) {
   $redirect = array(
     'create' => MENU_XML_FORM_BUILDER_CREATE,
     'copy' => xml_form_builder_get_copy_form_path($form_name),
-    'edit' => xml_form_builder_get_edit_form_path($form_name),
+    'editor' => xml_form_builder_get_edit_form_path($form_name),
     'view' => xml_form_builder_get_view_form_path($form_name),
     'export' => xml_form_builder_get_export_form_path($form_name),
     'delete' => xml_form_builder_get_delete_form_path($form_name),
