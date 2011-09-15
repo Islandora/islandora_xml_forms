@@ -1,9 +1,9 @@
 ; $Id$
-name = XML Form API
+name = Islandora XML Form API
 description = Generates Drupal Forms from an XML definition. Create/Edit XML documents via Drupal forms.
-package = XML Forms
+package = Islandora Dependencies
 dependencies[] = objective_forms
 dependencies[] = xml_schema_api
-version = 6.x-$Format:%h$-dev
+version = 11.2.beta1
 core = 6.x
 
