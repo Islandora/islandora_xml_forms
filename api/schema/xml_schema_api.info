@@ -1,8 +1,8 @@
 ; $Id$
-name = XML Schema API
+name = Islandora XML Schema API
 description = Provides functions and classes that allow for effective use of information stored within XML Schema's.
 files[] = tests/Schema.test
 dependencies[] = php_lib
-package = XML Forms
+package =  Islandora Dependencies
 version = 11.2.beta1
 core = 6.x
