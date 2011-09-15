@@ -255,7 +255,7 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
     $xml_form = new XMLForm($form_state);
     if (!$xml_form->isInitialized()) { // Was not initialized from storage.
       $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
-      $xml_form->initialize($definition->getForm(), $definition->createXMLDocument());
+      $xml_form->initialize($definition->getForm(), $definition->createXMLDocument($xml));
     }
     $form = $xml_form->toArray($form_state);
     /**
