@@ -258,11 +258,6 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
       $xml_form->initialize($definition->getForm(), $definition->createXMLDocument($xml));
     }
     $form = $xml_form->toArray($form_state);
-    /**
-     * Deals with a bug in drupals AHAH, where the user would be redirected to a different page.
-     * This is fixed in Drupal 7.
-     */
-    $form['#action'] = url("admin/content/xml/form/$form_name/view"); // AHAH bug workaround.
   } catch (Exception $e) {
     /**
      * Catch any errors that occured and display them to the user so that they may correct their form definition.
