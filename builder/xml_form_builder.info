@@ -3,6 +3,6 @@ name = XML Form Builder
 description = Provides an interface for Creating/Editing/Copying/Deleting/Exporting XML Based Forms.
 package = XML Forms
 dependencies[] = xml_form_api
-version = 6.x-$Format:%h$-dev
+version = 11.2.beta1
 core = 6.x
 

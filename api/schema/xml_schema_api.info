@@ -4,5 +4,5 @@ description = Provides functions and classes that allow for effective use of inf
 files[] = tests/Schema.test
 dependencies[] = php_lib
 package = XML Forms
-version = 6.x-$Format:%h$-dev
+version = 11.2.beta1
 core = 6.x
