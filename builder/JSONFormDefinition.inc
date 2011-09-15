@@ -91,7 +91,7 @@ class JSONFormDefinition {
    */
   private function getElementProperties(stdClass $element) {
     $ignore = array('key', 'text', 'root', 'leaf', 'id', 'parentId', 'icon', 'cls', 'qtip', 'qtitle',
-      'iconCls', 'href', 'hrefTarget', 'elements', 'index', 'depth', 'expanded', 'checked',
+      'iconCls', 'href', 'hrefTarget', 'elements', 'index', 'depth', 'expanded', 'expandable', 'checked',
       'isLast', 'isFirst', 'allowDrop', 'allowDrag', 'loaded', 'loading');
     $controls = array();
     foreach ($element as $key => $value) {
