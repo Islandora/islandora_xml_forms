@@ -29,7 +29,7 @@ function xml_form_builder_preview(array &$form_state, $form_name) {
    * Deals with a bug in drupals AHAH, where the user would be redirected to a different page.
    * This is fixed in Drupal 7.
    */
-  $form['#action'] = url("admin/content/xml/form/$form_name/view"); // AHAH bug workaround.
+  $form['#action'] = url("admin/content/xml/form/$form_name/view"); // AHAH bug workaround. 
   return $form;
 }
 

@@ -26,16 +26,19 @@ class XMLSchema {
    * @var ReadOnlyProtected
    */
   protected $protected;
+
   /**
    *
    * @var DOMDocument
    */
   protected $schema;
+
   /**
    *
    * @var DOMXPath
    */
   protected $xpath;
+
   /**
    *
    * @var Schema[]
@@ -60,6 +63,7 @@ class XMLSchema {
    */
   public function __construct($filename, $namespace = NULL) {
     self::$schemas[$filename] = $this;
+    $filename = trim($filename);
     $this->protected = new ReadOnlyProtectedMembers(array(
           'filename' => $filename,
           'location' => $this->getSchemaLocation($filename),
@@ -114,6 +118,21 @@ class XMLSchema {
   }
 
   /**
+   * Gets the full path to a schema.
+   * 
+   * @param string $filename
+   */
+  private function getFullPathToSchema($filename) {
+    $doc = new DOMDocument();
+    if (@$doc->load(trim($filename))) {
+      return $filename;
+    }
+    else if (@$doc->load(trim($this->location . '/' . $filename))) {
+      return $this->location . '/' . $filename;
+    }
+  }
+
+  /**
    * Load the schema.
    * 
    * @param string $filename 
@@ -158,8 +177,9 @@ class XMLSchema {
   private function loadIncludedFiles() {
     $this->includes = array();
     $included_files = $this->getIncludedFiles();
+    $doc = new DOMDocument();
     foreach ($included_files as $include_file) {
-      $filename = "$this->location/$include_file";
+      $filename = $this->getFullPathToSchema($include_file);
       if (empty(self::$schemas[$filename])) {
         $this->includes[$filename] = new XMLSchema($filename, $this->namespace); // Included files share the same namespace.
       }
@@ -179,7 +199,8 @@ class XMLSchema {
     $result = $this->xpath->query('//xs:include');
     if ($result && $result->length > 0) {
       for ($i = 0; $i < $result->length; $i++) {
-        $included_files[] = $result->item($i)->getAttribute('schemaLocation');
+        $filename = $result->item($i)->getAttribute('schemaLocation');
+        $included_files[] = $filename;
       }
     }
     return $included_files;
@@ -193,6 +214,7 @@ class XMLSchema {
     $imported_files = $this->getImportedFiles();
     foreach ($imported_files as $import_file) {
       list($filename, $namespace) = $import_file;
+      $filename = $this->getFullPathToSchema($filename);
       if (empty(self::$schemas[$filename])) {
         $this->imports[$filename] = new XMLSchema($filename, $namespace);
       }
