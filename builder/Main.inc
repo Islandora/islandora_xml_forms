@@ -101,7 +101,7 @@ function xml_form_builder_main(array &$form_state) {
  */
 function xml_form_builder_main_submit(array $form, array &$form_state) {
   $clicked = $form_state['clicked_button']['#name'];
-  $form_name = $form_state['values']['form_name'];
+  $form_name = isset($form_state['values']['form_name']) ? $form_state['values']['form_name'] : NULL;
   $redirect = array(
     'create' => MENU_XML_FORM_BUILDER_CREATE,
     'copy' => xml_form_builder_get_copy_form_path($form_name),

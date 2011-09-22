@@ -137,6 +137,7 @@ class Create implements Action {
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
     $results = $this->path->query($document, $element);
     if ($results && $results->length > 0) {
+      $value = isset($value) ? htmlentities($value) : NULL; // Filter the value.
       $parent = $results->item(0);
       $created = $this->create($document, $value);
       $this->append($document, $created, $parent);

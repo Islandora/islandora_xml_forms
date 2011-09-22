@@ -70,6 +70,7 @@ class Update implements Action {
    * @param mixed $value 
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
+    $value = isset($value) ? htmlentities($value) : NULL; // Filter the value.
     $results = $this->path->query($document, $element);
     $results = dom_node_list_to_array($results);
     foreach ($results as $node) {
