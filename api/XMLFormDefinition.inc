@@ -240,6 +240,9 @@ class XMLFormDefinition {
    *   The version of the XML Form Definition, if the XML Form Definition is not valid FALSE is returned.
    */
   public static function getVersion(DOMDocument $definition) {
+    if (empty($definition->documentElement)) {
+      throw new Exception(t('XML Form Definition is not valid.'));
+    }
     $declares_version = $definition->documentElement->hasAttribute('version');
     if ($declares_version) {
       $version = (int) $definition->documentElement->getAttribute('version');
@@ -518,7 +521,8 @@ class XMLFormDefinitionGenerator {
   public static function Create(array &$properties, array &$form) {
     $latest = XMLFormDefinitionVersion::getLatestVersion();
     $definition = new SimpleXMLElement("<definition xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' version='{$latest->get()}'/>");
-    self::AddProperties($definition, $properties);;
+    self::AddProperties($definition, $properties);
+    ;
     self::AddElement($definition->addChild('form'), new FormElement($form));
     $xml = $definition->asXML();
     $definition = new DOMDocument();

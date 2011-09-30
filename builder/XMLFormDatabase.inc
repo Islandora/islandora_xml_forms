@@ -27,6 +27,27 @@ class XMLFormDatabase {
   }
 
   /**
+   * Checks to see if the given form exists in the database and is a valid definition.
+   * 
+   * @param string $form_name
+   *   The name of the XML Form Definition.
+   * 
+   * @return boolean
+   *   TRUE if the given form exists, FALSE otherwise.
+   */
+  public static function Valid($form_name) {
+    if (self::Exists($form_name)) {
+      $xml = trim(self::Get($form_name));
+      if (!empty($xml)) {
+        $definition = new DOMDocument();
+        $definition->loadXML($xml);
+        return XMLFormDefinition::isValid($definition);
+      }
+    }
+    return FALSE;
+  }
+
+  /**
    * Gets the XML Form Definition identified by name.
    * 
    * @param string $form_name
@@ -39,10 +60,12 @@ class XMLFormDatabase {
     if (self::Exists($form_name)) {
       $query = db_query('SELECT form FROM {%s} WHERE name = "%s"', self::table, $form_name);
       $xml = db_result($query);
-      $definition = new DOMDocument();
-      $definition->loadXML($xml);
-      $definition = self::Upgrade($form_name, $definition);
-      return $definition;
+      if (trim($xml) !== '') {
+        $definition = new DOMDocument();
+        $definition->loadXML($xml);
+        $definition = self::Upgrade($form_name, $definition);
+        return $definition;
+      }
     }
     return FALSE;
   }
@@ -76,6 +99,24 @@ class XMLFormDatabase {
       $names[$data->name] = $data->name;
     }
     return $names;
+  }
+
+  /**
+   * Gets a list of all defined form names that have valid definitions.
+   * 
+   * @return array
+   *   An array of defined form names, where both the key and the value are the forms name.
+   *   EX. array( 'name' => 'name' );
+   */
+  public static function GetValidNames() {
+    $form_names = self::GetNames();
+    $valid_names = array();
+    foreach ($form_names as $key => $form_name) {
+      if (self::Valid($form_name)) {
+        $valid_names[$key] = $form_name;
+      }
+    }
+    return $valid_names;
   }
 
   /**
