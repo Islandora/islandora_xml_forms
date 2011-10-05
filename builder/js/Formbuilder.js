@@ -184,6 +184,9 @@ Ext.formbuilder = (function() {
         if(has_actions) {
           record.set('actions', actions);
         }
+        else {
+          record.set('actions', undefined);
+        }
         record.set('text', values.key + ' (' + values.type + ')');
         record.endEdit();
         record.commit();

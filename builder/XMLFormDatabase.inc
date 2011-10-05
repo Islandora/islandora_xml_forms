@@ -37,12 +37,7 @@ class XMLFormDatabase {
    */
   public static function Valid($form_name) {
     if (self::Exists($form_name)) {
-      $xml = trim(self::Get($form_name));
-      if (!empty($xml)) {
-        $definition = new DOMDocument();
-        $definition->loadXML($xml);
-        return XMLFormDefinition::isValid($definition);
-      }
+      return self::Get($form_name) !== FALSE;
     }
     return FALSE;
   }
