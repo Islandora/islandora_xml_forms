@@ -51,9 +51,10 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
     dom_document_pretty_print($document->document);
     exit();
   } catch (Exception $e) {
-    drupal_set_message(check_plain("File: {$e->getFile()}"), 'error');
-    drupal_set_message(check_plain("Line: {$e->getLine()}"), 'error');
-    drupal_set_message(check_plain("Error: {$e->getMessage()}"), 'error');
+    $message = 'File: ' . $e->getFile() . '</br>';
+    $message .= 'Line: ' . $e->getLine() . '</br>';
+    $message .= 'Error: ' . $e->getMessage() . '</br>';
+    drupal_set_message($message, 'error');
     $form_state['rebuild'] = TRUE;
   }
 }

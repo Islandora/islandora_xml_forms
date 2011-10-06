@@ -38,3 +38,7 @@ root {
 .ui-tabs-panel > .ui-tabpanel-add-button > .form-button, .ui-tabs-panel > .ui-tabpanel-add-button > .form-submit {
     margin: 0;
 }
+
+.ui-tabs .ui-tabs-nav {
+  margin: 0em;
+}
