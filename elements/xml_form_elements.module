@@ -61,8 +61,13 @@ function xml_form_elements_theme() {
     ),
     'tags' => array(
       'arguments' => array('element'),
+      'file' => 'Tags.inc',
+      'function' => 'xml_form_elements_theme_tags'
+    ),
+    'tags_content' => array( // The inner content of a tags element.
+      'arguments' => array('element'),
       'template' => 'Tags',
-      'file' => 'Tags.inc'
+      'file' => 'Tags.inc',
     ),
     'tag' => array(
       'arguments' => array('element'),
