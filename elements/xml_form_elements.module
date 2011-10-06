@@ -237,7 +237,7 @@ function xml_form_elements_process_tags(array $element, $edit, array &$form_stat
  * @return array 
  */
 function xml_form_elements_process_tag(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'TabPanel');
+  module_load_include('inc', 'xml_form_elements', 'Tag');
   return Tag::Process($element, $edit, $form_state, $complete_form);
 }
 
