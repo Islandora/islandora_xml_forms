@@ -1,5 +1,4 @@
-<div class="xml-form-elements-tags form-item">
-  <label for="<?php print "{$input['#id']}" ?>"><?php print "{$label}" ?></label>
+<div class="xml-form-elements-tags">
   <input type="text" 
          name="<?php print "{$input['#name']}" ?>" 
          id="<?php print "{$input['#id']}" ?>" 
@@ -16,7 +15,6 @@
       <input type="hidden" name="<?php print $tag['#name'] ?>" id="<?php print $tag['#id'] ?>" value="<?php print "{$tag['#value']}" ?>">
     <?php endforeach ?>
   </div>
-  <div class="description"><?php print $description ?></div>
   <ui class="tag-list">
     <?php foreach ($tags as $tag): ?>
       <li title="<?php print "{$tag['#value']}" ?>">
