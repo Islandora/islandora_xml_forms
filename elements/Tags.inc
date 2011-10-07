@@ -93,14 +93,14 @@ class Tags {
  * 
  * @param array $vars 
  */
-function xml_form_elements_preprocess_tags(&$vars) {
+function xml_form_elements_preprocess_tags_content(&$vars) {
   global $base_url;
   $tags = &$vars[0];
-  $vars['add'] = $tags['controls']['add'];
-  $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL;
-  $vars['remove'] = isset($tags['controls']['remove']) ? $tags['controls']['remove'] : NULL;
-  // Create tags.
-  $vars['tags'] = array();
+  $vars['image_path'] = "$base_url/{$vars['directory']}/images"; // Location of images.
+  $vars['add'] = $tags['controls']['add']; // Visible Add Button
+  $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL; // Hidden Edit Button
+  $vars['remove'] = isset($tags['controls']['remove']) ? $tags['controls']['remove'] : NULL; // Hidden Remove Button
+  $vars['tags'] = array(); // Used to create tag icons, and hidden input fields.
   $children = element_children($tags);
   foreach ($children as $key) {
     $child = $tags[$key];
@@ -108,9 +108,13 @@ function xml_form_elements_preprocess_tags(&$vars) {
       $vars['tags'][$key] = $child;
     }
   }
-  // First tag is the textfield, all other's show up as icons.
-  $vars['input'] = array_shift($vars['tags']);
-  $vars['label'] = $tags['#title'];
-  $vars['image_path'] = "$base_url/{$vars['directory']}/images";
-  $vars['description'] = $tags['#description'];
+  $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
+}
+
+/**
+ * Theme Hook for tags elements.
+ */
+function xml_form_elements_theme_tags($element) {
+  $content = theme('tags_content', $element);
+  return theme('form_element', $element, $content);
 }

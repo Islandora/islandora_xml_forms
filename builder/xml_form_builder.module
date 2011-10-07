@@ -251,6 +251,10 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
     drupal_set_message(t('The form "%name" does not exist.', array('%name' => $form_name)));
     return FALSE;
   }
+  else if(!XMLFormDatabase::Valid($form_name)) {
+    drupal_set_message(t('The drupal form "%name" exists but is not valid please notify the administrator.', array('%name' => $form_name)));
+    return FALSE;
+  }
   try {
     $xml_form = new XMLForm($form_state);
     if (!$xml_form->isInitialized()) { // Was not initialized from storage.

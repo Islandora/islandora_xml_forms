@@ -27,7 +27,7 @@ class Tabs {
       drupal_add_css("$path/theme/ui.core.css");
       drupal_add_css("$path/theme/ui.tabs.css");
       drupal_add_css("$path/theme/ui.theme.css");
-      drupal_add_css("$path/stylesheets/Tabs.css");
+      drupal_add_css("$path/stylesheets/tabs.css");
       $add_files = FALSE;
     }
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";

@@ -61,8 +61,13 @@ function xml_form_elements_theme() {
     ),
     'tags' => array(
       'arguments' => array('element'),
+      'file' => 'Tags.inc',
+      'function' => 'xml_form_elements_theme_tags'
+    ),
+    'tags_content' => array( // The inner content of a tags element.
+      'arguments' => array('element'),
       'template' => 'Tags',
-      'file' => 'Tags.inc'
+      'file' => 'Tags.inc',
     ),
     'tag' => array(
       'arguments' => array('element'),
@@ -232,7 +237,7 @@ function xml_form_elements_process_tags(array $element, $edit, array &$form_stat
  * @return array 
  */
 function xml_form_elements_process_tag(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'TabPanel');
+  module_load_include('inc', 'xml_form_elements', 'Tag');
   return Tag::Process($element, $edit, $form_state, $complete_form);
 }
 
