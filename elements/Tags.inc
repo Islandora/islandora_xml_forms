@@ -26,6 +26,7 @@ class Tags {
     drupal_add_css("$path/stylesheets/tags.css");
     drupal_add_js("$path/js/XMLFormElements.js");
     $element['#id'] = $element['#hash'];
+    $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
@@ -108,6 +109,7 @@ function xml_form_elements_preprocess_tags_content(&$vars) {
       $vars['tags'][$key] = $child;
     }
   }
+  //$vars['tags'] = $tags['#size'];
   $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
 }
 

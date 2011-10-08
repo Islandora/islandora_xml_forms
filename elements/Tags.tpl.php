@@ -2,7 +2,7 @@
   <input type="text" 
          name="<?php print "{$input['#name']}" ?>" 
          id="<?php print "{$input['#id']}" ?>" 
-         size="25" 
+         size="<?php print "{$variables[0]['#size']}" ?>" 
          value="<?php print "{$input['#value']}" ?>" 
          class="form-text tag-editor">
   <div class="add-tag" style="display:inline-block"><input type="image" src="<?php print $image_path ?>/add.png" name="<?php print $add['#name'] ?>" id="<?php print $add['#id'] ?>" value="add"></div>
