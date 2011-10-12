@@ -98,7 +98,7 @@ class XMLDocument {
    * Creates a XMLSchema object.
    * 
    * @param string $schema
-   *   The URI to the schema. Maybe null or an empty string.
+   *   The URI to the schema. Maybe NULL or an empty string.
    * 
    * @return XMLSchema 
    */

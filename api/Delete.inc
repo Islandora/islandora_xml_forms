@@ -68,7 +68,7 @@ class Delete implements Action {
     foreach ($results as $node) {
       $this->delete($node);
     }
-    return true;
+    return TRUE;
   }
 
   /**
