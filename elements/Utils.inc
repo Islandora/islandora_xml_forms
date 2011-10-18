@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+
 
 /**
  * @file
@@ -14,13 +14,13 @@
  */
 function get_form_info($form_build_id) {
   if (!isset($_REQUEST['form_build_id'])) {
-    header("HTTP/1.0 200 OK", false, 200);
+    header("HTTP/1.0 200 OK", FALSE, 200);
     exit();
   }
   $form_build_id = $_REQUEST['form_build_id'];
   $form_state = array('storage' => NULL, 'submitted' => FALSE, 'post' => $_POST);
   if (!$form = form_get_cache($form_build_id, $form_state)) {
-    header("HTTP/1.0 200 OK", false, 200);
+    header("HTTP/1.0 200 OK", FALSE, 200);
     exit();
   }
   $form_id = $form['#parameters'][0];
@@ -35,7 +35,7 @@ function get_form_info($form_build_id) {
 function get_form_and_form_state($form_build_id) {
   $form_state = array('storage' => NULL, 'submitted' => FALSE, 'post' => $_POST);
   if (!$form = form_get_cache($form_build_id, $form_state)) {
-    header("HTTP/1.0 200 OK", false, 200);
+    header("HTTP/1.0 200 OK", FALSE, 200);
     exit();
   }
   return array(&$form, &$form_state);
