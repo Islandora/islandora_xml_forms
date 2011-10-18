@@ -20,11 +20,13 @@ class XMLFormGenerator {
    * @var Form
    */
   protected $form;
+
   /**
    * 
    * @var XMLDocument
    */
   protected $document;
+
   /**
    *
    * @var NodeRegistry
@@ -113,11 +115,10 @@ class XMLFormGenerator {
    * @param array $nodes 
    */
   private function registerDuplicates(array $elements, array $nodes) {
-    $iterator = new MultipleIterator();
-    $iterator->attachIterator(new ArrayIterator($elements));
-    $iterator->attachIterator(new ArrayIterator($nodes));
-    foreach ($iterator as $set) {
-      list($element, $node) = $set;
+    $count = count($elements);
+    for ($i = 0; $i < $count; $i++) {
+      $element = $elements[$i];
+      $node = $nodes[$i];
       $this->registry->register($element->hash, $node);
     }
   }
