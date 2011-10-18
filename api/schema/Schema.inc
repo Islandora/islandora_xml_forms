@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+
 
 /**
  * @file
@@ -165,7 +165,7 @@ class XMLSchema {
    */
   private function registerNamespaces() {
     $simple = simplexml_import_dom($this->schema->documentElement);
-    $namespaces = $simple->getNamespaces(true);
+    $namespaces = $simple->getNamespaces(TRUE);
     foreach ($namespaces as $prefix => $uri) {
       $this->xpath->registerNamespace($prefix, $uri);
     }

@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+
 
 /**
  * @file
@@ -76,7 +76,7 @@ class Update implements Action {
     foreach ($results as $node) {
       $this->update($node, $value);
     }
-    return true;
+    return TRUE;
   }
 
   /**
