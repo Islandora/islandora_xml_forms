@@ -1,11 +1,10 @@
 <?php
 
-
-
 /**
  * @file
  *
  */
+
 module_load_include('inc', 'xml_form_api', 'NodeRegistry');
 module_load_include('inc', 'xml_form_api', 'Namespaces');
 module_load_include('inc', 'xml_schema_api', 'Schema');
