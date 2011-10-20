@@ -46,8 +46,8 @@ root {
 .tool_tip_trigger .tool_tip { display:none; }
 
 .tool_tip {
-    color: #fff;
-    background:#1d1d1d;
+    color: #000;
+    background:#cfd0ce;
     /* display:none; /*--Hides by default--*/
     padding:10px;
     position:absolute;    z-index:1000;

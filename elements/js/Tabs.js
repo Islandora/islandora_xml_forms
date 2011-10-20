@@ -61,10 +61,36 @@ xml_form_elements.tabpanel = {
       var id = $(this).text();
       $("#"+id).trigger("mousedown");
     });
-    $('.tool_tip_trigger').each(function() {        
+    $('.tool_tip_trigger').each(function() {     
       var tip = $(this).find('.tool_tip');
       $(this).hover(function() {
-        tip.appendTo('body');
+        var html = '';
+        var id = $(this).children('a[href]').attr('href');
+        $('#' + id + ' div.form-item').each(function() {
+          var item = $(this);
+          var text = $('input[class~="form-text"]', item);
+          if(text.length) {
+            var id = text.attr('id');
+            var label = $('label[for=' + id + ']', item);
+            if(label.length) {
+              label = label.text();
+              text = text.val();
+              $('input[class~="form-tag"]', item).each(function() {
+                var tag = $(this);
+                text += ' ' + tag.val();
+              });
+              text = jQuery.trim(text);
+              if(text != "") {
+                html += label + ' ' + text + '<br/>';
+              }
+            }
+          }
+        });
+        html = jQuery.trim(html);
+        tip.html(html);
+        if(html != "") {
+          tip.appendTo('body');
+        }
       },
       function() {
         tip.appendTo(this);
@@ -75,23 +101,8 @@ xml_form_elements.tabpanel = {
         h = tip.height(),
         dx = $(window).width() - (x + w),
         dy = $(window).height() - (y + h);
-
         if ( dx < 20 ) x = e.pageX - w - 20;
         if ( dy < 20 ) y = e.pageY - h - 20;
-        var html = '';
-        var id = $(this).children('a[href]').attr('href');
-        $('#' + id + ' div.form-item').each(function() {
-          var item = $(this);
-          var text = $('input[class~="form-text"]', item);
-          var id = text.attr('id');
-          var label = $('label[for=' + id + ']', item);
-          if(label != null) {
-            label = label.text();
-            text = text.val();
-            html += label + ' ' + text + '<br/>';
-          }
-        });
-        tip.html(html);
         tip.css({
           left: x, 
           top: y
