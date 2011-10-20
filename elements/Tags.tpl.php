@@ -12,7 +12,7 @@
   </div>
   <div class="hidden-tags">
     <?php foreach ($tags as $tag): ?>
-      <input type="hidden" name="<?php print $tag['#name'] ?>" id="<?php print $tag['#id'] ?>" value="<?php print "{$tag['#value']}" ?>">
+      <input type="hidden" name="<?php print $tag['#name'] ?>" id="<?php print $tag['#id'] ?>" class="form-tag" value="<?php print "{$tag['#value']}" ?>">
     <?php endforeach ?>
   </div>
   <ui class="tag-list">
