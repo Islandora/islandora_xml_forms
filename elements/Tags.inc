@@ -28,8 +28,8 @@ class Tags {
     $element['#id'] = $element['#hash'];
     $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;
-    //$element['#prefix'] = "<div class='clear-block'>";
-    //$element['#suffix'] = '</div>';
+    $element['#prefix'] = "<div class='clear-block' id='ahah-{$element['#id']}-wrapper'>";
+    $element['#suffix'] = '</div>';
     foreach (element_children($element) as $key) {
       $child = $element[$key];
       $hash = $child['#hash'];
@@ -50,7 +50,7 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/add/{$element['#hash']}",
-      'wrapper' => $element['#hash'], // The parents wrapper is set to the parents hash.
+      'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade'
     );
@@ -65,7 +65,7 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/remove/{$child['#hash']}",
-      'wrapper' => $element['#hash'],
+      'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade'
     );
@@ -80,7 +80,7 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/edit/{$child['#hash']}",
-      'wrapper' => $element['#hash'],
+      'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade'
     );

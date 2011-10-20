@@ -79,7 +79,7 @@ xml_form_elements.tabpanel = {
         if ( dx < 20 ) x = e.pageX - w - 20;
         if ( dy < 20 ) y = e.pageY - h - 20;
         var html = '';
-        var id = $(this).children('a[href]').attr('href');//#000000005f4cdc49000000004e09ea3e div.form-item');
+        var id = $(this).children('a[href]').attr('href');
         $('#' + id + ' div.form-item').each(function() {
           var item = $(this);
           var text = $('input[class~="form-text"]', item);
