@@ -33,6 +33,7 @@ xml_form_elements.tabpanel = {
     if(this.nonCollapsibleTabs.length > 0) {
       this.nonCollapsibleTabs.tabs({});
     }
+    this.attachToolTips();
   },
   setCollapsibleIconOnSelect: function(event, ui) {
     var icon = $('span.expand-tabpanel-icon:first', this);
@@ -56,11 +57,7 @@ xml_form_elements.tabpanel = {
       icon.addClass('ui-icon-circle-triangle-e');
     }
   },
-  enableActions: function () {
-    $(".ui-icon-close").live("click", function() {
-      var id = $(this).text();
-      $("#"+id).trigger("mousedown");
-    });
+  attachToolTips: function() {
     $('.tool_tip_trigger').each(function() {     
       var tip = $(this).find('.tool_tip');
       $(this).hover(function() {
@@ -87,10 +84,11 @@ xml_form_elements.tabpanel = {
           }
         });
         html = jQuery.trim(html);
-        tip.html(html);
-        if(html != "") {
-          tip.appendTo('body');
+        if(html == "") {
+          html = "Empty";
         }
+        tip.html(html);
+        tip.appendTo('body');
       },
       function() {
         tip.appendTo(this);
@@ -108,6 +106,12 @@ xml_form_elements.tabpanel = {
           top: y
         });
       });         
+    });
+  },
+  enableActions: function () {
+    $(".ui-icon-close").live("click", function() {
+      var id = $(this).text();
+      $("#"+id).trigger("mousedown");
     });
   },
   addTab: function(id) {
