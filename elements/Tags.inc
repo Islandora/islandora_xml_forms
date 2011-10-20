@@ -28,8 +28,8 @@ class Tags {
     $element['#id'] = $element['#hash'];
     $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;
-    $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
-    $element['#suffix'] = '</div>';
+    //$element['#prefix'] = "<div class='clear-block'>";
+    //$element['#suffix'] = '</div>';
     foreach (element_children($element) as $key) {
       $child = $element[$key];
       $hash = $child['#hash'];
@@ -97,6 +97,7 @@ class Tags {
 function xml_form_elements_preprocess_tags_content(&$vars) {
   global $base_url;
   $tags = &$vars[0];
+  $vars['element'] = &$vars[0];
   $vars['image_path'] = "$base_url/{$vars['directory']}/images"; // Location of images.
   $vars['add'] = $tags['controls']['add']; // Visible Add Button
   $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL; // Hidden Edit Button

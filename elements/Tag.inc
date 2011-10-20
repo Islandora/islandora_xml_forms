@@ -43,8 +43,8 @@ class Tag {
    * @return array 
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    $element['#id'] = $element['#hash'];
     $tags = &get_form_element_parent($element, $complete_form);
+    $element['#id'] = $element['#hash'];
     $element['#required'] = isset($tags['#required']) ? $tags['#required'] : FALSE;
     $element['#title'] = isset($tags['#title']) ? $tags['#title'] : FALSE;
     return $element;

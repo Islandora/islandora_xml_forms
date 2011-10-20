@@ -78,7 +78,20 @@ xml_form_elements.tabpanel = {
 
         if ( dx < 20 ) x = e.pageX - w - 20;
         if ( dy < 20 ) y = e.pageY - h - 20;
-
+        var html = '';
+        var id = $(this).children('a[href]').attr('href');//#000000005f4cdc49000000004e09ea3e div.form-item');
+        $('#' + id + ' div.form-item').each(function() {
+          var item = $(this);
+          var text = $('input[class~="form-text"]', item);
+          var id = text.attr('id');
+          var label = $('label[for=' + id + ']', item);
+          if(label != null) {
+            label = label.text();
+            text = text.val();
+            html += label + ' ' + text + '<br/>';
+          }
+        });
+        tip.html(html);
         tip.css({
           left: x, 
           top: y
