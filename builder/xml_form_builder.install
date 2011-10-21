@@ -32,19 +32,19 @@ function xml_form_builder_schema() {
     'fields' => array(
       'id' => array(
         'type' => 'serial',
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'name' => array(
         'description' => t('The name of the stored form.'),
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => TRUE
+        'not null' => TRUE
       ),
       'form' => array(
         'description' => t('The xml based form definition.'),
         'type' => 'text',
         'size' => 'medium',
-        'not NULL' => TRUE
+        'not null' => TRUE
       ),
     ),
     'unique keys' => array('name' => array('name')),

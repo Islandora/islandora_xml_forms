@@ -1,8 +1,8 @@
 <div class="xml-form-elements-tags">
   <input type="text" 
          name="<?php print "{$input['#name']}" ?>" 
-         id="<?php print "{$input['#id']}" ?>" 
-         size="25" 
+         id="<?php print "{$element['#id']}" ?>" 
+         size="<?php print "{$variables[0]['#size']}" ?>" 
          value="<?php print "{$input['#value']}" ?>" 
          class="form-text tag-editor">
   <div class="add-tag" style="display:inline-block"><input type="image" src="<?php print $image_path ?>/add.png" name="<?php print $add['#name'] ?>" id="<?php print $add['#id'] ?>" value="add"></div>
@@ -12,7 +12,7 @@
   </div>
   <div class="hidden-tags">
     <?php foreach ($tags as $tag): ?>
-      <input type="hidden" name="<?php print $tag['#name'] ?>" id="<?php print $tag['#id'] ?>" value="<?php print "{$tag['#value']}" ?>">
+      <input type="hidden" name="<?php print $tag['#name'] ?>" id="<?php print $tag['#id'] ?>" class="form-tag" value="<?php print "{$tag['#value']}" ?>">
     <?php endforeach ?>
   </div>
   <ui class="tag-list">

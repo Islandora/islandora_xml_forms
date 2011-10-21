@@ -26,8 +26,9 @@ class Tags {
     drupal_add_css("$path/stylesheets/tags.css");
     drupal_add_js("$path/js/XMLFormElements.js");
     $element['#id'] = $element['#hash'];
+    $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;
-    $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
+    $element['#prefix'] = "<div class='clear-block' id='ahah-{$element['#id']}-wrapper'>";
     $element['#suffix'] = '</div>';
     foreach (element_children($element) as $key) {
       $child = $element[$key];
@@ -49,7 +50,7 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/add/{$element['#hash']}",
-      'wrapper' => $element['#hash'], // The parents wrapper is set to the parents hash.
+      'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade'
     );
@@ -64,7 +65,7 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/remove/{$child['#hash']}",
-      'wrapper' => $element['#hash'],
+      'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade'
     );
@@ -79,7 +80,7 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ahah'] = array(
       'path' => "xml/form/elements/ahah/tag/edit/{$child['#hash']}",
-      'wrapper' => $element['#hash'],
+      'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade'
     );
@@ -96,6 +97,7 @@ class Tags {
 function xml_form_elements_preprocess_tags_content(&$vars) {
   global $base_url;
   $tags = &$vars[0];
+  $vars['element'] = &$vars[0];
   $vars['image_path'] = "$base_url/{$vars['directory']}/images"; // Location of images.
   $vars['add'] = $tags['controls']['add']; // Visible Add Button
   $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL; // Hidden Edit Button
@@ -108,6 +110,7 @@ function xml_form_elements_preprocess_tags_content(&$vars) {
       $vars['tags'][$key] = $child;
     }
   }
+  //$vars['tags'] = $tags['#size'];
   $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
 }
 
