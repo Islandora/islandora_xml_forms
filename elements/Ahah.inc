@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+
 
 /**
  * @file
@@ -23,7 +23,7 @@ class Ahah {
    * Cancel processing an AHAH callback.
    */
   public static function cancelResponse() {
-    header("HTTP/1.0 200 OK", false, 200);
+    header("HTTP/1.0 200 OK", FALSE, 200);
     exit();
   }
 

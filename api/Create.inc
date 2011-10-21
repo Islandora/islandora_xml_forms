@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+
 
 /**
  * @file
@@ -142,9 +142,9 @@ class Create implements Action {
       $created = $this->create($document, $value);
       $this->append($document, $created, $parent);
       $document->registry->register($element->hash, $created);
-      return true;
+      return TRUE;
     }
-    return false;
+    return FALSE;
   }
 
   /**
