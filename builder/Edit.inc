@@ -139,8 +139,8 @@ function xml_form_builder_create_properties_store($form_name) {
   Ext.formbuilder.propertiesStore = Ext.create('Ext.data.Store', {
     storeId: 'PropertiesStore',
     model: 'Properties',
-    autoLoad: TRUE,
-    autoSync: TRUE,
+    autoLoad: true,
+    autoSync: true,
     proxy: {
       type: 'memory',
       data: $data,
