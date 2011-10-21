@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+
 
 /**
  * @file
@@ -150,10 +150,10 @@ class XMLFormProcessor {
      * The create actions are loop in a while statement to allow for out of order construction of elements.
      */
     do {
-      $continue = false;
+      $continue = FALSE;
       foreach ($actions as $key => $action) {
         if ($action->execute($this->document)) {
-          $continue = true;
+          $continue = TRUE;
           unset($actions[$key]);
         }
       }

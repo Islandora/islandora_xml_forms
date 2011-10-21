@@ -1,6 +1,6 @@
 <?php
 
-// $Id$
+
 
 /**
  * @file
@@ -594,7 +594,7 @@ class XMLFormDefinitionGenerator {
       $value = $value->toDrupalForm();
     }
     if (is_bool($value)) {
-      $value = $value ? 'true' : 'false';
+      $value = $value ? 'TRUE' : 'FALSE';
     }
     $key = trim($key, '#');
     if (!is_array($value)) {
