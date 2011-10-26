@@ -82,7 +82,12 @@ class NodeRegistry implements Serializable {
       $xpath = new DOMXPath($document);
       foreach ($this->registered as $key => $path) {
         $result = $xpath->query($path);
-        $this->registered[$key] = $result->item(0);
+        if($result->length == 1) {
+          $this->registered[$key] = $result->item(0);
+        }
+        else {
+          throw new Exception('Fatal error: Failed to restore DOMNode from stored path.');
+        }
       }
       $this->restoredRequired = FALSE;
     }
