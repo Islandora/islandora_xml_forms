@@ -86,7 +86,7 @@ class NodeRegistry implements Serializable {
           $this->registered[$key] = $result->item(0);
         }
         else {
-          throw new Exception('Fatal error: Failed to restore DOMNode from stored path.');
+          throw new Exception('Fatal error: Failed to restore DOMNode from stored path. Key: ' . $key . ' Path: ' . $path);
         }
       }
       $this->restoredRequired = FALSE;
