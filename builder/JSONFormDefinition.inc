@@ -95,14 +95,32 @@ class JSONFormDefinition {
       'isLast', 'isFirst', 'allowDrop', 'allowDrag', 'loaded', 'loading');
     $controls = array();
     foreach ($element as $key => $value) {
-      $is_control = array_search($key, $ignore) === FALSE;
-      $is_valid = $this->validateProperty($key, $value);
-      $value = is_object($value) ? object_as_array($value) : $value;
-      if ($is_control && $is_valid) {
-        $controls["#$key"] = $value;
+      if (array_search($key, $ignore) === FALSE) { // Is Control?
+        if ($this->validateProperty($key, $value)) { // Is the given valid
+          $controls["#$key"] = (is_object($value) || is_array($value)) ?
+              $this->transformElementProperties((array) $value) :
+              cast_string_to_type($value);
+        }
       }
     }
     return $controls;
+  }
+
+  /**
+   * Converts explicit types to thier native repersentation.
+   * 
+   * @param array $property
+   * 
+   * @return array
+   */
+  private function transformElementProperties(array $property) {
+    $array = array();
+    foreach ($property as $key => $value) {
+      $array[cast_string_to_type($key)] = (is_object($value) || is_array($value)) ?
+          $this->transformElementProperties((array) $value) :
+          cast_string_to_type($value);
+    }
+    return $array;
   }
 
   /**
