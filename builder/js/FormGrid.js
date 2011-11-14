@@ -19,7 +19,13 @@ Ext.define('Form.Grid', {
       selType: 'rowmodel',
       plugins:[ Ext.create('Ext.grid.plugin.RowEditing', {
         clicksToEdit: 2
-      })],
+      }) ],
+      viewConfig: {
+        plugins: {
+          ptype: 'gridviewdragdrop',
+          dragText: 'Drag and drop to reorganize'
+        }
+      },
       dockedItems: [{
         xtype: 'toolbar',
         items: [{
