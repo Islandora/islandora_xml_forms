@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  * @author Nigel Banks
@@ -451,11 +449,11 @@ class XMLFormDefinition {
   private function getElementProperty(SimpleXMLElement $property) {
     $children = $property->children();
     if (count($children) == 0) {
-      return cast_string_to_boolean((string) $property); // If cast fails the string is returned.
+      return cast_string_to_type((string) $property); // If cast fails the string is returned.
     }
     $output = array();
     foreach ($children as $child) {
-      $name = $this->getElementPropertyName($child);
+      $name = cast_string_to_type((string) $this->getElementPropertyName($child));
       $output[$name] = $this->getElementProperty($child);
     }
     return $output;
@@ -522,7 +520,6 @@ class XMLFormDefinitionGenerator {
     $latest = XMLFormDefinitionVersion::getLatestVersion();
     $definition = new SimpleXMLElement("<definition xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' version='{$latest->get()}'/>");
     self::AddProperties($definition, $properties);
-    ;
     self::AddElement($definition->addChild('form'), new FormElement($form));
     $xml = $definition->asXML();
     $definition = new DOMDocument();
@@ -590,27 +587,65 @@ class XMLFormDefinitionGenerator {
    *   The properties value.
    */
   private static function AddElementProperty(SimpleXMLElement $properties, $key, $value) {
-    if ($value instanceof FormPropertyInterface) {
-      $value = $value->toDrupalForm();
-    }
-    if (is_bool($value)) {
-      $value = $value ? 'TRUE' : 'FALSE';
-    }
+    $property = self::CreateElementProperty($properties, $key);
+    self::SetElementProperty($property, $value);
+  }
+
+  /**
+   * Creates an XML Tag repersentation of propery.
+   *  
+   * @param SimpleXMLElement $properties
+   *   The parent to which the new property will belong to.
+   * @param string $key
+   *   The potential tag name for the newly created property.
+   * 
+   * @return SimpleXMLElement
+   *   The created Element Property.
+   */
+  private static function CreateElementProperty(SimpleXMLElement $properties, $key) {
     $key = trim($key, '#');
-    if (!is_array($value)) {
-      $property = $properties->addChild($key, $value);
-      if ($key == 'option') { // Hacktastic...
-        $property->addAttribute('key', $value);
+    if (!self::IsValidXMLTag($key)) {
+      $property = $properties->addChild('index');
+      $property->addAttribute('key', cast_type_to_string($key));
+      return $property;
+    }
+    return $properties->addChild($key);
+  }
+
+  /**
+   * Sets the Element Property.
+   * 
+   * @param SimpleXMLElement $property
+   *   The property whose value will be set.
+   * @param mixed $value
+   *   The value to assign to the $property.
+   */
+  private static function SetElementProperty(SimpleXMLElement $property, $value) {
+    $value = ($value instanceof FormPropertyInterface) ? $value->toDrupalForm() : $value;
+    if (is_array($value)) {
+      foreach ($value as $key => $item) {
+        self::AddElementProperty($property, $key, $item);
       }
     }
     else {
-      $property = $properties->addChild($key);
-      foreach ($value as $index => $item) {
-        $index = trim($index, '#');
-        $name = ($key == 'options') ? 'option' : $index; // Hacktastic...
-        self::AddElementProperty($property, $name, $item);
-      }
+      $property->{0} = cast_type_to_string($value);
     }
+  }
+
+  /**
+   * Checks to see if the given tag name can be used for an XML tags.
+   * 
+   * Numbers are invalid XML tags.
+   * 
+   * @param string $tag_name
+   *   The proposed tag name.
+   * @return type 
+   *   TRUE if the name is valid FALSE otherwise.
+   */
+  private static function IsValidXMLTag($tag_name) {
+    // start [A-Z] | "_" | [a-z]
+    // everything else is start plus | "-" | "." | [0-9] 
+    return (preg_match('/^[a-zA-Z_][a-zA-Z0-9]*$/', $tag_name) > 0) ? TRUE : FALSE;
   }
 
 }
