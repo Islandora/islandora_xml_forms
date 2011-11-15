@@ -5,7 +5,7 @@
  *
  * Provides a class that generates the required JSON for Form Builder GUI.
  */
-
+module_load_include('inc', 'php_lib', 'String');
 /**
  * Generates two JSON strings that can be used by the Form Builder GUI.
  */
