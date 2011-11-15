@@ -1,14 +1,10 @@
-  <?php
-
-
+<?php
 
 /**
  * @file
  *
  *  Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
-//module_load_include('inc', 'xml_form_elements', 'Element');
-//module_load_include('inc', 'xml_form_api', 'XMLForm');
 module_load_include('inc', 'php_lib', 'DrupalFormHelpers');
 
 /**

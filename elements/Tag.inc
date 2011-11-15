@@ -85,11 +85,19 @@ class Tag {
   public static function Edit($hash) {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state); // Process the submitted form.
+    $form = new XMLForm($form_state);
     $edit = find_element($drupal_form, $hash); // Find the tags we are dealing with.
     $tags = get_form_element_parent($edit, $drupal_form);
     $children = get_element_children($tags, 'tag');
     $input = &$tags[array_shift($children)]; // Get the input field.
+    if(trim($input['#value']) != '') { // If the input field has a value create a tag for it.
+      $new_element = $form->duplicateOriginal($input['#hash']);
+      $new_element['#default_value'] = $input['#value'];
+      $parent = $form->findElement($tags['#hash']); // Parent
+      $parent[] = $new_element; // Append
+    }
     form_set_value($input, $edit['#value'], $form_state); // Set input field to ''.
+    $form->remove($hash); // Its the input element now.
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the parent element to render.
     $element = find_element($drupal_form, $tags['#hash']);
