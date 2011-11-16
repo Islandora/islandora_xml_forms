@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -28,6 +26,7 @@ class Tags {
     $element['#id'] = $element['#hash'];
     $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;
+    $element['#after_build'] = array('xml_form_elements_after_build_tags');
     $element['#prefix'] = "<div class='clear-block' id='ahah-{$element['#id']}-wrapper'>";
     $element['#suffix'] = '</div>';
     foreach (element_children($element) as $key) {
@@ -38,6 +37,17 @@ class Tags {
     }
     $element['controls']['add'] = self::createAddButton($element);
     return $element;
+  }
+
+  public static function AfterBuild(array $form_element, array &$form_state) {
+    if ($form_element['#required']) {
+      $require = (count(element_children($form_element)) == 2) ? TRUE : FALSE; // 2 to include the controls element
+      foreach (element_children($form_element) as $key) {
+        $child = &$form_element[$key];
+        $child['#required'] = $require;
+      }
+    }
+    return $form_element;
   }
 
   private static function createAddButton(array &$element) {
@@ -120,4 +130,8 @@ function xml_form_elements_preprocess_tags_content(&$vars) {
 function xml_form_elements_theme_tags($element) {
   $content = theme('tags_content', $element);
   return theme('form_element', $element, $content);
+}
+
+function xml_form_elements_after_build_tags(array $form_element, array &$form_state) {
+  return Tags::AfterBuild($form_element, $form_state);
 }
