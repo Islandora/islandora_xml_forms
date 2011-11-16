@@ -64,7 +64,19 @@ Ext.data.Types.ARRAY = {
 Ext.data.Types.MAP = {
     type: 'map',
     convert: function(v, data) {
-        return v instanceof Object ? v : {};
+        if(v instanceof Object) {
+          var obj = {};
+          for(key in v) {
+            if(key == '') {
+              obj.NULL = v[key];  
+            }
+            else {
+              obj[key] = v[key];
+            }
+          }
+          return obj;
+        } 
+        return {};
     }
 };
 /**
