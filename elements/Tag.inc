@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -45,7 +43,6 @@ class Tag {
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $tags = &get_form_element_parent($element, $complete_form);
     $element['#id'] = $element['#hash'];
-    $element['#required'] = isset($tags['#required']) ? $tags['#required'] : FALSE;
     $element['#title'] = isset($tags['#title']) ? $tags['#title'] : FALSE;
     return $element;
   }
@@ -90,7 +87,7 @@ class Tag {
     $tags = get_form_element_parent($edit, $drupal_form);
     $children = get_element_children($tags, 'tag');
     $input = &$tags[array_shift($children)]; // Get the input field.
-    if(trim($input['#value']) != '') { // If the input field has a value create a tag for it.
+    if (trim($input['#value']) != '') { // If the input field has a value create a tag for it.
       $new_element = $form->duplicateOriginal($input['#hash']);
       $new_element['#default_value'] = $input['#value'];
       $parent = $form->findElement($tags['#hash']); // Parent
@@ -124,7 +121,8 @@ class Tag {
     // Respond to the request with JSON.
     Ahah::respond($element);
   }
-
+  
+  
 }
 
 /**
