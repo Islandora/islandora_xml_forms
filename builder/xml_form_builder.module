@@ -251,7 +251,7 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
     drupal_set_message(t('The form "%name" does not exist.', array('%name' => $form_name)));
     return FALSE;
   }
-  else if(!XMLFormDatabase::Valid($form_name)) {
+  else if (!XMLFormDatabase::Valid($form_name)) {
     drupal_set_message(t('The drupal form "%name" exists but is not valid please notify the administrator.', array('%name' => $form_name)));
     return FALSE;
   }
@@ -261,6 +261,14 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
       $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
       $xml_form->initialize($definition->getForm(), $definition->createXMLDocument($xml));
     }
+    /**
+     * Deals with a bug in drupals AHAH, where the user would be redirected to a different page.
+     * This is fixed in Drupal 7.
+     * 
+     * This bit of code ensures that the url from which this function is called is the url where the code submits. 
+     * Rather than the last used AHAH callback.
+     */
+    $xml_form['#action'] = $form_state['storage']['#action'] = isset($form_state['storage']['#action']) ? $form_state['storage']['#action'] : url($_GET['q']); // AHAH bug workaround. 
     $form = $xml_form->toArray($form_state);
   } catch (Exception $e) {
     /**
