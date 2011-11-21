@@ -429,7 +429,7 @@ class XMLFormDefinition {
     if (isset($element->properties)) {
       $properties = $element->properties->children();
       foreach ($properties as $property) {
-        $name = $property->getName();
+        $name = cast_string_to_type((string) $this->getElementPropertyName($property));
         $output["#$name"] = $this->getElementProperty($property);
       }
     }
@@ -441,7 +441,7 @@ class XMLFormDefinition {
    * from the XML Form Definition.
    * 
    * @param SimpleXMLElement $property
-   *   An element property declaration from the XML Form Definition.
+   *   An element property declaration from the XML Form Deinition.
    * 
    * @return mixed
    *   The value of the property.
