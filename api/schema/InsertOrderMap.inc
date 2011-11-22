@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -134,7 +132,7 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
    * 
    * @return boolean
    */
-  public function createOccurance() {
+  public function createOccurrence() {
     if (!$this->maximumConstraintsMet()) {
       $new = clone $this->children[0];
       $this->children[] = $new;
@@ -164,8 +162,10 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
       if ($this->attemptStore($element)) {
         return TRUE;
       }
-      else if ($this->createOccurrence()) {
-        return $this->attemptStore($element); // Attempt to store.
+      else {
+        if ($this->createOccurrence()) {
+          return $this->attemptStore($element); // Attempt to store.
+        }
       }
     }
     return FALSE;

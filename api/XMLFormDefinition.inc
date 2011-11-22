@@ -429,7 +429,7 @@ class XMLFormDefinition {
     if (isset($element->properties)) {
       $properties = $element->properties->children();
       foreach ($properties as $property) {
-        $name = $property->getName();
+        $name = cast_string_to_type((string) $this->getElementPropertyName($property));
         $output["#$name"] = $this->getElementProperty($property);
       }
     }
@@ -441,7 +441,7 @@ class XMLFormDefinition {
    * from the XML Form Definition.
    * 
    * @param SimpleXMLElement $property
-   *   An element property declaration from the XML Form Definition.
+   *   An element property declaration from the XML Form Deinition.
    * 
    * @return mixed
    *   The value of the property.
@@ -645,7 +645,7 @@ class XMLFormDefinitionGenerator {
   private static function IsValidXMLTag($tag_name) {
     // start [A-Z] | "_" | [a-z]
     // everything else is start plus | "-" | "." | [0-9] 
-    return (preg_match('/^[a-zA-Z_][a-zA-Z0-9]*$/', $tag_name) > 0) ? TRUE : FALSE;
+    return (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $tag_name) > 0) ? TRUE : FALSE;
   }
 
 }
