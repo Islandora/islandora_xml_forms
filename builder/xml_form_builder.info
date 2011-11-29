@@ -1,8 +1,7 @@
-; $Id$
 name = Islandora XML Form Builder
 description = Provides an interface for Creating/Editing/Copying/Deleting/Exporting XML Based Forms.
 package = Islandora Tools
 dependencies[] = xml_form_api
-version = 11.3beta1
+version = 11.3beta2
 core = 6.x
 
