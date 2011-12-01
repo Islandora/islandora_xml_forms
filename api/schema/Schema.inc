@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  */
@@ -124,11 +122,36 @@ class XMLSchema {
    */
   private function getFullPathToSchema($filename) {
     $doc = new DOMDocument();
-    if (@$doc->load(trim($filename))) {
-      return $filename;
+    $filename = trim($filename);
+    $scheme = parse_url($filename, PHP_URL_SCHEME);
+    if ($scheme == 'http') {
+      if (@$doc->load($filename)) {
+        return $filename;
+      }
     }
-    else if (@$doc->load(trim($this->location . '/' . $filename))) {
-      return $this->location . '/' . $filename;
+    else {
+      $scheme = parse_url($this->location, PHP_URL_SCHEME);
+      if ($scheme == 'http') {
+        $matches = array();
+        $location = $this->location;
+        if (($count = preg_match_all('/\.\.\//', $filename, $matches, PREG_OFFSET_CAPTURE)) > 0) {
+          for ($i = 0; $i < $count; $i++) {
+            $index = strrpos($location, '/');
+            $location = substr($location, 0, $index);
+          }
+          $filename = substr($filename, $matches[0][$count - 1][1] + 3); // +3 for "../"
+        }
+        $path = $location . '/' . $filename;
+        if (@$doc->load($path)) {
+          return $path;
+        }
+      }
+      else {
+        $path = realpath($this->location . '/' . $filename);
+        if (@$doc->load($path)) {
+          return $path;
+        }
+      }
     }
   }
 
