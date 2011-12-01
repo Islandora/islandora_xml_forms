@@ -259,7 +259,9 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
     $xml_form = new XMLForm($form_state);
     if (!$xml_form->isInitialized()) { // Was not initialized from storage.
       $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
-      $xml_form->initialize($definition->getForm(), $definition->createXMLDocument($xml));
+      $document = $definition->createXMLDocument($xml);
+      $form = $definition->getForm();
+      $xml_form->initialize($form, $document);
     }
     /**
      * Deals with a bug in drupals AHAH, where the user would be redirected to a different page.
