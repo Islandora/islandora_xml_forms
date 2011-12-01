@@ -204,7 +204,6 @@ class XMLSchema {
     foreach ($included_files as $include_file) {
       $filename = $this->getFullPathToSchema($include_file);
       if (empty(self::$schemas[$filename])) {
-        error_log($filename);
         $this->includes[$filename] = new XMLSchema($filename, $this->namespace); // Included files share the same namespace.
       }
       else {
