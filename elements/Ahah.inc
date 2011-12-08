@@ -42,6 +42,7 @@ class Ahah {
     if (!$form = form_get_cache($form_build_id, $form_state)) {
       self::cancelResponse();
     }
+    module_load_include('inc', 'node', 'node.pages'); // Need for using AHAH in conjunction with Node API.
     $form_id = array_shift($form['#parameters']);
     return array($form_id, $form_build_id, &$form, &$form_state);
   }
