@@ -15,12 +15,12 @@
       <input type="hidden" name="<?php print $tag['#name'] ?>" id="<?php print $tag['#id'] ?>" class="form-tag" value="<?php print "{$tag['#value']}" ?>">
     <?php endforeach ?>
   </div>
-  <ui class="tag-list">
+  <ul class="tag-list">
     <?php foreach ($tags as $tag): ?>
       <li title="<?php print "{$tag['#value']}" ?>">
         <span class="edit-tag" onclick="$('#<?php print $edit[$tag['#hash']]['#id'] ?>').trigger('mousedown'); return false;"><?php print "{$tag['#value']}" ?></span>
         <span class="remove-tag" onclick="$('#<?php print $remove[$tag['#hash']]['#id'] ?>').trigger('mousedown'); return false;"></span>
       </li>
     <?php endforeach ?>
-  </ui>
+  </ul>
 </div>
