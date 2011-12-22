@@ -1,65 +1,53 @@
-ui.tag-list
+span.tag-list
 {
-	margin: 4px 0;
-	padding: 0;
+  margin: 4px 0;
+  padding: 0;
+  list-style-image: url('../images/minus_small.png');
+  /* list-style-type: none; */
 }
 
-ui.tag-list li
+span.tag-list > span
 {
-	display: inline;
-	background-color: #efe;
-	background-position: right center;
-	background-repeat: no-repeat;
-	list-style-type: none;
-	padding: 0 0 0 6px;
-	margin: 0 5px;	
-	cursor: pointer;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+  background-image: none;
+  background-color: #efe;
+  background-position: right center;
+  background-repeat: no-repeat; 
+  margin: 0 5px;	
+  padding: 0 2px;
+  cursor: pointer;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
 }
 
-ui.tag-list li span.remove-tag
+span.tag-list > span > span.remove-tag
 {
-	display: inline;
-	background-image: url('../images/minus_small.png');
-	background-color: #efe;
-	background-position: right center;
-	background-repeat: no-repeat;
-	list-style-type: none;
-	padding: 0 6px 0 6px;
-	margin: 0 5px;	
-	cursor: pointer;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+  display: inline-block;
+  height: 12px;
+  width: 12px;
+  padding-left: 5px;
+  cursor: pointer;
+  background-image: url('../images/minus_small.png');
+  background-repeat: no-repeat;
+  background-position: right center;
+  /*padding: 0 6px 0 6px;
+  margin: 0 5px;	
+  cursor: pointer;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;*/
 }
 
-.xml-form-elements-tags div.add-tag
+.xml-form-elements-tags input.progress-disabled
 {
-	display: inline-block;
+  float: none;
 }
 
 .xml-form-elements-tags div.add-tag > input
 {
-	/*vertical-align: middle;*/
-        display: block;
+  display: inline;
+  float: none;
 }
 
-/*.xml-form-elements-tags span.add-tag
+span.tag-list > span:hover, span.tag-list > span:hover span
 {
-	display: inline;
-	background-image: url('../images/add.png');
-	background-color: #efe;
-	background-position: right center;
-	background-repeat: no-repeat;
-	list-style-type: none;
-	padding: 0 9px 0 6px;
-	margin: 0 4px;	
-	cursor: pointer;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-}*/
-
-ui.tag-list > li:hover
-{
-	background-color: #eee;
+  background-color: #eee;
 }

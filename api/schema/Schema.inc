@@ -60,8 +60,8 @@ class XMLSchema {
    * @param string $namespace 
    */
   public function __construct($filename, $namespace = NULL) {
-    self::$schemas[$filename] = $this;
     $filename = trim($filename);
+    self::$schemas[$filename] = $this;
     $this->protected = new ReadOnlyProtectedMembers(array(
           'filename' => $filename,
           'location' => $this->getSchemaLocation($filename),
