@@ -8,16 +8,14 @@ $classes .= ( $collapsed) ? 'xml-form-elements-tabs-collapsed' : '';
     <!-- First Tab Panel -->
     <li class='tool_tip_trigger'>
       <a href='<?php print "#$link" ?>'>
-        <span style='float:left; vertical-align: middle; text-align: center;'><?php print $title ?></span>
+        <span style='float:left; vertical-align: middle; text-align: center;'><?php print '1'; ?></span>
         <?php if ($collapsible): ?>
           <span class='expand-tabpanel-icon ui-icon ui-icon-circle-triangle-e' style='float: right; vertical-align: middle; margin-left:0.2em;'></span>
         <?php else: ?>
           <span class='expand-tabpanel-icon ui-icon ui-icon-circle-triangle-s' style='float: right; vertical-align: middle; margin-left:0.2em;'></span>
         <?php endif; ?>
       </a>
-      <span class="tool_tip">
-          Testing one!
-      </span>
+      <span class="tool_tip"></span>
     </li>
     <!-- All other Tab Panels -->
     <?php if (isset($tabpanels)): ?>
