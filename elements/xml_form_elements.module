@@ -311,4 +311,3 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
   module_load_include('inc', 'xml_form_elements', 'includes/Datepicker');
   return Datepicker::Process($element, $edit, $form_state, $complete_form);
 }
-

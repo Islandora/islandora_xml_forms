@@ -30,7 +30,9 @@ class Datepicker {
 }
 
 /**
- * Preprocess tabs theme hook.
+ * Implements theme_hook().
+ * 
+ * For the datepicker form element.
  * 
  * @param array $vars 
  */
@@ -40,15 +42,11 @@ function theme_datepicker($element) {
   $class = array('form-text', 'datepicker');
   $extra = '';
   $output = '';
-
   _form_set_class($element, $class);
-
   if (isset($element['#field_prefix'])) {
     $output .= '<span class="field-prefix">' . $element['#field_prefix'] . '</span> ';
   }
-
   $output .= '<input type="text"' . $maxlength . ' name="' . $element['#name'] . '" id="' . $element['#id'] . '"' . $size . ' value="' . check_plain($element['#value']) . '"' . drupal_attributes($element['#attributes']) . ' />';
-
   if (isset($element['#field_suffix'])) {
     $output .= ' <span class="field-suffix">' . $element['#field_suffix'] . '</span>';
   }
