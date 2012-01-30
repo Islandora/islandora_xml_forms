@@ -10,7 +10,7 @@
 
 /**
  *
- * @param type $form_build_id 
+ * @param type $form_build_id
  */
 function get_form_info($form_build_id) {
   if (!isset($_REQUEST['form_build_id'])) {
@@ -30,7 +30,7 @@ function get_form_info($form_build_id) {
 /**
  *
  * @param type $form_build_id
- * @return array 
+ * @return array
  */
 function get_form_and_form_state($form_build_id) {
   $form_state = array('storage' => NULL, 'submitted' => FALSE, 'post' => $_POST);
@@ -45,7 +45,7 @@ function get_form_and_form_state($form_build_id) {
  *
  * @param type $form_build_id
  * @param array $form
- * @param array $form_state 
+ * @param array $form_state
  */
 function cache_form_and_form_state($form_build_id, array &$form, array &$form_state) {
   $form['#post'] = $_POST;
@@ -55,7 +55,7 @@ function cache_form_and_form_state($form_build_id, array &$form, array &$form_st
 
 /**
  *
- * @param array $element 
+ * @param array $element
  */
 function ahah_return_html_via_json(array &$element) {
   unset($element['#prefix'], $element['#suffix']);

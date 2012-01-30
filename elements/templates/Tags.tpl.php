@@ -1,9 +1,15 @@
+<?php
+/**
+ * @file
+ * Template for the Tags Element.
+ */
+?>
 <div class="xml-form-elements-tags">
-  <input type="text" 
-         name="<?php print "{$input['#name']}" ?>" 
-         id="<?php print "{$element['#id']}" ?>" 
-         size="<?php print "{$variables[0]['#size']}" ?>" 
-         value="<?php print "{$input['#value']}" ?>" 
+  <input type="text"
+         name="<?php print "{$input['#name']}" ?>"
+         id="<?php print "{$element['#id']}" ?>"
+         size="<?php print "{$variables[0]['#size']}" ?>"
+         value="<?php print "{$input['#value']}" ?>"
          class="form-text tag-editor">
   <input type="image" src="<?php print $image_path ?>add.png" name="<?php print $add['#name'] ?>" id="<?php print $add['#id'] ?>" value="add">
   <div class="hidden-controls">

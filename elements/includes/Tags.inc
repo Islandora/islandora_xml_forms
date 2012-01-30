@@ -17,7 +17,7 @@ class Tags {
    * @param array $element
    * @param type $edit
    * @param array $form_state
-   * @param array $complete_form 
+   * @param array $complete_form
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     drupal_add_css(PATH_XML_FORM_ELEMENTS_CSS . 'tags.css');
@@ -100,8 +100,8 @@ class Tags {
 
 /**
  * Preprocess tabs theme hook.
- * 
- * @param array $vars 
+ *
+ * @param array $vars
  */
 function xml_form_elements_preprocess_tags_content(&$vars) {
   $tags = &$vars[0];

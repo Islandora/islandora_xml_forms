@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Template for the Tabs Element.
+ */
 $classes = ($collapsible) ? 'xml-form-elements-tabs-collapsible ' : '';
 $classes .= ($collapsed) ? 'xml-form-elements-tabs-collapsed' : '';
 ?>
@@ -16,7 +20,7 @@ $classes .= ($collapsed) ? 'xml-form-elements-tabs-collapsed' : '';
         <?php endif; ?>
       </a>
       <span class="tool_tip">
-          Testing one!
+        Testing one!
       </span>
     </li>
     <!-- All other Tab Panels -->
@@ -31,7 +35,7 @@ $classes .= ($collapsed) ? 'xml-form-elements-tabs-collapsed' : '';
             <span class='ui-icon ui-icon-close' style='float: left; margin: 0.4em 0.2em 0 0; cursor: pointer;'><?php print $remove_button ?></span>
           <?php endif ?>
           <span class="tool_tip">
-              Testing !
+            Testing !
           </span>
         </li>
       <?php endforeach; ?>

@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -10,9 +8,9 @@ class Ahah {
 
   /**
    * Is this a valid request.
-   * 
+   *
    * Ensure that a form_build_id is specified.
-   * 
+   *
    * @return boolean
    */
   public static function validRequest() {
@@ -29,7 +27,7 @@ class Ahah {
 
   /**
    * Ge the form_id, form_build_id, form, and form_state.
-   * 
+   *
    * @param Post $post
    * @return array
    */
@@ -51,7 +49,7 @@ class Ahah {
    *
    * @param type $form_id
    * @param array $form
-   * @param array $form_state 
+   * @param array $form_state
    */
   public static function &processForm($form_id, array &$form, array &$form_state) {
     $form['#post'] = $_POST;
@@ -69,7 +67,7 @@ class Ahah {
    * @param type $form_build_id
    * @param array $form
    * @param array $form_state
-   * @return type 
+   * @return type
    */
   public static function &rebuildForm($form_id, $form_build_id, array &$form, array &$form_state) {
     $args = $form['#parameters'];
@@ -79,8 +77,8 @@ class Ahah {
 
   /**
    * Send a response to the AHAH request.
-   * 
-   * @param array $form 
+   *
+   * @param array $form
    */
   public static function respond(array &$form = NULL) {
     $data = theme('status_messages');

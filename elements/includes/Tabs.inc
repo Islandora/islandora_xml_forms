@@ -13,7 +13,7 @@ class Tabs {
    * @param array $element
    * @param type $edit
    * @param array $form_state
-   * @param array $complete_form 
+   * @param array $complete_form
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     static $add_files = TRUE;
@@ -34,7 +34,7 @@ class Tabs {
 
   /**
    *
-   * @param array $children 
+   * @param array $children
    */
   public static function FilterChildren(array $child) {
     $ret = ($child['#type'] == 'tabpanel') ? TRUE : FALSE;
@@ -45,8 +45,8 @@ class Tabs {
 
 /**
  * Preprocess tabs theme hook.
- * 
- * @param array $vars 
+ *
+ * @param array $vars
  */
 function xml_form_elements_preprocess_tabs(&$vars) {
   $tabs = $vars['tabs'];
@@ -80,7 +80,7 @@ function xml_form_elements_preprocess_tabs(&$vars) {
     $parents = $tabs['#array_parents'];
     $name = array_pop($parents);
     $vars['content'] = '';
-    drupal_set_message("Attempted to create a tabs: '$name', without defining any child tabpanels.", 'error');
+    drupal_set_message(t('Attempted to create a tabs: %name, without defining any child tabpanels.', array('%name' => $name)), 'error');
   }
 }
 

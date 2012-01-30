@@ -11,7 +11,7 @@ class Datepicker {
    * @param array $element
    * @param type $edit
    * @param array $form_state
-   * @param array $complete_form 
+   * @param array $complete_form
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     static $add_files = TRUE;
@@ -31,10 +31,10 @@ class Datepicker {
 
 /**
  * Implements theme_hook().
- * 
+ *
  * For the datepicker form element.
- * 
- * @param array $vars 
+ *
+ * @param array $vars
  */
 function theme_datepicker($element) {
   $size = empty($element['#size']) ? '' : ' size="' . $element['#size'] . '"';

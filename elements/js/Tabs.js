@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -58,7 +58,7 @@ xml_form_elements.tabpanel = {
     }
   },
   attachToolTips: function() {
-    $('.tool_tip_trigger').each(function() {     
+    $('.tool_tip_trigger').each(function() {
       var tip = $(this).find('.tool_tip');
       $(this).hover(function() {
         var html = '';
@@ -102,10 +102,10 @@ xml_form_elements.tabpanel = {
         if ( dx < 20 ) x = e.pageX - w - 20;
         if ( dy < 20 ) y = e.pageY - h - 20;
         tip.css({
-          left: x, 
+          left: x,
           top: y
         });
-      });         
+      });
     });
   },
   enableActions: function () {
@@ -118,7 +118,7 @@ xml_form_elements.tabpanel = {
     $('#' + id).trigger("mousedown");
     return false;
   }
-}; 
+};
 
 /**
  * On Load, listen for ajax requests and attempt to regenerate any new tabs.

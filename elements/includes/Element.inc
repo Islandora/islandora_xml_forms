@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -19,9 +17,9 @@ class Element {
 
   /**
    * AHAH callback to duplicate an existing element.
-   * 
+   *
    * @param hash $duplicate
-   * @param hash $render 
+   * @param hash $render
    */
   public static function Duplicate($duplicate, $render = NULL) {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
@@ -41,7 +39,7 @@ class Element {
 
   /**
    * AHAH callback to remove an existing element.
-   * 
+   *
    * @param hash $remove
    * @param hash $render
    */
@@ -61,8 +59,8 @@ class Element {
 
   /**
    * AHAH callback to validate an existing element.
-   * 
-   * @param hash $render 
+   *
+   * @param hash $render
    */
   public static function Validate($render) {
     list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
@@ -77,8 +75,8 @@ class Element {
 
   /**
    * AHAH callback to rebuild an existing element.
-   * 
-   * @param hash $render 
+   *
+   * @param hash $render
    */
   public static function Rebuild($render) {
     list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();

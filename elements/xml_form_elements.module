@@ -2,7 +2,7 @@
 
 /**
  * @file
- * 
+ *
  * Hooks and constants for xml_form_elements.
  */
 /**
@@ -33,7 +33,7 @@ define('PATH_XML_FORM_ELEMENTS_IMAGES', PATH_XML_FORM_ELEMENTS . 'images/');
 /**
  * Implements hook_menu().
  *
- * @return array 
+ * @return array
  */
 function xml_form_elements_menu() {
   /**
@@ -140,7 +140,7 @@ function xml_form_elements_menu() {
 
 /**
  * Implements hook_elements().
- * 
+ *
  * @return array
  */
 function xml_form_elements_elements() {
@@ -214,16 +214,16 @@ function xml_form_elements_theme() {
 
 /**
  * Process the 'tabs' Element.
- * 
+ *
  * @param array $element
  *   The element to be processed.
  * @param mixed $edit
  *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
- * @param array $complete_form 
+ * @param array $complete_form
  *   The drupal form.
- * 
+ *
  * @return array
  *   The processed element.
  */
@@ -234,16 +234,16 @@ function xml_form_elements_process_tabs(array $element, $edit, array &$form_stat
 
 /**
  * Process the 'tabpanel' Element.
- * 
+ *
  * @param array $element
  *   The element to be processed.
  * @param mixed $edit
  *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
- * @param array $complete_form 
+ * @param array $complete_form
  *   The drupal form.
- * 
+ *
  * @return array
  *   The processed element.
  */
@@ -254,16 +254,16 @@ function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_
 
 /**
  * Process the 'tags' Element.
- * 
+ *
  * @param array $element
  *   The element to be processed.
  * @param mixed $edit
  *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
- * @param array $complete_form 
+ * @param array $complete_form
  *   The drupal form.
- * 
+ *
  * @return array
  *   The processed element.
  */
@@ -274,16 +274,16 @@ function xml_form_elements_process_tags(array $element, $edit, array &$form_stat
 
 /**
  * Process the 'tag' Element.
- * 
+ *
  * @param array $element
  *   The element to be processed.
  * @param mixed $edit
  *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
- * @param array $complete_form 
+ * @param array $complete_form
  *   The drupal form.
- * 
+ *
  * @return array
  *   The processed element.
  */
@@ -294,16 +294,16 @@ function xml_form_elements_process_tag(array $element, $edit, array &$form_state
 
 /**
  * Process the 'datepicker' Element.
- * 
+ *
  * @param array $element
  *   The element to be processed.
  * @param mixed $edit
  *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
- * @param array $complete_form 
+ * @param array $complete_form
  *   The drupal form.
- * 
+ *
  * @return array
  *   The processed element.
  */
