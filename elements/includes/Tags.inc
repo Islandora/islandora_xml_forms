@@ -20,9 +20,8 @@ class Tags {
    * @param array $complete_form 
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    $path = drupal_get_path('module', 'xml_form_elements');
-    drupal_add_css("$path/stylesheets/tags.css");
-    drupal_add_js("$path/js/XMLFormElements.js");
+    drupal_add_css(PATH_XML_FORM_ELEMENTS_CSS . 'tags.css');
+    drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'XMLFormElements.js');
     $element['#id'] = $element['#hash'];
     $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;

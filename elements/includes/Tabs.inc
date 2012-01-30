@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -20,14 +18,13 @@ class Tabs {
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     static $add_files = TRUE;
     if ($add_files) {
-      $path = drupal_get_path('module', 'xml_form_elements');
       jquery_ui_add('ui.tabs');
-      drupal_add_js("$path/js/XMLFormElements.js");
-      drupal_add_js("$path/js/Tabs.js");
-      drupal_add_css("$path/theme/ui.core.css");
-      drupal_add_css("$path/theme/ui.tabs.css");
-      drupal_add_css("$path/theme/ui.theme.css");
-      drupal_add_css("$path/stylesheets/tabs.css");
+      drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'XMLFormElements.js');
+      drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'Tabs.js');
+      drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.core.css');
+      drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.tabs.css');
+      drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.theme.css');
+      drupal_add_css(PATH_XML_FORM_ELEMENTS_CSS . 'tabs.css');
       $add_files = FALSE;
     }
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
@@ -76,7 +73,7 @@ function xml_form_elements_preprocess_tabs(&$vars) {
     $count++;
   }
   // Content Info
-  if(isset($tabs['#children'])) {
+  if (isset($tabs['#children'])) {
     $vars['content'] = $tabs['#children'];
   }
   else {
