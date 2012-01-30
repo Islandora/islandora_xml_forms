@@ -65,7 +65,7 @@ xml_form_elements.tabpanel = {
         var id = $(this).children('a[href]').attr('href');
         $('#' + id + ' div.form-item').each(function() {
           var item = $(this);
-          var text = $('input[class~="form-text"]', item);
+          var text = $('input[type~="text"]', item);
           if(text.length) {
             var id = text.attr('id');
             var label = $('label[for=' + id + ']', item);

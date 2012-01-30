@@ -51,7 +51,7 @@ class Tabs {
  * 
  * @param array $vars 
  */
-function xml_form_elements_preprocess_tabs(&$vars) {
+function xml_form_elements_preprocess_tabs_content(&$vars) {
   $tabs = $vars['tabs'];
   // Header Info
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
@@ -87,3 +87,10 @@ function xml_form_elements_preprocess_tabs(&$vars) {
   }
 }
 
+/**
+ * Theme Hook for tags elements.
+ */
+function xml_form_elements_theme_tabs($element) {
+  $content = theme('tabs_content', $element);
+  return theme('form_element', $element, $content);
+}
