@@ -228,7 +228,7 @@ function xml_form_elements_theme() {
  *   The processed element.
  */
 function xml_form_elements_process_tabs(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Tabs');
+  module_load_include('inc', 'xml_form_elements', 'includes/Tabs');
   return Tabs::Process($element, $edit, $form_state, $complete_form);
 }
 
@@ -248,7 +248,7 @@ function xml_form_elements_process_tabs(array $element, $edit, array &$form_stat
  *   The processed element.
  */
 function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'TabPanel');
+  module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
   return TabPanel::Process($element, $edit, $form_state, $complete_form);
 }
 
@@ -268,7 +268,7 @@ function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_
  *   The processed element.
  */
 function xml_form_elements_process_tags(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Tags');
+  module_load_include('inc', 'xml_form_elements', 'includes/Tags');
   return Tags::Process($element, $edit, $form_state, $complete_form);
 }
 
@@ -288,7 +288,7 @@ function xml_form_elements_process_tags(array $element, $edit, array &$form_stat
  *   The processed element.
  */
 function xml_form_elements_process_tag(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Tag');
+  module_load_include('inc', 'xml_form_elements', 'includes/Tag');
   return Tag::Process($element, $edit, $form_state, $complete_form);
 }
 
@@ -308,7 +308,7 @@ function xml_form_elements_process_tag(array $element, $edit, array &$form_state
  *   The processed element.
  */
 function xml_form_elements_process_datepicker(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Datepicker');
+  module_load_include('inc', 'xml_form_elements', 'includes/Datepicker');
   return Datepicker::Process($element, $edit, $form_state, $complete_form);
 }
 

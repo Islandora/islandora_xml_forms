@@ -5,7 +5,7 @@
          size="<?php print "{$variables[0]['#size']}" ?>" 
          value="<?php print "{$input['#value']}" ?>" 
          class="form-text tag-editor">
-  <input type="image" src="<?php print $image_path ?>/add.png" name="<?php print $add['#name'] ?>" id="<?php print $add['#id'] ?>" value="add">
+  <input type="image" src="<?php print $image_path ?>add.png" name="<?php print $add['#name'] ?>" id="<?php print $add['#id'] ?>" value="add">
   <div class="hidden-controls">
     <?php print $edit['#children']; ?>
     <?php print $remove['#children']; ?>

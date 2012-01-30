@@ -1,6 +1,6 @@
 <?php
 $classes = ($collapsible) ? 'xml-form-elements-tabs-collapsible ' : '';
-$classes .= ( $collapsed) ? 'xml-form-elements-tabs-collapsed' : '';
+$classes .= ($collapsed) ? 'xml-form-elements-tabs-collapsed' : '';
 ?>
 <div class="xml-form-elements-tabs <?php print $classes ?>">
   <!-- Header  -->

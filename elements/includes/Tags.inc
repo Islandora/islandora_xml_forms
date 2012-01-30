@@ -4,7 +4,7 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_elements', 'Tag');
+module_load_include('inc', 'xml_form_elements', 'includes/Tag');
 
 class Tags {
   /**
@@ -104,10 +104,9 @@ class Tags {
  * @param array $vars 
  */
 function xml_form_elements_preprocess_tags_content(&$vars) {
-  global $base_url;
   $tags = &$vars[0];
   $vars['element'] = &$vars[0];
-  $vars['image_path'] = "$base_url/{$vars['directory']}/images"; // Location of images.
+  $vars['image_path'] = url(PATH_XML_FORM_ELEMENTS_IMAGES); // Location of images.
   $vars['add'] = $tags['controls']['add']; // Visible Add Button
   $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL; // Hidden Edit Button
   $vars['remove'] = isset($tags['controls']['remove']) ? $tags['controls']['remove'] : NULL; // Hidden Remove Button
@@ -119,7 +118,6 @@ function xml_form_elements_preprocess_tags_content(&$vars) {
       $vars['tags'][$key] = $child;
     }
   }
-  //$vars['tags'] = $tags['#size'];
   $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
 }
 

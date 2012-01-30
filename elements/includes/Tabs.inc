@@ -4,7 +4,7 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_elements', 'TabPanel');
+module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
 
 class Tabs {
 
