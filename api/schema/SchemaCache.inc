@@ -13,7 +13,7 @@ define('XML_SCHEMA_API_CACHE_LOCATION', file_directory_path() . '/schemas');
  */
 class SchemaCache {
   /**
-   * The drupal cache id where the mappings of urls to actual files is stored.
+   * The Drupal cache id where the mappings of urls to actual files is stored.
    */
   const ID = 'xml-schema-table';
   const Type = 'cache';
@@ -79,7 +79,7 @@ class SchemaCache {
       }
       return TRUE;
     }
-    return @mkdir(XML_SCHEMA_API_CACHE_LOCATION, 775, TRUE);
+    return @mkdir(XML_SCHEMA_API_CACHE_LOCATION, 0775, FALSE);
   }
 
   /**
@@ -92,8 +92,8 @@ class SchemaCache {
    *   TRUE if the cach
    */
   public static function LocationExists($filename = NULL) {
-    $filename = empty($filename) ? '' : '/' . $filename;
-    return file_exists(XML_SCHEMA_API_CACHE_LOCATION . $filename);
+    $filename = empty($filename) ? XML_SCHEMA_API_CACHE_LOCATION : $filename;
+    return file_exists($filename);
   }
 
   /**
@@ -107,11 +107,11 @@ class SchemaCache {
    */
   public static function Get($filename) {
     if (self::Create()) { // Only Creates if none existed.
-      $cache = cache_get(self::ID, self::Type);
+      $cache = cache_get(self::ID, self::Type)->data;
       if (isset($filename) && isset($cache[$filename])) {
         if (self::LocationExists($cache[$filename])) {
           $doc = new DOMDocument();
-          if (!@$doc->load(XML_SCHEMA_API_CACHE_LOCATION . '/' . $cache[$filename])) {
+          if (!@$doc->load($cache[$filename])) {
             // Failed to load clear instance from the cache.
             unset($cache[$filename]);
             cache_set(self::ID, $cache, self::Type);
@@ -137,9 +137,9 @@ class SchemaCache {
    */
   public static function Set($filename, DOMDocument $doc) {
     if (self::Create()) { // Only Creates if none existed.
-      $cached_filename = file_create_filename('schema', XML_SCHEMA_API_CACHE_LOCATION);
-      if ($doc->save($cached_filename) != FALSE) {
-        $cache = cache_get(self::ID, self::Type);
+      $cached_filename = file_create_filename('schema.xsd', XML_SCHEMA_API_CACHE_LOCATION);
+      if (@$doc->save($cached_filename) != FALSE) {
+        $cache = cache_get(self::ID, self::Type)->data;
         $cache[$filename] = $cached_filename;
         cache_set(self::ID, $cache, self::Type);
       }

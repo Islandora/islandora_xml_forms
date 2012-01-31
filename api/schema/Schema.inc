@@ -7,7 +7,7 @@ module_load_include('inc', 'php_lib', 'ReadOnlyProtectedMembers');
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'xml_form_api', 'SchemaTag');
-module_load_include('inc', 'xml_form_api', 'SchemaCache');
+module_load_include('inc', 'xml_schema_api', 'SchemaCache');
 
 /**
  * Ignoring imported documents for the most part as they are not used much in FGDC this will be an issue we will need
