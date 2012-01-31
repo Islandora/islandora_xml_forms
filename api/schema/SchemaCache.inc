@@ -11,7 +11,7 @@ define('XML_SCHEMA_API_CACHE_LOCATION', file_directory_path() . '/schemas');
  * 
  * The mappings of url's to actual files is stored in the Drupal cache.
  */
-class Cache {
+class SchemaCache {
   /**
    * The drupal cache id where the mappings of urls to actual files is stored.
    */

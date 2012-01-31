@@ -7,6 +7,7 @@ module_load_include('inc', 'php_lib', 'ReadOnlyProtectedMembers');
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'xml_form_api', 'SchemaTag');
+module_load_include('inc', 'xml_form_api', 'SchemaCache');
 
 /**
  * Ignoring imported documents for the most part as they are not used much in FGDC this will be an issue we will need
@@ -168,7 +169,7 @@ class XMLSchema {
    * @return DOMDocument 
    */
   private function loadDocument($filename) {
-    if (($doc = Cache::Get($filename)) != FALSE) {
+    if (($doc = SchemaCache::Get($filename)) != FALSE) {
       return $doc;
     }
     else {
@@ -176,7 +177,7 @@ class XMLSchema {
       if (!@$doc->load($filename)) { // If we can't find a document just fail, we shouldn't attempt any processing.
         throw new Exception(t('Failed to Find Document: %filename', array('%filename' => $filename)));
       }
-      Cache::Set($filename, $doc);
+      SchemaCache::Set($filename, $doc);
       return $doc;
     }
   }
