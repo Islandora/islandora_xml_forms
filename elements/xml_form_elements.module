@@ -17,6 +17,7 @@ define('MENU_XML_FORM_ELEMENTS_AHAH_TAG_ADD', MENU_XML_FORM_ELEMENTS_AHAH . 'tag
 define('MENU_XML_FORM_ELEMENTS_AHAH_TAG_EDIT', MENU_XML_FORM_ELEMENTS_AHAH . 'tag/edit/%');
 define('MENU_XML_FORM_ELEMENTS_AHAH_TAG_REMOVE', MENU_XML_FORM_ELEMENTS_AHAH . 'tag/remove/%');
 define('THEME_XML_FORM_ELEMENTS_TABS', 'tabs');
+define('THEME_XML_FORM_ELEMENTS_TABS_CONTENT', 'tabs_content');
 define('THEME_XML_FORM_ELEMENTS_TABPANEL', 'tabpanel');
 define('THEME_XML_FORM_ELEMENTS_TAGS', 'tags');
 define('THEME_XML_FORM_ELEMENTS_TAGS_CONTENT', 'tags_content');
@@ -182,19 +183,22 @@ function xml_form_elements_elements() {
  */
 function xml_form_elements_theme() {
   return array(
-    THEME_XML_FORM_ELEMENTS_TABS => array(
+    THEME_XML_FORM_ELEMENTS_TABS => array( // Wrapper used so theme('form_element') can be used.
+      'arguments' => array('tabs' => NULL),
+      'file' => 'Tabs.inc',
+    ),
+    THEME_XML_FORM_ELEMENTS_TABS_CONTENT => array( // Tabs outer frame
       'arguments' => array('tabs' => NULL),
       'template' => 'templates/Tabs',
-      'file' => 'Tabs.inc'
-    ),
-    THEME_XML_FORM_ELEMENTS_TABPANEL => array(
+      'file' => 'Tags.inc',
+   ),
+    THEME_XML_FORM_ELEMENTS_TABPANEL => array( // The content of a single tabpanel.
       'arguments' => array('element'),
       'file' => 'TabPanel.inc'
     ),
-    THEME_XML_FORM_ELEMENTS_TAGS => array(
+    THEME_XML_FORM_ELEMENTS_TAGS => array( // Wrapper used so theme('form_element') can be used.
       'arguments' => array('element'),
       'file' => 'Tags.inc',
-      'function' => 'xml_form_elements_theme_tags'
     ),
     THEME_XML_FORM_ELEMENTS_TAGS_CONTENT => array(// The inner content of a tags element.
       'arguments' => array('element'), // => NULL),

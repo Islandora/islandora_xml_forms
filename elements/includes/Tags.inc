@@ -122,13 +122,25 @@ function xml_form_elements_preprocess_tags_content(&$vars) {
 }
 
 /**
- * Theme Hook for tags elements.
+ * Theme function for tags.
  */
-function xml_form_elements_theme_tags($element) {
+function theme_tags($element) {
   $content = theme('tags_content', $element);
   return theme('form_element', $element, $content);
 }
 
+/**
+ * Wrapper for Tags::AfterBuild, used as Drupal doesn't support static calls in this situation.
+ * 
+ * Modifies the provided tag element.
+ * 
+ * @param array $form_element
+ *   A tag element to be modified.
+ * @param array $form_state
+ *   The Drupal form state.
+ * @return array
+ *   The modified $form_element. 
+ */
 function xml_form_elements_after_build_tags(array $form_element, array &$form_state) {
   return Tags::AfterBuild($form_element, $form_state);
 }

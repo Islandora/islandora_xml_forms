@@ -45,10 +45,10 @@ class Tabs {
 
 /**
  * Preprocess tabs theme hook.
- *
+ *  
  * @param array $vars
  */
-function xml_form_elements_preprocess_tabs_content(&$vars) {
+function template_preprocess_tabs_content(&$vars) {
   $tabs = $vars['tabs'];
   // Header Info
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
@@ -87,7 +87,7 @@ function xml_form_elements_preprocess_tabs_content(&$vars) {
 /**
  * Theme Hook for tags elements.
  */
-function xml_form_elements_theme_tabs($element) {
+function theme_tabs($element) {
   $content = theme('tabs_content', $element);
   return theme('form_element', $element, $content);
 }
