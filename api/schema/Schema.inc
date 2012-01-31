@@ -200,7 +200,6 @@ class XMLSchema {
   private function loadIncludedFiles() {
     $this->includes = array();
     $included_files = $this->getIncludedFiles();
-    $doc = new DOMDocument();
     foreach ($included_files as $include_file) {
       $filename = $this->getFullPathToSchema($include_file);
       if (empty(self::$schemas[$filename])) {
