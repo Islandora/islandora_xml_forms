@@ -1,8 +1,15 @@
 <?php
 
-
-
 /**
  * @file
  *
  */
+
+/**
+ * Implementation of hook_flush_caches().
+ */
+function xml_schema_api_flush_caches() {
+  module_load_include('inc', 'xml_schema_api', 'SchemaCache');
+  SchemaCache::Clear();
+  return array();
+}
