@@ -52,6 +52,11 @@ function xml_form_elements_theme() {
   return array(
     'tabs' => array(
       'arguments' => array('tabs' => NULL),
+      'file' => 'Tabs.inc',
+      'function' => 'xml_form_elements_theme_tabs'
+    ),
+    'tabs_content' => array( // The inner content of a tabs element.
+      'arguments' => array('tabs' => NULL),
       'template' => 'Tabs',
       'file' => 'Tabs.inc'
     ),

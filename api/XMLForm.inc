@@ -62,7 +62,7 @@ class XMLForm extends Form {
    */
   public function initialize(array &$form, XMLDocument $document) {
     if (!$this->initialized) {
-      $this->root = new FormElement($form);
+      $this->root = new FormElement($this->registry, $form);
       $this->document = $document;
       $this->generate(); // Register nodes and generate new elements.
       $this->prepopulate();
@@ -126,8 +126,8 @@ class XMLForm extends Form {
   public function submit(array &$form, array &$form_state) {
     module_load_include('inc', 'objective_forms', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
-    $form_values = new FormValues($form_state, $form);
-    $processor = new XMLFormProcessor($form_values, $this->document); 
+    $form_values = new FormValues($form_state, $form, $this->registry);
+    $processor = new XMLFormProcessor($form_values, $this->document, $this->registry); 
     return $processor->process($this->root);
   }
 

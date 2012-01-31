@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -91,15 +89,22 @@ class XMLFormProcessor {
   protected $elementRegistry;
 
   /**
-   *
-   * @param type $form_state
-   * @param type $definition 
+   * Creates a XMLFormProcessor instance.
+   * 
+   * This is used to modify the given document with the values and actions specified by the submitted form.
+   * 
+   * @param FormValues $values
+   *   The submitted values for this form.
+   * @param XMLDocument $definition 
+   *   The document to be modified with the submitted values.
+   * @param FormElementRegistry $registry
+   *   The registry used to access form element information required to modify the document correctly.
    */
-  public function __construct(FormValues $values, XMLDocument $document) {
+  public function __construct(FormValues $values, XMLDocument $document, FormElementRegistry $registry) {
     $this->values = $values;
     $this->document = $document;
     $this->nodeRegistry = $document->registry;
-    $this->elementRegistry = FormElementRegistry::getInstance();
+    $this->elementRegistry = $registry;
   }
 
   /**
