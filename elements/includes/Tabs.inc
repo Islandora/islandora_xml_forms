@@ -62,7 +62,7 @@ function template_preprocess_tabs_content(&$vars) {
   $children = array_filter($children, array('Tabs', 'FilterChildren'));
   // First element has different icons, and title.
   $first = array_shift($children);
-  $vars['title'] = isset($first['#title']) ? $first['#title'] : $tabs['#title'];
+  $vars['title'] = isset($first['#title']) ? $first['#title'] : 0;
   $vars['link'] = $first['#hash'];
   // Remaining tabpanels.
   $count = 2;
