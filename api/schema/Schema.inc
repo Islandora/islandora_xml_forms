@@ -116,7 +116,7 @@ class XMLSchema {
   }
 
   /**
-   * Gets the full path to a schema.
+   * Gets the full path to a schema maybe...
    * 
    * @param string $filename
    */
@@ -125,9 +125,7 @@ class XMLSchema {
     $filename = trim($filename);
     $scheme = parse_url($filename, PHP_URL_SCHEME);
     if ($scheme == 'http') {
-      if (@$doc->load($filename)) {
-        return $filename;
-      }
+      return $filename;
     }
     else {
       $scheme = parse_url($this->location, PHP_URL_SCHEME);
@@ -142,15 +140,10 @@ class XMLSchema {
           $filename = substr($filename, $matches[0][$count - 1][1] + 3); // +3 for "../"
         }
         $path = $location . '/' . $filename;
-        if (@$doc->load($path)) {
-          return $path;
-        }
+        return $path;
       }
       else {
-        $path = realpath($this->location . '/' . $filename);
-        if (@$doc->load($path)) {
-          return $path;
-        }
+        return realpath($this->location . '/' . $filename);
       }
     }
   }
@@ -161,16 +154,30 @@ class XMLSchema {
    * @param string $filename 
    */
   private function loadSchema($filename) {
-    $this->schema = new DOMDocument();
-    $loaded = @$this->schema->load($filename);
-    if (!$loaded) {
-      throw new Exception("Failed to Find Schema. '{$filename}'");
+    $this->schema = $this->loadDocument($filename);
+    $this->configureXPath();
+    $this->loadIncludedFiles();
+    $this->loadImportedFiles();
+  }
+
+  /**
+   * Loads the given DOMDocument.
+   * 
+   * @param string $filename
+   * 
+   * @return DOMDocument 
+   */
+  private function loadDocument($filename) {
+    if (($doc = Cache::Get($filename)) != FALSE) {
+      return $doc;
     }
     else {
-      $this->configureXPath();
-      $this->loadIncludedFiles();
-      $this->loadImportedFiles();
-      return TRUE;
+      $doc = new DOMDocument();
+      if (!@$doc->load($filename)) { // If we can't find a document just fail, we shouldn't attempt any processing.
+        throw new Exception(t('Failed to Find Document: %filename', array('%filename' => $filename)));
+      }
+      Cache::Set($filename, $doc);
+      return $doc;
     }
   }
 
