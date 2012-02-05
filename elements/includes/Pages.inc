@@ -81,7 +81,7 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
 }
 
 /**
- *
+ * 
  * @param array $element
  * @param type $edit
  * @param array $form_state
@@ -92,12 +92,9 @@ function xml_form_elements_process_page_initialize(array $element, $edit, array 
   $element['#id'] = $element['#hash'];
   $element['#required'] = FALSE; // Can't require a page.
   $element['#type'] = 'markup'; // Prevent name collision with 'page' theme.
+  $element['#value'] = NULL;
   $element['#theme'] = THEME_XML_FORM_ELEMENTS_PAGE;
   return $element;
-}
-
-function foo($element, $content) {
-  return theme('form_element', $element, $content);
 }
 
 /**
@@ -135,7 +132,6 @@ function theme_xml_form_elements_page(array $element) {
  *   The properties availible to this theme's template.
  */
 function template_preprocess_pages(array &$vars) {
-  //error_log(print_r($vars['element'], TRUE));
   $pages = &$vars['element'];
   $vars['content'] = $pages['#children'];
 }
