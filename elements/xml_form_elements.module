@@ -145,35 +145,35 @@ function xml_form_elements_menu() {
  * @return array
  */
 function xml_form_elements_elements() {
-  $type = array();
-  $type['tabs'] = array(
-    '#input' => TRUE,
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#process' => array('xml_form_elements_process_tabs'),
+  return array(
+    'tabs' => array(
+      '#input' => TRUE,
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#process' => array('xml_form_elements_process_tabs')
+    ),
+    'tabpanel' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_tabpanel'),
+      '#user_data' => array('add' => TRUE, 'delete' => TRUE)
+    ),
+    'tags' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_tags')
+    ),
+    'tag' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_tag')
+    ),
+    'datepicker' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_datepicker')
+    ),
+    'form_page' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_page')
+    )
   );
-  $type['tabpanel'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_tabpanel'),
-    '#user_data' => array('add' => TRUE, 'delete' => TRUE)
-  );
-  $type['tags'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_tags'),
-  );
-  $type['tag'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_tag'),
-  );
-  $type['datepicker'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_datepicker'),
-  );
-  $type['page'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_page'),
-  );
-  return $type;
 }
 
 /**
@@ -183,35 +183,39 @@ function xml_form_elements_elements() {
  */
 function xml_form_elements_theme() {
   return array(
-    THEME_XML_FORM_ELEMENTS_TABS => array( // Wrapper used so theme('form_element') can be used.
+    THEME_XML_FORM_ELEMENTS_TABS => array(// Wrapper used so theme('form_element') can be used.
       'arguments' => array('tabs' => NULL),
-      'file' => 'Tabs.inc',
+      'file' => 'includes/Tabs.inc',
     ),
-    THEME_XML_FORM_ELEMENTS_TABS_CONTENT => array( // Tabs outer frame
+    THEME_XML_FORM_ELEMENTS_TABS_CONTENT => array(// Tabs outer frame
       'arguments' => array('tabs' => NULL),
       'template' => 'templates/Tabs',
-      'file' => 'Tags.inc',
-   ),
-    THEME_XML_FORM_ELEMENTS_TABPANEL => array( // The content of a single tabpanel.
-      'arguments' => array('element'),
-      'file' => 'TabPanel.inc'
+      'file' => 'includes/Tabs.inc',
     ),
-    THEME_XML_FORM_ELEMENTS_TAGS => array( // Wrapper used so theme('form_element') can be used.
+    THEME_XML_FORM_ELEMENTS_TABPANEL => array(// The content of a single tabpanel.
       'arguments' => array('element'),
-      'file' => 'Tags.inc',
+      'file' => 'includes/TabPanel.inc'
+    ),
+    THEME_XML_FORM_ELEMENTS_TAGS => array(// Wrapper used so theme('form_element') can be used.
+      'arguments' => array('element'),
+      'file' => 'includes/Tags.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TAGS_CONTENT => array(// The inner content of a tags element.
       'arguments' => array('element'), // => NULL),
       'template' => 'templates/Tags',
-      'file' => 'Tags.inc',
+      'file' => 'includes/Tags.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TAG => array(
       'arguments' => array('element'),
-      'file' => 'Tag.inc'
+      'file' => 'includes/Tag.inc'
     ),
     THEME_XML_FORM_ELEMENTS_DATEPICKER => array(
       'arguments' => array('element'),
       'file' => 'Datepicker.inc'
+    ),
+    'form_page' => array(
+      'arguments' => array('element'),
+      'file' => 'includes/Page.inc',
     )
   );
 }
@@ -314,4 +318,24 @@ function xml_form_elements_process_tag(array $element, $edit, array &$form_state
 function xml_form_elements_process_datepicker(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Datepicker');
   return Datepicker::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ * Process the 'page' Element.
+ * 
+ * @param array $element
+ *   The element to be processed.
+ * @param mixed $edit
+ *   The submitted value for this element, or NULL.
+ * @param array $form_state
+ *   The drupal form state.
+ * @param array $complete_form
+ *   The drupal form.
+ */
+function xml_form_elements_process_page(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'objective_forms', 'FormStorage');
+  $storage = new FormStorage($form_state);
+  $storage->paged = TRUE;
+  $storage->page = isset($storage->page) ? $storage->page : 0; // Page starts at 0.
+  return $element;
 }
