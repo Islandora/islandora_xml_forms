@@ -31,7 +31,60 @@ function xml_form_elements_process_pages_initialize(array $element, $edit, array
     drupal_add_css(PATH_XML_FORM_ELEMENTS_CSS . 'pages.css', 'theme');
     $add_files = FALSE;
   }
+  foreach (element_children($element) as $key) {
+    if ($element[$key]['#type'] != 'page') {
+      drupal_set_message(t('A form element of type \'%type\' was given where a \'page\' was expected. Only \'page\'s can be children of a \'pages\' form element.', array('%type' => $element[$key]['#type'])), 'error');
+    }
+  }
   return $element;
+}
+
+/**
+ *
+ * @param array $element
+ * @param type $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return string 
+ */
+function xml_form_elements_process_page_initialize(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  $element['#id'] = $element['#hash'];
+  $element['#required'] = FALSE; // Can't require a page.
+  $element['#type'] = 'markup'; // Prevent name collision with 'page' theme.
+  $element['#theme'] = THEME_XML_FORM_ELEMENTS_PAGE;
+  return $element;
+}
+
+function foo($element, $content) {
+  return theme('form_element', $element, $content);
+}
+
+/**
+ *
+ * @param type $element
+ * @return type 
+ */
+function theme_xml_form_elements_page(array $element) {
+  $content = '';
+  foreach (element_children($element) as $key) {
+    $content .= drupal_render($element[$key]);
+  }
+  /**
+   * Note that this is pulled mostly from theme_form_element.
+   * The difference being that the description is included before the content.
+   */
+  $t = get_t();
+  $output = '<div class="form-item"';
+  if (!empty($element['#id'])) {
+    $output .= ' id="' . $element['#id'] . '-wrapper"';
+  }
+  $output .= ">\n";
+  if (!empty($element['#description'])) {
+    $output .= ' <div class="description">' . $element['#description'] . "</div>\n";
+  }
+  $output .= " $content\n";
+  $output .= "</div>\n";
+  return $output;
 }
 
 /**
@@ -41,5 +94,7 @@ function xml_form_elements_process_pages_initialize(array $element, $edit, array
  *   The properties availible to this theme's template.
  */
 function template_preprocess_pages(array &$vars) {
-  
+  //error_log(print_r($vars['element'], TRUE));
+  $pages = &$vars['element'];
+  $vars['content'] = $pages['#children'];
 }
