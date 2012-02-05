@@ -23,7 +23,7 @@ define('THEME_XML_FORM_ELEMENTS_TAGS', 'tags');
 define('THEME_XML_FORM_ELEMENTS_TAGS_CONTENT', 'tags_content');
 define('THEME_XML_FORM_ELEMENTS_TAG', 'tag');
 define('THEME_XML_FORM_ELEMENTS_DATEPICKER', 'datepicker');
-define('THEME_XML_FORM_ELEMENTS_PAGE', 'page');
+define('THEME_XML_FORM_ELEMENTS_PAGES', 'pages');
 define('PATH_XML_FORM_ELEMENTS', drupal_get_path('module', 'xml_form_elements') . '/');
 define('PATH_XML_FORM_ELEMENTS_INCLUDES', PATH_XML_FORM_ELEMENTS . 'includes/');
 define('PATH_XML_FORM_ELEMENTS_JQUERY_THEME', PATH_XML_FORM_ELEMENTS . 'theme/');
@@ -169,9 +169,9 @@ function xml_form_elements_elements() {
       '#input' => TRUE,
       '#process' => array('xml_form_elements_process_datepicker')
     ),
-    'form_page' => array(
+    'pages' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_page')
+      '#process' => array('xml_form_elements_process_pages')
     )
   );
 }
@@ -213,9 +213,10 @@ function xml_form_elements_theme() {
       'arguments' => array('element'),
       'file' => 'Datepicker.inc'
     ),
-    'form_page' => array(
+    THEME_XML_FORM_ELEMENTS_PAGES => array(
       'arguments' => array('element'),
-      'file' => 'includes/Page.inc',
+      'template' => 'templates/Pages',
+      'file' => 'includes/Pages.inc',
     )
   );
 }
@@ -321,7 +322,7 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
 }
 
 /**
- * Process the 'page' Element.
+ * Global reference to the #process callback for the 'pages' form element.
  * 
  * @param array $element
  *   The element to be processed.
@@ -330,12 +331,12 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
  * @param array $form_state
  *   The drupal form state.
  * @param array $complete_form
- *   The drupal form.
+ *   The complete drupal form.
+ * 
+ * @return array
+ *   The processed element.
  */
-function xml_form_elements_process_page(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'objective_forms', 'FormStorage');
-  $storage = new FormStorage($form_state);
-  $storage->paged = TRUE;
-  $storage->page = isset($storage->page) ? $storage->page : 0; // Page starts at 0.
-  return $element;
+function xml_form_elements_process_pages(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'includes/Pages');
+  return xml_form_elements_process_pages_initialize($element, $edit, $form_state, $complete_form);
 }

@@ -292,6 +292,18 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
      */
     $xml_form['#action'] = $form_state['storage']['#action'] = isset($form_state['storage']['#action']) ? $form_state['storage']['#action'] : url($_GET['q']); // AHAH bug workaround. 
     $form = $xml_form->toArray($form_state);
+    $storage = new FormStorage($form_state);
+    if ($storage->paged) { // There is a page element present
+      $count = 0;
+      foreach (element_children($form) as $key) {
+        $element = $form[$key];
+        $is_page = $element['#type'] == 'form_page';
+        if ($is_page && $count != $storage->page) {
+          unset($form[$key]);
+        }
+        $count++;
+      }
+    }
   } catch (Exception $e) {
     /**
      * Catch any errors that occured and display them to the user so that they may correct their form definition.
