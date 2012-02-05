@@ -172,7 +172,11 @@ function xml_form_elements_elements() {
     ),
     'pages' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_pages')
+      '#process' => array(
+        'xml_form_elements_process_pages_include_file',
+        'xml_form_elements_process_pages_add_resources',
+        'xml_form_elements_process_pages_add_pagers'
+      )
     ),
     'page' => array(
       '#input' => TRUE,
@@ -345,9 +349,9 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_pages(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_pages_include_file(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Pages');
-  return xml_form_elements_process_pages_initialize($element, $edit, $form_state, $complete_form);
+  return $element;
 }
 
 /**

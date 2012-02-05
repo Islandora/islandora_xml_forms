@@ -3,9 +3,18 @@ $(document).ready(function() {
     init: function () {
       var load = '.xml-form-elements-pages';
       this.tabs = $(load).tabs({
-//        fx: {
-//          opacity: 'toggle'
-//        }
+        fx: {
+          slide: 'toggle'
+        }
+      });
+      $('.xml-form-elements-page-back').each(function() {
+        $(this).click(function(event){
+          var tab = $(this).parent().parent();
+          var selected = tab.tabs("option", "selected"); 
+          selected = selected - 1;
+          tab.tabs('select', selected);
+          event.preventDefault();
+        });
       });
     }
   }

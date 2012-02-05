@@ -44,15 +44,15 @@ class Element {
    * @param hash $render
    */
   public static function Remove($remove, $render) {
-    list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
+    list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
     // Remove Element
-    $form = new XMLForm($form_state);
-    $form->remove($remove);
+    $xml_form = new XMLForm($form_state);
+    $xml_form->remove($remove);
     // Rebuild the form, validation and submit callbacks will be called.
-    $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state);
-    $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
+    $form = Ahah::processForm($form_id, $form, $form_state);
+    $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);
     // Find the element to render.
-    $element = find_element($drupal_form, $render);
+    $element = find_element($form, $render);
     // Respond to the request with JSON.
     Ahah::respond($element);
   }
@@ -66,9 +66,10 @@ class Element {
     list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
     // Rebuild the form, validation and submit callbacks will be called.
     $form = Ahah::processForm($form_id, $form, $form_state);
+    _form_validate(find_element($form, $render), $form_state, $form_id);
     $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);
     // Find the element to render.
-    $element = find_element($drupal_form, $render);
+    $element = find_element($form, $render);
     // Respond to the request with JSON.
     Ahah::respond($element);
   }

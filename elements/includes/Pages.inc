@@ -19,7 +19,7 @@
  * @param array $complete_form
  *   The drupal form.
  */
-function xml_form_elements_process_pages_initialize(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_pages_add_resources(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   static $add_files = TRUE;
   if ($add_files) {
     jquery_ui_add('ui.tabs');
@@ -31,12 +31,53 @@ function xml_form_elements_process_pages_initialize(array $element, $edit, array
     drupal_add_css(PATH_XML_FORM_ELEMENTS_CSS . 'pages.css', 'theme');
     $add_files = FALSE;
   }
-  foreach (element_children($element) as $key) {
-    if ($element[$key]['#type'] != 'page') {
-      drupal_set_message(t('A form element of type \'%type\' was given where a \'page\' was expected. Only \'page\'s can be children of a \'pages\' form element.', array('%type' => $element[$key]['#type'])), 'error');
-    }
+  return $element;
+}
+
+function xml_form_elements_process_pages_add_pagers(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  $element['#id'] = $element['#hash'];
+  $children = element_children($element);
+  $count = count($children);
+  $i = 0;
+  foreach ($children as $key) {
+    $back = $i != 0;
+    $next = $i != ($count - 1);
+    xml_form_elements_process_pages_add_pager($element, $element[$key], $back, $next);
+    $i++;
   }
   return $element;
+}
+
+function xml_form_elements_process_pages_add_pager(array $element, array &$page, $back, $next) {
+  if ($back) {
+    $last = array_pop(element_children($page));
+    if ($page[$last]['#type'] == 'submit') {
+      $submit = $page[$last];
+      unset($page[$last]);
+    }
+    array_push($page, array(
+      '#type' => 'button',
+      '#attributes' => array('class' => 'xml-form-elements-page-back'),
+      '#value' => t('Back'),
+      '#executes_submit_callback' => FALSE,
+    ));
+    if (isset($submit)) {
+      $page[$last] = $submit;
+    }
+  }
+  if ($next) {
+    array_push($page, array(
+      '#type' => 'button',
+      '#value' => t('Next'),
+      '#executes_submit_callback' => FALSE,
+      '#ahah' => array(
+        'path' => MENU_XML_FORM_ELEMENTS_AHAH . 'validate/' . $page['#hash'],
+        'wrapper' => $page['#hash'] . '-wrapper',
+        'method' => 'replace',
+        'effect' => 'fade',
+      ),
+    ));
+  }
 }
 
 /**
