@@ -69,6 +69,7 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
     array_push($page, array(
       '#type' => 'button',
       '#value' => t('Next'),
+      '#name' => $page['#hash'],
       '#executes_submit_callback' => FALSE,
       '#ahah' => array(
         'path' => MENU_XML_FORM_ELEMENTS_AHAH . 'validate/' . $page['#hash'],
@@ -94,6 +95,8 @@ function xml_form_elements_process_page_initialize(array $element, $edit, array 
   $element['#type'] = 'markup'; // Prevent name collision with 'page' theme.
   $element['#value'] = NULL;
   $element['#theme'] = THEME_XML_FORM_ELEMENTS_PAGE;
+//  $element['#prefix'] = "<div class='clear-block' id='{$element['#id']}-wrapper'>";
+  //$element['#suffix'] = "</div>";
   return $element;
 }
 

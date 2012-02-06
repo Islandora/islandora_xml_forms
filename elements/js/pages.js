@@ -10,12 +10,20 @@ $(document).ready(function() {
       $('.xml-form-elements-page-back').each(function() {
         $(this).click(function(event){
           var tab = $(this).parent().parent();
-          var selected = tab.tabs("option", "selected"); 
-          selected = selected - 1;
-          tab.tabs('select', selected);
+          pages.back(tab);
           event.preventDefault();
         });
       });
+    },
+    back: function(tab) {
+      var selected = tab.tabs("option", "selected"); 
+      selected = selected - 1;
+      tab.tabs('select', selected);
+    },
+    next: function(tab) {
+      var selected = tab.tabs("option", "selected"); 
+      selected = selected + 1;
+      tab.tabs('select', selected);
     }
   }
   pages.init(true);

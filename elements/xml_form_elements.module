@@ -335,7 +335,7 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
 }
 
 /**
- * Global reference to the #process callback for the 'pages' form element.
+ *  Global reference to the #process callback for the 'pages' form element.
  * 
  * @param array $element
  *   The element to be processed.
