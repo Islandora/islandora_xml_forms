@@ -4,6 +4,6 @@ description = Generates Drupal Forms from an XML definition. Create/Edit XML doc
 package = Islandora Dependencies
 dependencies[] = objective_forms
 dependencies[] = xml_schema_api
-version = 11.2.0
+version = 11.3beta1
 core = 6.x
 
