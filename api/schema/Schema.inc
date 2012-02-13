@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  */
@@ -9,6 +7,7 @@ module_load_include('inc', 'php_lib', 'ReadOnlyProtectedMembers');
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'xml_form_api', 'SchemaTag');
+module_load_include('inc', 'xml_schema_api', 'SchemaCache');
 
 /**
  * Ignoring imported documents for the most part as they are not used much in FGDC this will be an issue we will need
@@ -62,8 +61,8 @@ class XMLSchema {
    * @param string $namespace 
    */
   public function __construct($filename, $namespace = NULL) {
-    self::$schemas[$filename] = $this;
     $filename = trim($filename);
+    self::$schemas[$filename] = $this;
     $this->protected = new ReadOnlyProtectedMembers(array(
           'filename' => $filename,
           'location' => $this->getSchemaLocation($filename),
@@ -118,17 +117,35 @@ class XMLSchema {
   }
 
   /**
-   * Gets the full path to a schema.
+   * Gets the full path to a schema maybe...
    * 
    * @param string $filename
    */
   private function getFullPathToSchema($filename) {
     $doc = new DOMDocument();
-    if (@$doc->load(trim($filename))) {
+    $filename = trim($filename);
+    $scheme = parse_url($filename, PHP_URL_SCHEME);
+    if ($scheme == 'http') {
       return $filename;
     }
-    else if (@$doc->load(trim($this->location . '/' . $filename))) {
-      return $this->location . '/' . $filename;
+    else {
+      $scheme = parse_url($this->location, PHP_URL_SCHEME);
+      if ($scheme == 'http') {
+        $matches = array();
+        $location = $this->location;
+        if (($count = preg_match_all('/\.\.\//', $filename, $matches, PREG_OFFSET_CAPTURE)) > 0) {
+          for ($i = 0; $i < $count; $i++) {
+            $index = strrpos($location, '/');
+            $location = substr($location, 0, $index);
+          }
+          $filename = substr($filename, $matches[0][$count - 1][1] + 3); // +3 for "../"
+        }
+        $path = $location . '/' . $filename;
+        return $path;
+      }
+      else {
+        return realpath($this->location . '/' . $filename);
+      }
     }
   }
 
@@ -138,16 +155,30 @@ class XMLSchema {
    * @param string $filename 
    */
   private function loadSchema($filename) {
-    $this->schema = new DOMDocument();
-    $loaded = @$this->schema->load($filename);
-    if (!$loaded) {
-      throw new Exception("Failed to Find Schema. '{$filename}'");
+    $this->schema = $this->loadDocument($filename);
+    $this->configureXPath();
+    $this->loadIncludedFiles();
+    $this->loadImportedFiles();
+  }
+
+  /**
+   * Loads the given DOMDocument.
+   * 
+   * @param string $filename
+   * 
+   * @return DOMDocument 
+   */
+  private function loadDocument($filename) {
+    if (($doc = SchemaCache::Get($filename)) != FALSE) {
+      return $doc;
     }
     else {
-      $this->configureXPath();
-      $this->loadIncludedFiles();
-      $this->loadImportedFiles();
-      return TRUE;
+      $doc = new DOMDocument();
+      if (!@$doc->load($filename)) { // If we can't find a document just fail, we shouldn't attempt any processing.
+        throw new Exception(t('Failed to Find Document: %filename', array('%filename' => $filename)));
+      }
+      SchemaCache::Set($filename, $doc);
+      return $doc;
     }
   }
 
@@ -177,7 +208,6 @@ class XMLSchema {
   private function loadIncludedFiles() {
     $this->includes = array();
     $included_files = $this->getIncludedFiles();
-    $doc = new DOMDocument();
     foreach ($included_files as $include_file) {
       $filename = $this->getFullPathToSchema($include_file);
       if (empty(self::$schemas[$filename])) {

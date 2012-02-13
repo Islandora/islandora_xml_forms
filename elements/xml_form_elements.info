@@ -1,9 +1,8 @@
-; $Id$
 name = Islandora XML Form Elements
 description = Defines custom elements to be used in conjunction with XML Forms.
 package = Islandora Dependencies
 dependencies[] = xml_form_api
 dependencies[] = jquery_update
 dependencies[] = jquery_ui
-version = 11.3beta1
+version = 11.3.1
 core = 6.x

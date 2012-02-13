@@ -520,7 +520,8 @@ class XMLFormDefinitionGenerator {
     $latest = XMLFormDefinitionVersion::getLatestVersion();
     $definition = new SimpleXMLElement("<definition xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' version='{$latest->get()}'/>");
     self::AddProperties($definition, $properties);
-    self::AddElement($definition->addChild('form'), new FormElement($form));
+    //@todo no registry defined...
+    self::AddElement($definition->addChild('form'), new FormElement(NULL, $form));
     $xml = $definition->asXML();
     $definition = new DOMDocument();
     $definition->loadXML($xml);

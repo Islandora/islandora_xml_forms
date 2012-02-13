@@ -51,7 +51,7 @@ class Tabs {
  * 
  * @param array $vars 
  */
-function xml_form_elements_preprocess_tabs(&$vars) {
+function xml_form_elements_preprocess_tabs_content(&$vars) {
   $tabs = $vars['tabs'];
   // Header Info
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
@@ -65,7 +65,7 @@ function xml_form_elements_preprocess_tabs(&$vars) {
   $children = array_filter($children, array('Tabs', 'FilterChildren'));
   // First element has different icons, and title.
   $first = array_shift($children);
-  $vars['title'] = isset($first['#title']) ? $first['#title'] : $tabs['#title'];
+  $vars['title'] = isset($first['#title']) ? $first['#title'] : 1;
   $vars['link'] = $first['#hash'];
   // Remaining tabpanels.
   $count = 2;
@@ -87,3 +87,10 @@ function xml_form_elements_preprocess_tabs(&$vars) {
   }
 }
 
+/**
+ * Theme Hook for tags elements.
+ */
+function xml_form_elements_theme_tabs($element) {
+  $content = theme('tabs_content', $element);
+  return theme('form_element', $element, $content);
+}

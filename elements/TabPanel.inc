@@ -41,10 +41,12 @@ class TabPanel {
    * @return array 
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    if ($element['#user_data']['add']) {
+    $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE; // Defaults to TRUE
+    if ($add) {
       $element[self::AddButton] = self::createAddButton($element, $complete_form);
     }
-    if ($element['#user_data']['delete']) {
+    $delete = isset($element['#user_data']['delete']) ? $element['#user_data']['delete'] : TRUE; // Defaults to TRUE
+    if ($delete) {
       $element[self::DeleteButton] = self::createRemoveButton($element, $complete_form);
     }
     return $element;
