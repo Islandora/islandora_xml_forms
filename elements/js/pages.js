@@ -8,35 +8,55 @@ Drupal.behaviors.xmlFormElementPages = function(context) {
           slide: 'toggle'
         }
       });
+      this.disable(this.tabs);
       $('.xml-form-elements-page-back').each(function() {
         $(this).unbind('click'); // Prevent multiple binds... @todo implement a better solution.
         $(this).click(function(event){
-          var tab = $(this).parents('div.xml-form-elements-pages')[0];
-          pages.back(tab);
+          var tabs = $(this).parents('div.xml-form-elements-pages')[0];
+          pages.back($(tabs));
           event.preventDefault();
         });
       });
       $('.xml-form-elements-page-next').each(function() {
         $(this).ajaxSuccess(function(event, response, options){
-          if(options.extraData[this.name] && Drupal.settings.xmlFormElements.pages[this.name].valid) {
-            var tab = $(this).parents('div.xml-form-elements-pages')[0];
-            pages.next(tab);
+          if(options.extraData[this.name] && !pages.isDisabled(this.name)) {
+            var tabs = $(this).parents('div.xml-form-elements-pages')[0];
+            pages.next($(tabs));
             event.preventDefault(); 
           }
         });
       });
+      
     },
-    back: function(tab) {
-      tab = $(tab);
-      var selected = tab.tabs("option", "selected"); 
+    disable: function(tabs) {
+      var disabled = [];
+      var pages = Drupal.settings.xmlFormElements.pages;
+      var i = 0;
+      for(var name in pages) {
+        i++; // Validation prevents access to the following one.        
+        if(this.isDisabled(name)) {
+          disabled.push(i);
+        }
+      }
+      tabs.tabs("option", "disabled", disabled);
+    },
+    isDisabled: function(name) {
+      var pages = Drupal.settings.xmlFormElements.pages;
+      if(Array.isArray(pages[name].disabled)) {
+        var last = pages[name].disabled.length - 1;
+        return pages[name].disabled[last];
+      }
+      return pages[name].disabled;
+    },
+    back: function(tabs) {
+      var selected = tabs.tabs("option", "selected"); 
       selected = selected - 1;
-      tab.tabs('select', selected);
+      tabs.tabs('select', selected);
     },
-    next: function(tab) {
-      tab = $(tab);
-      var selected = tab.tabs("option", "selected"); 
+    next: function(tabs) {
+      var selected = tabs.tabs("option", "selected"); 
       selected = selected + 1;
-      tab.tabs('select', selected);
+      tabs.tabs('select', selected);
     }
   }
   pages.init();

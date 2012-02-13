@@ -110,7 +110,9 @@ function xml_form_elements_process_page_initialize(array $element, $edit, array 
   $element['#type'] = 'markup'; // Prevent name collision with 'page' theme.
   $element['#value'] = NULL;
   $element['#theme'] = THEME_XML_FORM_ELEMENTS_PAGE;
-  $element['#element_validate'] = array('xml_form_elements_validate_page');
+  $element['#element_validate'] = array('xml_form_elements_page_validate');
+  $element['#after_build'] = array('xml_form_elements_page_after_build');
+  $element['#disabled'] = TRUE;
   //$element['#prefix'] = "<div class='clear-block' id='{$element['#id']}-wrapper'>";
   //$element['#suffix'] = "</div>";
   return $element;
@@ -119,20 +121,41 @@ function xml_form_elements_process_page_initialize(array $element, $edit, array 
 /**
  * 
  */
-function xml_form_elements_validate_page(array $element, array &$form_state) {
+function xml_form_elements_page_validate(array $element, array &$form_state) {
+  module_load_include('inc', 'objective_forms', 'FormStorage');
   module_load_include('inc', 'objective_forms', 'Utils');
-  $valid = TRUE;
   $name = form_element_name($element);
   $errors = form_get_errors();
-  foreach ($errors as $error => $message) {
-    if (form_element_is_child($name, $error)) {
-      $valid = FALSE;
+  $disabled = FALSE; // Assume we are not disabled
+  if (isset($errors)) {
+    foreach ($errors as $error => $message) {
+      if (form_element_is_child($name, $error)) {
+        $disabled = TRUE;
+      }
     }
   }
-  $settings['xmlFormElements']['pages'][$element['#id']] = array(
-    'valid' => $valid
-  );
+  $storage = new FormStorage($form_state);
+  if (empty($storage->pages)) {
+    $storage->pages = array();
+  }
+  $storage->pages = array_merge($storage->pages, array($element['#id'] => $disabled));
+}
+
+/**
+ *
+ * @param array $element
+ * @param array $form_state
+ * @return type 
+ */
+function xml_form_elements_page_after_build(array $element, array &$form_state) {
+  module_load_include('inc', 'objective_forms', 'FormStorage');
+  $storage = new FormStorage($form_state);
+  if (isset($storage->pages[$element['#id']])) {
+    $element['#disabled'] = $storage->pages[$element['#id']]; // Set by validate
+  }
+  $settings['xmlFormElements']['pages'][$element['#id']]['disabled'] = $element['#disabled'];
   drupal_add_js($settings, 'setting');
+  return $element;
 }
 
 /**
@@ -141,6 +164,7 @@ function xml_form_elements_validate_page(array $element, array &$form_state) {
  * @return type
  */
 function theme_xml_form_elements_page(array $element) {
+  //dsm($element);
   $content = '';
   foreach (element_children($element) as $key) {
     $content .= drupal_render($element[$key]);
@@ -172,4 +196,5 @@ function theme_xml_form_elements_page(array $element) {
 function template_preprocess_pages(array &$vars) {
   $pages = &$vars['element'];
   $vars['content'] = $pages['#children'];
+  //dsm('template');
 }
