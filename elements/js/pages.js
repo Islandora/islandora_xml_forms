@@ -9,6 +9,7 @@ Drupal.behaviors.xmlFormElementPages = function(context) {
         }
       });
       $('.xml-form-elements-page-back').each(function() {
+        $(this).unbind('click'); // Prevent multiple binds... @todo implement a better solution.
         $(this).click(function(event){
           var tab = $(this).parents('div.xml-form-elements-pages')[0];
           pages.back(tab);
