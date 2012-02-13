@@ -10,26 +10,37 @@ Drupal.behaviors.xmlFormElementPages = function(context) {
       });
       $('.xml-form-elements-page-back').each(function() {
         $(this).click(function(event){
-          var tab = $(this).parent().parent();
+          var tab = $(this).parents('div.xml-form-elements-pages')[0];
           pages.back(tab);
           event.preventDefault();
         });
       });
+      $('.xml-form-elements-page-next').each(function() {
+        $(this).ajaxSuccess(function(event, request, options){
+          if(options.extraData[this.name]) {
+            var tab = $(this).parents('div.xml-form-elements-pages')[0];
+            pages.next(tab);
+            event.preventDefault(); 
+          }
+        });
+      });
     },
     back: function(tab) {
+      tab = $(tab);
       var selected = tab.tabs("option", "selected"); 
       selected = selected - 1;
       tab.tabs('select', selected);
     },
     next: function(tab) {
+      tab = $(tab);
       var selected = tab.tabs("option", "selected"); 
       selected = selected + 1;
       tab.tabs('select', selected);
     }
   }
   pages.init(true);
-  $("div.xml-form-elements-pages > div.ui-tabs-panel").ajaxComplete(function(event, request, settings) {
-    var tabs = $(event.currentTarget).parent();
-    pages.next(tabs);
-  });
+//  $("div.xml-form-elements-pages > div.ui-tabs-panel").ajaxComplete(function(event, request, settings) {
+//    var tabs = $(event.currentTarget).parent();
+//    pages.next(tabs);
+//  });
 }

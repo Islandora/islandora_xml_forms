@@ -59,6 +59,7 @@ class Ahah {
     $form_state['post'] = $_POST;
     $form_state['values'] = array();
     $form = form_builder($form_id, $form, $form_state);
+    form_clean_id(NULL, TRUE); // Prevent #id duplication
     return $form;
   }
 

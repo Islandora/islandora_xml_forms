@@ -70,7 +70,7 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
       unset($page[$last]);
     }
     array_push($page, array(
-      '#type' => 'button',
+      '#type' => 'button',  
       '#attributes' => array('class' => 'xml-form-elements-page-back'),
       '#value' => t('Back'),
       '#executes_submit_callback' => FALSE,
@@ -82,6 +82,7 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
   if ($next) {
     array_push($page, array(
       '#type' => 'button',
+      '#attributes' => array('class' => 'xml-form-elements-page-next'),
       '#value' => t('Next'),
       '#name' => $page['#hash'],
       '#executes_submit_callback' => FALSE,
