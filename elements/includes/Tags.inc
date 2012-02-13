@@ -13,6 +13,22 @@ class Tags {
   const AddButton = 'add-tag';
 
   /**
+   * Loads the required resources for displaying the Tabs element.
+   *
+   * @staticvar boolean $load
+   *   Keeps us from loading the same files multiple times, while not required it just saves some time.
+   */
+  public static function addRequiredResources() {
+    static $load = TRUE;
+    if ($load) {
+      module_load_include('inc', 'xml_form_elements', 'includes/Element');
+      Element::addRequiredResources();
+      Element::addCSS('tags.css');
+      $load = FALSE;    
+    }
+  }
+
+  /**
    *
    * @param array $element
    * @param type $edit
@@ -20,8 +36,7 @@ class Tags {
    * @param array $complete_form
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    drupal_add_css(PATH_XML_FORM_ELEMENTS_CSS . 'tags.css');
-    drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'XMLFormElements.js');
+    self::addRequiredResources();
     $element['#id'] = $element['#hash'];
     $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;
@@ -131,15 +146,15 @@ function theme_tags($element) {
 
 /**
  * Wrapper for Tags::AfterBuild, used as Drupal doesn't support static calls in this situation.
- * 
+ *
  * Modifies the provided tag element.
- * 
+ *
  * @param array $form_element
  *   A tag element to be modified.
  * @param array $form_state
  *   The Drupal form state.
  * @return array
- *   The modified $form_element. 
+ *   The modified $form_element.
  */
 function xml_form_elements_after_build_tags(array $form_element, array &$form_state) {
   return Tags::AfterBuild($form_element, $form_state);

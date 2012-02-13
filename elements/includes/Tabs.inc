@@ -9,24 +9,33 @@ module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
 class Tabs {
 
   /**
+   * Loads the required resources for displaying the Tabs element.
+   *
+   * @staticvar boolean $load
+   *   Keeps us from loading the same files multiple times, while not required it just saves some time.
+   */
+  public static function addRequiredResources() {
+    static $load = TRUE;
+    if ($load) {
+      module_load_include('inc', 'xml_form_elements', 'includes/Element');
+      Element::addRequiredResources();
+      Element::addUIWidgets('ui.tabs');
+      Element::addUIThemeStyles(array('ui.core.css', 'ui.tabs.css', 'ui.theme.css'));
+      Element::addJS('tabs.js');
+      Element::addCSS('tabs.css');
+      $load = FALSE;
+    }
+  }
+
+  /**
    *
    * @param array $element
    * @param type $edit
    * @param array $form_state
    * @param array $complete_form
    */
-  public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    static $add_files = TRUE;
-    if ($add_files) {
-      jquery_ui_add('ui.tabs');
-      drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'XMLFormElements.js');
-      drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'Tabs.js');
-      drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.core.css');
-      drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.tabs.css');
-      drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.theme.css');
-      drupal_add_css(PATH_XML_FORM_ELEMENTS_CSS . 'tabs.css');
-      $add_files = FALSE;
-    }
+  public static function process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+    self::addRequiredResources();
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
     return $element;
@@ -45,7 +54,7 @@ class Tabs {
 
 /**
  * Preprocess tabs theme hook.
- *  
+ *
  * @param array $vars
  */
 function template_preprocess_tabs_content(&$vars) {

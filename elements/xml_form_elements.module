@@ -336,7 +336,7 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
 
 /**
  *  Global reference to the #process callback for the 'pages' form element.
- * 
+ *
  * @param array $element
  *   The element to be processed.
  * @param mixed $edit
@@ -345,7 +345,7 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
  *   The drupal form state.
  * @param array $complete_form
  *   The complete drupal form.
- * 
+ *
  * @return array
  *   The processed element.
  */
@@ -356,7 +356,7 @@ function xml_form_elements_process_pages_include_file(array $element, $edit, arr
 
 /**
  * Global reference to the #process callback for the 'pages' form element.
- * 
+ *
  * @param array $element
  *   The element to be processed.
  * @param mixed $edit
@@ -365,7 +365,7 @@ function xml_form_elements_process_pages_include_file(array $element, $edit, arr
  *   The drupal form state.
  * @param array $complete_form
  *   The complete drupal form.
- * 
+ *
  * @return array
  *   The processed element.
  */

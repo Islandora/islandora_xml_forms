@@ -3,6 +3,7 @@
 /**
  * @file
  *
+ * Defines callbacks.
  */
 class Ahah {
 

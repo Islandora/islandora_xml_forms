@@ -1,5 +1,6 @@
-$(document).ready(function() {
-  var pages = xml_form_elements.pages = {
+Drupal.behaviors.xmlFormElementPages = function(context) {
+  var pages = {
+    tabs: null,
     init: function () {
       var load = '.xml-form-elements-pages';
       this.tabs = $(load).tabs({
@@ -27,7 +28,8 @@ $(document).ready(function() {
     }
   }
   pages.init(true);
-  $("body").ajaxComplete(function(event, request, settings) {
-    pages.init();
+  $("div.xml-form-elements-pages > div.ui-tabs-panel").ajaxComplete(function(event, request, settings) {
+    var tabs = $(event.currentTarget).parent();
+    pages.next(tabs);
   });
-});
+}

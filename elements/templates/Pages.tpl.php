@@ -1,3 +1,9 @@
+<?php
+/**
+ * @file
+ * Template for the Pages Element.
+ */
+?>
 <div id="<?php print $element['#id'] ?>" class="xml-form-elements-pages">
   <!-- Headers -->
   <ul>

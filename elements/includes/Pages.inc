@@ -3,13 +3,13 @@
 /**
  * @file
  *
- * Functions for processing/theming the 'pages' form element. 
+ * Functions for processing/theming the 'pages' form element.
  */
 
 /**
- * The default #process callback used to initalize the pages element. If this function 
+ * The default #process callback used to initalize the pages element. If this function
  * is removed from the #process callback list this element will not function correctly.
- * 
+ *
  * * @param array $element
  *   The element to be processed.
  * @param mixed $edit
@@ -20,20 +20,27 @@
  *   The drupal form.
  */
 function xml_form_elements_process_pages_add_resources(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  static $add_files = TRUE;
-  if ($add_files) {
-    jquery_ui_add('ui.tabs');
-    drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'XMLFormElements.js');
-    drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'pages.js');
-    drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.core.css');
-    drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.tabs.css');
-    drupal_add_css(PATH_XML_FORM_ELEMENTS_JQUERY_THEME . 'ui.theme.css');
-    drupal_add_css(PATH_XML_FORM_ELEMENTS_CSS . 'pages.css', 'theme');
-    $add_files = FALSE;
+  static $load = TRUE;
+  if ($load) {
+    module_load_include('inc', 'xml_form_elements', 'includes/Element');
+    Element::addRequiredResources();
+    Element::addUIWidgets('ui.tabs');
+    Element::addUIThemeStyles(array('ui.core.css', 'ui.tabs.css', 'ui.theme.css'));
+    Element::addJS('pages.js');
+    Element::addCSS('pages.css');
+    $load = FALSE;
   }
   return $element;
 }
 
+/**
+ *
+ * @param array $element
+ * @param type $edit
+ * @param array $form_state
+ * @param array $complete_form
+ * @return array 
+ */
 function xml_form_elements_process_pages_add_pagers(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   $element['#id'] = $element['#hash'];
   $children = element_children($element);
@@ -48,6 +55,13 @@ function xml_form_elements_process_pages_add_pagers(array $element, $edit, array
   return $element;
 }
 
+/**
+ *
+ * @param array $element
+ * @param array $page
+ * @param type $back
+ * @param type $next 
+ */
 function xml_form_elements_process_pages_add_pager(array $element, array &$page, $back, $next) {
   if ($back) {
     $last = array_pop(element_children($page));
@@ -82,12 +96,12 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
 }
 
 /**
- * 
+ *
  * @param array $element
  * @param type $edit
  * @param array $form_state
  * @param array $complete_form
- * @return string 
+ * @return string
  */
 function xml_form_elements_process_page_initialize(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   $element['#id'] = $element['#hash'];
@@ -95,7 +109,7 @@ function xml_form_elements_process_page_initialize(array $element, $edit, array 
   $element['#type'] = 'markup'; // Prevent name collision with 'page' theme.
   $element['#value'] = NULL;
   $element['#theme'] = THEME_XML_FORM_ELEMENTS_PAGE;
-//  $element['#prefix'] = "<div class='clear-block' id='{$element['#id']}-wrapper'>";
+  //$element['#prefix'] = "<div class='clear-block' id='{$element['#id']}-wrapper'>";
   //$element['#suffix'] = "</div>";
   return $element;
 }
@@ -103,7 +117,7 @@ function xml_form_elements_process_page_initialize(array $element, $edit, array 
 /**
  *
  * @param type $element
- * @return type 
+ * @return type
  */
 function theme_xml_form_elements_page(array $element) {
   $content = '';
@@ -130,7 +144,7 @@ function theme_xml_form_elements_page(array $element) {
 
 /**
  * Implements template_preprocess_THEME().
- *  
+ *
  * @param array $vars
  *   The properties availible to this theme's template.
  */
