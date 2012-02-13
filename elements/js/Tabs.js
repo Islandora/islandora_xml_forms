@@ -2,10 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-xml_form_elements.tabpanel = {
+Drupal.settings.xml_form_elements.tabpanel = {
   tabs: null, // Collection of all tabpanels.
   collapsibleTabs: null,
   nonCollapsibleTabs: null,
+  tool_tip: null,
   loadPanels: function (collapse) {
     var load = '.xml-form-elements-tabs';
     var collapsible = '.xml-form-elements-tabs-collapsible';
@@ -58,14 +59,18 @@ xml_form_elements.tabpanel = {
     }
   },
   attachToolTips: function() {
-    $('.tool_tip_trigger').each(function() {     
-      var tip = $(this).find('.tool_tip');
-      $(this).hover(function() {
+    $('.tool_tip_trigger').each(function() {
+      var tip = Drupal.settings.xml_form_elements.tabpanel.tool_tip;
+      if (tip != null) {
+        tip.remove();
+      }
+      tip = $(document.createElement('span')).addClass('tool_tip');
+      $(this).hover(function(e) {
         var html = '';
         var id = $(this).children('a[href]').attr('href');
         $('#' + id + ' div.form-item').each(function() {
           var item = $(this);
-          var text = $('input[class~="form-text"]', item);
+          var text = $('input[type~="text"]', item);
           if(text.length) {
             var id = text.attr('id');
             var label = $('label[for=' + id + ']', item);
@@ -82,40 +87,63 @@ xml_form_elements.tabpanel = {
               }
             }
           }
+          var select = $('select', item);
+          if(select) {
+            var id = select.attr('id');
+            var label = $('label[for=' + id + ']', item);
+            if(label.length) {
+              label = label.text();
+              html += label + ' ';
+            }
+            var selected = $('option:selected', select);
+            html += selected.text(); + '<br/>';
+          }
         });
         html = jQuery.trim(html);
         if(html == "") {
           html = "Empty";
         }
+        
         tip.html(html);
-        tip.appendTo('body');
-      },
-      function() {
-        tip.appendTo(this);
-      }).mousemove(function(e) {
+        
         var x = e.pageX + 20,
-        y = e.pageY + 20,
-        w = tip.width(),
-        h = tip.height(),
-        dx = $(window).width() - (x + w),
-        dy = $(window).height() - (y + h);
+          y = e.pageY + 20,
+          w = tip.width(),
+          h = tip.height(),
+          dx = $(window).width() - (x + w),
+          dy = $(window).height() - (y + h);
         if ( dx < 20 ) x = e.pageX - w - 20;
         if ( dy < 20 ) y = e.pageY - h - 20;
         tip.css({
-          left: x, 
-          top: y
+          'left': x, 
+          'top': y
         });
-      });         
+        
+        tip.appendTo('body');
+        Drupal.settings.xml_form_elements.tabpanel.tool_tip = tip;
+      },
+      function() {
+        tip.remove();
+      });      
     });
   },
   enableActions: function () {
     $(".ui-icon-close").live("click", function() {
       var id = $(this).text();
       $("#"+id).trigger("mousedown");
+      if (Drupal.settings.xml_form_elements.tabpanel.tool_tip != null) {
+        Drupal.settings.xml_form_elements.tabpanel.tool_tip.remove();
+        Drupal.settings.xml_form_elements.tabpanel.tool_tip = null;
+      }
     });
   },
   addTab: function(id) {
     $('#' + id).trigger("mousedown");
+    
+    if (Drupal.settings.xml_form_elements.tabpanel.tool_tip != null) {
+      Drupal.settings.xml_form_elements.tabpanel.tool_tip.remove();
+      Drupal.settings.xml_form_elements.tabpanel.tool_tip = null;
+    }
     return false;
   }
 }; 
@@ -124,10 +152,10 @@ xml_form_elements.tabpanel = {
  * On Load, listen for ajax requests and attempt to regenerate any new tabs.
  */
 $(document).ready(function() {
-  xml_form_elements.tabpanel.loadPanels(true);
-  xml_form_elements.tabpanel.enableActions();
+  Drupal.settings.xml_form_elements.tabpanel.loadPanels(true);
+  Drupal.settings.xml_form_elements.tabpanel.enableActions();
   $("body").ajaxComplete(function(event, request, settings) {
-    xml_form_elements.tabpanel.loadPanels(false);
+    Drupal.settings.xml_form_elements.tabpanel.loadPanels(false);
   });
 });
 
