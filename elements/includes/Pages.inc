@@ -70,7 +70,7 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
       unset($page[$last]);
     }
     array_push($page, array(
-      '#type' => 'button',  
+      '#type' => 'button',
       '#attributes' => array('class' => 'xml-form-elements-page-back'),
       '#value' => t('Back'),
       '#executes_submit_callback' => FALSE,
@@ -110,9 +110,29 @@ function xml_form_elements_process_page_initialize(array $element, $edit, array 
   $element['#type'] = 'markup'; // Prevent name collision with 'page' theme.
   $element['#value'] = NULL;
   $element['#theme'] = THEME_XML_FORM_ELEMENTS_PAGE;
+  $element['#element_validate'] = array('xml_form_elements_validate_page');
   //$element['#prefix'] = "<div class='clear-block' id='{$element['#id']}-wrapper'>";
   //$element['#suffix'] = "</div>";
   return $element;
+}
+
+/**
+ * 
+ */
+function xml_form_elements_validate_page(array $element, array &$form_state) {
+  module_load_include('inc', 'objective_forms', 'Utils');
+  $valid = TRUE;
+  $name = form_element_name($element);
+  $errors = form_get_errors();
+  foreach ($errors as $error => $message) {
+    if (form_element_is_child($name, $error)) {
+      $valid = FALSE;
+    }
+  }
+  $settings['xmlFormElements']['pages'][$element['#id']] = array(
+    'valid' => $valid
+  );
+  drupal_add_js($settings, 'setting');
 }
 
 /**

@@ -139,7 +139,7 @@ class Element {
     list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
     // Rebuild the form, validation and submit callbacks will be called.
     $form = Ahah::processForm($form_id, $form, $form_state);
-    _form_validate(find_element($form, $render), $form_state, $form_id);
+    _form_validate(find_element($form, $render), $form_state);
     $form = Ahah::rebuildForm($form_id, $form_build_id, $form, $form_state);
     // Find the element to render.
     $element = find_element($form, $render);

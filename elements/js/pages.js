@@ -16,8 +16,8 @@ Drupal.behaviors.xmlFormElementPages = function(context) {
         });
       });
       $('.xml-form-elements-page-next').each(function() {
-        $(this).ajaxSuccess(function(event, request, options){
-          if(options.extraData[this.name]) {
+        $(this).ajaxSuccess(function(event, response, options){
+          if(options.extraData[this.name] && Drupal.settings.xmlFormElements.pages[this.name].valid) {
             var tab = $(this).parents('div.xml-form-elements-pages')[0];
             pages.next(tab);
             event.preventDefault(); 
@@ -38,9 +38,5 @@ Drupal.behaviors.xmlFormElementPages = function(context) {
       tab.tabs('select', selected);
     }
   }
-  pages.init(true);
-//  $("div.xml-form-elements-pages > div.ui-tabs-panel").ajaxComplete(function(event, request, settings) {
-//    var tabs = $(event.currentTarget).parent();
-//    pages.next(tabs);
-//  });
+  pages.init();
 }
