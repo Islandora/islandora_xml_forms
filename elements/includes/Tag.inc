@@ -5,7 +5,6 @@
  *
  *  Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
-module_load_include('inc', 'xml_form_elements', 'includes/Element');
 
 /**
  * A collection of static functions that allow for theming and processing tabpanels.
@@ -52,6 +51,7 @@ class Tag {
    * @param hash $textfield_hash
    */
   public static function Add($tags) {
+    module_load_include('inc', 'xml_form_elements', 'includes/Ahah');
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state); // Process the submitted form.
     $tags = find_element($drupal_form, $tags); // Find the tags we are dealing with.
@@ -80,6 +80,7 @@ class Tag {
    * @param hash $tag_hash
    */
   public static function Edit($hash) {
+    module_load_include('inc', 'xml_form_elements', 'includes/Ahah');
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     $drupal_form = Ahah::processForm($form_id, $drupal_form, $form_state); // Process the submitted form.
     $form = new XMLForm($form_state);
@@ -107,6 +108,7 @@ class Tag {
    * @param hash $tag_hash
    */
   public static function Remove($tag) {
+    module_load_include('inc', 'xml_form_elements', 'includes/Ahah');
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
     // Duplicate Element, set its default value to the submitted value.
     $form = new XMLForm($form_state);
