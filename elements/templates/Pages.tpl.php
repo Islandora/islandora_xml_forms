@@ -4,7 +4,7 @@
  * Template for the Pages Element.
  */
 ?>
-<div id="<?php print $element['#id'] ?>" class="xml-form-elements-pages">
+<div id="<?php print $element['#id'] ?>" class="xml-form-elements-pages clear-block">
   <!-- Headers -->
   <ul>
     <?php foreach (element_children($element) as $key) : ?>
