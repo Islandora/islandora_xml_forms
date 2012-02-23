@@ -69,18 +69,20 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
       $submit = $page[$last];
       unset($page[$last]);
     }
-    array_push($page, array(
+    $button = array(
       '#type' => 'button',
       '#attributes' => array('class' => 'xml-form-elements-page-back'),
       '#value' => t('Back'),
       '#executes_submit_callback' => FALSE,
-    ));
+    );
+    array_push($page, $button);
+    array_unshift($page, $button);
     if (isset($submit)) {
       $page[$last] = $submit;
     }
   }
   if ($next) {
-    array_push($page, array(
+    $button = array(
       '#type' => 'button',
       '#attributes' => array('class' => 'xml-form-elements-page-next'),
       '#value' => t('Next'),
@@ -92,7 +94,9 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
         'method' => 'replace',
         'effect' => 'fade',
       ),
-    ));
+    );
+    array_push($page, $button);
+    array_unshift($page, $button);
   }
 }
 
