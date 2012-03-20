@@ -605,17 +605,16 @@ class XMLFormDefinitionGenerator {
    */
   private static function CreateElementProperty(SimpleXMLElement $properties, $key) {
     $key = trim($key, '#');
-    try {
-      return $properties->addChild($key);
-    }
-    catch (DOMException $e) {
-    //if (!self::IsValidXMLTag($key)) {
+    //try {
+    //  return $properties->addChild($key);
+    //}
+    //catch (DOMException $e) {
+    if (!self::IsValidXMLTag($key)) {
       $property = $properties->addChild('index');
       $property->addAttribute('key', cast_type_to_string($key));
       return $property;
-    //}
     }
-    //return $properties->addChild($key);
+    return $properties->addChild($key);
   }
 
   /**
