@@ -43,11 +43,13 @@ class TabPanel {
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE; // Defaults to TRUE
     if ($add) {
-      $element[self::AddButton] = self::createAddButton($element, $complete_form);
+      $add_label = isset($element['#user_data']['add_label']) ? $element['#user_data']['add_label'] : 'Add';
+      $element[self::AddButton] = self::createAddButton($element, $complete_form, $add_label);
     }
     $delete = isset($element['#user_data']['delete']) ? $element['#user_data']['delete'] : TRUE; // Defaults to TRUE
     if ($delete) {
-      $element[self::DeleteButton] = self::createRemoveButton($element, $complete_form);
+      $delete_label = isset($element['#user_data']['delete_label']) ? $element['#user_data']['delete_label'] : 'Delete';
+      $element[self::DeleteButton] = self::createRemoveButton($element, $complete_form, $delete_label);
     }
     return $element;
   }
@@ -58,13 +60,13 @@ class TabPanel {
    * @param FormElement $tabpanel
    * @return FormElement 
    */
-  private static function createAddButton(array &$element, array& $complete_form) {
+  private static function createAddButton(array &$element, array& $complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
     $add['#type'] = 'submit';
     $add['#weight'] = 4;
     $add['#size'] = 30;
     $add['#id'] = $element['#hash'] . '-add';
-    $add['#value'] = 'Add';
+    $add['#value'] = $label;
     $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
     $add['#suffix'] = '</div>';
     $add['#ahah'] = array(
@@ -82,13 +84,13 @@ class TabPanel {
    * @param FormElement $tabpanel
    * @return FormElement 
    */
-  private static function createRemoveButton(array &$element, array& $complete_form) {
+  private static function createRemoveButton(array &$element, array& $complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
     $delete['#type'] = 'submit';
     $delete['#weight'] = 4;
     $delete['#size'] = 30;
     $delete['#id'] = $element['#hash'] . '-remove';
-    $delete['#value'] = 'Delete';
+    $delete['#value'] = $label;
     $delete['#attributes'] = array(
       'style' => 'display:none' // Triggered via javascript.
     );

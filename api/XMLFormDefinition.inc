@@ -429,7 +429,7 @@ class XMLFormDefinition {
     if (isset($element->properties)) {
       $properties = $element->properties->children();
       foreach ($properties as $property) {
-        $name = cast_string_to_type((string) $this->getElementPropertyName($property));
+        $name = self::getElementPropertyName($property);
         $output["#$name"] = $this->getElementProperty($property);
       }
     }

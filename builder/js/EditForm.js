@@ -15,7 +15,7 @@ Ext.app = (function() {
             return Ext.create('Ext.panel.Panel', {
                 width: 960,
                 height: 520,
-                title: 'Form Editor',
+                title: Drupal.t('Form Editor'),
                 layout: 'border',
                 renderTo: 'xml-form-builder-editor',
                 items: [this.createTree(), this.createDisplayArea() ],
@@ -27,7 +27,7 @@ Ext.app = (function() {
                     xtype: 'toolbar',
                     items: [{
                         xtype: 'button',
-                        text: 'Form Properties',
+                        text: Drupal.t('Form Properties'),
                         handler: function() {
                             var display = Ext.getCmp('xml-form-builder-display').layout;
                             display.setActiveItem(1);
@@ -36,7 +36,7 @@ Ext.app = (function() {
                         xtype: 'tbfill'
                     },{
                         xtype: 'button',
-                        text: 'Preview',
+                        text: Drupal.t('Preview'),
                         handler: function() {
                             var display = Ext.getCmp('xml-form-builder-display').layout;
                             display.setActiveItem(0);
@@ -45,7 +45,7 @@ Ext.app = (function() {
                         xtype: 'tbseparator'
                     },{
                         xtype: 'button',
-                        text: 'Save'
+                        text: Drupal.t('Save')
                     }]
                 }
             });
@@ -65,7 +65,7 @@ Ext.app = (function() {
                         ptype: 'treeviewdragdrop'
                     }
                 },
-                title: 'Elements',
+                title: Drupal.t('Elements'),
                 store: this.createElementStore(),
                 region: 'west',
                 width: 230,
@@ -78,23 +78,23 @@ Ext.app = (function() {
                     items: [
                     {
                         xtype: 'button',
-                        text: 'Add'
+                        text: Drupal.t('Add')
                     },
                     {
                         xtype: 'button',
-                        text: 'Edit'
+                        text: Drupal.t('Edit')
                     },
                     {
                         xtype: 'button',
-                        text: 'Copy'
+                        text: Drupal.t('Copy')
                     },
                     {
                         xtype: 'button',
-                        text: 'Paste'
+                        text: Drupal.t('Paste')
                     },
                     {
                         xtype: 'button',
-                        text: 'Delete'
+                        text: Drupal.t('Delete')
                     }
                     ]
                 },
@@ -134,7 +134,7 @@ Ext.app = (function() {
         createElementForm: function() {
             return Ext.create('Ext.form.Panel', {
                 id: 'xml-form-builder-element-form',
-                title: 'Element Form',
+                title: Drupal.t('Element Form'),
                 region: 'center',
                 frame: true,
                 margin: '1 1 1 0',
@@ -145,7 +145,7 @@ Ext.app = (function() {
                     items: [{
                         xtype: 'textfield',
                         name: 'key',
-                        fieldLabel: 'Name',
+                        fieldLabel: Drupal.t('Name'),
                         width: 500
                     }, {
                         xtype: 'combobox',
@@ -153,16 +153,16 @@ Ext.app = (function() {
                         store: this.createTypeStorage(),
                         displayField: 'display',
                         valueField: 'value',
-                        fieldLabel: 'Type',
+                        fieldLabel: Drupal.t('Type'),
                         queryMode: 'local'
                     },{
                         xtype: 'checkbox',
                         name: 'access',
-                        fieldLabel: 'Access',
+                        fieldLabel: Drupal.t('Access'),
                         checked: true
                     }, {
                         xtype: 'editablegrid',
-                        title: 'After Build',
+                        title: Drupal.t('After Build'),
                         id: 'after_build',
                         height: 150,
                         collapsible: true,
@@ -182,7 +182,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'function',
-                            header: 'Function',
+                            header: Drupal.t('Function'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -191,42 +191,42 @@ Ext.app = (function() {
                         }]
                     }, {
                         xtype: 'fieldset',
-                        title: 'Ahah',
+                        title: Drupal.t('Ahah'),
                         name: 'ahah',
                         collapsible: true,
                         items: [{
                             xtype: 'textfield',
                             name: 'effect',
-                            fieldLabel: 'Effect'
+                            fieldLabel: Drupal.t('Effect')
                         },{
                             xtype: 'textfield',
                             name: 'event',
-                            fieldLabel: 'Event'
+                            fieldLabel: Drupal.t('Event')
                         },{
                             xtype: 'checkbox',
                             name: 'keypress',
-                            fieldLabel: 'Keypress'
+                            fieldLabel: Drupal.t('Keypress')
                         },{
                             xtype: 'textfield',
                             name: 'method',
-                            fieldLabel: 'Method'
+                            fieldLabel: Drupal.t('Method')
                         },{
                             xtype: 'textfield',
                             name: 'path',
-                            fieldLabel: 'Path'
+                            fieldLabel: Drupal.t('Path')
                         },{
                             xtype: 'textfield',
                             name: 'progress',
-                            fieldLabel: 'Progress'
+                            fieldLabel: Drupal.t('Progress')
                         },{
                             xtype: 'textfield',
                             name: 'wrapper',
-                            fieldLabel: 'Wrapper'
+                            fieldLabel: Drupal.t('Wrapper')
                         }]
                     }, {
                         xtype: 'editablegrid',
                         id: 'attributes',
-                        title: 'Attributes',
+                        title: Drupal.t('Attributes'),
                         height: 150,
                         collapsible: true,
                         store: new Ext.data.Store({
@@ -246,7 +246,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'key',
-                            header: 'Key',
+                            header: Drupal.t('Key'),
                             sortable: true,
                             width: 200,
                             field: {
@@ -255,7 +255,7 @@ Ext.app = (function() {
                         },{
                             xtype: 'gridcolumn',
                             dataIndex: 'value',
-                            header: 'Value',
+                            header: Drupal.t('Value'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -265,43 +265,43 @@ Ext.app = (function() {
                     }, {
                         xtype: 'textfield',
                         name: 'autocomplete_path',
-                        fieldLabel: 'Autocomplete Path'
+                        fieldLabel: Drupal.t('Autocomplete Path')
                     }, {
                         xtype: 'textfield',
                         name: 'button_type',
-                        fieldLabel: 'Button Type'
+                        fieldLabel: Drupal.t('Button Type')
                     }, {
                         xtype: 'checkbox',
                         name: 'collapsed',
-                        fieldLabel: 'Collapsed'
+                        fieldLabel: Drupal.t('Collapsed')
                     },  {
                         xtype: 'numberfield',
                         name: 'cols',
-                        fieldLabel: 'Cols'
+                        fieldLabel: Drupal.t('Cols')
                     }, {
                         xtype: 'checkbox',
                         name: 'collapsed',
-                        fieldLabel: 'Collapsed'
+                        fieldLabel: Drupal.t('Collapsed')
                     }, {
                         xtype: 'textfield',
                         name: 'default_value',
-                        fieldLabel: 'Default Value'
+                        fieldLabel: Drupal.t('Default Value')
                     },  {
                         xtype: 'numberfield',
                         name: 'delta',
-                        fieldLabel: 'Delta'
+                        fieldLabel: Drupal.t('Delta')
                     }, {
                         xtype: 'textarea',
                         name: 'description',
-                        fieldLabel: 'Description',
+                        fieldLabel: Drupal.t('Description'),
                         width: 500
                     }, {
                         xtype: 'checkbox',
                         name: 'disabled',
-                        fieldLabel: 'Disabled'
+                        fieldLabel: Drupal.t('Disabled')
                     }, {
                         xtype: 'editablegrid',
-                        title: 'Element Validation',
+                        title: Drupal.t('Element Validation'),
                         height: 150,
                         collapsible: true,
                         store: this.createNamespaceStorage(),
@@ -311,7 +311,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'func',
-                            header: 'Function',
+                            header: Drupal.t('Function'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -321,47 +321,47 @@ Ext.app = (function() {
                     }, {
                         xtype: 'checkbox',
                         name: 'executes_submit_callback',
-                        fieldLabel: 'Executes Submit Callback'
+                        fieldLabel: Drupal.t('Executes Submit Callback')
                     }, {
                         xtype: 'textfield',
                         name: 'field_prefix',
-                        fieldLabel: 'Field Prefix'
+                        fieldLabel: Drupal.t('Field Prefix')
                     }, {
                         xtype: 'textfield',
                         name: 'field_suffix',
-                        fieldLabel: 'Field Suffix'
+                        fieldLabel: Drupal.t('Field Suffix')
                     }, {
                         xtype: 'numberfield',
                         name: 'maxlength',
-                        fieldLabel: 'Max Length'
+                        fieldLabel: Drupal.t('Max Length')
                     }, {
                         xtype: 'combobox',
                         name: 'method',
-                        fieldLabel: 'Method',
+                        fieldLabel: Drupal.t('Method'),
                         displayField: 'display',
                         valueField: 'value',
                         editable: true,
                         store: new Ext.data.Store({
                             fields: ['display', 'value'],
                             data: [{
-                                display: 'Post', 
+                                display: Drupal.t('Post'), 
                                 value: 'post'
                             },{
-                                display: 'Get', 
+                                display: Drupal.t('Get'), 
                                 value: 'get'
                             }]
                         })
                     }, {
                         xtype: 'checkbox',
                         name: 'multiple',
-                        fieldLabel: 'Multiple'
+                        fieldLabel: Drupal.t('Multiple')
                     }, {
                         xtype: 'textfield',
                         name: 'name',
-                        fieldLabel: 'Name'
+                        fieldLabel: Drupal.t('Name')
                     }, {
                         xtype: 'editablegrid',
-                        title: 'Options',
+                        title: Drupal.t('Options'),
                         height: 150,
                         collapsible: true,
                         store: this.createNamespaceStorage(),
@@ -372,7 +372,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'key',
-                            header: 'Key',
+                            header: Drupal.t('Key'),
                             sortable: true,
                             width: 100,
                             field: {
@@ -381,7 +381,7 @@ Ext.app = (function() {
                         },{
                             xtype: 'gridcolumn',
                             dataIndex: 'value',
-                            header: 'Value',
+                            header: Drupal.t('Value'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -390,7 +390,7 @@ Ext.app = (function() {
                         }]
                     }, {
                         xtype: 'editablegrid',
-                        title: 'Post Render',
+                        title: Drupal.t('Post Render'),
                         height: 150,
                         collapsible: true,
                         store: this.createNamespaceStorage(),
@@ -400,7 +400,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'func',
-                            header: 'Functions',
+                            header: Drupal.t('Functions'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -410,10 +410,10 @@ Ext.app = (function() {
                     }, {
                         xtype: 'textfield',
                         name: 'prefix',
-                        title: 'Prefix'
+                        title: Drupal.t('Prefix')
                     }, {
                         xtype: 'editablegrid',
-                        title: 'Pre Render',
+                        title: Drupal.t('Pre Render'),
                         height: 150,
                         collapsible: true,
                         store: this.createNamespaceStorage(),
@@ -423,7 +423,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'func',
-                            header: 'Functions',
+                            header: Drupal.t('Functions'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -432,7 +432,7 @@ Ext.app = (function() {
                         }]
                     }, {
                         xtype: 'editablegrid',
-                        title: 'Process',
+                        title: Drupal.t('Process'),
                         height: 150,
                         collapsible: true,
                         store: this.createNamespaceStorage(),
@@ -442,7 +442,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'func',
-                            header: 'Functions',
+                            header: Drupal.t('Functions'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -452,30 +452,30 @@ Ext.app = (function() {
                     }, {
                         xtype: 'checkbox',
                         name: 'required',
-                        fieldLabel: 'Required'
+                        fieldLabel: Drupal.t('Required')
                     }, {
                         xtype: 'checkbox',
                         name: 'resizable',
-                        fieldLabel: 'Resizable'
+                        fieldLabel: Drupal.t('Resizable')
                     }, {
                         xtype: 'textfield',
                         name: 'return_value',
-                        fieldLabel: 'Return Value'
+                        fieldLabel: Drupal.t('Return Value')
                     }, {
                         xtype: 'numberfield',
                         name: 'rows',
-                        fieldLabel: 'Rows'
+                        fieldLabel: Drupal.t('Rows')
                     }, {
                         xtype: 'numberfield',
                         name: 'size',
-                        fieldLabel: 'Size'
+                        fieldLabel: Drupal.t('Size')
                     }, {
                         xtype: 'textfield',
                         name: 'src',
-                        fieldLabel: 'Src'
+                        fieldLabel: Drupal.t('Src')
                     }, {
                         xtype: 'editablegrid',
-                        title: 'Submit',
+                        title: Drupal.t('Submit'),
                         height: 150,
                         collapsible: true,
                         store: this.createNamespaceStorage(),
@@ -485,7 +485,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'func',
-                            header: 'Functions',
+                            header: Drupal.t('Functions'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -495,22 +495,22 @@ Ext.app = (function() {
                     }, {
                         xtype: 'textfield',
                         name: 'suffix',
-                        fieldLabel: 'Suffix'
+                        fieldLabel: Drupal.t('Suffix')
                     }, {
                         xtype: 'textfield',
                         name: 'theme',
-                        fieldLabel: 'Theme'
+                        fieldLabel: Drupal.t('Theme')
                     }, {
                         xtype: 'textfield',
                         name: 'title',
-                        fieldLabel: 'Title'
+                        fieldLabel: Drupal.t('Title')
                     }, {
                         xtype: 'checkbox',
                         name: 'tree',
-                        fieldLabel: 'Tree'
+                        fieldLabel: Drupal.t('Tree')
                     }, {
                         xtype: 'editablegrid',
-                        title: 'Validate',
+                        title: Drupal.t('Validate'),
                         height: 150,
                         collapsible: true,
                         store: this.createNamespaceStorage(),
@@ -520,7 +520,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'func',
-                            header: 'Functions',
+                            header: Drupal.t('Functions'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -530,14 +530,14 @@ Ext.app = (function() {
                     }, {
                         xtype: 'textfield',
                         name: 'value',
-                        fieldLabel: 'Value'
+                        fieldLabel: Drupal.t('Value')
                     }, {
                         xtype: 'numberfield',
                         name: 'weight',
-                        fieldLabel: 'Weight'
+                        fieldLabel: Drupal.t('Weight')
                     }, {
                         xtype: 'editablegrid',
-                        title: 'User Data',
+                        title: Drupal.t('User Data'),
                         height: 150,
                         collapsible: true,
                         store: this.createNamespaceStorage(),
@@ -548,7 +548,7 @@ Ext.app = (function() {
                         columns: [{
                             xtype: 'gridcolumn',
                             dataIndex: 'key',
-                            header: 'Key',
+                            header: Drupal.t('Key'),
                             sortable: true,
                             width: 150,
                             field: {
@@ -557,7 +557,7 @@ Ext.app = (function() {
                         },{
                             xtype: 'gridcolumn',
                             dataIndex: 'value',
-                            header: 'Value',
+                            header: Drupal.t('Value'),
                             sortable: true,
                             flex: 1,
                             field: {
@@ -567,12 +567,12 @@ Ext.app = (function() {
                     }]
                 }],
                 buttons: [{
-                    text: 'Reset',
+                    text: Drupal.t('Reset'),
                     handler: function() {
                         this.up('form').getForm().reset();
                     }
                 }, {
-                    text: 'Submit',
+                    text: Drupal.t('Submit'),
                     formBind: true, //only enabled once the form is valid
                     disabled: true,
                     handler: function() {
@@ -592,7 +592,7 @@ Ext.app = (function() {
         },
         createPropertiesForm: function() {
             return Ext.create('Ext.form.Panel', {
-                title: 'Properties Form',
+                title: Drupal.t('Properties Form'),
                 region: 'center',
                 margin: '1 1 1 0',
                 frame: true,
@@ -604,36 +604,36 @@ Ext.app = (function() {
                 }],
                 items:  [{
                     xtype: 'fieldset',
-                    title: 'Root Element',
+                    title: Drupal.t('Root Element'),
                     items: [{
                         xtype: 'textfield',
-                        fieldLabel: 'Local Name',
+                        fieldLabel: Drupal.t('Local Name'),
                         anchor: '100%',
                         allowBlank: false
                     },{
                         xtype: 'textfield',
-                        fieldLabel: 'Namespace Prefix',
+                        fieldLabel: Drupal.t('Namespace Prefix'),
                         anchor: '100%'
                     },{
                         xtype: 'textfield',
-                        fieldLabel: 'Namespace URI',
+                        fieldLabel: Drupal.t('Namespace URI'),
                         anchor: '100%'
                     }]
                 },{
                     xtype: 'fieldset',
-                    title: 'Schema',
+                    title: Drupal.t('Schema'),
                     items: [{
                         xtype: 'textfield',
-                        fieldLabel: 'Name',
+                        fieldLabel: Drupal.t('Name'),
                         anchor: '100%'
                     },{
                         xtype: 'textfield',
-                        fieldLabel: 'URI',
+                        fieldLabel: Drupal.t('URI'),
                         anchor: '100%'
                     }]
                 },{
                     xtype: 'editablegrid',
-                    title: 'Namespaces',
+                    title: Drupal.t('Namespaces'),
                     height: 300,
                     store: this.createNamespaceStorage(),
                     modelInitTmpl: {
@@ -643,7 +643,7 @@ Ext.app = (function() {
                     columns: [{
                         xtype: 'gridcolumn',
                         dataIndex: 'prefix',
-                        header: 'Prefix',
+                        header: Drupal.t('Prefix'),
                         sortable: true,
                         width: 150,
                         field: {
@@ -652,7 +652,7 @@ Ext.app = (function() {
                     },{
                         xtype: 'gridcolumn',
                         dataIndex: 'uri',
-                        header: 'URI',
+                        header: Drupal.t('URI'),
                         sortable: true,
                         flex: 1,
                         field: {
@@ -700,7 +700,7 @@ Ext.app = (function() {
             var view_url = url.replace(/\/edit/i, '/view');
             var preview = "<iframe src='" + view_url + "' width='100%' height='100%'><p>Your browser does not support iframes.</p></iframe>";
             return Ext.create('Ext.form.Panel', {
-                title: 'Preview',
+                title: Drupal.t('Preview'),
                 html: preview
             });
         },
@@ -735,7 +735,7 @@ Ext.app = (function() {
                     }
                 },
                 root: {
-                    text: 'Elements',
+                    text: Drupal.t('Elements'),
                     id: 'elements',
                     expanded: true
                 }
@@ -817,12 +817,12 @@ Ext.app = (function() {
                             xtype: 'toolbar',
                             items: [{
                                 iconCls: 'icon-add',
-                                text: 'Add',
+                                text: Drupal.t('Add'),
                                 scope: this,
                                 handler: this.onAddClick
                             }, {
                                 iconCls: 'icon-delete',
-                                text: 'Delete',
+                                text: Drupal.t('Delete'),
                                 disabled: true,
                                 itemId: 'delete',
                                 scope: this,

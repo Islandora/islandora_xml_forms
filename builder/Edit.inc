@@ -190,6 +190,7 @@ function xml_form_builder_get_element_types() {
   static $cache;
   if (!isset($cache)) {
     $cache = array();
+    //XXX: --Adam Errr...  why not just call module_invoke_all?
     foreach (module_implements('elements') as $module) {
       $elements = module_invoke($module, 'elements');
       if (isset($elements) && is_array($elements)) {
