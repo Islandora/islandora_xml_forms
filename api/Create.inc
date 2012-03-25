@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -138,8 +136,8 @@ class Create implements Action {
     $results = $this->path->query($document, $element);
     if ($results && $results->length > 0) {
       $value = isset($value) ?
-        htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') :
-        NULL; // Filter the value.
+          htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') :
+          NULL; // Filter the value.
       $parent = $results->item(0);
       $created = $this->create($document, $value);
       $this->append($document, $created, $parent);
@@ -226,7 +224,15 @@ class Create implements Action {
     $xml = strtr($this->value, array('%value%' => $value));
     $xml = "<root {$root_attributes}>$xml</root>";
     $this->fragment = $document->document->createDocumentFragment();
+    libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.  
+    $number_of_errors_before = count(libxml_get_errors());
     $this->fragment->appendXML($xml);
+    $number_of_errors_after = count(libxml_get_errors());
+    libxml_use_internal_errors(FALSE); // Allow Drupal to catch errors
+    if ($number_of_errors_after > $number_of_errors_before) {
+      $error = libxml_get_last_error();
+      throw new Exception($error->message);
+    }
     $root = $this->fragment->firstChild->firstChild;
     return $root;
   }
