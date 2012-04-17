@@ -3,5 +3,5 @@ description = Provides functions and classes that allow for effective use of inf
 files[] = tests/Schema.test
 dependencies[] = php_lib
 package =  Islandora Dependencies
-version = 11.3.1
+version = 6.x-dev
 core = 6.x
