@@ -4,5 +4,5 @@ package = Islandora Dependencies
 dependencies[] = xml_form_api
 dependencies[] = jquery_update
 dependencies[] = jquery_ui
-version = 6.x-12.1-RC1
+version = 6.x-12.1-RC2
 core = 6.x
