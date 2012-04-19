@@ -6,7 +6,7 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_elements', 'Ahah');
+module_load_include('inc', 'php_lib', 'Ahah');
 module_load_include('inc', 'xml_form_api', 'Utils');
 module_load_include('inc', 'xml_form_api', 'XMLForm');
 module_load_include('inc', 'objective_forms', 'Utils');
