@@ -52,7 +52,7 @@ function xml_form_elements_menu() {
     'page callback' => 'Element::Duplicate',
     'page arguments' => array(5, 6),
     'access arguments' => array('access content'),
-    'file' => 'includes/Element.inc',
+    'file' => 'Element.inc',
     'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
@@ -68,7 +68,7 @@ function xml_form_elements_menu() {
     'page callback' => 'Element::Remove',
     'page arguments' => array(5, 6),
     'access arguments' => array('access content'),
-    'file' => 'includes/Element.inc',
+    'file' => 'Element.inc',
     'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
@@ -80,8 +80,8 @@ function xml_form_elements_menu() {
     'description' => 'AHAH callback',
     'page callback' => 'xml_form_elements_ahah_validate_form',
     'access arguments' => array('access content'),
-    'file' => 'includes/Validate.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'file' => 'Validate.inc',
+    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
   /**
@@ -94,7 +94,7 @@ function xml_form_elements_menu() {
     'page callback' => 'Element::Validate',
     'page arguments' => array(5),
     'access arguments' => array('access content'),
-    'file' => 'includes/Element.inc',
+    'file' => 'Element.inc',
     'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
@@ -108,7 +108,7 @@ function xml_form_elements_menu() {
     'page callback' => 'Element::Rebuild',
     'page arguments' => array(5),
     'access arguments' => array('access content'),
-    'file' => 'includes/Element.inc',
+    'file' => 'Element.inc',
     'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
@@ -121,7 +121,7 @@ function xml_form_elements_menu() {
     'page callback' => 'Tag::Add',
     'page arguments' => array(6),
     'access arguments' => array('access content'),
-    'file' => 'includes/Tag.inc',
+    'file' => 'Tag.inc',
     'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
@@ -134,7 +134,7 @@ function xml_form_elements_menu() {
     'page callback' => 'Tag::Edit',
     'page arguments' => array(6),
     'access arguments' => array('access content'),
-    'file' => 'includes/Tag.inc',
+    'file' => 'Tag.inc',
     'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
@@ -147,7 +147,7 @@ function xml_form_elements_menu() {
     'page callback' => 'Tag::Remove',
     'page arguments' => array(6),
     'access arguments' => array('access content'),
-    'file' => 'includes/Tag.inc',
+    'file' => 'Tag.inc',
     'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
