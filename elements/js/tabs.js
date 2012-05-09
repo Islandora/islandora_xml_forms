@@ -4,7 +4,7 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
     collapsibleTabs: null,
     nonCollapsibleTabs: null,
     loadPanels: function (collapse) {
-      var load = '.xml-form-elements-tabs';
+      var load = '.xml-form-elements-tabs:not(.processed)';
       var collapsible = '.xml-form-elements-tabs-collapsible';
       var collapsed = '.xml-form-elements-tabs-collapsed';
       this.tabs = $(load);
@@ -106,14 +106,11 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
       });
     },
     enableActions: function () {
-      $(".ui-icon-close").live("click", function() {
-        var id = $(this).text();
-        $("#"+id).trigger("mousedown");
+      var icons = $(".ui-icon-close:not(.processed)");
+      icons.click(function() {
+        $("#" + $(this).text()).trigger("mousedown");
       });
-    },
-    addTab: function(id) {
-      $('#' + id).trigger("mousedown");
-      return false;
+      icons.addClass('processed');
     }
   };
   tabs.loadPanels(true);
