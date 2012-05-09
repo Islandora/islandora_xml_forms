@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -40,6 +38,11 @@ function xml_form_elements_elements() {
     '#input' => TRUE,
     '#process' => array('xml_form_elements_process_datepicker'),
   );
+  $type['validate'] = array(
+    '#input' => TRUE,
+    '#button_type' => 'submit',
+    '#process' => array('xml_form_elements_process_validate', 'form_expand_ahah'),
+  );
   return $type;
 }
 
@@ -55,7 +58,7 @@ function xml_form_elements_theme() {
       'file' => 'Tabs.inc',
       'function' => 'xml_form_elements_theme_tabs'
     ),
-    'tabs_content' => array( // The inner content of a tabs element.
+    'tabs_content' => array(// The inner content of a tabs element.
       'arguments' => array('tabs' => NULL),
       'template' => 'Tabs',
       'file' => 'Tabs.inc'
@@ -69,8 +72,8 @@ function xml_form_elements_theme() {
       'file' => 'Tags.inc',
       'function' => 'xml_form_elements_theme_tags'
     ),
-    'tags_content' => array( // The inner content of a tags element.
-      'arguments' => array('element'),// => NULL),
+    'tags_content' => array(// The inner content of a tags element.
+      'arguments' => array('element'), // => NULL),
       'template' => 'Tags',
       'file' => 'Tags.inc',
     ),
@@ -82,6 +85,9 @@ function xml_form_elements_theme() {
       'arguments' => array('element'),
       'file' => 'Datepicker.inc'
     ),
+    'validate' => array(
+      'file' => 'Validate.inc'
+    )
   );
 }
 
@@ -120,6 +126,18 @@ function xml_form_elements_menu() {
     'page arguments' => array(5, 6),
     'access arguments' => array('access content'),
     'file' => 'Element.inc',
+    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'type' => MENU_CALLBACK,
+  );
+  /**
+   * Validate's the entire form.
+   */
+  $items['xml/form/elements/ahah/validate'] = array(
+    'title' => 'Validate',
+    'description' => 'AHAH callback',
+    'page callback' => 'xml_form_elements_ahah_validate_form',
+    'access arguments' => array('access content'),
+    'file' => 'Validate.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
@@ -258,3 +276,34 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
   return Datepicker::Process($element, $edit, $form_state, $complete_form);
 }
 
+/**
+ *
+ * @param array $element
+ * @param mixed $edit
+ * @param array $form_state
+ * @param array $complete_form 
+ */
+function xml_form_elements_process_validate(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'Validate');
+  $element['#ahah'] = array(
+    'path' => 'xml/form/elements/ahah/validate',
+    'wrapper' => $complete_form['#id'], // The parents wrapper is set to the parents hash.
+    'method' => 'prepend',
+    'effect' => 'fade',
+    'event' => 'mousedown',
+    'keypress' => TRUE
+  );
+  return $element;
+}
+
+/**
+ * Theme function for the validate element
+ * 
+ * @param array $element
+ * 
+ * @return string 
+ *    
+ */
+function theme_validate($element) {
+  return theme('submit', $element);
+}
