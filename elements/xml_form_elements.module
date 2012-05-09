@@ -3,98 +3,41 @@
 /**
  * @file
  *
+ * Hooks and constants for xml_form_elements.
  */
+/**
+ * Constants
+ */
+define('MENU_XML_FORM_ELEMENTS_AHAH', 'xml/form/elements/ahah/');
+define('MENU_XML_FORM_ELEMENTS_AHAH_DUPICATE', MENU_XML_FORM_ELEMENTS_AHAH . 'duplicate/%');
+define('MENU_XML_FORM_ELEMENTS_AHAH_REMOVE', MENU_XML_FORM_ELEMENTS_AHAH . 'remove/%');
+define('MENU_XML_FORM_ELEMENTS_AHAH_VALIDATE', MENU_XML_FORM_ELEMENTS_AHAH . 'validate');
+define('MENU_XML_FORM_ELEMENTS_AHAH_VALIDATE_ELEMENT', MENU_XML_FORM_ELEMENTS_AHAH . 'validate/%');
+define('MENU_XML_FORM_ELEMENTS_AHAH_REBUILD', MENU_XML_FORM_ELEMENTS_AHAH . 'rebuild/%');
+define('MENU_XML_FORM_ELEMENTS_AHAH_TAG_ADD', MENU_XML_FORM_ELEMENTS_AHAH . 'tag/add/%');
+define('MENU_XML_FORM_ELEMENTS_AHAH_TAG_EDIT', MENU_XML_FORM_ELEMENTS_AHAH . 'tag/edit/%');
+define('MENU_XML_FORM_ELEMENTS_AHAH_TAG_REMOVE', MENU_XML_FORM_ELEMENTS_AHAH . 'tag/remove/%');
+define('THEME_XML_FORM_ELEMENTS_TABS', 'tabs');
+define('THEME_XML_FORM_ELEMENTS_TABS_CONTENT', 'tabs_content');
+define('THEME_XML_FORM_ELEMENTS_TABPANEL', 'tabpanel');
+define('THEME_XML_FORM_ELEMENTS_TAGS', 'tags');
+define('THEME_XML_FORM_ELEMENTS_TAGS_CONTENT', 'tags_content');
+define('THEME_XML_FORM_ELEMENTS_TAG', 'tag');
+define('THEME_XML_FORM_ELEMENTS_DATEPICKER', 'datepicker');
+define('THEME_XML_FORM_ELEMENTS_VALIDATE', 'validate');
+define('THEME_XML_FORM_ELEMENTS_PAGES', 'pages');
+define('THEME_XML_FORM_ELEMENTS_PAGE', 'xml_form_elements_page');
+define('PATH_XML_FORM_ELEMENTS', drupal_get_path('module', 'xml_form_elements') . '/');
+define('PATH_XML_FORM_ELEMENTS_INCLUDES', PATH_XML_FORM_ELEMENTS . 'includes/');
+define('PATH_XML_FORM_ELEMENTS_JQUERY_THEME', PATH_XML_FORM_ELEMENTS . 'theme/');
+define('PATH_XML_FORM_ELEMENTS_JS', PATH_XML_FORM_ELEMENTS . 'js/');
+define('PATH_XML_FORM_ELEMENTS_CSS', PATH_XML_FORM_ELEMENTS . 'css/');
+define('PATH_XML_FORM_ELEMENTS_IMAGES', PATH_XML_FORM_ELEMENTS . 'images/');
 
 /**
- * Implements hook_elements. Registers Elements.
- * 
- * @return array
- */
-function xml_form_elements_elements() {
-  $type = array();
-  $type['tabs'] = array(
-    '#input' => TRUE,
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#process' => array('xml_form_elements_process_tabs'),
-  );
-  $type['tabpanel'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_tabpanel'),
-    '#user_data' => array(
-      'add' => TRUE,
-      'delete' => TRUE,
-    )
-  );
-  $type['tags'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_tags'),
-  );
-  $type['tag'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_tag'),
-  );
-  $type['datepicker'] = array(
-    '#input' => TRUE,
-    '#process' => array('xml_form_elements_process_datepicker'),
-  );
-  $type['validate'] = array(
-    '#input' => TRUE,
-    '#button_type' => 'submit',
-    '#process' => array('xml_form_elements_process_validate', 'form_expand_ahah'),
-  );
-  return $type;
-}
-
-/**
- * Implements hook_theme. Register themes.
+ * Implements hook_menu().
  *
  * @return array
- */
-function xml_form_elements_theme() {
-  return array(
-    'tabs' => array(
-      'arguments' => array('tabs' => NULL),
-      'file' => 'Tabs.inc',
-      'function' => 'xml_form_elements_theme_tabs'
-    ),
-    'tabs_content' => array(// The inner content of a tabs element.
-      'arguments' => array('tabs' => NULL),
-      'template' => 'Tabs',
-      'file' => 'Tabs.inc'
-    ),
-    'tabpanel' => array(
-      'arguments' => array('element'),
-      'file' => 'TabPanel.inc'
-    ),
-    'tags' => array(
-      'arguments' => array('element'),
-      'file' => 'Tags.inc',
-      'function' => 'xml_form_elements_theme_tags'
-    ),
-    'tags_content' => array(// The inner content of a tags element.
-      'arguments' => array('element'), // => NULL),
-      'template' => 'Tags',
-      'file' => 'Tags.inc',
-    ),
-    'tag' => array(
-      'arguments' => array('element'),
-      'file' => 'Tag.inc'
-    ),
-    'datepicker' => array(
-      'arguments' => array('element'),
-      'file' => 'Datepicker.inc'
-    ),
-    'validate' => array(
-      'file' => 'Validate.inc'
-    )
-  );
-}
-
-/**
- * Implements hook_menu. Register menus.
- *
- * @return array 
  */
 function xml_form_elements_menu() {
   /**
@@ -103,14 +46,14 @@ function xml_form_elements_menu() {
    * is the #hash of the element to render. If the second parameter is not given
    * the newly duplicated element will be rendered.
    */
-  $items['xml/form/elements/ahah/duplicate/%'] = array(
+  $items[MENU_XML_FORM_ELEMENTS_AHAH_DUPICATE] = array(
     'title' => 'Duplicate a Form Element',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Duplicate',
     'page arguments' => array(5, 6),
     'access arguments' => array('access content'),
-    'file' => 'Element.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'file' => 'includes/Element.inc',
+    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
   /**
@@ -119,25 +62,25 @@ function xml_form_elements_menu() {
    * is the #hash of the element to render. If the second parameter is not given
    * an empty div will be rendered.
    */
-  $items['xml/form/elements/ahah/remove/%'] = array(
+  $items[MENU_XML_FORM_ELEMENTS_AHAH_REMOVE] = array(
     'title' => 'Remove a Form Element',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Remove',
     'page arguments' => array(5, 6),
     'access arguments' => array('access content'),
-    'file' => 'Element.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'file' => 'includes/Element.inc',
+    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
   /**
    * Validate's the entire form.
    */
-  $items['xml/form/elements/ahah/validate'] = array(
+  $items[MENU_XML_FORM_ELEMENTS_AHAH_VALIDATE] = array(
     'title' => 'Validate',
     'description' => 'AHAH callback',
     'page callback' => 'xml_form_elements_ahah_validate_form',
     'access arguments' => array('access content'),
-    'file' => 'Validate.inc',
+    'file' => 'includes/Validate.inc',
     'file path' => drupal_get_path('module', 'xml_form_elements'),
     'type' => MENU_CALLBACK,
   );
@@ -145,143 +88,320 @@ function xml_form_elements_menu() {
    * Validate's a form element. Takes one parameter.
    * The first parameter is the #hash of the element to render.
    */
-  $items['xml/form/elements/ahah/validate/%'] = array(
+  $items[MENU_XML_FORM_ELEMENTS_AHAH_VALIDATE_ELEMENT] = array(
     'title' => 'Validate a Element',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Validate',
     'page arguments' => array(5),
     'access arguments' => array('access content'),
-    'file' => 'Element.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'file' => 'includes/Element.inc',
+    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
   /**
    * Rebuild the form and re-render a chunk of it. Takes one parameter.
    * The first parameter is the #hash of the element to render.
    */
-  $items['xml/form/elements/ahah/rebuild/%'] = array(
+  $items[MENU_XML_FORM_ELEMENTS_AHAH_REBUILD] = array(
     'title' => 'Rebuild the form.',
     'description' => 'AHAH callback',
     'page callback' => 'Element::Rebuild',
     'page arguments' => array(5),
     'access arguments' => array('access content'),
-    'file' => 'Element.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'file' => 'includes/Element.inc',
+    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
   /**
-   * 
+   * Adds a new tag with the value from the textfield.
    */
-  $items['xml/form/elements/ahah/tag/add/%'] = array(
+  $items[MENU_XML_FORM_ELEMENTS_AHAH_TAG_ADD] = array(
     'title' => 'Add a tag to the form, with the value submited for this first.',
     'description' => 'AHAH callback',
     'page callback' => 'Tag::Add',
     'page arguments' => array(6),
     'access arguments' => array('access content'),
-    'file' => 'Tag.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'file' => 'includes/Tag.inc',
+    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
   /**
-   * 
+   * Moves the given tag into the textfield for editing.
    */
-  $items['xml/form/elements/ahah/tag/edit/%'] = array(
+  $items[MENU_XML_FORM_ELEMENTS_AHAH_TAG_EDIT] = array(
     'title' => 'Edit a tag.',
     'description' => 'AHAH callback',
     'page callback' => 'Tag::Edit',
     'page arguments' => array(6),
     'access arguments' => array('access content'),
-    'file' => 'Tag.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'file' => 'includes/Tag.inc',
+    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
   /**
-   * 
+   * Remove the given tag.
    */
-  $items['xml/form/elements/ahah/tag/remove/%'] = array(
+  $items[MENU_XML_FORM_ELEMENTS_AHAH_TAG_REMOVE] = array(
     'title' => 'Remove a tag.',
     'description' => 'AHAH callback',
     'page callback' => 'Tag::Remove',
     'page arguments' => array(6),
     'access arguments' => array('access content'),
-    'file' => 'Tag.inc',
-    'file path' => drupal_get_path('module', 'xml_form_elements'),
+    'file' => 'includes/Tag.inc',
+    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
-
   return $items;
 }
 
 /**
+ * Implements hook_elements().
+ *
+ * @return array
+ */
+function xml_form_elements_elements() {
+  return array(
+    'tabs' => array(
+      '#input' => TRUE,
+      '#collapsible' => TRUE,
+      '#collapsed' => FALSE,
+      '#process' => array('xml_form_elements_process_tabs')
+    ),
+    'tabpanel' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_tabpanel'),
+      '#user_data' => array('add' => TRUE, 'delete' => TRUE)
+    ),
+    'tags' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_tags')
+    ),
+    'tag' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_tag')
+    ),
+    'datepicker' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_datepicker')
+    ),
+    'pages' => array(
+      '#input' => TRUE,
+      '#process' => array(
+        'xml_form_elements_process_pages_include_file',
+        'xml_form_elements_process_pages_add_resources',
+        'xml_form_elements_process_pages_add_pagers'
+      )
+    ),
+    'page' => array(
+      '#input' => TRUE,
+      '#process' => array('xml_form_elements_process_page')
+    ),
+    'validate' => array(
+      '#input' => TRUE,
+      '#button_type' => 'submit',
+      '#process' => array('xml_form_elements_process_validate', 'form_expand_ahah'),
+    )
+  );
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * @return array
+ */
+function xml_form_elements_theme() {
+  return array(
+    THEME_XML_FORM_ELEMENTS_TABS => array(// Wrapper used so theme('form_element') can be used.
+      'arguments' => array('tabs' => NULL),
+      'file' => 'includes/Tabs.inc',
+    ),
+    THEME_XML_FORM_ELEMENTS_TABS_CONTENT => array(// Tabs outer frame
+      'arguments' => array('tabs' => NULL),
+      'template' => 'templates/Tabs',
+      'file' => 'includes/Tabs.inc',
+    ),
+    THEME_XML_FORM_ELEMENTS_TABPANEL => array(// The content of a single tabpanel.
+      'arguments' => array('element'),
+      'file' => 'includes/TabPanel.inc'
+    ),
+    THEME_XML_FORM_ELEMENTS_TAGS => array(// Wrapper used so theme('form_element') can be used.
+      'arguments' => array('element'),
+      'file' => 'includes/Tags.inc',
+    ),
+    THEME_XML_FORM_ELEMENTS_TAGS_CONTENT => array(// The inner content of a tags element.
+      'arguments' => array('element'), // => NULL),
+      'template' => 'templates/Tags',
+      'file' => 'includes/Tags.inc',
+    ),
+    THEME_XML_FORM_ELEMENTS_TAG => array(
+      'arguments' => array('element'),
+      'file' => 'includes/Tag.inc'
+    ),
+    THEME_XML_FORM_ELEMENTS_DATEPICKER => array(
+      'arguments' => array('element'),
+      'file' => 'Datepicker.inc'
+    ),
+    THEME_XML_FORM_ELEMENTS_VALIDATE => array(
+      'file' => 'Validate.inc'
+    ),
+    THEME_XML_FORM_ELEMENTS_PAGES => array(
+      'arguments' => array('element' => NULL),
+      'template' => 'templates/Pages',
+      'file' => 'includes/Pages.inc',
+    ),
+    THEME_XML_FORM_ELEMENTS_PAGE => array(
+      'arguments' => array('element'),
+      'file' => 'includes/Pages.inc',
+    )
+  );
+}
+
+/**
+ * Process the 'tabs' Element.
  *
  * @param array $element
+ *   The element to be processed.
  * @param mixed $edit
+ *   The submitted value for this element, or NULL.
  * @param array $form_state
+ *   The drupal form state.
  * @param array $complete_form
- * @return array 
+ *   The drupal form.
+ *
+ * @return array
+ *   The processed element.
  */
 function xml_form_elements_process_tabs(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Tabs');
+  module_load_include('inc', 'xml_form_elements', 'includes/Tabs');
   return Tabs::Process($element, $edit, $form_state, $complete_form);
 }
 
 /**
+ * Process the 'tabpanel' Element.
  *
  * @param array $element
+ *   The element to be processed.
  * @param mixed $edit
+ *   The submitted value for this element, or NULL.
  * @param array $form_state
+ *   The drupal form state.
  * @param array $complete_form
- * @return array 
+ *   The drupal form.
+ *
+ * @return array
+ *   The processed element.
  */
 function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'TabPanel');
+  module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
   return TabPanel::Process($element, $edit, $form_state, $complete_form);
 }
 
 /**
+ * Process the 'tags' Element.
  *
  * @param array $element
+ *   The element to be processed.
  * @param mixed $edit
+ *   The submitted value for this element, or NULL.
  * @param array $form_state
+ *   The drupal form state.
  * @param array $complete_form
- * @return array 
+ *   The drupal form.
+ *
+ * @return array
+ *   The processed element.
  */
 function xml_form_elements_process_tags(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Tags');
+  module_load_include('inc', 'xml_form_elements', 'includes/Tags');
   return Tags::Process($element, $edit, $form_state, $complete_form);
 }
 
 /**
+ * Process the 'tag' Element.
+ *
+ * @param array $element
+ *   The element to be processed.
+ * @param mixed $edit
+ *   The submitted value for this element, or NULL.
+ * @param array $form_state
+ *   The drupal form state.
+ * @param array $complete_form
+ *   The drupal form.
+ *
+ * @return array
+ *   The processed element.
+ */
+function xml_form_elements_process_tag(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'includes/Tag');
+  return Tag::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ * Process the 'datepicker' Element.
+ *
+ * @param array $element
+ *   The element to be processed.
+ * @param mixed $edit
+ *   The submitted value for this element, or NULL.
+ * @param array $form_state
+ *   The drupal form state.
+ * @param array $complete_form
+ *   The drupal form.
+ *
+ * @return array
+ *   The processed element.
+ */
+function xml_form_elements_process_datepicker(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'includes/Datepicker');
+  return Datepicker::Process($element, $edit, $form_state, $complete_form);
+}
+
+/**
+ *  Global reference to the #process callback for the 'pages' form element.
+ *
+ * @param array $element
+ *   The element to be processed.
+ * @param mixed $edit
+ *   The submitted value for this element, or NULL.
+ * @param array $form_state
+ *   The drupal form state.
+ * @param array $complete_form
+ *   The complete drupal form.
+ *
+ * @return array
+ *   The processed element.
+ */
+function xml_form_elements_process_pages_include_file(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'includes/Pages');
+  return $element;
+}
+
+/**
+ * Global reference to the #process callback for the 'pages' form element.
+ *
+ * @param array $element
+ *   The element to be processed.
+ * @param mixed $edit
+ *   The submitted value for this element, or NULL.
+ * @param array $form_state
+ *   The drupal form state.
+ * @param array $complete_form
+ *   The complete drupal form.
+ *
+ * @return array
+ *   The processed element.
+ */
+function xml_form_elements_process_page(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  module_load_include('inc', 'xml_form_elements', 'includes/Pages');
+  return xml_form_elements_process_page_initialize($element, $edit, $form_state, $complete_form);
+}
+
+/**
  *
  * @param array $element
  * @param mixed $edit
  * @param array $form_state
  * @param array $complete_form
- * @return array 
- */
-function xml_form_elements_process_tag(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Tag');
-  return Tag::Process($element, $edit, $form_state, $complete_form);
-}
-
-/**
- *
- * @param array $element
- * @param mixed $edit
- * @param array $form_state
- * @param array $complete_form 
- */
-function xml_form_elements_process_datepicker(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Datepicker');
-  return Datepicker::Process($element, $edit, $form_state, $complete_form);
-}
-
-/**
- *
- * @param array $element
- * @param mixed $edit
- * @param array $form_state
- * @param array $complete_form 
  */
 function xml_form_elements_process_validate(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'Validate');
@@ -298,11 +418,11 @@ function xml_form_elements_process_validate(array $element, $edit, array &$form_
 
 /**
  * Theme function for the validate element
- * 
+ *
  * @param array $element
- * 
- * @return string 
- *    
+ *
+ * @return string
+ *
  */
 function theme_validate($element) {
   return theme('submit', $element);

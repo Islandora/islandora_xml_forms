@@ -19,9 +19,9 @@ class TabPanel {
 
   /**
    * TabPanel's theme hook.
-   * 
+   *
    * @param array $element
-   * @return string 
+   * @return string
    */
   public static function Theme($element) {
     $children = isset($element['#children']) ? $element['#children'] : '';
@@ -31,14 +31,14 @@ class TabPanel {
 
   /**
    * The default #process function for tabpanel's.
-   * 
+   *
    * Adds elements that allow for adding/remove form elements.
-   * 
+   *
    * @param array $element
    * @param mixed $edit
    * @param array $form_state
    * @param array $complete_form
-   * @return array 
+   * @return array
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE; // Defaults to TRUE
@@ -56,9 +56,9 @@ class TabPanel {
 
   /**
    * Creates a button that allows tabpanels to duplicate.
-   * 
+   *
    * @param FormElement $tabpanel
-   * @return FormElement 
+   * @return FormElement
    */
   private static function createAddButton(array &$element, array& $complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
@@ -80,9 +80,9 @@ class TabPanel {
 
   /**
    * Creates a remove button that allows the user to remove this tabpanel.
-   * 
+   *
    * @param FormElement $tabpanel
-   * @return FormElement 
+   * @return FormElement
    */
   private static function createRemoveButton(array &$element, array& $complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
