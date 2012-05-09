@@ -1,7 +1,5 @@
 <?php
 
-
-
 /**
  * @file
  *
@@ -130,6 +128,19 @@ class XMLDocument {
     ;
     $this->namespaces->addNamespacesAttributesTo($document->documentElement);
     return $document;
+  }
+
+  /**
+   * Validates this objects document against the schema if it exists.
+   * 
+   * @return boolean
+   *   TRUE if the document is valid or doesn't provided a schema to validate against, FALSE otherwise.
+   */
+  public function valid() {
+    if (isset($this->schema)) {
+      return $this->schema->validate($this->document);
+    }
+    return TRUE;
   }
 
   /**
