@@ -65,7 +65,7 @@ function xml_form_elements_process_pages_add_pagers(array $element, $edit, array
 function xml_form_elements_process_pages_add_pager(array $element, array &$page, $back, $next) {
   if ($back) {
     $last = array_pop(element_children($page));
-    if ($page[$last]['#type'] == 'submit') {
+    if (isset($page[$last]['#type']) && $page[$last]['#type'] == 'submit') {
       $submit = $page[$last];
       unset($page[$last]);
     }
