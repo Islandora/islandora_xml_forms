@@ -1,4 +1,4 @@
-/* 
+/*
     Document   : tabs
     Created on : May 5, 2011, 3:26:57 PM
     Author     : nbanks
@@ -6,12 +6,12 @@
         Purpose of the stylesheet follows.
 */
 
-/* 
+/*
    TODO customize this sample style
    Syntax recommendation http://www.w3.org/TR/REC-CSS2/
 */
 
-root { 
+root {
     display: block;
 }
 
@@ -43,14 +43,15 @@ root {
   margin: 0em;
 }
 
+.tool_tip_trigger .tool_tip { display:none; }
+
 .tool_tip {
     color: #000;
-    background: white;
-    padding: 0.25em;
-    position: absolute;
-    border: 1px solid black;
-    z-index: 1000;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+    background:#cfd0ce;
+    /* display:none; /*--Hides by default--*/
+    padding:10px;
+    position:absolute;    z-index:1000;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
 }

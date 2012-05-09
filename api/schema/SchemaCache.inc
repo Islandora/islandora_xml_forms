@@ -106,25 +106,43 @@ class SchemaCache {
    *   The cached DOMDocument if found FALSE otherwise.
    */
   public static function Get($filename) {
+    $cached_filename = self::GetCachedFilename($filename);
+    if ($cached_filename !== FALSE) {
+      $doc = new DOMDocument();
+      if (!@$doc->load($cached_filename)) {
+        // Failed to load clear instance from the cache.
+        $cache = cache_get(self::ID, self::Type)->data;
+        unset($cache[$filename]);
+        cache_set(self::ID, $cache, self::Type);
+        return FALSE;
+      }
+      return $doc; // Success.
+    }
+    return FALSE;
+  }
+
+  /**
+   * Gets the cached document's filename
+   * 
+   * @param string $filename
+   *   The filename used by schemas internally to refer to specific files. May also be a url.
+   * 
+   * @return string
+   *   The location of the cached if found FALSE otherwise.
+   */
+  public static function GetCachedFilename($filename) {
     if (self::Create()) { // Only Creates if none existed.
       $cache = cache_get(self::ID, self::Type)->data;
       if (isset($filename) && isset($cache[$filename])) {
         if (self::LocationExists($cache[$filename])) {
-          $doc = new DOMDocument();
-          if (!@$doc->load($cache[$filename])) {
-            // Failed to load clear instance from the cache.
-            unset($cache[$filename]);
-            cache_set(self::ID, $cache, self::Type);
-            return FALSE;
-          }
-          return $doc; // Success.
+          return $cache[$filename];
         }
         // Failed to find the file clear instance from the cache.
         unset($cache[$filename]);
         cache_set(self::ID, $cache, self::Type);
       }
     }
-    return FALSE; // Not referenced in the cache.
+    return FALSE;
   }
 
   /**
@@ -135,7 +153,9 @@ class SchemaCache {
    * @param DOMDocument $doc 
    *   The schema file.
    */
-  public static function Set($filename, DOMDocument $doc) {
+  public static
+
+  function Set($filename, DOMDocument $doc) {
     if (self::Create()) { // Only Creates if none existed.
       $cached_filename = file_create_filename('schema.xsd', XML_SCHEMA_API_CACHE_LOCATION);
       if (@$doc->save($cached_filename) != FALSE) {

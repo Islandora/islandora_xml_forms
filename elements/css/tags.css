@@ -11,8 +11,8 @@ span.tag-list > span
   background-image: none;
   background-color: #efe;
   background-position: right center;
-  background-repeat: no-repeat; 
-  margin: 0 5px;	
+  background-repeat: no-repeat;
+  margin: 0 5px;
   padding: 0 2px;
   cursor: pointer;
   -moz-border-radius: 5px;
@@ -30,7 +30,7 @@ span.tag-list > span > span.remove-tag
   background-repeat: no-repeat;
   background-position: right center;
   /*padding: 0 6px 0 6px;
-  margin: 0 5px;	
+  margin: 0 5px;
   cursor: pointer;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;*/

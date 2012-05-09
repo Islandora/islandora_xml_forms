@@ -1,35 +1,41 @@
 <?php
 
-
-
 /**
  * @file
  *
  */
-module_load_include('inc', 'xml_form_elements', 'TabPanel');
+module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
 
 class Tabs {
+
+  /**
+   * Loads the required resources for displaying the Tabs element.
+   *
+   * @staticvar boolean $load
+   *   Keeps us from loading the same files multiple times, while not required it just saves some time.
+   */
+  public static function addRequiredResources() {
+    static $load = TRUE;
+    if ($load) {
+      module_load_include('inc', 'xml_form_elements', 'includes/Element');
+      Element::addRequiredResources();
+      Element::addUIWidgets('ui.tabs');
+      Element::addUIThemeStyles(array('ui.core.css', 'ui.tabs.css', 'ui.theme.css'));
+      Element::addJS('tabs.js');
+      Element::addCSS('tabs.css');
+      $load = FALSE;
+    }
+  }
 
   /**
    *
    * @param array $element
    * @param type $edit
    * @param array $form_state
-   * @param array $complete_form 
+   * @param array $complete_form
    */
-  public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-    static $add_files = TRUE;
-    if ($add_files) {
-      $path = drupal_get_path('module', 'xml_form_elements');
-      jquery_ui_add('ui.tabs');
-      drupal_add_js("$path/js/XMLFormElements.js");
-      drupal_add_js("$path/js/Tabs.js");
-      drupal_add_css("$path/theme/ui.core.css");
-      drupal_add_css("$path/theme/ui.tabs.css");
-      drupal_add_css("$path/theme/ui.theme.css");
-      drupal_add_css("$path/stylesheets/xml-form-elements-tabs.css");
-      $add_files = FALSE;
-    }
+  public static function process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+    self::addRequiredResources();
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
     return $element;
@@ -37,7 +43,7 @@ class Tabs {
 
   /**
    *
-   * @param array $children 
+   * @param array $children
    */
   public static function FilterChildren(array $child) {
     $ret = ($child['#type'] == 'tabpanel') ? TRUE : FALSE;
@@ -48,10 +54,10 @@ class Tabs {
 
 /**
  * Preprocess tabs theme hook.
- * 
- * @param array $vars 
+ *
+ * @param array $vars
  */
-function xml_form_elements_preprocess_tabs_content(&$vars) {
+function template_preprocess_tabs_content(&$vars) {
   $tabs = $vars['tabs'];
   // Header Info
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
@@ -76,21 +82,21 @@ function xml_form_elements_preprocess_tabs_content(&$vars) {
     $count++;
   }
   // Content Info
-  if(isset($tabs['#children'])) {
+  if (isset($tabs['#children'])) {
     $vars['content'] = $tabs['#children'];
   }
   else {
     $parents = $tabs['#array_parents'];
     $name = array_pop($parents);
     $vars['content'] = '';
-    drupal_set_message("Attempted to create a tabs: '$name', without defining any child tabpanels.", 'error');
+    drupal_set_message(t('Attempted to create a tabs: %name, without defining any child tabpanels.', array('%name' => $name)), 'error');
   }
 }
 
 /**
  * Theme Hook for tags elements.
  */
-function xml_form_elements_theme_tabs($element) {
+function theme_tabs($element) {
   $content = theme('tabs_content', $element);
   return theme('form_element', $element, $content);
 }
