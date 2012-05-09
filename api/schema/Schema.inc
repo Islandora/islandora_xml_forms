@@ -273,6 +273,18 @@ class XMLSchema {
   }
 
   /**
+   * Checks to see if the given doc is valid.
+   * 
+   * @param DOMDocument $doc 
+   */
+  public function validate(DOMDocument $doc) {
+    $filename = SchemaCache::GetCachedFilename($this->filename);
+    if ($filename != FALSE) {
+      return $doc->schemaValidate($filename);
+    }
+  }
+
+  /**
    * Query the given path in this schema, and all schema's that are included or imported.
    * 
    * @param string $path

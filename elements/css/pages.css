@@ -1,0 +1,13 @@
+div.xml-form-elements-pages {
+  border: 0px;
+}
+div.xml-form-elements-pages > ul, div.xml-form-elements-pages > div.form-item {
+  float: left;
+  margin: 0px;
+}
+div.xml-form-elements-pages > ul.ui-tabs-nav > li {
+  margin: 2px;
+  padding: 0px;
+  display: block;
+  clear:both;
+}

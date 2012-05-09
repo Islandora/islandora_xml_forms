@@ -5,7 +5,7 @@
  *
  *  Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
-module_load_include('inc', 'xml_form_elements', 'Element');
+module_load_include('inc', 'xml_form_elements', 'includes/Element');
 
 /**
  * A collection of static functions that allow for theming and processing tabpanels.
@@ -19,9 +19,9 @@ class Tag {
 
   /**
    * TabPanel's theme hook.
-   * 
+   *
    * @param array $element
-   * @return string 
+   * @return string
    */
   public static function Theme($element) {
     $children = isset($element['#children']) ? $element['#children'] : '';
@@ -31,14 +31,14 @@ class Tag {
 
   /**
    * The default #process function for tabpanel's.
-   * 
+   *
    * Adds elements that allow for adding/remove form elements.
-   * 
+   *
    * @param array $element
    * @param mixed $edit
    * @param array $form_state
    * @param array $complete_form
-   * @return array 
+   * @return array
    */
   public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
     $tags = &get_form_element_parent($element, $complete_form);
@@ -77,7 +77,7 @@ class Tag {
   /**
    *
    * @param hash $textfield_hash
-   * @param hash $tag_hash 
+   * @param hash $tag_hash
    */
   public static function Edit($hash) {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
@@ -104,7 +104,7 @@ class Tag {
 
   /**
    *
-   * @param hash $tag_hash 
+   * @param hash $tag_hash
    */
   public static function Remove($tag) {
     list($form_id, $form_build_id, $drupal_form, $form_state) = Ahah::getFormInfo();
@@ -121,8 +121,8 @@ class Tag {
     // Respond to the request with JSON.
     Ahah::respond($element);
   }
-  
-  
+
+
 }
 
 /**
