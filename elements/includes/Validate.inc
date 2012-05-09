@@ -5,7 +5,7 @@
  *
  * Callback for validiate.
  */
-module_load_include('inc', 'xml_form_elements', 'Element');
+module_load_include('inc', 'xml_form_elements', 'includes/Element');
 
 /**
  * Implements hook_elements. Registers Elements.
