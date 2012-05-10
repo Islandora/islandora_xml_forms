@@ -15,9 +15,9 @@ module_load_include('inc', 'xml_form_elements', 'includes/Element');
 function xml_form_elements_ahah_validate_form() {
   list($form_id, $form_build_id, $form, $form_state) = Ahah::getFormInfo();
   try {
+    $drupal_form = Ahah::processForm($form_id, $form, $form_state);
     $xml_form = new XMLForm($form_state);
     $document = $xml_form->submit($form, $form_state);
-
     libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.  
     libxml_clear_errors();
     $valid = $document->valid();
@@ -55,5 +55,6 @@ function xml_form_elements_ahah_validate_form() {
     drupal_set_message($message, 'error');
   }
   Ahah::respond();
+  unset($_SESSION['messages']); // Prevent Memory leaks
   exit();
 }
