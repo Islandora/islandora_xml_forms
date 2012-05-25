@@ -100,7 +100,7 @@ Ext.formbuilder.createTreePanel = function() {
           form_grids.forEach(function(name) {
             var converted = [];
             if(data[name] instanceof Object) {
-              $.each(data[name], function(i, n) {
+              jQuery.each(data[name], function(i, n) {
                 converted.push({
                   key: i, 
                   value: n

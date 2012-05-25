@@ -15,29 +15,29 @@ abstract class InsertOrderNode {
 
   /**
    * The parent of this InsertOrderNode.
-   * 
+   *
    * @var InsertOrderNode
    */
   public $parent;
 
   /**
-   * 
+   *
    * @var mixed (integer or 'unbounded')
    */
   public $min;
 
   /**
-   * 
+   *
    * @var mixed (integer or 'unbounded')
    */
   public $max;
 
   /**
    * Create an InsertOrderNode.
-   * 
+   *
    * @param mixed $min (integer or 'unbounded')
    * @param mixed $max (integer or 'unbounded')
-   * @param InsertOrderNode $parent 
+   * @param InsertOrderNode $parent
    */
   public function __construct($min, $max, InsertOrderNode $parent = NULL) {
     $this->min = $min;
@@ -47,7 +47,7 @@ abstract class InsertOrderNode {
 
   /**
    * Attempts to store the given DOMElement in a matched constraint.
-   * 
+   *
    * @param DOMElement $element
    * @return boolean
    */
@@ -55,25 +55,25 @@ abstract class InsertOrderNode {
 
   /**
    * Gets an array of DOMElements in their correct insert order.
-   * 
+   *
    * @return DOMElement[]
    */
   abstract public function getOrder();
 
   /**
-   * Checks if this node or a child node meets this constraint. 
-   * 
+   * Checks if this node or a child node meets this constraint.
+   *
    * Does not account for occurance constraints.
-   * 
+   *
    * @param DOMElement $element
-   * 
+   *
    * @return boolean
    */
   abstract public function constraintMet(DOMElement $element);
 
   /**
    * Has this constraint matched it's max number of occurances.
-   * 
+   *
    * @return boolean
    */
   abstract function maximumConstraintsMet();
@@ -88,17 +88,17 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 
   /**
    * Child Insert Order Constraints. Compositor's can repeat.
-   * 
+   *
    * @var InsertOrderNode[][]
    */
   public $children;
 
   /**
    * Create an InsertOrderCompositor.
-   * 
+   *
    * @param mixed $min (integer or 'unbounded')
    * @param mixed $max (integer or 'unbounded')
-   * @param InsertOrderCompositor $parent 
+   * @param InsertOrderCompositor $parent
    */
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
@@ -120,8 +120,8 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 
   /**
    * Add a child to the Compositor's definition.
-   * 
-   * @param InsertOrderNode $child 
+   *
+   * @param InsertOrderNode $child
    */
   public function addChild(InsertOrderNode $child) {
     $this->children[0][] = $child;
@@ -129,7 +129,7 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 
   /**
    * Create new Occurance of this compositor.
-   * 
+   *
    * @return boolean
    */
   public function createOccurrence() {
@@ -143,7 +143,7 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 
   /**
    * Has this constraint matched it's max number of constraints.
-   * 
+   *
    * @return boolean
    */
   public function maximumConstraintsMet() {
@@ -153,7 +153,7 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 
   /**
    * Attempts to store the given DOMElement in a matched constraint.
-   * 
+   *
    * @param DOMElement $element
    * @return boolean
    */
@@ -173,9 +173,9 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 
   /**
    * A helper function used by store match that attempts to store.
-   * 
+   *
    * @param DOMElement $element
-   * @return type 
+   * @return type
    */
   private function attemptStore(DOMElement $element) {
     $count = count($this->children);
@@ -191,7 +191,7 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 
   /**
    * Gets an array of DOMElements in their correct insert order.
-   * 
+   *
    * @return DOMElement[]
    */
   public function getOrder() {
@@ -206,12 +206,12 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
   }
 
   /**
-   * Checks if this node or a child node meets this constraint. 
-   * 
+   * Checks if this node or a child node meets this constraint.
+   *
    * Does not account for occurance constraints.
-   * 
+   *
    * @param DOMElement $element
-   * 
+   *
    * @return boolean
    */
   public function constraintMet(DOMElement $element) {
@@ -226,16 +226,16 @@ abstract class InsertOrderCompositor extends InsertOrderNode {
 }
 
 /**
- * 
+ *
  */
 class InsertOrderAll extends InsertOrderCompositor {
 
   /**
    * Create a InsertOrderAll node.
-   * 
+   *
    * @param mixed $min (integer or 'unbounded')
    * @param mixed $max (integer or 'unbounded')
-   * @param InsertOrderCompositor $parent 
+   * @param InsertOrderCompositor $parent
    */
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
@@ -250,10 +250,10 @@ class InsertOrderChoice extends InsertOrderCompositor {
 
   /**
    * Create a InsertOrderChoice node.
-   * 
+   *
    * @param mixed $min (integer or 'unbounded')
    * @param mixed $max (integer or 'unbounded')
-   * @param InsertOrderCompositor $parent 
+   * @param InsertOrderCompositor $parent
    */
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
@@ -268,10 +268,10 @@ class InsertOrderSequence extends InsertOrderCompositor {
 
   /**
    * Create a InsertOrderSequence node.
-   * 
+   *
    * @param mixed $min (integer or 'unbounded')
    * @param mixed $max (integer or 'unbounded')
-   * @param InsertOrderCompositor $parent 
+   * @param InsertOrderCompositor $parent
    */
   public function __construct($min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
@@ -286,14 +286,14 @@ class InsertOrderElement extends InsertOrderNode {
 
   /**
    * The name of the Element that this models.
-   * 
+   *
    * @var string
    */
   public $name;
 
   /**
    * The DOMElement's that match this constraint.
-   * 
+   *
    * @var DOMElement[]
    */
   public $matches;
@@ -303,7 +303,7 @@ class InsertOrderElement extends InsertOrderNode {
    * @param string $name
    * @param mixed $min (integer or 'unbounded')
    * @param mixed $max (integer or 'unbounded')
-   * @param InsertOrderCompositor $parent 
+   * @param InsertOrderCompositor $parent
    */
   public function __construct($name, $min, $max, InsertOrderCompositor $parent = NULL) {
     parent::__construct($min, $max, $parent);
@@ -320,7 +320,7 @@ class InsertOrderElement extends InsertOrderNode {
 
   /**
    * Has this constraint matched it's max number of constraints.
-   * 
+   *
    * @return boolean
    */
   public function maximumConstraintsMet() {
@@ -330,7 +330,7 @@ class InsertOrderElement extends InsertOrderNode {
 
   /**
    * Has the minimum set of constraints been met for this InsertOrderNode.
-   * 
+   *
    * @return boolean
    */
   public function minimumConstraintsMet() { // Not being used at the moment!
@@ -342,9 +342,9 @@ class InsertOrderElement extends InsertOrderNode {
 
   /**
    * Does the given DOMElement match this element's non occurance constraints.
-   * 
+   *
    * @param DOMElement $element
-   * @return boolean 
+   * @return boolean
    */
   public function constraintMet(DOMElement $element) {
     return $element->localName == $this->name;
@@ -352,7 +352,7 @@ class InsertOrderElement extends InsertOrderNode {
 
   /**
    * Attempt to store DOMElement if it mets this Insert Order Node's constraints.
-   * 
+   *
    * @param DOMElement $element
    * @return boolean
    */
@@ -366,7 +366,7 @@ class InsertOrderElement extends InsertOrderNode {
 
   /**
    * Gets the DOMElement's matched by this constraint.
-   * 
+   *
    * @return DOMElement[]
    */
   public function getOrder() {
@@ -382,25 +382,25 @@ class InsertOrderAny extends InsertOrderNode {
 
   /**
    * The names of the Element's that this models.
-   * 
+   *
    * @var string[]
    */
   public $names;
 
   /**
    * The DOMElement's that match this constraint.
-   * 
+   *
    * @var DOMElement[]
    */
   public $matches;
 
   /**
    * Create an Any Constraint
-   * 
+   *
    * @param array $names
    * @param mixed $min (integer or 'unbounded')
    * @param mixed $max (integer or 'unbounded')
-   * @param InsertOrderNode $parent 
+   * @param InsertOrderNode $parent
    */
   public function __construct(array $names, $min, $max, InsertOrderNode $parent = NULL) {
     parent::__construct($min, $max, $parent);
@@ -417,7 +417,7 @@ class InsertOrderAny extends InsertOrderNode {
 
   /**
    * Has this constraint matched it's max number of constraints.
-   * 
+   *
    * @return boolean
    */
   public function maximumConstraintsMet() {
@@ -427,7 +427,7 @@ class InsertOrderAny extends InsertOrderNode {
 
   /**
    * Has the minimum set of constraints been met for this InsertOrderNode.
-   * 
+   *
    * @return boolean
    */
   public function minimumConstraintsMet() { // Not being used at the moment!
@@ -439,9 +439,9 @@ class InsertOrderAny extends InsertOrderNode {
 
   /**
    * Does the given DOMElement match this element's non occurance constraints.
-   * 
+   *
    * @param DOMElement $element
-   * @return boolean 
+   * @return boolean
    */
   public function constraintMet(DOMElement $element) {
     $local_name = $element->localName;
@@ -455,7 +455,7 @@ class InsertOrderAny extends InsertOrderNode {
 
   /**
    * Attempt to store DOMElement if it mets this Insert Order Node's constraints.
-   * 
+   *
    * @param DOMElement $element
    * @return boolean
    */
@@ -469,7 +469,7 @@ class InsertOrderAny extends InsertOrderNode {
 
   /**
    * Gets the DOMElement's matched by this constraint.
-   * 
+   *
    * @return DOMElement[]
    */
   public function getOrder() {
@@ -492,9 +492,9 @@ class InsertOrderMap {
 
   /**
    * Create an InsertOrderMap
-   * 
+   *
    * @param Schema $schema
-   * @param string $path 
+   * @param string $path
    */
   public function __construct(XMLSchema $schema) {
     $this->schema = $schema;
@@ -502,9 +502,9 @@ class InsertOrderMap {
 
   /**
    * Gets a tree of InsertOrderNode's that defines how to arrange the insert order of DOMElements.
-   * 
+   *
    * @param string $path
-   * 
+   *
    * @return InsertOrderNode
    */
   public function getInsertOrderMap($path) {
@@ -516,7 +516,7 @@ class InsertOrderMap {
 
   /**
    * Inserts the given child element into the right positon of its parent element.
-   * 
+   *
    * @param string $path
    * @param DOMElement $parent
    * @param DOMElement $new
@@ -531,10 +531,10 @@ class InsertOrderMap {
 
   /**
    * Stores children DOMElement's insert order. Any remaining DOMElements are returned.
-   * 
+   *
    * @param InsertOrderMap $map
-   * @param array $children 
-   * 
+   * @param array $children
+   *
    * @return array
    */
   private function populateInsertOrderMap(InsertOrderNode $map, array $children) {
@@ -552,10 +552,10 @@ class InsertOrderMap {
 
   /**
    * Gets a list of child DOMElements to reorder.
-   * 
+   *
    * @param DOMElement $parent
    * @param DOMElement $new
-   * 
+   *
    * @return DOMElement[]
    */
   private function getChildrenToReorder(DOMElement $parent, DOMElement $new) {
@@ -566,10 +566,10 @@ class InsertOrderMap {
 
   /**
    * Get an array of child DOMElements in there correct insert order.
-   * 
+   *
    * @param InsertOrderMap $map
-   * @param array $remaining_children 
-   * 
+   * @param array $remaining_children
+   *
    * @return array
    */
   private function getChildrenInsertOrder(InsertOrderNode $map, array $remaining_children) {
@@ -588,8 +588,8 @@ class InsertOrderMap {
 
   /**
    * Remove all child elements
-   * 
-   * @param DOMElement $parent 
+   *
+   * @param DOMElement $parent
    */
   private function removeChildElements(DOMElement $parent) {
     $children = dom_node_children($parent, 'DOMElement'); // Child Elements.
@@ -602,9 +602,9 @@ class InsertOrderMap {
 
   /**
    * Re-insert the child elements, in the correct order.
-   * 
+   *
    * @param DOMElement $parent
-   * @param array $children 
+   * @param array $children
    */
   private function appendChildElements(DOMElement $parent, array $children) {
     foreach ($children as $child) {

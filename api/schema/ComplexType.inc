@@ -26,26 +26,26 @@ class XMLSchemaComplexType extends XMLSchemaNode {
   const LocalName = 'complexType';
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
     $this->protected->addMembers(
         array(
-          'complexContent' => $this->createChild(XMLSchemaComplexContent::LocalName),
-          'simpleContent' => $this->createChild(XMLSchemaSimpleContent::LocalName),
-          'all' => $this->createChild(XMLSchemaAll::LocalName),
-          'choice' => $this->createChild(XMLSchemaChoice::LocalName),
-          'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
-          'group' => $this->createChild(XMLSchemaGroup::LocalName),
-        )
+      'complexContent' => $this->createChild(XMLSchemaComplexContent::LocalName),
+      'simpleContent' => $this->createChild(XMLSchemaSimpleContent::LocalName),
+      'all' => $this->createChild(XMLSchemaAll::LocalName),
+      'choice' => $this->createChild(XMLSchemaChoice::LocalName),
+      'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
+      'group' => $this->createChild(XMLSchemaGroup::LocalName),
+    )
     );
   }
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
@@ -54,7 +54,7 @@ class XMLSchemaComplexType extends XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaInsertOrderMapNode $parent_node 
+   * @param XMLSchemaInsertOrderMapNode $parent_node
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     $content = $this->getContent();

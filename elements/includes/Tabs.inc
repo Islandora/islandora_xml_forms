@@ -34,7 +34,7 @@ class Tabs {
    * @param array $form_state
    * @param array $complete_form
    */
-  public static function process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  public static function process(array $element, array &$form_state, array $complete_form = NULL) {
     self::addRequiredResources();
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
@@ -97,6 +97,8 @@ function template_preprocess_tabs_content(&$vars) {
  * Theme Hook for tags elements.
  */
 function theme_tabs($element) {
+  // TODO: Should this theme tabs be declared in hook_theme()?
+  // TODO Please change this theme call to use an associative array for the $variables parameter.
   $content = theme('tabs_content', $element);
   return theme('form_element', $element, $content);
 }

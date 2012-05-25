@@ -10,7 +10,7 @@ module_load_include('inc', 'xml_form_api', 'XMLForm');
 
 /**
  * Register classes for FormProperties.
- * 
+ *
  * @return array
  */
 function xml_form_api_objectify_properties() {
@@ -18,14 +18,14 @@ function xml_form_api_objectify_properties() {
     'type' => 'inc',
     'module' => 'xml_form_api',
     'name' => 'Actions',
-    'class' => 'Actions'
+    'class' => 'Actions',
   );
   return $properties;
 }
 
 /**
  * Gets an empty form definition.
- * 
+ *
  * @return DOMDocument
  *   The Empty form definition.
  */

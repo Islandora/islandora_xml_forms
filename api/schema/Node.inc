@@ -16,12 +16,12 @@ abstract class XMLSchemaNode {
 
   /**
    *
-   * @var type 
+   * @var type
    */
   protected static $nodes = array();
   /**
    * The top level schema.
-   * 
+   *
    * @var XMLSchema
    */
   protected $schema;
@@ -33,7 +33,7 @@ abstract class XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaNode $node 
+   * @param XMLSchemaNode $node
    */
   public static function register(XMLSchemaNode $node) {
     self::$nodes[] = $node;
@@ -55,7 +55,7 @@ abstract class XMLSchemaNode {
 
   /**
    *
-   * @param DOMElement $element 
+   * @param DOMElement $element
    */
   public static function find(DOMElement $element) {
     foreach (self::$nodes as $node) {
@@ -68,8 +68,8 @@ abstract class XMLSchemaNode {
 
   /**
    * Create a XMLSchemaNode
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     $this->protected = new LazyMembers(array('node' => $node));
@@ -80,8 +80,8 @@ abstract class XMLSchemaNode {
 
   /**
    * Validate the constructor's arguments.
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   private function validateConstructorArguments(DOMElement $node) {
     if ($node->localName != $this->getLocalName()) {
@@ -91,7 +91,7 @@ abstract class XMLSchemaNode {
 
   /**
    * Gets the subclasses local name.
-   * 
+   *
    * @return string
    */
   abstract protected function getLocalName();
@@ -112,7 +112,7 @@ abstract class XMLSchemaNode {
 
   /**
    *
-   * @param string $name 
+   * @param string $name
    */
   public function __unset($name) {
     unset($this->protected->$name);
@@ -120,8 +120,8 @@ abstract class XMLSchemaNode {
 
   /**
    * Get a protected member for read access.
-   * 
-   * @param string $name 
+   *
+   * @param string $name
    */
   public function __get($name) {
     return $this->protected->$name;
@@ -129,9 +129,9 @@ abstract class XMLSchemaNode {
 
   /**
    * Set the protected members value.
-   * 
+   *
    * @param string $name
-   * @param mixed $value 
+   * @param mixed $value
    */
   public function __set($name, $value) {
     $this->protected->$name = $value;
@@ -139,7 +139,7 @@ abstract class XMLSchemaNode {
 
   /**
    * Find all immediate children with the given local name.
-   * 
+   *
    * @param string $local_name
    * @return array
    */
@@ -151,8 +151,8 @@ abstract class XMLSchemaNode {
 
   /**
    * Finds a unique child amoung the immediate children of this element.
-   * 
-   * @param string $local_name 
+   *
+   * @param string $local_name
    */
   protected function findChild($local_name) {
     $children = $this->findChildren($local_name);
@@ -164,7 +164,7 @@ abstract class XMLSchemaNode {
 
   /**
    * Create all child elements of the given type.
-   * 
+   *
    * @param string $local_name
    * @return array
    */
@@ -179,10 +179,10 @@ abstract class XMLSchemaNode {
 
   /**
    * Create a child element of the given type.
-   * 
+   *
    * @param string $local_name
    * @param DOMElement $child
-   * 
+   *
    * @return mixed
    */
   protected function createChild($local_name) {
@@ -192,7 +192,7 @@ abstract class XMLSchemaNode {
 
   /**
    * Creates an a object defined by the local name of the given DOMNode if such a class exists.
-   * 
+   *
    * @param DOMElement $node
    * @return mixed
    */
@@ -210,7 +210,7 @@ abstract class XMLSchemaNode {
 
   /**
    * Get the min and max occurs.
-   * 
+   *
    * @return array
    */
   public function getMinMaxOccurs() {

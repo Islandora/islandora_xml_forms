@@ -33,8 +33,8 @@ class XMLSchemaElement extends XMLSchemaNode {
   protected $reference; // The DOMElement $node reference's if it exists.
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
 
   public function __construct(XMLSchema $schema, DOMElement $node) {
@@ -60,7 +60,7 @@ class XMLSchemaElement extends XMLSchemaNode {
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
@@ -69,7 +69,7 @@ class XMLSchemaElement extends XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaInsertOrderMapNode $parent_node 
+   * @param XMLSchemaInsertOrderMapNode $parent_node
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     list($min, $max) = $this->getMinMaxOccurs();
@@ -77,7 +77,7 @@ class XMLSchemaElement extends XMLSchemaNode {
   }
 
   /**
-   * 
+   *
    * @return DOMElement
    */
   public function getDefinition() {
@@ -91,7 +91,7 @@ class XMLSchemaElement extends XMLSchemaNode {
 
   /**
    * Is a reference?
-   * 
+   *
    * @return boolean
    */
   public function isReference() {
@@ -100,7 +100,7 @@ class XMLSchemaElement extends XMLSchemaNode {
 
   /**
    * Gets the element this element refer's to.
-   * 
+   *
    * @return DOMElement
    */
   public function getReference() {
@@ -120,8 +120,8 @@ class XMLSchemaElement extends XMLSchemaNode {
   }
 
   /**
-   * 
-   * 
+   *
+   *
    * @return boolean
    */
   public function isAnonymous() {
@@ -146,7 +146,7 @@ class XMLSchemaElement extends XMLSchemaNode {
   }
 
   /**
-   * 
+   *
    * @return string
    */
   public function getName() {

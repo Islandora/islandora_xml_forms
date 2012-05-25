@@ -31,18 +31,19 @@ class Element {
 
   /**
    * Includes the given jQuery UI widgets.
-   * 
-   * @param array $files 
+   *
+   * @param array $files
    *   An list of files to be included from the jquery theme. Or a single file name.
    */
   public static function addUIWidgets($files = array()) {
-    jquery_ui_add($files);
+    // TODO $files needs to be a string or multiple calls to drupal_add_library need to be made.
+    drupal_add_library('system', $files);
   }
 
   /**
    * Includes the given jQuery UI theme files.
-   * 
-   * @param array $files 
+   *
+   * @param array $files
    *   An list of files to be included from the jquery theme. Or a single file name.
    */
   public static function addUIThemeStyles($files = array()) {
@@ -51,8 +52,8 @@ class Element {
 
   /**
    * Includes the given javascript files from this module.
-   * 
-   * @param type $files 
+   *
+   * @param type $files
    */
   public static function addJS($files = array()) {
     self::addFiles('drupal_add_js', PATH_XML_FORM_ELEMENTS_JS, $files, 'module');
@@ -60,8 +61,8 @@ class Element {
 
   /**
    * Includes the given css files from this module.
-   * 
-   * @param type $files 
+   *
+   * @param type $files
    */
   public static function addCSS($files = array()) {
     self::addFiles('drupal_add_css', PATH_XML_FORM_ELEMENTS_CSS, $files, 'theme');
@@ -74,7 +75,7 @@ class Element {
    *   The function to call to add the given files.
    * @param string $path
    *   The path where the files are located.
-   * @param array $files 
+   * @param array $files
    *   The file(s) to be added.
    */
   private static function addFiles($function, $path, $files = array(), $additional_argument = NULL) {

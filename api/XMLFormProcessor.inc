@@ -13,28 +13,28 @@ class XMLFormProcessAction {
 
   /**
    * Action to perform.
-   * 
+   *
    * @var Action
    */
   public $action;
 
   /**
    * FormElement to be processed.
-   * 
-   * @var FormElement 
+   *
+   * @var FormElement
    */
   public $element;
 
   /**
    * Submitted Form Value.
-   * 
-   * @var mixed 
+   *
+   * @var mixed
    */
   public $value;
 
   /**
    * Creates a XMLFormProcessAction instance.
-   * 
+   *
    * @param Action $action
    * @param FormElement $element
    * @param mixed $value
@@ -47,9 +47,9 @@ class XMLFormProcessAction {
 
   /**
    * Executes the action.
-   * 
+   *
    * @param XMLDocument $document
-   * 
+   *
    * @return boolean
    */
   public function execute(XMLDocument $document) {
@@ -65,13 +65,13 @@ class XMLFormProcessor {
 
   /**
    * Submitted form values.
-   * 
-   * @var FormValues 
+   *
+   * @var FormValues
    */
   protected $values;
 
   /**
-   * 
+   *
    * @var XMLDocument
    */
   protected $document;
@@ -90,12 +90,12 @@ class XMLFormProcessor {
 
   /**
    * Creates a XMLFormProcessor instance.
-   * 
+   *
    * This is used to modify the given document with the values and actions specified by the submitted form.
-   * 
+   *
    * @param FormValues $values
    *   The submitted values for this form.
-   * @param XMLDocument $definition 
+   * @param XMLDocument $definition
    *   The document to be modified with the submitted values.
    * @param FormElementRegistry $registry
    *   The registry used to access form element information required to modify the document correctly.
@@ -109,12 +109,12 @@ class XMLFormProcessor {
 
   /**
    *
-   * @param FormElement $element 
+   * @param FormElement $element
    */
   public function process(FormElement $element) {
     /**
-     * The order of action execution here is important, create actions should take place before update, 
-     * newly created elements can be registered as we can update newly created elements. Delete must come 
+     * The order of action execution here is important, create actions should take place before update,
+     * newly created elements can be registered as we can update newly created elements. Delete must come
      * last as we want the update actions to run on elements that may then later be removed.
      */
     $elements = $element->flatten();
@@ -127,9 +127,9 @@ class XMLFormProcessor {
 
   /**
    *
-   * @param array $elements 
+   * @param array $elements
    * @param string $type
-   * 
+   *
    * @return array
    */
   private function getActions(array &$elements, $type) {
@@ -147,7 +147,7 @@ class XMLFormProcessor {
 
   /**
    * Creates DOMNodes in the document.
-   * 
+   *
    * @param array $actions
    */
   private function createNodes(array $actions) {
@@ -167,7 +167,7 @@ class XMLFormProcessor {
 
   /**
    * Updates/Delete's DOMNodes in the document.
-   * 
+   *
    * @param array $actions
    */
   private function modifyNodes(array $actions) {
@@ -177,10 +177,10 @@ class XMLFormProcessor {
   }
 
   /**
-   * If the registered node's element is no longer in the form, 
+   * If the registered node's element is no longer in the form,
    * add an action to delete it.
-   * 
-   * @param array $actions 
+   *
+   * @param array $actions
    */
   private function getRemovedFormElementsDeleteActions(FormElement $element) {
     $actions = array();

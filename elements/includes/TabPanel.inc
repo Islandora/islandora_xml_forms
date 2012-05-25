@@ -40,7 +40,7 @@ class TabPanel {
    * @param array $complete_form
    * @return array
    */
-  public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
     $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE; // Defaults to TRUE
     if ($add) {
       $add_label = isset($element['#user_data']['add_label']) ? $element['#user_data']['add_label'] : 'Add';
@@ -60,7 +60,7 @@ class TabPanel {
    * @param FormElement $tabpanel
    * @return FormElement
    */
-  private static function createAddButton(array &$element, array& $complete_form, $label) {
+  private static function createAddButton(array &$element, array & $complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
     $add['#type'] = 'submit';
     $add['#weight'] = 4;
@@ -73,7 +73,7 @@ class TabPanel {
       'path' => "xml/form/elements/ahah/duplicate/{$element['#hash']}/{$tabs['#hash']}",
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replace',
-      'effect' => 'fade'
+      'effect' => 'fade',
     );
     return $add;
   }
@@ -84,7 +84,7 @@ class TabPanel {
    * @param FormElement $tabpanel
    * @return FormElement
    */
-  private static function createRemoveButton(array &$element, array& $complete_form, $label) {
+  private static function createRemoveButton(array &$element, array & $complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
     $delete['#type'] = 'submit';
     $delete['#weight'] = 4;
@@ -92,7 +92,7 @@ class TabPanel {
     $delete['#id'] = $element['#hash'] . '-remove';
     $delete['#value'] = $label;
     $delete['#attributes'] = array(
-      'style' => 'display:none' // Triggered via javascript.
+      'style' => 'display:none', // Triggered via javascript.
     );
     $delete['#prefix'] = '<div class="ui-tabpanel-delete-button">';
     $delete['#suffix'] = '</div>';
@@ -100,7 +100,7 @@ class TabPanel {
       'path' => "xml/form/elements/ahah/remove/{$element['#hash']}/{$tabs['#hash']}",
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replace',
-      'effect' => 'fade'
+      'effect' => 'fade',
     );
     return $delete;
   }
@@ -111,6 +111,8 @@ class TabPanel {
  * Theme hook for a tabpanel
  */
 function theme_tabpanel($element) {
+  // TODO: Should this theme tabpanel be declared in hook_theme()?
+  // TODO Please change this theme call to use an associative array for the $variables parameter.
   return TabPanel::Theme($element);
 }
 

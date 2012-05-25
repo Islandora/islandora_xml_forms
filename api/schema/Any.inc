@@ -22,8 +22,8 @@ class XMLSchemaAny extends XMLSchemaNode {
   const LocalName = 'any';
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node = NULL) {
     parent::__construct($schema, $node);
@@ -31,7 +31,7 @@ class XMLSchemaAny extends XMLSchemaNode {
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
@@ -49,7 +49,7 @@ class XMLSchemaAny extends XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaInsertOrderMapNode $parent_node 
+   * @param XMLSchemaInsertOrderMapNode $parent_node
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     $names = $this->getValidNames();

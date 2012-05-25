@@ -2,8 +2,8 @@
 
 /**
  * Implements Hook Menu.
- * 
- * @return array 
+ *
+ * @return array
  */
 function xml_forms_menu() {
   $items['schema/%'] = array(
@@ -19,8 +19,8 @@ function xml_forms_menu() {
 
 /**
  * Get the schema if it exists.
- * 
- * @param string $filename 
+ *
+ * @param string $filename
  */
 function xml_forms_get_schema($filename) {
   $path = drupal_get_path('module', 'xml_forms') . '/schema';

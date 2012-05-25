@@ -40,7 +40,7 @@ class Tag {
    * @param array $complete_form
    * @return array
    */
-  public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
     $tags = &get_form_element_parent($element, $complete_form);
     $element['#id'] = $element['#hash'];
     $element['#title'] = isset($tags['#title']) ? $tags['#title'] : FALSE;
@@ -129,5 +129,7 @@ class Tag {
  * Theme hook for a tabpanel
  */
 function theme_tag($element) {
+  // TODO: Should this theme tag be declared in hook_theme()?
+  // TODO Please change this theme call to use an associative array for the $variables parameter.
   return Tag::Theme($element);
 }

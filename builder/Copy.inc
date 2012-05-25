@@ -8,16 +8,16 @@
 
 /**
  * Get the Copy Page Form.
- * 
+ *
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name
  *   The name of the form to copy.
- * 
+ *
  * @return array
  *   The Drupal Form.
  */
-function xml_form_builder_copy(array &$form_state, $form_name) {
+function xml_form_builder_copy($form, array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   if (isset($_POST['cancel'])) {
     drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
@@ -36,27 +36,27 @@ function xml_form_builder_copy(array &$form_state, $form_name) {
       '#type' => 'textfield',
       '#title' => t('Form Name'),
       '#required' => TRUE,
-      '#element_validate' => array('xml_form_builder_copy_validate_name')
+      '#element_validate' => array('xml_form_builder_copy_validate_name'),
     ),
     'copy' => array(
       '#type' => 'submit',
       '#value' => t('Copy'),
-      '#name' => 'copy'
+      '#name' => 'copy',
     ),
     'cancel' => array(
       '#type' => 'submit',
       '#value' => t('Cancel'),
-      '#name' => 'cancel'
+      '#name' => 'cancel',
     ),
   );
 }
 
 /**
  * Validates the name Drupal Form Element. Ensures that the name doesn't match any existing form names.
- * 
+ *
  * @param array $element
  *   The name Drupal Form Element.
- * @param array $form_state 
+ * @param array $form_state
  *   The Drupal Form State.
  */
 function xml_form_builder_copy_validate_name(array $element, array &$form_state) {
@@ -70,13 +70,13 @@ function xml_form_builder_copy_validate_name(array $element, array &$form_state)
 
 /**
  * Submit the Copy form. Copies a existing Form definition within the database.
- * 
+ *
  * If the form definition was successfully copied, redirect the user to the edit form.
  * if not or the cancel button was clicked return the user to the main menu.
- * 
+ *
  * @param array $form
  *   The Drupal Form.
- * @param array $form_state 
+ * @param array $form_state
  *   The Drupal Form State.
  */
 function xml_form_builder_copy_submit(array $form, array &$form_state) {

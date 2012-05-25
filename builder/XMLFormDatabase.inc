@@ -13,25 +13,26 @@ class XMLFormDatabase {
 
   /**
    * Checks to see if the given form exists in the database.
-   * 
+   *
    * @param string $form_name
    *   The name of the XML Form Definition.
-   * 
+   *
    * @return boolean
    *   TRUE if the given form exists, FALSE otherwise.
    */
   public static function Exists($form_name) {
-    $query = db_query('SELECT count(name) FROM {%s} WHERE name = "%s"', self::table, $form_name);
-    $count = db_result($query);
+    //@TODO: integrate 'fancy' 'dynamic' self::table
+    $query = db_query('SELECT count(name) FROM {xml_forms} WHERE name = :name', array(':name' => $form_name));
+    $count = $query->fetchField();
     return $count == 1;
   }
 
   /**
    * Checks to see if the given form exists in the database and is a valid definition.
-   * 
+   *
    * @param string $form_name
    *   The name of the XML Form Definition.
-   * 
+   *
    * @return boolean
    *   TRUE if the given form exists, FALSE otherwise.
    */
@@ -44,17 +45,17 @@ class XMLFormDatabase {
 
   /**
    * Gets the XML Form Definition identified by name.
-   * 
+   *
    * @param string $form_name
    *   The name of the XML Form Definition.
-   * 
-   * @return DOMDocument 
+   *
+   * @return DOMDocument
    *   The XML Form Definition if found, FALSE otherwise.
    */
   public static function Get($form_name) {
     if (self::Exists($form_name)) {
-      $query = db_query('SELECT form FROM {%s} WHERE name = "%s"', self::table, $form_name);
-      $xml = db_result($query);
+      $query = db_query('SELECT form FROM {xml_forms} WHERE name = :name', array(':name' => $form_name));
+      $xml = $query->fetchField();
       if (trim($xml) !== '') {
         $definition = new DOMDocument();
         $definition->loadXML($xml);
@@ -67,8 +68,8 @@ class XMLFormDatabase {
 
   /**
    * Upgrade to the latest version and save it back to the database.
-   * 
-   * @param DOMDocument $definition 
+   *
+   * @param DOMDocument $definition
    */
   private static function Upgrade($form_name, DOMDocument $definition) {
     module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
@@ -82,23 +83,23 @@ class XMLFormDatabase {
 
   /**
    * Gets a list of all defined form names.
-   * 
+   *
    * @return array
    *   An array of defined form names, where both the key and the value are the forms name.
    *   EX. array( 'name' => 'name' );
    */
   public static function GetNames() {
     $names = array();
-    $result = db_query('SELECT name FROM {%s}', self::table);
-    while ($data = db_fetch_object($result)) {
-      $names[$data->name] = $data->name;
+    $result = db_query('SELECT name FROM {xml_forms}')->fetchCol();
+    foreach ($result AS $data) {
+      $names[$data] = $data;
     }
     return $names;
   }
 
   /**
    * Gets a list of all defined form names that have valid definitions.
-   * 
+   *
    * @return array
    *   An array of defined form names, where both the key and the value are the forms name.
    *   EX. array( 'name' => 'name' );
@@ -116,14 +117,14 @@ class XMLFormDatabase {
 
   /**
    * Creates a form with the given form name and definition.
-   * 
+   *
    * If the form already exists it will fail.
-   * 
+   *
    * @param string $form_name
    *   The name of the XML Form Definition.
-   * @param DOMDocument $definition 
+   * @param DOMDocument $definition
    *   A XML Form Definition.
-   * 
+   *
    * @return boolean
    *  TRUE if successful, otherwise FALSE.
    */
@@ -142,12 +143,12 @@ class XMLFormDatabase {
 
   /**
    * Copies an existing form.
-   * 
+   *
    * @param string $form_name_src
    *   The name of the source form to copy from.
-   * @param string $form_name_dest 
+   * @param string $form_name_dest
    *   The name of the destination form which gets copied to.
-   * 
+   *
    * @return boolean
    *   TRUE if successful FALSE otherwise.
    */
@@ -161,12 +162,12 @@ class XMLFormDatabase {
 
   /**
    * Updates the form with the given form name, the previous definition is lost.
-   * 
+   *
    * If the form does not exist this function will fail.
-   * 
+   *
    * @param string $form_name
    *   The name of the XML Form Definition.
-   * @param DOMDocument $definition 
+   * @param DOMDocument $definition
    *   A XML Form Definition.
    */
   public static function Update($form_name, DOMDocument $definition) {
@@ -176,7 +177,9 @@ class XMLFormDatabase {
       if (!$version->isLatestVersion()) {
         $definition = XMLFormDefinition::upgradeToLatestVersion($definition);
       }
-      db_query("UPDATE {%s} set form = '%s' WHERE name = '%s'", self::table, $definition->saveXML(), $form_name);
+      // TODO Please convert this statement to the D7 database API syntax.
+      db_query("UPDATE {xml_forms} set form = :form WHERE name = :name", array(':form' => $definition->saveXML(), ':name' => $form_name));
+      NULL;
       return TRUE;
     }
     return FALSE;
@@ -184,16 +187,18 @@ class XMLFormDatabase {
 
   /**
    * Deletes the form with the given form name.
-   * 
-   * @param string $form_name 
+   *
+   * @param string $form_name
    *   The name of the XML Form Definition.
-   * 
+   *
    * @return boolean
    *   TRUE if successful FALSE otherwise.
    */
   public static function Delete($form_name) {
     if (self::Exists($form_name)) {
-      db_query('DELETE FROM {%s} WHERE name = "%s"', self::table, $form_name);
+      // TODO Please convert this statement to the D7 database API syntax.
+      /* db_query('DELETE FROM {%s} WHERE name = "%s"', self::table, $form_name) */
+      NULL;
       return TRUE;
     }
     return FALSE;

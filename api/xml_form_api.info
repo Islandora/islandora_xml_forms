@@ -4,5 +4,6 @@ package = Islandora Dependencies
 dependencies[] = objective_forms
 dependencies[] = xml_schema_api
 version = 6.x-dev
-core = 6.x
+core = 7.x
+
 

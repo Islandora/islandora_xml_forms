@@ -37,7 +37,7 @@ class Datepicker {
    * @param array $complete_form
    *   The complete Drupal form definition.
    */
-  public static function process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  public static function process(array $element, array &$form_state, array $complete_form = NULL) {
     self::addRequiredResources();
     return $element;
   }
@@ -50,6 +50,7 @@ class Datepicker {
  * @param array $vars
  */
 function theme_datepicker($element) {
+  // TODO: Should this theme datepicker be declared in hook_theme()?
   $size = empty($element['#size']) ? '' : ' size="' . $element['#size'] . '"';
   $maxlength = empty($element['#maxlength']) ? '' : ' maxlength="' . $element['#maxlength'] . '"';
   $class = array('form-text', 'datepicker');

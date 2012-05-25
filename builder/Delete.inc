@@ -8,16 +8,16 @@
 
 /**
  * Get the Delete Page Form.
- * 
+ *
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name
  *   The name of the form to delete.
- * 
+ *
  * @return array
  *   The Drupal Form.
  */
-function xml_form_builder_delete(array &$form_state, $form_name) {
+function xml_form_builder_delete($form, array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   if (!XMLFormDatabase::Exists($form_name)) {
     drupal_set_message(t('Form "%name" does not exist.', array('%name' => $form_name)), 'error');
@@ -38,24 +38,24 @@ function xml_form_builder_delete(array &$form_state, $form_name) {
     'delete' => array(
       '#type' => 'submit',
       '#value' => t('Delete'),
-      '#name' => 'delete'
+      '#name' => 'delete',
     ),
     'cancel' => array(
       '#type' => 'submit',
       '#value' => t('Cancel'),
-      '#name' => 'cancel'
+      '#name' => 'cancel',
     ),
   );
 }
 
 /**
  * Submit the delete form. Deletes a Form definition within the database.
- * 
+ *
  * Returns the user to the main menu.
- * 
+ *
  * @param array $form
  *   The Drupal Form.
- * @param array $form_state 
+ * @param array $form_state
  *   The Drupal Form State.
  */
 function xml_form_builder_delete_submit(array $form, array &$form_state) {

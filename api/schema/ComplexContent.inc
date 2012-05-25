@@ -21,22 +21,22 @@ class XMLSchemaComplexContent extends XMLSchemaNode {
   const LocalName = 'complexContent';
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
     $this->protected->addMembers(
         array(
-          'extension' => $this->createChild(XMLSchemaExtension::LocalName),
-          'restriction' => $this->createChild(XMLSchemaRestriction::LocalName)
-        )
+      'extension' => $this->createChild(XMLSchemaExtension::LocalName),
+      'restriction' => $this->createChild(XMLSchemaRestriction::LocalName),
+    )
     );
   }
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
@@ -44,7 +44,7 @@ class XMLSchemaComplexContent extends XMLSchemaNode {
   }
 
   /**
-   * 
+   *
    */
   private function getContent() {
     if ($this->extension) {
@@ -58,7 +58,7 @@ class XMLSchemaComplexContent extends XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaInsertOrderMapNode $parent 
+   * @param XMLSchemaInsertOrderMapNode $parent
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     $content = $this->getContent();

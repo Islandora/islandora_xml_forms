@@ -11,26 +11,26 @@ module_load_include('inc', 'xml_form_api', 'Path');
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 
 /**
- * 
+ *
  */
 class Delete implements Action {
 
   /**
    *
-   * @var Path 
+   * @var Path
    */
   protected $path;
 
   /**
    *
-   * @param array $params 
+   * @param array $params
    */
   public function __construct(array &$params) {
     $this->path = new Path($params['path'], new Context(new ContextType($params['context'])));
   }
 
   /**
-   * 
+   *
    * @return array
    */
   public function toDrupalForm() {
@@ -41,11 +41,11 @@ class Delete implements Action {
   }
 
   /**
-   * 
+   *
    * @param NodeRegistry $registry
    * @param FormElement $element
    * @param type $value
-   * 
+   *
    * @return boolean
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
@@ -60,7 +60,7 @@ class Delete implements Action {
    *
    * @param XMLDc $registry
    * @param FormElement $element
-   * @param mixed $value 
+   * @param mixed $value
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
     $results = $this->path->query($document, $element);
@@ -73,7 +73,7 @@ class Delete implements Action {
 
   /**
    *
-   * @param DOMNode $node 
+   * @param DOMNode $node
    */
   private function delete(DOMNode $node) {
     $node->parentNode->removeChild($node);

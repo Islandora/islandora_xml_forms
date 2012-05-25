@@ -4,6 +4,9 @@
  * 
  * @author nbanks
  */
+
+/*
+(function ($) {
 $(document).ready(function() {
   Drupal.ahah.prototype.success = function (response, status) {
     var wrapper = $(this.wrapper);
@@ -63,3 +66,5 @@ $(document).ready(function() {
     Drupal.unfreezeHeight();
   };
 });
+})(jQuery);
+*/

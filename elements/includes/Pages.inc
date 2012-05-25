@@ -39,7 +39,7 @@ function xml_form_elements_process_pages_add_resources(array $element, $edit, ar
  * @param type $edit
  * @param array $form_state
  * @param array $complete_form
- * @return array 
+ * @return array
  */
 function xml_form_elements_process_pages_add_pagers(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   $element['#id'] = $element['#hash'];
@@ -60,7 +60,7 @@ function xml_form_elements_process_pages_add_pagers(array $element, $edit, array
  * @param array $element
  * @param array $page
  * @param type $back
- * @param type $next 
+ * @param type $next
  */
 function xml_form_elements_process_pages_add_pager(array $element, array &$page, $back, $next) {
   if ($back) {
@@ -103,12 +103,11 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
 /**
  *
  * @param array $element
- * @param type $edit
  * @param array $form_state
  * @param array $complete_form
  * @return string
  */
-function xml_form_elements_process_page_initialize(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_page_initialize(array $element, &$form_state, $complete_form = NULL) {
   $element['#id'] = $element['#hash'];
   $element['#required'] = FALSE; // Can't require a page.
   $element['#type'] = 'markup'; // Prevent name collision with 'page' theme.
@@ -123,7 +122,7 @@ function xml_form_elements_process_page_initialize(array $element, $edit, array 
 }
 
 /**
- * 
+ *
  */
 function xml_form_elements_page_validate(array $element, array &$form_state) {
   module_load_include('inc', 'objective_forms', 'FormStorage');
@@ -149,7 +148,7 @@ function xml_form_elements_page_validate(array $element, array &$form_state) {
  *
  * @param array $element
  * @param array $form_state
- * @return type 
+ * @return type
  */
 function xml_form_elements_page_after_build(array $element, array &$form_state) {
   module_load_include('inc', 'objective_forms', 'FormStorage');
@@ -158,7 +157,7 @@ function xml_form_elements_page_after_build(array $element, array &$form_state) 
     $element['#disabled'] = $storage->pages[$element['#id']]; // Set by validate
   }
   $settings['xmlFormElements']['pages'][$element['#id']]['disabled'] = $element['#disabled'];
-  drupal_add_js($settings, 'setting');
+  drupal_add_js($settings, array('type' => 'setting', 'scope' => JS_DEFAULT));
   return $element;
 }
 
@@ -168,6 +167,7 @@ function xml_form_elements_page_after_build(array $element, array &$form_state) 
  * @return type
  */
 function theme_xml_form_elements_page(array $element) {
+  // TODO: Should this theme xml_form_elements_page be declared in hook_theme()?
   //dsm($element);
   $content = '';
   foreach (element_children($element) as $key) {

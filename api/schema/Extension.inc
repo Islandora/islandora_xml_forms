@@ -23,26 +23,26 @@ class XMLSchemaExtension extends XMLSchemaNode {
   const LocalName = 'extension';
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
     $base = $node->getAttribute('base');
     $this->protected->addMembers(
         array(
-          'base' => $this->findExtension($base),
-          'choice' => $this->createChild(XMLSchemaChoice::LocalName),
-          'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
-          'group' => $this->createChild(XMLSchemaGroup::LocalName),
-          'children' => $this->createChildren() // All children in the correct order.
-        )
+      'base' => $this->findExtension($base),
+      'choice' => $this->createChild(XMLSchemaChoice::LocalName),
+      'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
+      'group' => $this->createChild(XMLSchemaGroup::LocalName),
+      'children' => $this->createChildren(), // All children in the correct order.
+    )
     );
   }
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
@@ -73,7 +73,7 @@ class XMLSchemaExtension extends XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaInsertOrderMapNode $parent 
+   * @param XMLSchemaInsertOrderMapNode $parent
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     if ($this->extendsComplexContent()) {

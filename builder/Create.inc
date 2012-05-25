@@ -8,26 +8,26 @@
 
 /**
  * Get the Create Page Form.
- * 
+ *
  * @param array $form_state
  *   The Drupal Form State.
  * @return array
  *   The Drupal Form.
  */
-function xml_form_builder_create(array &$form_state) {
+function xml_form_builder_create($form, array &$form_state) {
   if (isset($_POST['cancel'])) {
     drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
   }
   return array(
     '#attributes' => array(
-      'enctype' => "multipart/form-data"
+      'enctype' => "multipart/form-data",
     ),
     'form_name' => array(
       '#type' => 'textfield',
       '#title' => t('Form Name'),
       '#required' => TRUE,
       '#maxlength' => 128,
-      '#element_validate' => array('xml_form_builder_create_validate_name')
+      '#element_validate' => array('xml_form_builder_create_validate_name'),
     ),
     'file' => array(
       '#type' => 'file',
@@ -38,22 +38,22 @@ function xml_form_builder_create(array &$form_state) {
     'create' => array(
       '#type' => 'submit',
       '#value' => t('Create'),
-      '#name' => 'create'
+      '#name' => 'create',
     ),
     'cancel' => array(
       '#type' => 'submit',
       '#value' => t('Cancel'),
-      '#name' => 'cancel'
+      '#name' => 'cancel',
     ),
   );
 }
 
 /**
  * Validates the name Drupal Form Element. Ensures that the name doesn't match any existing form names.
- * 
+ *
  * @param array $element
  *   The name Drupal Form Element.
- * @param array $form_state 
+ * @param array $form_state
  *   The Drupal Form State.
  */
 function xml_form_builder_create_validate_name(array $element, array &$form_state) {
@@ -67,12 +67,12 @@ function xml_form_builder_create_validate_name(array $element, array &$form_stat
 
 /**
  * Validate the create form.
- * 
+ *
  * Makes sure the uploaded file is valid.
- * 
+ *
  * @param array $form
  *   The Drupal Form.
- * @param array $form_state 
+ * @param array $form_state
  *   The Drupal Form State.
  */
 function xml_form_builder_create_validate(array $form, array &$form_state) {
@@ -89,7 +89,8 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
         if (!XMLFormDefinition::isValid($definition, $version)) {
           form_set_error('files', t('The given form definition is not valid.'));
         }
-      } catch (Exception $e) {
+      }
+      catch (Exception $e) {
         form_set_error('files', $e->getMessage());
       }
     }
@@ -101,13 +102,13 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
 
 /**
  * Submit the Create form. Creates a new Form definition in the database.
- * 
+ *
  * If the form definition was successfully created, redirect the user to the edit form.
  * if not or the cancel button was clicked return the user to the main menu.
- * 
+ *
  * @param array $form
  *   The Drupal Form.
- * @param array $form_state 
+ * @param array $form_state
  *   The Drupal Form State.
  */
 function xml_form_builder_create_submit(array $form, array &$form_state) {
@@ -130,8 +131,8 @@ function xml_form_builder_create_submit(array $form, array &$form_state) {
 
 /**
  * Gets the uploaded file from the create form.
- *  
- * @return DOMDocument 
+ *
+ * @return DOMDocument
  *   The uploaded file if it exists, FALSE otherwise.
  */
 function xml_form_builder_create_get_uploaded_file() {

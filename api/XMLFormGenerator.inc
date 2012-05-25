@@ -14,13 +14,13 @@ class XMLFormGenerator {
 
   /**
    * Reference to the form were, generating.
-   * 
+   *
    * @var Form
    */
   protected $form;
 
   /**
-   * 
+   *
    * @var XMLDocument
    */
   protected $document;
@@ -33,7 +33,7 @@ class XMLFormGenerator {
 
   /**
    * Create a XMLFormGenerator
-   * 
+   *
    * @param XMLForm $form
    * @param XMLDocument $document
    */
@@ -45,8 +45,8 @@ class XMLFormGenerator {
 
   /**
    * Generate additional elements based on the provided document.
-   * 
-   * @param FormElements $elements 
+   *
+   * @param FormElements $elements
    */
   public function generate(FormElement $root) {
     $this->processElement($root);
@@ -55,8 +55,8 @@ class XMLFormGenerator {
 
   /**
    * Registers the given element generates stuff.
-   * 
-   * @param FormElement $element 
+   *
+   * @param FormElement $element
    */
   public function processElement(FormElement $element) {
     if (!$this->registry->isRegistered($element->hash)) {
@@ -78,7 +78,7 @@ class XMLFormGenerator {
   /**
    *
    * @param FormElement $element
-   * @return array 
+   * @return array
    */
   private function findNodes(FormElement $element) {
     $actions = $element->actions;
@@ -95,7 +95,7 @@ class XMLFormGenerator {
   /**
    *
    * @param FormElement $element
-   * @param integer $count 
+   * @param integer $count
    */
   private function createDuplicates(FormElement $element, $count) {
     $output = array();
@@ -110,7 +110,7 @@ class XMLFormGenerator {
   /**
    *
    * @param array $elements
-   * @param array $nodes 
+   * @param array $nodes
    */
   private function registerDuplicates(array $elements, array $nodes) {
     $count = count($elements);

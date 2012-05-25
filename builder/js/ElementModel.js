@@ -48,7 +48,7 @@ Ext.data.Types.ARRAY = {
     convert: function(v, data) {
         if(v instanceof Array) {
             var output = [];
-            $.each(v, function(i, n) {
+            jQuery.each(v, function(i, n) {
                 output.push({
                     value: n
                 });

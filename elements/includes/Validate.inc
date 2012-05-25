@@ -8,8 +8,8 @@
 module_load_include('inc', 'xml_form_elements', 'includes/Element');
 
 /**
- * Implements hook_elements. Registers Elements.
- * 
+ * Implements hook_elements. Registers Elements().
+ *
  * @return array
  */
 function xml_form_elements_ahah_validate_form() {
@@ -18,7 +18,7 @@ function xml_form_elements_ahah_validate_form() {
     $drupal_form = Ahah::processForm($form_id, $form, $form_state);
     $xml_form = new XMLForm($form_state);
     $document = $xml_form->submit($form, $form_state);
-    libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.  
+    libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.
     libxml_clear_errors();
     $valid = $document->valid();
     $errors = libxml_get_errors();
@@ -48,7 +48,8 @@ function xml_form_elements_ahah_validate_form() {
     if (!$valid) {
       drupal_set_message(implode('<br/>', $error_messages), $status);
     }
-  } catch (Exception $e) {
+  }
+  catch (Exception $e) {
     $message = 'File: ' . $e->getFile() . '</br>';
     $message .= 'Line: ' . $e->getLine() . '</br>';
     $message .= 'Error: ' . $e->getMessage() . '</br>';

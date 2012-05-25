@@ -9,27 +9,27 @@ module_load_include('inc', 'xml_form_api', 'Path');
 module_load_include('inc', 'php_lib', 'DOMHelpers.inc');
 
 /**
- * 
+ *
  */
 class Update implements Action {
 
   /**
    * Path to the element to update.
-   * 
-   * @var Path 
+   *
+   * @var Path
    */
   protected $path;
 
   /**
    * Path to the element's definition within its schema.
-   * 
-   * @var string 
+   *
+   * @var string
    */
   protected $schema;
 
   /**
    *
-   * @param array $params 
+   * @param array $params
    */
   public function __construct(array &$params) {
     $this->path = new Path($params['path'], new Context(new ContextType($params['context'])));
@@ -38,7 +38,7 @@ class Update implements Action {
 
   /**
    * Used by the form builder???
-   * 
+   *
    * @return array
    */
   public function toDrupalForm() {
@@ -53,7 +53,7 @@ class Update implements Action {
    * @param NodeRegistry $registry
    * @param FormElement $element
    * @param mixed $value
-   * 
+   *
    * @return boolean
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
@@ -62,10 +62,10 @@ class Update implements Action {
 
   /**
    * Update the document.
-   * 
+   *
    * @param NodeRegistry $registry
    * @param FormElement $element
-   * @param mixed $value 
+   * @param mixed $value
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
     $value = isset($value) ?
@@ -81,9 +81,9 @@ class Update implements Action {
 
   /**
    * Update the given DOMNode with the provided mixed value.
-   * 
+   *
    * @param DOMNode $node
-   * @param mixed $value 
+   * @param mixed $value
    */
   private function update(DOMNode $node, $value) {
     $node->nodeValue = $value;

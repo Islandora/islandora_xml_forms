@@ -15,23 +15,23 @@ class Path {
 
   /**
    * XPath to query with.
-   * 
+   *
    * @var string
    */
   public $path;
 
   /**
    * Query Context, either document, parent or self.
-   * 
-   * @var string 
+   *
+   * @var string
    */
   public $context;
 
   /**
    * Creates a Path instance.
-   * 
+   *
    * @param string $path
-   * @param Context $context 
+   * @param Context $context
    */
   public function __construct($path, Context $context) {
     $this->path = $path;
@@ -40,13 +40,13 @@ class Path {
 
   /**
    * Queries the path with the defined context as defined by the provided FormElement
-   * 
+   *
    * @param NodeRegistry $registry
    * @param FormElement $element
-   * 
-   * @throws 
+   *
+   * @throws
    * @see Context::getNode
-   * 
+   *
    * @return DOMNodeList
    */
   public function query(XMLDocument $document, FormElement $element) {
@@ -55,7 +55,7 @@ class Path {
   }
 
   /**
-   * 
+   *
    */
   public function __toString() {
     return $this->path;

@@ -10,21 +10,21 @@ module_load_include('inc', 'xml_form_api', 'XMLDocument');
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 
 /**
- * 
+ *
  */
 class XMLFormPrePopulator {
 
   /**
    * Node Registry.
-   * 
+   *
    * @var NodeRegistry
    */
   protected $registry;
 
   /**
    * Create FormPopulater.
-   * 
-   * @param NodeRegistry $registry 
+   *
+   * @param NodeRegistry $registry
    */
   public function __construct(XMLDocument $document) {
     $this->registry = $document->registry;
@@ -32,7 +32,7 @@ class XMLFormPrePopulator {
 
   /**
    * Populate a Drupal form.
-   * 
+   *
    * @param array $form
    */
   public function prePopulate(FormElement $root) {
@@ -42,7 +42,7 @@ class XMLFormPrePopulator {
 
   /**
    *
-   * @param FormElement $element 
+   * @param FormElement $element
    */
   public function prePopulateElement(FormElement $element) {
     $value = $this->getDefaultValue($element);
@@ -51,7 +51,7 @@ class XMLFormPrePopulator {
 
   /**
    * Get the default value for the given element.
-   * 
+   *
    * @param FormElement $element
    */
   private function getDefaultValue(FormElement $element) {
@@ -61,8 +61,8 @@ class XMLFormPrePopulator {
 
   /**
    * Set the FormElements default value if appropriate.
-   * 
-   * @param FormElement $element 
+   *
+   * @param FormElement $element
    */
   private function setDefaultValue(FormElement $element, $value) {
     if (isset($value)) {
@@ -72,9 +72,9 @@ class XMLFormPrePopulator {
 
   /**
    * Get the value of the node.
-   * 
+   *
    * Only return values for DOMAttr and DOMElements that only contain character data.
-   * 
+   *
    * @param DOMNode $node
    * @return string
    *   The DOMNode's value if appropriate, otherwise return NULL.

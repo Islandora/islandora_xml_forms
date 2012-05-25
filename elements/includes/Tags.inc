@@ -24,7 +24,7 @@ class Tags {
       module_load_include('inc', 'xml_form_elements', 'includes/Element');
       Element::addRequiredResources();
       Element::addCSS('tags.css');
-      $load = FALSE;    
+      $load = FALSE;
     }
   }
 
@@ -35,7 +35,7 @@ class Tags {
    * @param array $form_state
    * @param array $complete_form
    */
-  public static function Process(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+  public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
     self::addRequiredResources();
     $element['#id'] = $element['#hash'];
     $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
@@ -76,7 +76,7 @@ class Tags {
       'path' => "xml/form/elements/ahah/tag/add/{$element['#hash']}",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
-      'effect' => 'fade'
+      'effect' => 'fade',
     );
     return $button;
   }
@@ -91,7 +91,7 @@ class Tags {
       'path' => "xml/form/elements/ahah/tag/remove/{$child['#hash']}",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
-      'effect' => 'fade'
+      'effect' => 'fade',
     );
     return $button;
   }
@@ -106,7 +106,7 @@ class Tags {
       'path' => "xml/form/elements/ahah/tag/edit/{$child['#hash']}",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
-      'effect' => 'fade'
+      'effect' => 'fade',
     );
     return $button;
   }
@@ -140,6 +140,8 @@ function xml_form_elements_preprocess_tags_content(&$vars) {
  * Theme function for tags.
  */
 function theme_tags($element) {
+  // TODO: Should this theme tags be declared in hook_theme()?
+  // TODO Please change this theme call to use an associative array for the $variables parameter.
   $content = theme('tags_content', $element);
   return theme('form_element', $element, $content);
 }

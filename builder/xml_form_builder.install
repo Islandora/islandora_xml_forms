@@ -7,44 +7,46 @@
  */
 
 /**
- * Implementation of hook_install.
+ * Implements hook_install().
  */
 function xml_form_builder_install() {
-  drupal_install_schema('xml_form_builder');
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_install_schema('xml_form_builder')
 }
 
 /**
- * Implementation of hook_uninstall.
+ * Implements hook_uninstall().
  */
 function xml_form_builder_uninstall() {
-  drupal_uninstall_schema('xml_form_builder');
+  // TODO The drupal_(un)install_schema functions are called automatically in D7.
+  // drupal_uninstall_schema('xml_form_builder')
 }
 
 /**
- * Implementation of hook_schema.
- * 
+ * Implements hook_schema().
+ *
  * @return array
  *   The Schema definition
  */
 function xml_form_builder_schema() {
   $schema['xml_forms'] = array(
-    'description' => t('This table is used to store XML Form API style form definitions.'),
+    'description' => 'This table is used to store XML Form API style form definitions.',
     'fields' => array(
       'id' => array(
         'type' => 'serial',
         'not null' => TRUE,
       ),
       'name' => array(
-        'description' => t('The name of the stored form.'),
+        'description' => 'The name of the stored form.',
         'type' => 'varchar',
         'length' => 128,
-        'not null' => TRUE
+        'not null' => TRUE,
       ),
       'form' => array(
-        'description' => t('The xml based form definition.'),
+        'description' => 'The xml based form definition.',
         'type' => 'text',
         'size' => 'medium',
-        'not null' => TRUE
+        'not null' => TRUE,
       ),
     ),
     'unique keys' => array('name' => array('name')),

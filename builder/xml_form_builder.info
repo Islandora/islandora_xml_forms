@@ -3,5 +3,6 @@ description = Provides an interface for Creating/Editing/Copying/Deleting/Export
 package = Islandora Tools
 dependencies[] = xml_form_api
 version = 6.x-dev
-core = 6.x
+core = 7.x
+
 

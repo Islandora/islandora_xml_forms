@@ -5,7 +5,7 @@
 /**
  * @file
  *
- * Defines the three types of XPath context that can be used when defining forms (document, parent, self). Also 
+ * Defines the three types of XPath context that can be used when defining forms (document, parent, self). Also
  * it defines a Class for determining which DOMNode a given context refers to.
  */
 module_load_include('inc', 'php_lib', 'Enum');
@@ -27,15 +27,15 @@ class Context {
 
   /**
    * The type of context this class repersents.
-   * 
+   *
    * @var ContextType
    */
   protected $type;
 
   /**
    * Create XPath Context Object.
-   * 
-   * @param strings $context 
+   *
+   * @param strings $context
    */
   public function __construct(ContextType $type) {
     $this->type = $type;
@@ -43,29 +43,30 @@ class Context {
 
   /**
    * Checks to see if the DOMNode this context repersents exists for the given FormElement.
-   * 
+   *
    * @param XMLDocument $document
    * @param FormElement $element
-   * 
+   *
    * @return boolean
    */
   public function exists(XMLDocument $document, FormElement $element) {
     try {
       $node = $this->getNode($document->registry, $element);
       return TRUE;
-    } catch (XMLFormsContextException $e) {
+    }
+    catch (XMLFormsContextException $e) {
       return FALSE;
     }
   }
 
   /**
    * Gets the node defined by this context in relation to the given form element.
-   * 
+   *
    * @throws XMLFormsContextException
-   * 
+   *
    * @param XMLDocument $document
    * @param FormElement $element
-   * 
+   *
    * @return DOMNode
    *   If the context node is found it is returned, NULL otherwise.
    */
@@ -82,12 +83,12 @@ class Context {
 
   /**
    * Gets the parent context node of the provided FormElement.
-   * 
+   *
    * @param XMLDocument $document
    * @param FormElement $element
    * @throws Exception
    *   If no parent form element defines a create or read action an exception is thrown.
-   * 
+   *
    * @return DOMNode
    *   If found the parent node is returned, otherwise NULL.
    */
@@ -109,10 +110,10 @@ class Context {
 
   /**
    * Gets the self context node of the provided Form Element.
-   * 
+   *
    * @param NodeRegistry $registry
    * @param FormElement $element
-   * 
+   *
    * @return DOMNode
    */
   private function getSelf(XMLDocument $document, FormElement $element) {
@@ -124,7 +125,7 @@ class Context {
 
   /**
    * Returns a string describing this context.
-   * 
+   *
    * @return string
    */
   public function __toString() {

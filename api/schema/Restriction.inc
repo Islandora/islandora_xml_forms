@@ -23,32 +23,32 @@ class XMLSchemaRestriction extends XMLSchemaNode {
   const LocalName = 'restriction';
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
     $base = $node->getAttribute('base');
     $this->protected->addMembers(
         array(
-          'base' => $this->findExtension($base),
-          'all' => $this->createChild(XMLSchemaAll::LocalName),
-          'choice' => $this->createChild(XMLSchemaChoice::LocalName),
-          'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
-          'group' => $this->createChild(XMLSchemaGroup::LocalName),
-        )
+      'base' => $this->findExtension($base),
+      'all' => $this->createChild(XMLSchemaAll::LocalName),
+      'choice' => $this->createChild(XMLSchemaChoice::LocalName),
+      'sequence' => $this->createChild(XMLSchemaSequence::LocalName),
+      'group' => $this->createChild(XMLSchemaGroup::LocalName),
+    )
     );
   }
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
     return self::LocalName;
   }
-  
+
   /**
    * @param string $base
    * @return $complexType.
@@ -71,7 +71,7 @@ class XMLSchemaRestriction extends XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaInsertOrderMapNode $parent 
+   * @param XMLSchemaInsertOrderMapNode $parent
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     if ($this->restrictsComplexContent()) {

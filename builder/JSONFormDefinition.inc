@@ -16,8 +16,8 @@ class JSONFormDefinition {
 
   /**
    * Instantiates the JSONForm definition.
-   * 
-   * @param string $json 
+   *
+   * @param string $json
    *   The posted encoded JSON data.
    */
   public function __construct($json) {
@@ -26,7 +26,7 @@ class JSONFormDefinition {
 
   /**
    * Gets both the form properties and the form.
-   * 
+   *
    * @return array
    *   An array were the first item is the form properties and the second is the form.
    *   Ex. array($properties, $form)
@@ -37,7 +37,7 @@ class JSONFormDefinition {
 
   /**
    * Gets the Form Properties.
-   * 
+   *
    * @return array
    *  The form properties.
    */
@@ -48,14 +48,14 @@ class JSONFormDefinition {
       'root_name' => $properties->localName,
       'schema_uri' => $properties->schema,
       'namespaces' => $namespaces,
-      'default_uri' => $properties->uri
+      'default_uri' => $properties->uri,
     );
   }
 
   /**
    * Gets the Drupal repersentation of this JSON form.
-   * 
-   * @return array 
+   *
+   * @return array
    *   A Drupal form.
    */
   public function getForm() {
@@ -66,10 +66,10 @@ class JSONFormDefinition {
 
   /**
    * Gets the array repersentation of an element from the JSON Form Definition.
-   * 
+   *
    * @param stdClass $element
    *   A JSON repersentation of a Drupal Form Element.
-   * 
+   *
    * @return array
    *   A Drupal repersentation of form element.
    */
@@ -82,17 +82,41 @@ class JSONFormDefinition {
 
   /**
    * Gets the array repersentation of an element's properties from the JSON Form Definition.
-   * 
+   *
    * @param stdClass $element
    *   A JSON repersentation of a Drupal Form Element.
-   * 
+   *
    * @return array
    *   A Drupal repersentation of form element's properties.
    */
   private function getElementProperties(stdClass $element) {
-    $ignore = array('key', 'text', 'root', 'leaf', 'id', 'parentId', 'icon', 'cls', 'qtip', 'qtitle',
-      'iconCls', 'href', 'hrefTarget', 'elements', 'index', 'depth', 'expanded', 'expandable', 'checked',
-      'isLast', 'isFirst', 'allowDrop', 'allowDrag', 'loaded', 'loading');
+    $ignore = array(
+      'key',
+      'text',
+      'root',
+      'leaf',
+      'id',
+      'parentId',
+      'icon',
+      'cls',
+      'qtip',
+      'qtitle',
+      'iconCls',
+      'href',
+      'hrefTarget',
+      'elements',
+      'index',
+      'depth',
+      'expanded',
+      'expandable',
+      'checked',
+      'isLast',
+      'isFirst',
+      'allowDrop',
+      'allowDrag',
+      'loaded',
+      'loading',
+    );
     $controls = array();
     foreach ($element as $key => $value) {
       if (array_search($key, $ignore) === FALSE) { // Is Control?
@@ -108,9 +132,9 @@ class JSONFormDefinition {
 
   /**
    * Converts explicit types to thier native repersentation.
-   * 
+   *
    * @param array $property
-   * 
+   *
    * @return array
    */
   private function transformElementProperties(array $property) {
@@ -125,15 +149,15 @@ class JSONFormDefinition {
 
   /**
    * Checks if the given property and its value are valid.
-   * 
+   *
    * This may be cast to the wayside at a later time...
-   * 
+   *
    * @param string $name
    *   The name of the element property.
    * @param mixed $value
    *   The value of the element property.
-   * 
-   * @return boolean 
+   *
+   * @return boolean
    *   TRUE if the property name and its value are valid.
    */
   private function validateProperty($name, $value) {
@@ -191,10 +215,10 @@ class JSONFormDefinition {
 
   /**
    * Gets an array of the child elements of the given element.
-   * 
-   * @param stdClass $element 
+   *
+   * @param stdClass $element
    *   A JSON repersentation of a Drupal Form Element.
-   * 
+   *
    * @return array
    *   A Drupal repersentation of form element's child form elements.
    */

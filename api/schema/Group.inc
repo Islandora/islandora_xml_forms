@@ -22,23 +22,23 @@ class XMLSchemaGroup extends XMLSchemaNode {
   const LocalName = 'group';
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
     $this->protected->addMembers(
         array(
-          'all' => $this->createType(XMLSchemaAll::LocalName),
-          'choice' => $this->createType(XMLSchemaChoice::LocalName),
-          'sequence' => $this->createType(XMLSchemaSequence::LocalName),
-        )
+      'all' => $this->createType(XMLSchemaAll::LocalName),
+      'choice' => $this->createType(XMLSchemaChoice::LocalName),
+      'sequence' => $this->createType(XMLSchemaSequence::LocalName),
+    )
     );
   }
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
@@ -61,7 +61,7 @@ class XMLSchemaGroup extends XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaInsertOrderMapNode $parent 
+   * @param XMLSchemaInsertOrderMapNode $parent
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     $content = $this->getContent();
@@ -72,7 +72,7 @@ class XMLSchemaGroup extends XMLSchemaNode {
 
   /**
    *
-   * @return 
+   * @return
    */
   private function getContent() {
     if (isset($this->all)) {

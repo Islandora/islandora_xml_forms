@@ -155,52 +155,52 @@ function xml_form_elements_menu() {
 }
 
 /**
- * Implements hook_elements().
+ * Implements hook_element_info().
  *
  * @return array
  */
-function xml_form_elements_elements() {
+function xml_form_elements_element_info() {
   return array(
     'tabs' => array(
       '#input' => TRUE,
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-      '#process' => array('xml_form_elements_process_tabs')
+      '#process' => array('xml_form_elements_process_tabs'),
     ),
     'tabpanel' => array(
       '#input' => TRUE,
       '#process' => array('xml_form_elements_process_tabpanel'),
-      '#user_data' => array('add' => TRUE, 'delete' => TRUE)
+      '#user_data' => array('add' => TRUE, 'delete' => TRUE),
     ),
     'tags' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_tags')
+      '#process' => array('xml_form_elements_process_tags'),
     ),
     'tag' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_tag')
+      '#process' => array('xml_form_elements_process_tag'),
     ),
     'datepicker' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_datepicker')
+      '#process' => array('xml_form_elements_process_datepicker'),
     ),
     'pages' => array(
       '#input' => TRUE,
       '#process' => array(
         'xml_form_elements_process_pages_include_file',
         'xml_form_elements_process_pages_add_resources',
-        'xml_form_elements_process_pages_add_pagers'
-      )
+        'xml_form_elements_process_pages_add_pagers',
+      ),
     ),
     'page' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_page')
+      '#process' => array('xml_form_elements_process_page'),
     ),
     'validate' => array(
       '#input' => TRUE,
       '#button_type' => 'submit',
       '#process' => array('xml_form_elements_process_validate', 'form_expand_ahah'),
-    )
+    ),
   );
 }
 
@@ -212,47 +212,47 @@ function xml_form_elements_elements() {
 function xml_form_elements_theme() {
   return array(
     THEME_XML_FORM_ELEMENTS_TABS => array(// Wrapper used so theme('form_element') can be used.
-      'arguments' => array('tabs' => NULL),
+      'variables' => array('tabs' => NULL),
       'file' => 'includes/Tabs.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TABS_CONTENT => array(// Tabs outer frame
-      'arguments' => array('tabs' => NULL),
+      'variables' => array('tabs' => NULL),
       'template' => 'templates/Tabs',
       'file' => 'includes/Tabs.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TABPANEL => array(// The content of a single tabpanel.
-      'arguments' => array('element'),
-      'file' => 'includes/TabPanel.inc'
+      'variables' => array('element'),
+      'file' => 'includes/TabPanel.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TAGS => array(// Wrapper used so theme('form_element') can be used.
-      'arguments' => array('element'),
+      'variables' => array('element'),
       'file' => 'includes/Tags.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TAGS_CONTENT => array(// The inner content of a tags element.
-      'arguments' => array('element'), // => NULL),
+      'variables' => array('element'), // => NULL),
       'template' => 'templates/Tags',
       'file' => 'includes/Tags.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TAG => array(
-      'arguments' => array('element'),
-      'file' => 'includes/Tag.inc'
+      'variables' => array('element'),
+      'file' => 'includes/Tag.inc',
     ),
     THEME_XML_FORM_ELEMENTS_DATEPICKER => array(
-      'arguments' => array('element'),
-      'file' => 'Datepicker.inc'
+      'variables' => array('element'),
+      'file' => 'includes/Datepicker.inc',
     ),
     THEME_XML_FORM_ELEMENTS_VALIDATE => array(
-      'file' => 'Validate.inc'
+      'file' => 'includes/Validate.inc',
     ),
     THEME_XML_FORM_ELEMENTS_PAGES => array(
-      'arguments' => array('element' => NULL),
+      'render element' => 'element',
       'template' => 'templates/Pages',
       'file' => 'includes/Pages.inc',
     ),
     THEME_XML_FORM_ELEMENTS_PAGE => array(
-      'arguments' => array('element'),
+      'variables' => array('element'),
       'file' => 'includes/Pages.inc',
-    )
+    ),
   );
 }
 
@@ -271,9 +271,9 @@ function xml_form_elements_theme() {
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_tabs(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_tabs(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Tabs');
-  return Tabs::Process($element, $edit, $form_state, $complete_form);
+  return Tabs::Process($element, $form_state, $complete_form);
 }
 
 /**
@@ -291,9 +291,9 @@ function xml_form_elements_process_tabs(array $element, $edit, array &$form_stat
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_tabpanel(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
-  return TabPanel::Process($element, $edit, $form_state, $complete_form);
+  return TabPanel::Process($element, $form_state, $complete_form);
 }
 
 /**
@@ -311,9 +311,9 @@ function xml_form_elements_process_tabpanel(array $element, $edit, array &$form_
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_tags(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_tags(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Tags');
-  return Tags::Process($element, $edit, $form_state, $complete_form);
+  return Tags::Process($element, $form_state, $complete_form);
 }
 
 /**
@@ -331,9 +331,10 @@ function xml_form_elements_process_tags(array $element, $edit, array &$form_stat
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_tag(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+//array $element, $edit, array &$form_state, array $complete_form = NULL
+function xml_form_elements_process_tag($element, $form_state, $complete_form) {
   module_load_include('inc', 'xml_form_elements', 'includes/Tag');
-  return Tag::Process($element, $edit, $form_state, $complete_form);
+  return Tag::Process($element, $form_state, $complete_form);
 }
 
 /**
@@ -351,9 +352,9 @@ function xml_form_elements_process_tag(array $element, $edit, array &$form_state
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_datepicker(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_datepicker(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Datepicker');
-  return Datepicker::Process($element, $edit, $form_state, $complete_form);
+  return Datepicker::Process($element, $form_state, $complete_form);
 }
 
 /**
@@ -371,7 +372,7 @@ function xml_form_elements_process_datepicker(array $element, $edit, array &$for
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_pages_include_file(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_pages_include_file(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Pages');
   return $element;
 }
@@ -391,7 +392,9 @@ function xml_form_elements_process_pages_include_file(array $element, $edit, arr
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_page(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+//$element, $form_state, and $complete_form
+//$element, &$form_state, $form
+function xml_form_elements_process_page(array $element,  &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Pages');
   return xml_form_elements_process_page_initialize($element, $edit, $form_state, $complete_form);
 }
@@ -403,7 +406,7 @@ function xml_form_elements_process_page(array $element, $edit, array &$form_stat
  * @param array $form_state
  * @param array $complete_form
  */
-function xml_form_elements_process_validate(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_process_validate(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'Validate');
   Element::addRequiredResources();
   $element['#ahah'] = array(
@@ -412,7 +415,7 @@ function xml_form_elements_process_validate(array $element, $edit, array &$form_
     'method' => 'prepend',
     'effect' => 'fade',
     'event' => 'mousedown',
-    'keypress' => TRUE
+    'keypress' => TRUE,
   );
   return $element;
 }
@@ -426,5 +429,7 @@ function xml_form_elements_process_validate(array $element, $edit, array &$form_
  *
  */
 function theme_validate($element) {
+  // TODO: Should this theme validate be declared in hook_theme()?
+  // TODO Please change this theme call to use an associative array for the $variables parameter.
   return theme('submit', $element);
 }

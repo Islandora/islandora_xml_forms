@@ -29,25 +29,25 @@ class Namespaces implements IteratorAggregate {
 
   /**
    * The default namespace, it can be NULL.
-   * 
+   *
    * @var string
    */
   protected $default;
 
   /**
-   * An array of namespaces declarations where the key is the prefix and the value is the uri. 
-   * 
+   * An array of namespaces declarations where the key is the prefix and the value is the uri.
+   *
    * For example: array('prefix' => 'uri');
-   * 
+   *
    * @var array
    */
   protected $namespaces;
 
   /**
    * Creates an Namespaces Instance.
-   * 
+   *
    * @param array $namespaces
-   *   An array of namespaces declarations where the key is the prefix and the value is the uri. 
+   *   An array of namespaces declarations where the key is the prefix and the value is the uri.
    * @param string $default
    *   The default namespace for the document.
    */
@@ -58,8 +58,8 @@ class Namespaces implements IteratorAggregate {
 
   /**
    * Gets the URI associated with the given prefix.
-   * 
-   * @param string $prefix 
+   *
+   * @param string $prefix
    */
   public function getURI($prefix) {
     if (isset($this->namespaces[$prefix])) {
@@ -70,8 +70,8 @@ class Namespaces implements IteratorAggregate {
 
   /**
    * Gets the URI associated with the given prefix.
-   * 
-   * @param string $prefix 
+   *
+   * @param string $prefix
    */
   public function getPrefix($uri) {
     $prefix = array_search($uri, $this->namespaces);
@@ -83,7 +83,7 @@ class Namespaces implements IteratorAggregate {
 
   /**
    * Gets the default namespace URI.
-   * 
+   *
    * @return string
    */
   public function getDefaultURI() {
@@ -92,8 +92,8 @@ class Namespaces implements IteratorAggregate {
 
   /**
    * Adds all the namespace as attributes to a given element.
-   * 
-   * @param DOMElement $element 
+   *
+   * @param DOMElement $element
    */
   public function addNamespacesAttributesTo(DOMElement $element) {
     if (isset($this->default)) {
@@ -106,14 +106,14 @@ class Namespaces implements IteratorAggregate {
 
   /**
    * Gets an iterator that allows the user to iterate over the namespaces.
-   * 
-   * @return ArrayIterator 
+   *
+   * @return ArrayIterator
    */
   public function getIterator() {
     $namespaces = $this->namespaces;
     if (isset($this->default)) {
       $namespaces[''] = $this->default;
-    } 
+    }
     return new ArrayIterator($namespaces);
   }
 

@@ -11,13 +11,13 @@ module_load_include('inc', 'xml_form_api', 'XMLDocument');
 module_load_include('inc', 'xml_form_api', 'Actions');
 
 /**
- * 
+ *
  */
 class XMLForm extends Form {
 
   /**
    * The document the form manipulates.
-   * 
+   *
    * @var XMLDocument
    */
   protected $document;
@@ -52,12 +52,12 @@ class XMLForm extends Form {
 
   /**
    * Initializes this object members.
-   * 
+   *
    * This function should be called the first time this object is created for a particular form,
    * on subsequent submit/validation/etc callbacks, Form::initializeFromStorage() will be
    * called.
-   * 
-   * @param FormDefinition $form_definition 
+   *
+   * @param FormDefinition $form_definition
    * @param Document $xml_document
    */
   public function initialize(array &$form, XMLDocument $document) {
@@ -75,8 +75,8 @@ class XMLForm extends Form {
 
   /**
    * Has the form been initialized?
-   * 
-   * @return boolean 
+   *
+   * @return boolean
    */
   public function isInitialized() {
     return $this->storage->initialized;
@@ -84,8 +84,8 @@ class XMLForm extends Form {
 
   /**
    * Called the first time this form is created, this generates additional elements based on the XMLDocument's nodes.
-   * 
-   * @return array 
+   *
+   * @return array
    */
   private function generate() {
     module_load_include('inc', 'xml_form_api', 'XMLFormGenerator');
@@ -95,9 +95,9 @@ class XMLForm extends Form {
 
   /**
    * Note this clones the existing set of elements, these elements will not be saved in the storage.
-   * 
+   *
    * @param FormElements $elements
-   * @return type 
+   * @return type
    */
   public function prepopulate() {
     module_load_include('inc', 'xml_form_api', 'XMLFormPrePopulator');
@@ -107,7 +107,7 @@ class XMLForm extends Form {
 
   /**
    *
-   * @param array $form_state 
+   * @param array $form_state
    */
   public function validate(array &$form, array &$form_state) {
 //    module_load_include('inc', 'xml_form_api', 'FormValues');
@@ -121,13 +121,13 @@ class XMLForm extends Form {
   /**
    *
    * @param array $form_state
-   * @return type 
+   * @return type
    */
   public function submit(array &$form, array &$form_state) {
     module_load_include('inc', 'objective_forms', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
     $form_values = new FormValues($form_state, $form, $this->registry);
-    $processor = new XMLFormProcessor($form_values, $this->document, $this->registry); 
+    $processor = new XMLFormProcessor($form_values, $this->document, $this->registry);
     return $processor->process($this->root);
   }
 

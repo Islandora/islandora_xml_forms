@@ -21,22 +21,22 @@ class XMLSchemaSimpleContent extends XMLSchemaNode {
   const LocalName = 'simpleContent';
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
     $this->protected->addMembers(
         array(
-          'extension' => $this->createChild(XMLSchemaExtension::LocalName),
-          'restriction' => $this->createChild(XMLSchemaRestriction::LocalName)
-        )
+      'extension' => $this->createChild(XMLSchemaExtension::LocalName),
+      'restriction' => $this->createChild(XMLSchemaRestriction::LocalName),
+    )
     );
   }
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
@@ -45,7 +45,7 @@ class XMLSchemaSimpleContent extends XMLSchemaNode {
 
   /**
    *
-   * @param XMLSchemaInsertOrderMapNode $parent 
+   * @param XMLSchemaInsertOrderMapNode $parent
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     return NULL;

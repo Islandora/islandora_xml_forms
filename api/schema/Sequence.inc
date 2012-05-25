@@ -21,8 +21,8 @@ class XMLSchemaSequence extends XMLSchemaNode {
   const LocalName = 'sequence';
 
   /**
-   * 
-   * @param DOMElement $node 
+   *
+   * @param DOMElement $node
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
@@ -31,13 +31,13 @@ class XMLSchemaSequence extends XMLSchemaNode {
       'choice' => $this->createChildren(XMLSchemaChoice::LocalName),
       'sequence' => $this->createChildren(XMLSchemaSequence::LocalName),
       'group' => $this->createChildren(XMLSchemaGroup::LocalName),
-      'children' => $this->createChildren() // All children in the correct order.
+      'children' => $this->createChildren(), // All children in the correct order.
     ));
   }
 
   /**
    * Returns the local name of this object.
-   * 
+   *
    * @return string
    */
   protected function getLocalName() {
