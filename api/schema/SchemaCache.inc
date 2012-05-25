@@ -4,7 +4,7 @@
  * @file
  * Handles the caching of schemas so they don't need to be downloaded each request.
  */
-define('XML_SCHEMA_API_CACHE_LOCATION', file_directory_path() . '/schemas');
+define('XML_SCHEMA_API_CACHE_LOCATION', variable_get('file_public_path', conf_path() . '/files') . '/schemas');
 
 /**
  * A class used to store/retrieve schema documents from the files location on disk.
