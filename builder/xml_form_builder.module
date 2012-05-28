@@ -193,7 +193,7 @@ function xml_form_builder_export($form_name) {
   header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
   $definition = XMLFormDatabase::Get($form_name);
   echo $definition->saveXML();
-  drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
+
   exit();
 }
 

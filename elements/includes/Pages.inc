@@ -108,7 +108,12 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
  * @return string
  */
 function xml_form_elements_process_page_initialize(array $element, &$form_state, $complete_form = NULL) {
-  $element['#id'] = $element['#hash'];
+  if (isset($element['#hash'])) {
+    $element['#id'] = $element['#hash'];
+  }
+  else {
+    $element['#id'] = NULL;
+  }
   $element['#required'] = FALSE; // Can't require a page.
   $element['#type'] = 'markup'; // Prevent name collision with 'page' theme.
   $element['#value'] = NULL;
