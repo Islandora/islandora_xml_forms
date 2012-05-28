@@ -176,11 +176,17 @@ class XMLFormDatabase {
       $version = XMLFormDefinition::getVersion($definition);
       if (!$version->isLatestVersion()) {
         $definition = XMLFormDefinition::upgradeToLatestVersion($definition);
+      } 
+      $num = db_update(self::table)
+        ->fields(array('form' => $definition->saveXML()))
+        ->condition('name', $form_name)
+        ->execute();
+      if($num) {
+        return TRUE;
       }
-      // TODO Please convert this statement to the D7 database API syntax.
-      db_query("UPDATE {xml_forms} set form = :form WHERE name = :name", array(':form' => $definition->saveXML(), ':name' => $form_name));
-      NULL;
-      return TRUE;
+      else {
+        return FALSE;
+      }
     }
     return FALSE;
   }
@@ -196,10 +202,15 @@ class XMLFormDatabase {
    */
   public static function Delete($form_name) {
     if (self::Exists($form_name)) {
-      // TODO Please convert this statement to the D7 database API syntax.
-      /* db_query('DELETE FROM {%s} WHERE name = "%s"', self::table, $form_name) */
-      NULL;
-      return TRUE;
+      $num = db_delete(self::table)
+        ->condition('name', $form_name)
+        ->execute();
+      if($num) {
+        return TRUE;
+      }
+      else {
+        return FALSE;
+      }
     }
     return FALSE;
   }
