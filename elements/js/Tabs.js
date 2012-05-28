@@ -65,7 +65,7 @@ Drupal.settings.xml_form_elements.tabpanel = {
         var id = $(this).children('a[href]').attr('href');
         $('#' + id + ' div.form-item').each(function() {
           var item = $(this);
-          $('> input[type~="text"]', item).each(function(i, text) {
+          $('> input[type~="text"],textarea', item).each(function(i, text) {
             var id = $(text).attr('id');
             var label = $('label[for="' + id + '"]', item);
             if(label.length > 0) {
@@ -96,7 +96,7 @@ Drupal.settings.xml_form_elements.tabpanel = {
         });
         html = jQuery.trim(html);
         if(html == "") {
-          html = "Empty";
+          return;
         }
         
         if (Drupal.settings.xml_form_elements.tabpanel.tool_tip != null) {
