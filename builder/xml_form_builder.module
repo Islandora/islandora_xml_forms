@@ -293,7 +293,6 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
       $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
       $document = $definition->createXMLDocument($xml);
       $form = $definition->getForm();
-      watchdog('mitch-test', 'Document is: ' . print_r($document, TRUE));
       $xml_form->initialize($form, $document);
     }
     /**

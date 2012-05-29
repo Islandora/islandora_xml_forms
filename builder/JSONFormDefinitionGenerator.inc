@@ -69,7 +69,6 @@ class JSONFormDefinitionGenerator {
     $elements = self::GetElement($form);
     $elements['key'] = empty($elements['key']) ? 'Root' : $elements['key'];
     $elements['text'] = "{$elements['key']} ({$elements['type']})";
-    //watchdog('mitch-test', print_r($elements, TRUE));
     return json_encode(array('expanded' => TRUE, 'children' => $elements));
   }
 
@@ -94,7 +93,6 @@ class JSONFormDefinitionGenerator {
     }
     $json['key'] = $identifier; // ExtJS specific
     $json['text'] = "{$identifier} ({$element['#type']})"; // ExtJS specific
-    //watchdog('mitch-test: json text', print_r($json['text'], TRUE));
     return $json;
   }
 
