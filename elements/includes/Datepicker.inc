@@ -17,7 +17,7 @@ class Datepicker {
     static $load = TRUE;
     if ($load) {
       module_load_include('inc', 'xml_form_elements', 'includes/Element');
-      Element::addRequiredResources();
+      //Element::addRequiredResources();
       Element::addUIWidgets('ui.datepicker');
       Element::addUIThemeStyles(array('ui.core.css', 'ui.datepicker.css', 'ui.theme.css'));
       Element::addJS('datepicker.js');
@@ -49,12 +49,13 @@ class Datepicker {
  *
  * @param array $vars
  */
-function theme_datepicker($element) {
+function theme_datepicker($variables) {
+  $element = $variables['element'];
+
   // TODO: Should this theme datepicker be declared in hook_theme()?
   $size = empty($element['#size']) ? '' : ' size="' . $element['#size'] . '"';
   $maxlength = empty($element['#maxlength']) ? '' : ' maxlength="' . $element['#maxlength'] . '"';
   $class = array('form-text', 'datepicker');
-  $extra = '';
   $output = '';
   _form_set_class($element, $class);
   if (isset($element['#field_prefix'])) {
@@ -64,5 +65,5 @@ function theme_datepicker($element) {
   if (isset($element['#field_suffix'])) {
     $output .= ' <span class="field-suffix">' . $element['#field_suffix'] . '</span>';
   }
-  return theme('form_element', $element, $output) . $extra;
+  return $output;
 }

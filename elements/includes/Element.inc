@@ -56,7 +56,7 @@ class Element {
    * @param type $files
    */
   public static function addJS($files = array()) {
-    self::addFiles('drupal_add_js', PATH_XML_FORM_ELEMENTS_JS, $files, 'module');
+    self::addFiles('drupal_add_js', PATH_XML_FORM_ELEMENTS_JS, $files);
   }
 
   /**

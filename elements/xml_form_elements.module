@@ -182,7 +182,11 @@ function xml_form_elements_element_info() {
     ),
     'datepicker' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_datepicker'),
+      // need to rename the fucking process function because there is a new hook called process in d7... ugh
+      '#process' => array('xml_form_elements_datepicker_process'),
+      // it appears that now elements need to register a theme function
+      '#theme' => 'datepicker',
+      '#theme_wrappers' => array('form_element'),
     ),
     'pages' => array(
       '#input' => TRUE,
@@ -211,6 +215,7 @@ function xml_form_elements_element_info() {
  */
 function xml_form_elements_theme() {
   return array(
+
     THEME_XML_FORM_ELEMENTS_TABS => array(// Wrapper used so theme('form_element') can be used.
       'variables' => array('tabs' => NULL),
       'file' => 'includes/Tabs.inc',
@@ -234,11 +239,11 @@ function xml_form_elements_theme() {
       'file' => 'includes/Tags.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TAG => array(
-      'variables' => array('element'),
+      'render element' => array('element'),
       'file' => 'includes/Tag.inc',
     ),
-    THEME_XML_FORM_ELEMENTS_DATEPICKER => array(
-      'variables' => array('element'),
+    'datepicker' => array(
+      'render element' => 'element',
       'file' => 'includes/Datepicker.inc',
     ),
     THEME_XML_FORM_ELEMENTS_VALIDATE => array(
@@ -352,7 +357,7 @@ function xml_form_elements_process_tag($element, $form_state, $complete_form) {
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_datepicker(array $element, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_datepicker_process($element, &$form_state, $complete_form) {
   module_load_include('inc', 'xml_form_elements', 'includes/Datepicker');
   return Datepicker::Process($element, $form_state, $complete_form);
 }
