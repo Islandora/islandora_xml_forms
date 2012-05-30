@@ -136,10 +136,3 @@ function theme_tag($element) {
   // TODO Please change this theme call to use an associative array for the $variables parameter.
   return Tag::Theme($element);
 }
-
-
-function tag_add($form, &$form_state) {
-  var_dump('Test');
-  exit;
-  return Tag::Add($hash);
-}

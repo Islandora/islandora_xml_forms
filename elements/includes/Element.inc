@@ -104,7 +104,8 @@ class Element {
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
     $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
   /**
@@ -124,7 +125,8 @@ class Element {
     // Find the element to render.
     $element = find_element($form, $render);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
   /**
@@ -141,7 +143,8 @@ class Element {
     // Find the element to render.
     $element = find_element($form, $render);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
   /**
@@ -157,7 +160,8 @@ class Element {
     // Find the element to render.
     $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
 }

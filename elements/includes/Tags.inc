@@ -73,9 +73,9 @@ class Tags {
     $button['#value'] = 'Add';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ajax'] = array(
-      'callback' => "tag_add",
+      'callback' => 'Tag::Add',
       'wrapper' => "ahah-{$element['#id']}-wrapper",
-      'method' => 'replace',
+//      'method' => 'replace',
       'effect' => 'fade',
     );
     return $button;
@@ -163,3 +163,7 @@ function xml_form_elements_after_build_tags(array $form_element, array &$form_st
   return Tags::AfterBuild($form_element, $form_state);
 }
 
+function tag_add($form, &$form_state, $hash) {
+  drupal_set_message('Test');
+  return Tag::Add($hash);
+}
