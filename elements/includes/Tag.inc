@@ -71,7 +71,8 @@ class Tag {
     // Find the parent element to render.
     $element = find_element($drupal_form, $tags['#hash']);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
   /**
@@ -99,7 +100,8 @@ class Tag {
     // Find the parent element to render.
     $element = find_element($drupal_form, $tags['#hash']);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
   /**
@@ -119,7 +121,8 @@ class Tag {
     // Find the parent element to render.
     $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
 
@@ -132,4 +135,11 @@ function theme_tag($element) {
   // TODO: Should this theme tag be declared in hook_theme()?
   // TODO Please change this theme call to use an associative array for the $variables parameter.
   return Tag::Theme($element);
+}
+
+
+function tag_add($form, &$form_state) {
+  var_dump('Test');
+  exit;
+  return Tag::Add($hash);
 }

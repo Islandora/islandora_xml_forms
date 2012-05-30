@@ -72,8 +72,8 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#value'] = 'Add';
     $button['#attributes'] = array('style' => 'display:none');
-    $button['#ahah'] = array(
-      'path' => "xml/form/elements/ahah/tag/add/{$element['#hash']}",
+    $button['#ajax'] = array(
+      'callback' => "tag_add",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade',
@@ -87,8 +87,8 @@ class Tags {
     $button['#size'] = 30;
     $button['#id'] = $child['#hash'] . '-remove';
     $button['#attributes'] = array('style' => 'display:none');
-    $button['#ahah'] = array(
-      'path' => "xml/form/elements/ahah/tag/remove/{$child['#hash']}",
+    $button['#ajax'] = array(
+      'callback' => "Tag::Remove({$child['#hash']})",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade',
@@ -102,8 +102,8 @@ class Tags {
     $button['#size'] = 30;
     $button['#id'] = $child['#hash'] . '-edit';
     $button['#attributes'] = array('style' => 'display:none');
-    $button['#ahah'] = array(
-      'path' => "xml/form/elements/ahah/tag/edit/{$child['#hash']}",
+    $button['#ajax'] = array(
+      'callback' => "Tag::Edit({$child['#hash']})",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
       'effect' => 'fade',
@@ -143,7 +143,8 @@ function theme_tags($element) {
   // TODO: Should this theme tags be declared in hook_theme()?
   // TODO Please change this theme call to use an associative array for the $variables parameter.
   $content = theme('tags_content', $element);
-  return theme('form_element', $element, $content);
+//  return theme('form_element', $element, $content);
+  return $content;
 }
 
 /**
@@ -161,3 +162,4 @@ function theme_tags($element) {
 function xml_form_elements_after_build_tags(array $form_element, array &$form_state) {
   return Tags::AfterBuild($form_element, $form_state);
 }
+
