@@ -35,7 +35,7 @@ function xml_form_builder_menu() {
    */
   $items[MENU_XML_FORM_BUILDER_MAIN] = array(
     'title' => 'XML Form Builder',
-    'description' => 'Manage XML Based Forms.',
+    'description' => 'Manage XML-based Forms.',
     'file' => 'Main.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
