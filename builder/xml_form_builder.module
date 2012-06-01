@@ -164,19 +164,19 @@ function xml_form_builder_permission() {
   return array(
     PERM_XML_FORM_BUILDER_LIST_FORMS => array(
       'title' => t(PERM_XML_FORM_BUILDER_LIST_FORMS),
-      'description' => t('TODO Add a description for PERM_XML_FORM_BUILDER_LIST_FORMS'),
+      'description' => t('View a list of all currently available XML forms.'),
     ),
     PERM_XML_FORM_BUILDER_CREATE_FORMS => array(
       'title' => t(PERM_XML_FORM_BUILDER_CREATE_FORMS),
-      'description' => t('TODO Add a description for PERM_XML_FORM_BUILDER_CREATE_FORMS'),
+      'description' => t('Create new XML forms using the Form Builder.'),
     ),
     PERM_XML_FORM_BUILDER_EDIT_FORMS => array(
       'title' => t(PERM_XML_FORM_BUILDER_EDIT_FORMS),
-      'description' => t('TODO Add a description for PERM_XML_FORM_BUILDER_EDIT_FORMS'),
+      'description' => t('Edit existing XML forms using the Form Builder.'),
     ),
     PERM_XML_FORM_BUILDER_DELETE_FORMS => array(
       'title' => t(PERM_XML_FORM_BUILDER_DELETE_FORMS),
-      'description' => t('TODO Add a description for PERM_XML_FORM_BUILDER_DELETE_FORMS'),
+      'description' => t('Permanently delete any XML form.'),
     ),
   );
 }
