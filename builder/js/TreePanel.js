@@ -108,7 +108,7 @@ Ext.formbuilder.createTreePanel = function() {
               });
             }
             else if(data[name] instanceof Array) {
-              $.each(data[name], function(i, n) {
+              jQuery.each(data[name], function(i, n) {
                 converted.push({ 
                   value: n
                 });
