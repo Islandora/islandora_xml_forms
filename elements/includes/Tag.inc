@@ -71,7 +71,8 @@ class Tag {
     // Find the parent element to render.
     $element = find_element($drupal_form, $tags['#hash']);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
   /**
@@ -99,7 +100,8 @@ class Tag {
     // Find the parent element to render.
     $element = find_element($drupal_form, $tags['#hash']);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
   /**
@@ -119,7 +121,8 @@ class Tag {
     // Find the parent element to render.
     $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
-    Ahah::respond($element);
+//    Ahah::respond($element);
+    return $element;
   }
 
 
