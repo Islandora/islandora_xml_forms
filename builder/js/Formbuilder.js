@@ -72,7 +72,7 @@ Ext.formbuilder = (function() {
       form.loadRecord(record);
       var namespaces = [];
       if(record.data['namespaces'] instanceof Object) {
-        $.each(record.data['namespaces'], function(i, n) {
+        jQuery.each(record.data['namespaces'], function(i, n) {
           namespaces.push({
             key: i, 
             value: n

@@ -23,8 +23,8 @@ class Element {
     static $load = TRUE;
     if ($load) {
       drupal_add_js('misc/jquery.form.js'); // Required
-      drupal_add_js('misc/ajax.js'); // Required
-      drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'ahah.js');
+     // drupal_add_js('misc/ahah.js'); // Required
+     // drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'ahah.js');
       $load = FALSE;
     }
   }
@@ -104,8 +104,7 @@ class Element {
     $render = isset($render) ? $render : $new_element->hash; // Render the new element if no render value is supplied.
     $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
-//    Ahah::respond($element);
-    return $element;
+    Ahah::respond($element);
   }
 
   /**
@@ -125,8 +124,7 @@ class Element {
     // Find the element to render.
     $element = find_element($form, $render);
     // Respond to the request with JSON.
-//    Ahah::respond($element);
-    return $element;
+    Ahah::respond($element);
   }
 
   /**
@@ -143,8 +141,7 @@ class Element {
     // Find the element to render.
     $element = find_element($form, $render);
     // Respond to the request with JSON.
-//    Ahah::respond($element);
-    return $element;
+    Ahah::respond($element);
   }
 
   /**
@@ -160,8 +157,7 @@ class Element {
     // Find the element to render.
     $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
-//    Ahah::respond($element);
-    return $element;
+    Ahah::respond($element);
   }
 
 }
