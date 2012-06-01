@@ -3,6 +3,6 @@ description = Provides functions and classes that allow for effective use of inf
 
 dependencies[] = php_lib
 package =  Islandora Dependencies
-version = 6.x-dev
+version = 7.x-dev
 core = 7.x
 
