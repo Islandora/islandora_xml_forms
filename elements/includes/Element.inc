@@ -23,8 +23,8 @@ class Element {
     static $load = TRUE;
     if ($load) {
       drupal_add_js('misc/jquery.form.js'); // Required
-      drupal_add_js('misc/ahah.js'); // Required
-      drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'ahah.js');
+     // drupal_add_js('misc/ahah.js'); // Required
+     // drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'ahah.js');
       $load = FALSE;
     }
   }
