@@ -404,7 +404,7 @@ function xml_form_elements_process_page(array $element, $edit, array &$form_stat
  * @param array $complete_form
  */
 function xml_form_elements_process_validate(array $element, $edit, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'Validate');
+  module_load_include('inc', 'xml_form_elements', 'includes/Validate');
   Element::addRequiredResources();
   $element['#ahah'] = array(
     'path' => 'xml/form/elements/ahah/validate',
