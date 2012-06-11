@@ -136,6 +136,26 @@ function xml_form_builder_menu() {
 }
 
 /**
+ * Implements hook_form().
+ * 
+ * @return array
+ */
+function xml_form_builder_forms($form_id, $xml) {
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  if (XMLFormDatabase::Exists($form_id) && XMLFormDatabase::Valid($form_id)) {
+    return array(
+      $form_id => array(
+        'callback' => 'xml_form_builder_get_form',
+        'callback arguments' => array($form_id)
+      )
+    );
+  }
+  return array(
+    $form_id => array()
+  );
+}
+
+/**
  * Implements hook_perm. Register permissions.
  * 
  * @return array

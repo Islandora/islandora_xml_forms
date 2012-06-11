@@ -21,7 +21,7 @@ class XMLFormDatabase {
    *   TRUE if the given form exists, FALSE otherwise.
    */
   public static function Exists($form_name) {
-    $query = db_query('SELECT count(name) FROM {%s} WHERE name = "%s"', self::table, $form_name);
+    $query = db_query("SELECT count(name) FROM {%s} WHERE name = '%s'", self::table, $form_name);
     $count = db_result($query);
     return $count == 1;
   }
@@ -53,7 +53,7 @@ class XMLFormDatabase {
    */
   public static function Get($form_name) {
     if (self::Exists($form_name)) {
-      $query = db_query('SELECT form FROM {%s} WHERE name = "%s"', self::table, $form_name);
+      $query = db_query("SELECT form FROM {%s} WHERE name = '%s'", self::table, $form_name);
       $xml = db_result($query);
       if (trim($xml) !== '') {
         $definition = new DOMDocument();
@@ -193,7 +193,7 @@ class XMLFormDatabase {
    */
   public static function Delete($form_name) {
     if (self::Exists($form_name)) {
-      db_query('DELETE FROM {%s} WHERE name = "%s"', self::table, $form_name);
+      db_query("DELETE FROM {%s} WHERE name = '%s'", self::table, $form_name);
       return TRUE;
     }
     return FALSE;
