@@ -69,10 +69,10 @@ class TabPanel {
     $add['#value'] = $label;
     $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
     $add['#suffix'] = '</div>';
-    $add['#ajax'] = array(
-      'callback' => "Element::duplicate({$element["#hash"]}, {$tabs["#hash"]})",
+    $add['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/duplicate/{$element['#hash']}/{$tabs['#hash']}",
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
-//      'method' => 'replace',
+      'method' => 'replace',
       'effect' => 'fade',
     );
     return $add;
@@ -96,10 +96,10 @@ class TabPanel {
     );
     $delete['#prefix'] = '<div class="ui-tabpanel-delete-button">';
     $delete['#suffix'] = '</div>';
-    $delete['#ajax'] = array(
-      'callback' => "Element::remove({$element['#hash']}, {$tabs['#hash']})",
+    $delete['#ahah'] = array(
+      'path' => "xml/form/elements/ahah/remove/{$element['#hash']}/{$tabs['#hash']}",
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
-//      'method' => 'replace',
+      'method' => 'replace',
       'effect' => 'fade',
     );
     return $delete;

@@ -1,5 +1,4 @@
-(function ($) {
-Drupal.behaviors.xmlFormElementPages = { attach: function(context) {
+Drupal.behaviors.xmlFormElementPages = function(context) {
   var pages = {
     tabs: null,
     init: function () {
@@ -62,5 +61,3 @@ Drupal.behaviors.xmlFormElementPages = { attach: function(context) {
   }
   pages.init();
 }
-};
-})(jQuery);

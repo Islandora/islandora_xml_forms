@@ -1,5 +1,4 @@
-(function ($) {
-    Drupal.behaviors.xmlFormElementTabs = {attach: function(context, settings) {
+Drupal.behaviors.xmlFormElementTabs = function(context) {
   var tabs = {
     tabs: null, // Collection of all tabpanels.
     collapsibleTabs: null,
@@ -117,5 +116,3 @@
   tabs.loadPanels(true);
   tabs.enableActions();
 }
-    };
-})(jQuery);
