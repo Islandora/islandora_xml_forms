@@ -97,10 +97,8 @@ function template_preprocess_tabs_content(&$vars) {
  * Theme Hook for tags elements.
  */
 function theme_tabs($element) {
-//  $element = $variables['element'];
   // TODO: Should this theme tabs be declared in hook_theme()?
   // TODO Please change this theme call to use an associative array for the $variables parameter.
   $content = theme('tabs_content', $element);
-//  return theme('form_element', $element, $content);
-  return $content;
+  return theme('form_element', $element, $content);
 }
