@@ -4,6 +4,6 @@ dependencies[] = xml_form_api
 dependencies[] = xml_form_builder
 dependencies[] = xml_form_elements
 package = Islandora Tools
-version = 7.x-12.1.0-RC1
+version = 7.x-1.0-RC1
 core = 7.x
 
