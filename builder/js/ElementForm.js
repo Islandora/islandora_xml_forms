@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -50,7 +50,8 @@ Ext.formbuilder.createElementForm = function () {
           valueField: 'value',
           fieldLabel: 'Type',
           queryMode: 'local',
-          allowBlank: false,
+          editable: false,
+	  allowBlank: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -160,10 +161,10 @@ Ext.formbuilder.createElementForm = function () {
                 }
               },
               data: [{
-                display:'document', 
+                display:'document',
                 value:'document'
               },{
-                display:'parent', 
+                display:'parent',
                 value:'parent'
               }]
             }),
@@ -231,13 +232,13 @@ Ext.formbuilder.createElementForm = function () {
                 }
               },
               data: [{
-                display:'element', 
+                display:'element',
                 value:'element'
               }, {
-                display:'attribute', 
+                display:'attribute',
                 value:'attribute'
               }, {
-                display:'xml', 
+                display:'xml',
                 value:'xml'
               }]
             }),
@@ -296,10 +297,10 @@ Ext.formbuilder.createElementForm = function () {
                 }
               },
               data: [{
-                display:'document', 
+                display:'document',
                 value:'document'
               },{
-                display:'parent', 
+                display:'parent',
                 value:'parent'
               }]
             }),
@@ -358,13 +359,13 @@ Ext.formbuilder.createElementForm = function () {
                 }
               },
               data: [{
-                display:'document', 
+                display:'document',
                 value:'document'
               },{
-                display:'parent', 
+                display:'parent',
                 value:'parent'
               },{
-                display:'self', 
+                display:'self',
                 value:'self'
               }]
             }),
@@ -440,13 +441,13 @@ Ext.formbuilder.createElementForm = function () {
                 }
               },
               data: [{
-                display:'document', 
+                display:'document',
                 value:'document'
               },{
-                display:'parent', 
+                display:'parent',
                 value:'parent'
               },{
-                display:'self', 
+                display:'self',
                 value:'self'
               }]
             }),
@@ -502,7 +503,7 @@ Ext.formbuilder.createElementForm = function () {
             }
           }
         }, {
-                    
+
           xtype: 'textfield',
           id: 'autocomplete_path',
           name: 'autocomplete_path',
@@ -737,10 +738,10 @@ Ext.formbuilder.createElementForm = function () {
           store: new Ext.data.Store({
             fields: ['display', 'value'],
             data: [{
-              display: 'Post', 
+              display: 'Post',
               value: 'post'
             },{
-              display: 'Get', 
+              display: 'Get',
               value: 'get'
             }]
           }),
@@ -752,7 +753,7 @@ Ext.formbuilder.createElementForm = function () {
                 html: '<h3><a name="method" id="method"></a>#method</h3>' +
               '<p><strong>Used by</strong>: <a href="#form">form</a></p>' +
               '<p><strong>Description</strong>: The HTTP method with which the form will be submitted.</p>' +
-              '<p><strong>Values</strong>: GET or POST. Default is POST.</p>' 
+              '<p><strong>Values</strong>: GET or POST. Default is POST.</p>'
               });
             }
           }
@@ -1074,7 +1075,7 @@ Ext.formbuilder.createElementForm = function () {
                     target: 'ahah-progress-type',
                     anchor: 'top',
                     html: '<p>Possible values:</p>' +
-                  '<ul><li><strong>#ahah[\'progress\'][\'type\']</strong> String. Possible values: \'throbber\' (default), \'bar\'.</li></ul>' 
+                  '<ul><li><strong>#ahah[\'progress\'][\'type\']</strong> String. Possible values: \'throbber\' (default), \'bar\'.</li></ul>'
                   });
                 }
               }
@@ -1088,7 +1089,7 @@ Ext.formbuilder.createElementForm = function () {
                   Ext.create('Ext.tip.ToolTip', {
                     target: 'ahah-progress-message',
                     anchor: 'top',
-                    html: '<p>Possible values:</p>' + 
+                    html: '<p>Possible values:</p>' +
                   '<ul><li><strong>#ahah[\'progress\'][\'message\']</strong> String.  An optional message to the user; should be wrapped with <a href="/api/drupal/includes--common.inc/function/t/6" title="Translate strings to the page language or a given language." class="local">t</a>().</li></ul>'
                   });
                 }
@@ -1103,7 +1104,7 @@ Ext.formbuilder.createElementForm = function () {
                   Ext.create('Ext.tip.ToolTip', {
                     target: 'ahah-progress-url',
                     anchor: 'top',
-                    html: '<p>Possible values:</p>' + 
+                    html: '<p>Possible values:</p>' +
                   '<ul><li><strong>#ahah[\'progress\'][\'url\']</strong> String. The optional callback path to use to determine how full the progress bar is (as defined in progress.js). Only useable when \'type\' is \'bar\'.</li></ul>'
                   });
                 }
@@ -1118,7 +1119,7 @@ Ext.formbuilder.createElementForm = function () {
                   Ext.create('Ext.tip.ToolTip', {
                     target: 'ahah-progress-interval',
                     anchor: 'top',
-                    html: '<p>Possible values:</p>' + 
+                    html: '<p>Possible values:</p>' +
                   '<li><strong>#ahah[\'progress\'][\'interval\']</strong> String. The interval to be used in updating the progress bar (as defined in progress.js).  Ony used if \'url\' is defined and \'type\' is \'bar\'.</li>'
                   });
                 }
@@ -1132,7 +1133,7 @@ Ext.formbuilder.createElementForm = function () {
                   html: '<h3><a name="ahah_progress" id="ahah_progress"></a>#ahah[\'progress\']</h3>' +
                 '<p><strong>Description</strong>: Choose either a throbber or progress bar that is displayed while awaiting a response from the callback, and add an optional message.</p>' +
                 '<p><strong>Values</strong>: Array.</p>' +
-                '<p>Possible keys: \'type\', \'message\', \'url\', \'interval\'</p>' 
+                '<p>Possible keys: \'type\', \'message\', \'url\', \'interval\'</p>'
                 });
               }
             }
@@ -1155,7 +1156,7 @@ Ext.formbuilder.createElementForm = function () {
               '<a href="#textarea">textarea</a>,' +
               '<a href="#textfield">textfield</a>' +
               '</p>' +
-              '<p>An array of elements whose values control the behavior of the element with respect to the Drupal AHAH javascript methods.</p>' 
+              '<p>An array of elements whose values control the behavior of the element with respect to the Drupal AHAH javascript methods.</p>'
               });
             }
           }
@@ -1505,7 +1506,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: '<h3><a name="weightval" id="weightval"></a>#user_data</h3>' +
               ' <p><strong>Used by</strong>: Custom elements</p>' +
-              '<p><strong>Description</strong>: Used by custom form elements such as tabpanels. Consult documentation about what values can be specified here.</p>' 
+              '<p><strong>Description</strong>: Used by custom form elements such as tabpanels. Consult documentation about what values can be specified here.</p>'
               });
             }
           }
@@ -1599,7 +1600,7 @@ Ext.formbuilder.createElementForm = function () {
     listeners: {
       hide: function() {
         Ext.formbuilder.saveElementForm();
-      }     
+      }
     }
   });
 };
