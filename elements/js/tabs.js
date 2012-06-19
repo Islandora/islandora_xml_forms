@@ -111,6 +111,7 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
     enableActions: function () {
       var icons = $(".ui-icon-close:not(.processed)");
       icons.click(function() {
+	$('body > span.tool_tip').remove();
         $("#" + $(this).text()).trigger("mousedown");
       });
       icons.addClass('processed');
