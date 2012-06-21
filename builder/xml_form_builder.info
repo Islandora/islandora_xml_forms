@@ -2,6 +2,6 @@ name = Islandora XML Form Builder
 description = Provides an interface for Creating/Editing/Copying/Deleting/Exporting XML Based Forms.
 package = Islandora Tools
 dependencies[] = xml_form_api
-version = 6.x-12.2.0-RC3
+version = 6.x-12.2.0
 core = 6.x
 
