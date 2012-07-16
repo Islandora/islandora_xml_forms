@@ -23,6 +23,7 @@ class Tags {
     if ($load) {
       module_load_include('inc', 'xml_form_elements', 'includes/Element');
       Element::addRequiredResources();
+      Element::addJS('tags.js');
       Element::addCSS('tags.css');
       $load = FALSE;    
     }
