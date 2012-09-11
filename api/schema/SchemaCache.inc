@@ -8,7 +8,7 @@ define('XML_SCHEMA_API_CACHE_LOCATION', variable_get('file_public_path', conf_pa
 
 /**
  * A class used to store/retrieve schema documents from the files location on disk.
- * 
+ *
  * The mappings of url's to actual files is stored in the Drupal cache.
  */
 class SchemaCache {
@@ -20,7 +20,7 @@ class SchemaCache {
 
   /**
    * Checks if the Cache exists.
-   * 
+   *
    * @return boolean
    *   TRUE if the cache exists FALSE otherwise.
    */
@@ -30,7 +30,7 @@ class SchemaCache {
 
   /**
    * Creates the cache, if it does not exist.
-   * 
+   *
    * @return boolean
    *   TRUE if the cache was created or already exists, FALSE otherwise.
    */
@@ -43,7 +43,7 @@ class SchemaCache {
 
   /**
    * Clears the Cache table and removes the Cached files.
-   * 
+   *
    * @return boolean
    *   TRUE if the cache was successfully cleared or initialized.
    */
@@ -61,7 +61,7 @@ class SchemaCache {
 
   /**
    * Removes the Cached files if they exists. Creates the cached file location if it doesn't exist.
-   * 
+   *
    * @return boolean
    *   TRUE if the cached files were successfully cleared, or if the cached file location
    *   was successfully created.
@@ -84,10 +84,10 @@ class SchemaCache {
 
   /**
    * Checks to see if the cache location exists.
-   * 
+   *
    * @param string $filename
    *   The name of the cached file to retrieve.
-   * 
+   *
    * @return boolean
    *   TRUE if the cach
    */
@@ -98,11 +98,11 @@ class SchemaCache {
 
   /**
    * Get the cached document
-   * 
+   *
    * @param string $filename
    *   The filename used by schemas internally to refer to specific files. May also be a url.
-   * 
-   * @return DOMDocument 
+   *
+   * @return DOMDocument
    *   The cached DOMDocument if found FALSE otherwise.
    */
   public static function Get($filename) {
@@ -123,10 +123,10 @@ class SchemaCache {
 
   /**
    * Gets the cached document's filename
-   * 
+   *
    * @param string $filename
    *   The filename used by schemas internally to refer to specific files. May also be a url.
-   * 
+   *
    * @return string
    *   The location of the cached if found FALSE otherwise.
    */
@@ -150,7 +150,7 @@ class SchemaCache {
    *
    * @param string $filename
    *   The name of the schema file.
-   * @param DOMDocument $doc 
+   * @param DOMDocument $doc
    *   The schema file.
    */
   public static

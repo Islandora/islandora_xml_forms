@@ -55,7 +55,7 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
     $message = 'File: ' . $e->getFile() . '</br>';
     $message .= 'Line: ' . $e->getLine() . '</br>';
     $message .= 'Error: ' . $e->getMessage() . '</br>';
-    drupal_set_message($message, 'error');
+    drupal_set_message(filter_xss($message), 'error');
     $form_state['rebuild'] = TRUE;
   }
 }

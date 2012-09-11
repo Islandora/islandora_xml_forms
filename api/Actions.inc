@@ -92,10 +92,10 @@ class Actions implements FormPropertyInterface {
     if ($this->shouldDelete($document, $element, $value)) {
       return array(Action::Delete, $this->delete);
     }
-    else if ($this->shouldUpdate($document, $element, $value)) {
+    elseif ($this->shouldUpdate($document, $element, $value)) {
       return array(Action::Update, $this->update);
     }
-    else if ($this->shouldCreate($document, $element, $value)) { // Node is not registered
+    elseif ($this->shouldCreate($document, $element, $value)) { // Node is not registered
       return array(Action::Create, $this->create);
     }
     return array(Action::Undefined, NULL);
