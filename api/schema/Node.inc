@@ -202,7 +202,7 @@ abstract class XMLSchemaNode {
     if (isset($object)) {
       return $object;
     }
-    else if (class_exists($class_name)) {
+    elseif (class_exists($class_name)) {
       return new $class_name($this->schema, $node);
     }
     return NULL;

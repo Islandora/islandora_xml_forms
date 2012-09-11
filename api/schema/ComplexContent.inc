@@ -50,7 +50,7 @@ class XMLSchemaComplexContent extends XMLSchemaNode {
     if ($this->extension) {
       return $this->extension;
     }
-    else if ($this->restriction) {
+    elseif ($this->restriction) {
       return $this->restriction;
     }
     return NULL;
