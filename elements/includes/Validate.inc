@@ -46,7 +46,7 @@ function xml_form_elements_ahah_validate_form() {
     $state = $valid ? 'valid' : 'invalid';
     drupal_set_message(t('The Document is %s', array('%s' => $state)), $status);
     if (!$valid) {
-      drupal_set_message(filter_xss(implode('<br/>', $error_messages)), $status);
+      drupal_set_message(filter_xss(implode('<br/>', $error_messages), array('a', 'em', 'strong', 'cite', 'blockquote', 'code', 'ul', 'ol', 'li', 'dl', 'dt', 'dd', 'br')), $status);
     }
   }
   catch (Exception $e) {
