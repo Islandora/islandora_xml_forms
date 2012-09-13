@@ -62,17 +62,22 @@ class TabPanel {
    */
   private static function createAddButton(array &$element, array & $complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
-    $add['#type'] = 'submit';
+    $add['#type'] = 'button';
     $add['#weight'] = 4;
     $add['#size'] = 30;
     $add['#id'] = $element['#hash'] . '-add';
     $add['#value'] = $label;
     $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
     $add['#suffix'] = '</div>';
-    $add['#ahah'] = array(
-      'path' => "xml/form/elements/ahah/duplicate/{$element['#hash']}/{$tabs['#hash']}",
+    $add['#ajax'] = array(
+      //'path' => "xml/form/elements/ahah/duplicate/{$element['#hash']}/{$tabs['#hash']}",
+      'params' => array(
+      	'duplicate' => $element['#hash'],
+        'render' => $tabs['#hash'],		
+      ),
+      'callback' => 'xml_form_elements_duplicate',
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
-      'method' => 'replace',
+      'method' => 'replaceWith',
       'effect' => 'fade',
     );
     return $add;
@@ -96,10 +101,10 @@ class TabPanel {
     );
     $delete['#prefix'] = '<div class="ui-tabpanel-delete-button">';
     $delete['#suffix'] = '</div>';
-    $delete['#ahah'] = array(
+    $delete['#ajax'] = array(
       'path' => "xml/form/elements/ahah/remove/{$element['#hash']}/{$tabs['#hash']}",
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
-      'method' => 'replace',
+      'method' => 'replaceWith',
       'effect' => 'fade',
     );
     return $delete;

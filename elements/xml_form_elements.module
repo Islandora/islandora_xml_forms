@@ -414,7 +414,7 @@ function xml_form_elements_process_page(array $element,  &$form_state, array $co
 function xml_form_elements_process_validate(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'Validate');
   Element::addRequiredResources();
-  $element['#ahah'] = array(
+  $element['#ajax'] = array(
     'path' => 'xml/form/elements/ahah/validate',
     'wrapper' => $complete_form['#id'], // The parents wrapper is set to the parents hash.
     'method' => 'prepend',
@@ -437,4 +437,29 @@ function theme_validate($element) {
   // TODO: Should this theme validate be declared in hook_theme()?
   // TODO Please change this theme call to use an associative array for the $variables parameter.
   return theme('submit', $element);
+}
+
+/**
+ * AJAX callback to duplicate the parent element.
+ * 
+ * Used by TabPanels.
+ * @param $form
+ * @param $form_state
+ */
+function xml_form_elements_duplicate($drupal_form, $form_state) {
+	$trigger = $form_state['triggering_element'];
+	//dd($trigger, 'trigger');
+	// Duplicate Element
+	$form = new XMLForm($form_state);
+	$original = $form->findElement($trigger['#ajax']['params']['duplicate']);
+	$new_element = $form->duplicateOriginal($trigger['#ajax']['params']['duplicate']);
+	$original->parent->adopt($new_element);
+	$drupal_form = drupal_rebuild_form($drupal_form['#form_id'], $form_state);
+	
+	// Find the element to render.
+	module_load_include('inc', 'objective_forms', 'Utils');
+	$to_return = find_element($drupal_form, $trigger['#ajax']['params']['render']);
+	//dd($to_return, 'return');
+	dsm($drupal_form, 'final_form');
+ 	return $to_return;
 }

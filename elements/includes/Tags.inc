@@ -72,7 +72,7 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#value'] = 'Add';
     $button['#attributes'] = array('style' => 'display:none');
-    $button['#ahah'] = array(
+    $button['#ajax'] = array(
       'path' => "xml/form/elements/ahah/tag/add/{$element['#hash']}",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
@@ -87,7 +87,7 @@ class Tags {
     $button['#size'] = 30;
     $button['#id'] = $child['#hash'] . '-remove';
     $button['#attributes'] = array('style' => 'display:none');
-    $button['#ahah'] = array(
+    $button['#ajax'] = array(
       'path' => "xml/form/elements/ahah/tag/remove/{$child['#hash']}",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
@@ -102,7 +102,7 @@ class Tags {
     $button['#size'] = 30;
     $button['#id'] = $child['#hash'] . '-edit';
     $button['#attributes'] = array('style' => 'display:none');
-    $button['#ahah'] = array(
+    $button['#ajax'] = array(
       'path' => "xml/form/elements/ahah/tag/edit/{$child['#hash']}",
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replace',
