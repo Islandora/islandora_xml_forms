@@ -1,5 +1,5 @@
-Drupal.behaviors.xmlFormElementTabs = function(context) {
-  var tabs = {
+Drupal.behaviors.xmlFormElementTabs = {
+  tabs: {
     tabs: null, // Collection of all tabpanels.
     collapsibleTabs: null,
     nonCollapsibleTabs: null,
@@ -7,7 +7,7 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
       var load = '.xml-form-elements-tabs:not(.processed)';
       var collapsible = '.xml-form-elements-tabs-collapsible';
       var collapsed = '.xml-form-elements-tabs-collapsed';
-      this.tabs = $(load);
+      this.tabs = jQuery(load);
       this.collapsibleTabs = this.tabs.filter(collapsible);
       this.nonCollapsibleTabs = this.tabs.not(collapsible);
       var expandedTabs = this.collapsibleTabs.not(collapsed);
@@ -33,8 +33,8 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
       this.attachToolTips();
     },
     setCollapsibleIconOnSelect: function(event, ui) {
-      var icon = $('span.expand-tabpanel-icon:first', this);
-      if($(ui.panel).hasClass('ui-tabs-hide')) {
+      var icon = jQuery('span.expand-tabpanel-icon:first', this);
+      if(jQuery(ui.panel).hasClass('ui-tabs-hide')) {
         icon.removeClass('ui-icon-circle-triangle-e');
         icon.addClass('ui-icon-circle-triangle-s');
       }
@@ -44,8 +44,8 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
       }
     },
     setCollapsibleIconOnCreate: function(event, ui) {
-      var icon = $('span.expand-tabpanel-icon:first', this);
-      if($('div.ui-tabs-panel:not(.ui-tabs-hide)', this).length > 0) {
+      var icon = jQuery('span.expand-tabpanel-icon:first', this);
+      if(jQuery('div.ui-tabs-panel:not(.ui-tabs-hide)', this).length > 0) {
         icon.removeClass('ui-icon-circle-triangle-e');
         icon.addClass('ui-icon-circle-triangle-s');
       }
@@ -55,22 +55,22 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
       }
     },
     attachToolTips: function() {
-      $('.tool_tip_trigger').each(function() {
-        var tip = $(this).find('.tool_tip');
-        $(this).hover(function() {
+      jQuery('.tool_tip_trigger').each(function() {
+        var tip = jQuery(this).find('.tool_tip');
+        jQuery(this).hover(function() {
           var html = '';
-          var id = $(this).children('a[href]').attr('href');
-          $('#' + id + ' div.form-item').each(function() {
-            var item = $(this);
-            var text = $('input[type~="text"]', item);
+          var id = jQuery(this).children('a[href]').attr('href');
+          jQuery('#' + id + ' div.form-item').each(function() {
+            var item = jQuery(this);
+            var text = jQuery('input[type~="text"]', item);
             if(text.length) {
               var id = text.attr('id');
-              var label = $('label[for=' + id + ']', item);
+              var label = jQuery('label[for=' + id + ']', item);
               if(label.length) {
                 label = label.text();
                 text = text.val();
-                $('input[class~="form-tag"]', item).each(function() {
-                  var tag = $(this);
+                jQuery('input[class~="form-tag"]', item).each(function() {
+                  var tag = jQuery(this);
                   text += ' ' + tag.val();
                 });
                 text = jQuery.trim(text);
@@ -94,8 +94,8 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
           y = e.pageY + 20,
           w = tip.width(),
           h = tip.height(),
-          dx = $(window).width() - (x + w),
-          dy = $(window).height() - (y + h);
+          dx = jQuery(window).width() - (x + w),
+          dy = jQuery(window).height() - (y + h);
           if ( dx < 20 ) x = e.pageX - w - 20;
           if ( dy < 20 ) y = e.pageY - h - 20;
           tip.css({
@@ -106,13 +106,15 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
       });
     },
     enableActions: function () {
-      var icons = $(".ui-icon-close:not(.processed)");
+      var icons = jQuery(".ui-icon-close:not(.processed)");
       icons.click(function() {
-        $("#" + $(this).text()).trigger("mousedown");
+    	  jQuery("#" + jQuery(this).text()).trigger("mousedown");
       });
       icons.addClass('processed');
     }
-  };
-  tabs.loadPanels(true);
-  tabs.enableActions();
+  },
+  attach: function (context, settings) {
+	  this.tabs.loadPanels(true);
+	  this.tabs.enableActions();
+  }
 }

@@ -404,7 +404,7 @@ function xml_form_elements_delete_tab($drupal_form, $form_state) {
 	
 	// Find the element to render.
 	module_load_include('inc', 'objective_forms', 'Utils');
-	$element = find_element($form, $render);
+	$element = find_element($drupal_form, $render);
 	
 	// Respond to the request with JSON.
 	return $element;	
@@ -417,10 +417,10 @@ function xml_form_elements_add_tag($drupal_form, $form_state) {
 	$tags = find_element($drupal_form, $tags); // Find the tags we are dealing with.
 	$children = get_element_children($tags, 'tag');
 	$input = &$tags[array_shift($children)]; // Get the input field.
-	dsm($input, 'input');
+
 	$input_hash = $input['#hash'];
 	$input_value = $input['#value'];
-	form_set_value($input, '', $form_state); // Set input field to ''.
+	form_set_value($input, '', $form_state); // Set input field to ''...  Doesn't seem to work...
 	
 	
 	// Duplicate Element, set its default value to the submitted value.
@@ -470,14 +470,16 @@ function xml_form_elements_edit_tag($drupal_form, $form_state) {
 	$tags = get_form_element_parent($edit, $drupal_form);
 	$children = get_element_children($tags, 'tag');
 	$input = &$tags[array_shift($children)]; // Get the input field.
-	dsm($input, 'input');
+
 	if (trim($input['#value']) != '') { // If the input field has a value create a tag for it.
 		$new_element = $form->duplicateOriginal($input['#hash']);
 		$new_element['#default_value'] = $input['#value'];
 		$parent = $form->findElement($tags['#hash']); // Parent
 		$parent[] = $new_element; // Append
 	}
+	dsm($form_state, 'before set');
 	form_set_value($input, $edit['#value'], $form_state); // Set input field value.
+	dsm($form_state, 'after set');
 	$form->remove($hash); // Its the input element now.
 	
 	// Process/rebuild
@@ -485,7 +487,6 @@ function xml_form_elements_edit_tag($drupal_form, $form_state) {
 
 	// Find the parent element to render.
 	$element = find_element($drupal_form, $tags['#hash']);
-	dsm($tags, 'tags');
 	
 	// Respond to the request with JSON.
 	return $element;

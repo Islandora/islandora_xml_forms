@@ -43,12 +43,12 @@ class TabPanel {
   public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
     $add = isset($element['#user_data']['add']) ? $element['#user_data']['add'] : TRUE; // Defaults to TRUE
     if ($add) {
-      $add_label = isset($element['#user_data']['add_label']) ? $element['#user_data']['add_label'] : 'Add';
+      $add_label = isset($element['#user_data']['add_label']) ? $element['#user_data']['add_label'] : t('Add');
       $element[self::AddButton] = self::createAddButton($element, $complete_form, $add_label);
     }
     $delete = isset($element['#user_data']['delete']) ? $element['#user_data']['delete'] : TRUE; // Defaults to TRUE
     if ($delete) {
-      $delete_label = isset($element['#user_data']['delete_label']) ? $element['#user_data']['delete_label'] : 'Delete';
+      $delete_label = isset($element['#user_data']['delete_label']) ? $element['#user_data']['delete_label'] : t('Delete');
       $element[self::DeleteButton] = self::createRemoveButton($element, $complete_form, $delete_label);
     }
     return $element;
@@ -94,7 +94,7 @@ class TabPanel {
     $delete['#type'] = 'button';
     $delete['#weight'] = 4;
     $delete['#size'] = 30;
-    $delete['#id'] = $element['#name'] = $element['#hash'] . '-remove';
+    $delete['#id'] = $delete['#name'] = $element['#hash'] . '-remove';
     $delete['#value'] = $label;
     $delete['#attributes'] = array(
       'style' => 'display:none', // Triggered via javascript.
