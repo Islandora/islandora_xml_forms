@@ -41,38 +41,6 @@ define('PATH_XML_FORM_ELEMENTS_IMAGES', PATH_XML_FORM_ELEMENTS . 'images/');
  */
 function xml_form_elements_menu() {
   /**
-   * Duplicate a form element. Takes two parameters.
-   * The first parameter is the #hash of the element to duplicate. The second
-   * is the #hash of the element to render. If the second parameter is not given
-   * the newly duplicated element will be rendered.
-   */
-  $items[MENU_XML_FORM_ELEMENTS_AHAH_DUPICATE] = array(
-    'title' => 'Duplicate a Form Element',
-    'description' => 'AHAH callback',
-    'page callback' => 'Element::Duplicate',
-    'page arguments' => array(5, 6),
-    'access arguments' => array('access content'),
-    'file' => 'Element.inc',
-    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
-    'type' => MENU_CALLBACK,
-  );
-  /**
-   * Remove's a form element. Takes two parameters.
-   * The first parameter is the #hash of the element to remove. The second
-   * is the #hash of the element to render. If the second parameter is not given
-   * an empty div will be rendered.
-   */
-  $items[MENU_XML_FORM_ELEMENTS_AHAH_REMOVE] = array(
-    'title' => 'Remove a Form Element',
-    'description' => 'AHAH callback',
-    'page callback' => 'Element::Remove',
-    'page arguments' => array(5, 6),
-    'access arguments' => array('access content'),
-    'file' => 'Element.inc',
-    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
-    'type' => MENU_CALLBACK,
-  );
-  /**
    * Validate's the entire form.
    */
   $items[MENU_XML_FORM_ELEMENTS_AHAH_VALIDATE] = array(
@@ -112,45 +80,7 @@ function xml_form_elements_menu() {
     'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
     'type' => MENU_CALLBACK,
   );
-  /**
-   * Adds a new tag with the value from the textfield.
-   */
-  $items[MENU_XML_FORM_ELEMENTS_AHAH_TAG_ADD] = array(
-    'title' => 'Add a tag to the form, with the value submited for this first.',
-    'description' => 'AHAH callback',
-    'page callback' => 'Tag::Add',
-    'page arguments' => array(6),
-    'access arguments' => array('access content'),
-    'file' => 'Tag.inc',
-    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
-    'type' => MENU_CALLBACK,
-  );
-  /**
-   * Moves the given tag into the textfield for editing.
-   */
-  $items[MENU_XML_FORM_ELEMENTS_AHAH_TAG_EDIT] = array(
-    'title' => 'Edit a tag.',
-    'description' => 'AHAH callback',
-    'page callback' => 'Tag::Edit',
-    'page arguments' => array(6),
-    'access arguments' => array('access content'),
-    'file' => 'Tag.inc',
-    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
-    'type' => MENU_CALLBACK,
-  );
-  /**
-   * Remove the given tag.
-   */
-  $items[MENU_XML_FORM_ELEMENTS_AHAH_TAG_REMOVE] = array(
-    'title' => 'Remove a tag.',
-    'description' => 'AHAH callback',
-    'page callback' => 'Tag::Remove',
-    'page arguments' => array(6),
-    'access arguments' => array('access content'),
-    'file' => 'Tag.inc',
-    'file path' => PATH_XML_FORM_ELEMENTS_INCLUDES,
-    'type' => MENU_CALLBACK,
-  );
+
   return $items;
 }
 
@@ -165,28 +95,34 @@ function xml_form_elements_element_info() {
       '#input' => TRUE,
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
-      '#process' => array('xml_form_elements_process_tabs'),
+      '#process' => array('xml_form_elements_tabs_process'),
+      //'#theme' => 'tabs_content',
+      '#theme_wrappers' => array('tabs', 'form_element'),
     ),
     'tabpanel' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_tabpanel'),
+      '#process' => array('xml_form_elements_tabpanel_process'),
       '#user_data' => array('add' => TRUE, 'delete' => TRUE),
+      //'#theme' => 'tabpanel',
+  	  '#theme_wrappers' => array('tabpanel'),
     ),
     'tags' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_tags'),
+      '#process' => array('xml_form_elements_tags_process'),
+      //'#theme' => 'tags_content',
+      '#theme_wrappers' => array('tags', 'form_element'),
     ),
     'tag' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_tag'),
+      '#process' => array('xml_form_elements_tag_process'),
+      '#theme' => 'tag',
+      //'#theme_wrapper' => array('form_element'),
     ),
     'datepicker' => array(
       '#input' => TRUE,
-      // need to rename the fucking process function because there is a new hook called process in d7... ugh
       '#process' => array('xml_form_elements_datepicker_process'),
-      // it appears that now elements need to register a theme function
       '#theme' => 'datepicker',
-      '#theme_wrappers' => array('form_element'),
+      //'#theme_wrappers' => array('form_element'),
     ),
     'pages' => array(
       '#input' => TRUE,
@@ -213,33 +149,24 @@ function xml_form_elements_element_info() {
  *
  * @return array
  */
-function xml_form_elements_theme() {
+function xml_form_elements_theme($existing, $type, $theme, $path) {
   return array(
-
-    THEME_XML_FORM_ELEMENTS_TABS => array(// Wrapper used so theme('form_element') can be used.
-      'variables' => array('tabs' => NULL),
-      'file' => 'includes/Tabs.inc',
-    ),
-    THEME_XML_FORM_ELEMENTS_TABS_CONTENT => array(// Tabs outer frame
-      'variables' => array('tabs' => NULL),
+    THEME_XML_FORM_ELEMENTS_TABS => array(
+      'render element' => 'element',
       'template' => 'templates/Tabs',
       'file' => 'includes/Tabs.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TABPANEL => array(// The content of a single tabpanel.
-      'variables' => array('element'),
+      'render element' => 'element',
       'file' => 'includes/TabPanel.inc',
     ),
-    THEME_XML_FORM_ELEMENTS_TAGS => array(// Wrapper used so theme('form_element') can be used.
-      'variables' => array('element'),
-      'file' => 'includes/Tags.inc',
-    ),
-    THEME_XML_FORM_ELEMENTS_TAGS_CONTENT => array(// The inner content of a tags element.
-      'variables' => array('element'), // => NULL),
+    THEME_XML_FORM_ELEMENTS_TAGS => array(
+      'render element' => 'element', // => NULL),
       'template' => 'templates/Tags',
       'file' => 'includes/Tags.inc',
     ),
     THEME_XML_FORM_ELEMENTS_TAG => array(
-      'render element' => array('element'),
+      'render element' => 'element',
       'file' => 'includes/Tag.inc',
     ),
     'datepicker' => array(
@@ -255,7 +182,7 @@ function xml_form_elements_theme() {
       'file' => 'includes/Pages.inc',
     ),
     THEME_XML_FORM_ELEMENTS_PAGE => array(
-      'variables' => array('element'),
+      'variables' => array('element' => NULL),
       'file' => 'includes/Pages.inc',
     ),
   );
@@ -276,7 +203,7 @@ function xml_form_elements_theme() {
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_tabs(array $element, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_tabs_process(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Tabs');
   return Tabs::Process($element, $form_state, $complete_form);
 }
@@ -296,7 +223,7 @@ function xml_form_elements_process_tabs(array $element, array &$form_state, arra
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_tabpanel(array $element, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_tabpanel_process(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
   return TabPanel::Process($element, $form_state, $complete_form);
 }
@@ -316,7 +243,7 @@ function xml_form_elements_process_tabpanel(array $element, array &$form_state, 
  * @return array
  *   The processed element.
  */
-function xml_form_elements_process_tags(array $element, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_tags_process(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Tags');
   return Tags::Process($element, $form_state, $complete_form);
 }
@@ -337,7 +264,7 @@ function xml_form_elements_process_tags(array $element, array &$form_state, arra
  *   The processed element.
  */
 //array $element, $edit, array &$form_state, array $complete_form = NULL
-function xml_form_elements_process_tag($element, $form_state, $complete_form) {
+function xml_form_elements_tag_process($element, $form_state, $complete_form) {
   module_load_include('inc', 'xml_form_elements', 'includes/Tag');
   return Tag::Process($element, $form_state, $complete_form);
 }
@@ -448,18 +375,118 @@ function theme_validate($element) {
  */
 function xml_form_elements_duplicate($drupal_form, $form_state) {
 	$trigger = $form_state['triggering_element'];
-	//dd($trigger, 'trigger');
+	$duplicate = $trigger['#ajax']['params']['duplicate'];
+	
 	// Duplicate Element
 	$form = new XMLForm($form_state);
-	$original = $form->findElement($trigger['#ajax']['params']['duplicate']);
-	$new_element = $form->duplicateOriginal($trigger['#ajax']['params']['duplicate']);
+	$original = $form->findElement($duplicate);
+	$new_element = $form->duplicateOriginal($duplicate);
 	$original->parent->adopt($new_element);
-	$drupal_form = drupal_rebuild_form($drupal_form['#form_id'], $form_state);
+	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
 	
 	// Find the element to render.
 	module_load_include('inc', 'objective_forms', 'Utils');
 	$to_return = find_element($drupal_form, $trigger['#ajax']['params']['render']);
-	//dd($to_return, 'return');
-	dsm($drupal_form, 'final_form');
  	return $to_return;
+}
+
+function xml_form_elements_delete_tab($drupal_form, $form_state) {
+	$trigger = $form_state['triggering_element'];
+	$remove = $trigger['#ajax']['params']['delete'];
+	$render = $trigger['#ajax']['params']['render'];
+	
+	// Remove Element
+	$xml_form = new XMLForm($form_state);
+	$xml_form->remove($remove);
+	
+	// Rebuild the form, validation and submit callbacks will be called.
+	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+	
+	// Find the element to render.
+	module_load_include('inc', 'objective_forms', 'Utils');
+	$element = find_element($form, $render);
+	
+	// Respond to the request with JSON.
+	return $element;	
+}
+
+function xml_form_elements_add_tag($drupal_form, $form_state) {
+	$tags = $form_state['triggering_element']['#ajax']['params']['target'];
+	
+	module_load_include('inc', 'objective_forms', 'Utils');
+	$tags = find_element($drupal_form, $tags); // Find the tags we are dealing with.
+	$children = get_element_children($tags, 'tag');
+	$input = &$tags[array_shift($children)]; // Get the input field.
+	dsm($input, 'input');
+	$input_hash = $input['#hash'];
+	$input_value = $input['#value'];
+	form_set_value($input, '', $form_state); // Set input field to ''.
+	
+	
+	// Duplicate Element, set its default value to the submitted value.
+	$form = new XMLForm($form_state);
+	$input = $form->findElement($input_hash);
+	$new_element = $form->duplicateOriginal($input_hash);
+	$new_element['#default_value'] = $input_value; // Get the value from input.
+	$input->parent[] = $new_element; // Add to the form.
+	
+	// Process and rebuild.
+	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+	
+	// Find the parent element to render.
+	$element = find_element($drupal_form, $tags['#hash']);
+	
+	// Respond to the request with JSON.
+	return $element;
+}
+
+
+function xml_form_elements_delete_tag($drupal_form, $form_state) {
+	$tag = $form_state['triggering_element']['#ajax']['params']['target'];
+	
+	// Duplicate Element, set its default value to the submitted value.
+	$form = new XMLForm($form_state);
+	$tag = $form->findElement($tag);
+	$render = $tag->parent->hash;
+	$form->remove($tag->hash);
+	
+	// Rebuild.
+	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+	
+	// Find the parent element to render.
+	module_load_include('inc', 'objective_forms', 'Utils');
+	$element = find_element($drupal_form, $render);
+	
+	// Respond to the request with JSON.
+	return $element;
+}
+
+function xml_form_elements_edit_tag($drupal_form, $form_state) {
+	$hash = $form_state['triggering_element']['#ajax']['params']['target'];
+	
+	$form = new XMLForm($form_state);
+	module_load_include('inc', 'objective_forms', 'Utils');
+	$edit = find_element($drupal_form, $hash); // Find the tags we are dealing with.
+	$tags = get_form_element_parent($edit, $drupal_form);
+	$children = get_element_children($tags, 'tag');
+	$input = &$tags[array_shift($children)]; // Get the input field.
+	dsm($input, 'input');
+	if (trim($input['#value']) != '') { // If the input field has a value create a tag for it.
+		$new_element = $form->duplicateOriginal($input['#hash']);
+		$new_element['#default_value'] = $input['#value'];
+		$parent = $form->findElement($tags['#hash']); // Parent
+		$parent[] = $new_element; // Append
+	}
+	form_set_value($input, $edit['#value'], $form_state); // Set input field value.
+	$form->remove($hash); // Its the input element now.
+	
+	// Process/rebuild
+	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+
+	// Find the parent element to render.
+	$element = find_element($drupal_form, $tags['#hash']);
+	dsm($tags, 'tags');
+	
+	// Respond to the request with JSON.
+	return $element;
 }

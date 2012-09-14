@@ -65,47 +65,55 @@ class Tags {
   }
 
   private static function createAddButton(array &$element) {
-    $button['#type'] = 'submit';
+    $button['#type'] = 'button';
     $button['#weight'] = 4;
     $button['#size'] = 30;
-    $button['#id'] = $element['#hash'] . '-add';
+    $button['#id'] = $button['#name'] = $element['#hash'] . '-add';
     $button['#attributes'] = array('style' => 'display:none');
-    $button['#value'] = 'Add';
-    $button['#attributes'] = array('style' => 'display:none');
+    $button['#value'] = t('Add');
     $button['#ajax'] = array(
-      'path' => "xml/form/elements/ahah/tag/add/{$element['#hash']}",
+      'callback' => 'xml_form_elements_add_tag',
+      'params' => array(
+        'target' => $element['#hash'],		
+      ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
-      'method' => 'replace',
+      'method' => 'replaceWith',
       'effect' => 'fade',
     );
     return $button;
   }
 
   private static function createRemoveButton(array &$element, array &$child) {
-    $button['#type'] = 'submit';
+    $button['#type'] = 'button';
     $button['#weight'] = 4;
     $button['#size'] = 30;
-    $button['#id'] = $child['#hash'] . '-remove';
+    $button['#id'] = $button['#name'] = $child['#hash'] . '-remove';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ajax'] = array(
-      'path' => "xml/form/elements/ahah/tag/remove/{$child['#hash']}",
+      'callback' => 'xml_form_elements_delete_tag',
+      'params' => array(
+        'target' => $child['#hash'],		
+      ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
-      'method' => 'replace',
+      'method' => 'replaceWith',
       'effect' => 'fade',
     );
     return $button;
   }
 
   private static function createEditButton(array &$element, array &$child) {
-    $button['#type'] = 'submit';
+    $button['#type'] = 'button';
     $button['#weight'] = 4;
     $button['#size'] = 30;
-    $button['#id'] = $child['#hash'] . '-edit';
+    $button['#id'] = $button['#name'] = $child['#hash'] . '-edit';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ajax'] = array(
-      'path' => "xml/form/elements/ahah/tag/edit/{$child['#hash']}",
+      'callback' => 'xml_form_elements_edit_tag',
+      'params' => array(
+        'target' => $child['#hash'],		
+      ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
-      'method' => 'replace',
+      'method' => 'replaceWith',
       'effect' => 'fade',
     );
     return $button;
@@ -118,9 +126,8 @@ class Tags {
  *
  * @param array $vars
  */
-function xml_form_elements_preprocess_tags_content(&$vars) {
-  $tags = &$vars[0];
-  $vars['element'] = &$vars[0];
+function template_preprocess_tags(&$vars) {
+  $tags = &$vars['element'];
   $vars['image_path'] = url(PATH_XML_FORM_ELEMENTS_IMAGES); // Location of images.
   $vars['add'] = $tags['controls']['add']; // Visible Add Button
   $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL; // Hidden Edit Button
@@ -134,16 +141,6 @@ function xml_form_elements_preprocess_tags_content(&$vars) {
     }
   }
   $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
-}
-
-/**
- * Theme function for tags.
- */
-function theme_tags($element) {
-  // TODO: Should this theme tags be declared in hook_theme()?
-  // TODO Please change this theme call to use an associative array for the $variables parameter.
-  $content = theme('tags_content', $element);
-  return theme('form_element', $element, $content);
 }
 
 /**

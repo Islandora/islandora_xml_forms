@@ -8,13 +8,15 @@
   <input type="text"
          name="<?php print "{$input['#name']}" ?>"
          id="<?php print "{$element['#id']}" ?>"
-         size="<?php print "{$variables[0]['#size']}" ?>"
+         size="<?php print "{$element['#size']}" ?>"
          value="<?php print "{$input['#value']}" ?>"
          class="form-text tag-editor">
   <input type="image" src="<?php print $image_path ?>add.png" name="<?php print $add['#name'] ?>" id="<?php print $add['#id'] ?>" value="add">
   <div class="hidden-controls">
-    <?php print $edit['#children']; ?>
-    <?php print $remove['#children']; ?>
+    <?php 
+	    print ((is_array($edit) && array_key_exists('#children', $edit)) ? $edit['#children']: '');
+	    print ((is_array($remove) && array_key_exists('#children', $remove)) ? $remove['#children']: '');
+	?>
   </div>
   <div class="hidden-tags">
     <?php foreach ($tags as $tag): ?>
@@ -24,8 +26,8 @@
   <span class="tag-list">
     <?php foreach ($tags as $tag): ?>
       <span title="<?php print "{$tag['#value']}" ?>">
-        <span class="edit-tag" onclick="$('#<?php print $edit[$tag['#hash']]['#id'] ?>').trigger('mousedown'); return false;"><?php print "{$tag['#value']}" ?></span>
-        <span class="remove-tag" onclick="$('#<?php print $remove[$tag['#hash']]['#id'] ?>').trigger('mousedown'); return false;"></span>
+        <span class="edit-tag" onclick="jQuery('#<?php print $edit[$tag['#hash']]['#id'] ?>').trigger('mousedown'); return false;"><?php print "{$tag['#value']}" ?></span>
+        <span class="remove-tag" onclick="jQuery('#<?php print $remove[$tag['#hash']]['#id'] ?>').trigger('mousedown'); return false;"></span>
       </span>
     <?php endforeach ?>
   </span>

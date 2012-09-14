@@ -65,7 +65,7 @@ class TabPanel {
     $add['#type'] = 'button';
     $add['#weight'] = 4;
     $add['#size'] = 30;
-    $add['#id'] = $element['#hash'] . '-add';
+    $add['#id'] = $add['#name'] = $element['#hash'] . '-add';
     $add['#value'] = $label;
     $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
     $add['#suffix'] = '</div>';
@@ -91,10 +91,10 @@ class TabPanel {
    */
   private static function createRemoveButton(array &$element, array & $complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
-    $delete['#type'] = 'submit';
+    $delete['#type'] = 'button';
     $delete['#weight'] = 4;
     $delete['#size'] = 30;
-    $delete['#id'] = $element['#hash'] . '-remove';
+    $delete['#id'] = $element['#name'] = $element['#hash'] . '-remove';
     $delete['#value'] = $label;
     $delete['#attributes'] = array(
       'style' => 'display:none', // Triggered via javascript.
@@ -102,7 +102,11 @@ class TabPanel {
     $delete['#prefix'] = '<div class="ui-tabpanel-delete-button">';
     $delete['#suffix'] = '</div>';
     $delete['#ajax'] = array(
-      'path' => "xml/form/elements/ahah/remove/{$element['#hash']}/{$tabs['#hash']}",
+      'callback' => 'xml_form_elements_delete_tab',
+      'params' => array(
+      	'delete' => $element['#hash'],
+      	'render' => $tabs['#hash'],
+      ),
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replaceWith',
       'effect' => 'fade',
@@ -115,9 +119,7 @@ class TabPanel {
 /**
  * Theme hook for a tabpanel
  */
-function theme_tabpanel($element) {
-  // TODO: Should this theme tabpanel be declared in hook_theme()?
-  // TODO Please change this theme call to use an associative array for the $variables parameter.
-  return TabPanel::Theme($element);
+function theme_tabpanel($vars) {
+  return TabPanel::Theme($vars['element']);
 }
 
