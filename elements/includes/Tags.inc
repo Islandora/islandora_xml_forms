@@ -18,10 +18,10 @@ class Tags {
    * @staticvar boolean $load
    *   Keeps us from loading the same files multiple times, while not required it just saves some time.
    */
-  public static function addRequiredResources() {
+  public static function addRequiredResources(&$form_state) {
     static $load = TRUE;
     if ($load) {
-      module_load_include('inc', 'xml_form_elements', 'includes/Element');
+      form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
       Element::addRequiredResources();
       Element::addCSS('tags.css');
       $load = FALSE;
@@ -36,7 +36,7 @@ class Tags {
    * @param array $complete_form
    */
   public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
-    self::addRequiredResources();
+    self::addRequiredResources($form_state);
     $element['#id'] = $element['#hash'];
     $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;

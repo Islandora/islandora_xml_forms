@@ -122,19 +122,19 @@ function xml_form_elements_element_info() {
       '#input' => TRUE,
       '#process' => array('xml_form_elements_datepicker_process'),
       '#theme' => 'datepicker',
-      //'#theme_wrappers' => array('form_element'),
+      '#theme_wrappers' => array('form_element'),
     ),
     'pages' => array(
       '#input' => TRUE,
       '#process' => array(
-        'xml_form_elements_process_pages_include_file',
-        'xml_form_elements_process_pages_add_resources',
-        'xml_form_elements_process_pages_add_pagers',
+        'xml_form_elements_pages_process_include_file',
+        'xml_form_elements_pages_process_add_resources',
+        'xml_form_elements_pages_process_add_pagers',
       ),
     ),
     'page' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_process_page'),
+      '#process' => array('xml_form_elements_page_process'),
     ),
     'validate' => array(
       '#input' => TRUE,
@@ -169,7 +169,7 @@ function xml_form_elements_theme($existing, $type, $theme, $path) {
       'render element' => 'element',
       'file' => 'includes/Tag.inc',
     ),
-    'datepicker' => array(
+    THEME_XML_FORM_ELEMENTS_DATEPICKER => array(
       'render element' => 'element',
       'file' => 'includes/Datepicker.inc',
     ),
@@ -204,7 +204,7 @@ function xml_form_elements_theme($existing, $type, $theme, $path) {
  *   The processed element.
  */
 function xml_form_elements_tabs_process(array $element, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'includes/Tabs');
+  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Tabs');
   return Tabs::Process($element, $form_state, $complete_form);
 }
 
@@ -224,7 +224,7 @@ function xml_form_elements_tabs_process(array $element, array &$form_state, arra
  *   The processed element.
  */
 function xml_form_elements_tabpanel_process(array $element, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
+  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/TabPanel');
   return TabPanel::Process($element, $form_state, $complete_form);
 }
 
@@ -244,7 +244,7 @@ function xml_form_elements_tabpanel_process(array $element, array &$form_state, 
  *   The processed element.
  */
 function xml_form_elements_tags_process(array $element, array &$form_state, array $complete_form = NULL) {
-  module_load_include('inc', 'xml_form_elements', 'includes/Tags');
+  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Tags');
   return Tags::Process($element, $form_state, $complete_form);
 }
 
@@ -264,8 +264,8 @@ function xml_form_elements_tags_process(array $element, array &$form_state, arra
  *   The processed element.
  */
 //array $element, $edit, array &$form_state, array $complete_form = NULL
-function xml_form_elements_tag_process($element, $form_state, $complete_form) {
-  module_load_include('inc', 'xml_form_elements', 'includes/Tag');
+function xml_form_elements_tag_process($element, &$form_state, $complete_form) {
+  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Tag');
   return Tag::Process($element, $form_state, $complete_form);
 }
 
@@ -285,7 +285,7 @@ function xml_form_elements_tag_process($element, $form_state, $complete_form) {
  *   The processed element.
  */
 function xml_form_elements_datepicker_process($element, &$form_state, $complete_form) {
-  module_load_include('inc', 'xml_form_elements', 'includes/Datepicker');
+  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Datepicker');
   return Datepicker::Process($element, $form_state, $complete_form);
 }
 
@@ -326,9 +326,9 @@ function xml_form_elements_process_pages_include_file(array $element, array &$fo
  */
 //$element, $form_state, and $complete_form
 //$element, &$form_state, $form
-function xml_form_elements_process_page(array $element,  &$form_state, array $complete_form = NULL) {
+function xml_form_elements_page_process(array $element,  &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'includes/Pages');
-  return xml_form_elements_process_page_initialize($element, $edit, $form_state, $complete_form);
+  return xml_form_elements_page_process_initialize($element, $edit, $form_state, $complete_form);
 }
 
 /**
@@ -338,7 +338,7 @@ function xml_form_elements_process_page(array $element,  &$form_state, array $co
  * @param array $form_state
  * @param array $complete_form
  */
-function xml_form_elements_process_validate(array $element, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_validate_process(array $element, array &$form_state, array $complete_form = NULL) {
   module_load_include('inc', 'xml_form_elements', 'Validate');
   Element::addRequiredResources();
   $element['#ajax'] = array(
@@ -417,21 +417,31 @@ function xml_form_elements_add_tag($drupal_form, $form_state) {
 	$tags = find_element($drupal_form, $tags); // Find the tags we are dealing with.
 	$children = get_element_children($tags, 'tag');
 	$input = &$tags[array_shift($children)]; // Get the input field.
+	//dsm($input, 'le input');
 
 	$input_hash = $input['#hash'];
 	$input_value = $input['#value'];
+	//dsm($form_state, 'before');
 	form_set_value($input, '', $form_state); // Set input field to ''...  Doesn't seem to work...
-	
 	
 	// Duplicate Element, set its default value to the submitted value.
 	$form = new XMLForm($form_state);
 	$input = $form->findElement($input_hash);
 	$new_element = $form->duplicateOriginal($input_hash);
 	$new_element['#default_value'] = $input_value; // Get the value from input.
-	$input->parent[] = $new_element; // Add to the form.
-	
+	$input->parent->adopt($new_element); // Add to the form.
+	//dsm($input, 'final input');
+	//dsm($form->toArray($form_state), 'XMLForm 1');
+	dsm($form_state, 'state before process');
 	// Process and rebuild.
+	//$drupal_form = $form->toArray($form_state);
+	//$drupal_form = drupal_rebuild_form($drupal_form['#form_id'], $form_state, $drupal_form);
+	//dsm($drupal_form, 'le form');
 	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+	
+	dsm($drupal_form, 'form after process');
+	dsm($form_state, 'state after process');
+	//dsm($form->toArray($form_state), 'XMLForm 2');
 	
 	// Find the parent element to render.
 	$element = find_element($drupal_form, $tags['#hash']);
@@ -475,14 +485,14 @@ function xml_form_elements_edit_tag($drupal_form, $form_state) {
 		$new_element = $form->duplicateOriginal($input['#hash']);
 		$new_element['#default_value'] = $input['#value'];
 		$parent = $form->findElement($tags['#hash']); // Parent
-		$parent[] = $new_element; // Append
+		$parent->adopt($new_element); // Append
 	}
-	dsm($form_state, 'before set');
+	
 	form_set_value($input, $edit['#value'], $form_state); // Set input field value.
-	dsm($form_state, 'after set');
 	$form->remove($hash); // Its the input element now.
 	
 	// Process/rebuild
+	//drupal_rebuild_form($drupal_form['#form_id'], $form_state, $drupal_form);
 	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
 
 	// Find the parent element to render.
