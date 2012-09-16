@@ -140,7 +140,7 @@ function template_preprocess_tags(&$vars) {
       $vars['tags'][$key] = $child;
     }
   }
-  $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
+  $vars['input'] = array_pop($vars['tags']); // Last tag is the textfield, all others show up as icons with hidden inputs.
 }
 
 /**
