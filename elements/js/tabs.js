@@ -62,7 +62,7 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
           var id = $(this).children('a[href]').attr('href');
           $('#' + id + ' div.form-item').each(function() {
             var item = $(this);
-            var text = $('input[type~="text"]', item);
+            var text = $('input[type~="text"], textarea', item);
             if(text.length) {
               var id = text.attr('id');
               var label = $('label[for=' + id + ']', item);
@@ -73,7 +73,10 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
                   var tag = $(this);
                   text += ' ' + tag.val();
                 });
-                text = jQuery.trim(text);
+		text = jQuery.trim(text);
+		if(text.length > 60)  {
+		    text = text.substring(0, 60) + '...';
+		}
                 if(text != "") {
                   html += label + ' ' + text + '<br/>';
                 }
@@ -108,6 +111,7 @@ Drupal.behaviors.xmlFormElementTabs = function(context) {
     enableActions: function () {
       var icons = $(".ui-icon-close:not(.processed)");
       icons.click(function() {
+	$('body > span.tool_tip').remove();
         $("#" + $(this).text()).trigger("mousedown");
       });
       icons.addClass('processed');
