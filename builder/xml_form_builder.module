@@ -14,9 +14,7 @@ define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
 define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
 define('PERM_XML_FORM_BUILDER_EDIT_FORMS', 'Edit XML Forms');
 define('PERM_XML_FORM_BUILDER_DELETE_FORMS', 'Delete XML Forms');
-define('MENU_XML_FORM_BUILDER_MAIN', 'admin/islandora/xml/form');
 define('MENU_XML_FORM_BUILDER_VIEW', 'admin/islandora/xml/form/%/view');
-define('MENU_XML_FORM_BUILDER_CREATE', 'admin/islandora/xml/form/create');
 define('MENU_XML_FORM_BUILDER_COPY', 'admin/islandora/xml/form/%/copy');
 define('MENU_XML_FORM_BUILDER_EDIT', 'admin/islandora/xml/form/%/edit');
 define('MENU_XML_FORM_BUILDER_DELETE', 'admin/islandora/xml/form/%/delete');
@@ -33,15 +31,28 @@ function xml_form_builder_menu() {
    * Inital page. Lists the existing forms showing a preview of each. The user is provided with links for
    * creating, editing, deleting, or copying forms.
    */
-  $items[MENU_XML_FORM_BUILDER_MAIN] = array(
+  $items['admin/islandora/xmlform'] = array(
     'title' => 'XML Form Builder',
     'description' => 'Manage XML-based Forms.',
     'file' => 'Main.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_main'),
+    'page callback' => 'xml_form_builder_main',
+    //'page arguments' => array('xml_form_builder_main'),
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_NORMAL_ITEM,
+  );
+  /**
+   * Presents a form that allows the user to create a new form.
+   */
+  $items['admin/islandora/xmlform/create'] = array(
+    'title' => 'Create Form',
+    'description' => 'Create a new Form.',
+    'file' => 'Create.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_create'),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
+    'type' => MENU_LOCAL_ACTION,
   );
   /**
    * View a form.
@@ -65,19 +76,6 @@ function xml_form_builder_menu() {
     'page callback' => 'xml_form_builder_export',
     'page arguments' => array(4),
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
-    'type' => MENU_CALLBACK,
-  );
-  /**
-   * Presents a form that allows the user to create a new form.
-   */
-  $items[MENU_XML_FORM_BUILDER_CREATE] = array(
-    'title' => 'Create Form',
-    'description' => 'Create a new Form.',
-    'file' => 'Create.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_create'),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
   /**
