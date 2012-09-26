@@ -14,38 +14,46 @@
  * @return array
  *   The Drupal Form.
  */
-function xml_form_builder_create($form, array &$form_state) {
+function xml_form_builder_create($form, array &$form_state, $type) {
   if (isset($_POST['cancel'])) {
     drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
   }
-  return array(
-    '#attributes' => array(
-      'enctype' => "multipart/form-data",
-    ),
-    'form_name' => array(
-      '#type' => 'textfield',
-      '#title' => t('Form Name'),
-      '#required' => TRUE,
-      '#maxlength' => 128,
-      '#element_validate' => array('xml_form_builder_create_validate_name'),
-    ),
-    'file' => array(
+  $return = array();
+
+  $return['#attributes'] = array(
+    'enctype' => "multipart/form-data",
+  );
+  
+  $return['form_name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Form Name'),
+    '#required' => TRUE,
+    '#maxlength' => 128,
+    '#element_validate' => array('xml_form_builder_create_validate_name'),
+  );
+
+  if($type == 'import') {
+    $return['file'] = array(
       '#type' => 'file',
       '#title' => t('Form Definition'),
       '#size' => 64,
       '#description' => t('An optional XML form definition template.'),
-    ),
-    'create' => array(
-      '#type' => 'submit',
-      '#value' => t('Create'),
-      '#name' => 'create',
-    ),
-    'cancel' => array(
+    );
+  }
+
+  $return['create'] = array(
+    '#type' => 'submit',
+    '#value' => t('Create'),
+    '#name' => 'create',
+  );
+
+  $return['cancel'] = array(
       '#type' => 'submit',
       '#value' => t('Cancel'),
       '#name' => 'cancel',
-    ),
   );
+
+  return $return;
 }
 
 /**
