@@ -14,6 +14,8 @@ define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
 define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
 define('PERM_XML_FORM_BUILDER_EDIT_FORMS', 'Edit XML Forms');
 define('PERM_XML_FORM_BUILDER_DELETE_FORMS', 'Delete XML Forms');
+define('MENU_XML_FORM_BUILDER_MAIN', 'admin/islandora/xmlform');
+define('MENU_XML_FORM_BUILDER_CREATE', 'admin/islandora/xmlform/create');
 define('MENU_XML_FORM_BUILDER_VIEW', 'admin/islandora/xml/form/%/view');
 define('MENU_XML_FORM_BUILDER_COPY', 'admin/islandora/xml/form/%/copy');
 define('MENU_XML_FORM_BUILDER_EDIT', 'admin/islandora/xml/form/%/edit');
@@ -31,7 +33,7 @@ function xml_form_builder_menu() {
    * Inital page. Lists the existing forms showing a preview of each. The user is provided with links for
    * creating, editing, deleting, or copying forms.
    */
-  $items['admin/islandora/xmlform'] = array(
+  $items[MENU_XML_FORM_BUILDER_MAIN] = array(
     'title' => 'XML Form Builder',
     'description' => 'Manage XML-based Forms.',
     'file' => 'Main.inc',
@@ -44,7 +46,7 @@ function xml_form_builder_menu() {
   /**
    * Presents a form that allows the user to create a new form.
    */
-  $items['admin/islandora/xmlform/create'] = array(
+  $items[MENU_XML_FORM_BUILDER_CREATE] = array(
     'title' => 'Create Form',
     'description' => 'Create a new Form.',
     'file' => 'Create.inc',
