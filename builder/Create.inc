@@ -65,9 +65,9 @@ function xml_form_builder_create($form, array &$form_state, $type) {
  *   The Drupal Form State.
  */
 function xml_form_builder_create_validate_name(array $element, array &$form_state) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   $form_name = &$form_state['values']['form_name'];
-  if (XMLFormDatabase::Exists($form_name)) {
+  if (XMLFormRepository::Exists($form_name)) {
     $error_msg = t('The given form name "%name" is already in use. Form names must be unique.', array('%name' => $form_name));
     form_set_error('form_name', $error_msg);
   }
@@ -120,12 +120,12 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
  *   The Drupal Form State.
  */
 function xml_form_builder_create_submit(array $form, array &$form_state) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   $form_name = $form_state['values']['form_name'];
   if ($form_state['clicked_button']['#name'] == 'create') {
     $definition = xml_form_builder_create_get_uploaded_file();
     $definition = $definition ? $definition : xml_form_api_get_empty_form_definition();
-    if (XMLFormDatabase::Create($form_name, $definition)) {
+    if (XMLFormRepository::Create($form_name, $definition)) {
       drupal_set_message(t('Successfully created form: "%name".', array('%name' => $form_name)));
       $form_state['redirect'] = xml_form_builder_get_edit_form_path($form_name);
       return;

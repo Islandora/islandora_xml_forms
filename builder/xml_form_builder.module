@@ -35,8 +35,8 @@ function xml_form_builder_menu() {
    * creating, editing, deleting, or copying forms.
    */
   $items[MENU_XML_FORM_BUILDER_MAIN] = array(
-    'title' => 'XML Form Builder',
-    'description' => 'Manage XML-based Forms.',
+    'title' => 'Form Builder',
+    'description' => 'Create, manage and edit XML-based forms.',
     'file' => 'Main.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_main',
@@ -155,8 +155,8 @@ function xml_form_builder_menu() {
  * @return array
  */
 function xml_form_builder_forms($form_id, $xml) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
-  if (XMLFormDatabase::Exists($form_id) && XMLFormDatabase::Valid($form_id)) {
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
+  if (XMLFormRepository::Exists($form_id) && XMLFormRepository::Valid($form_id)) {
     return array(
       $form_id => array(
         'callback' => 'xml_form_builder_get_form',
@@ -202,10 +202,10 @@ function xml_form_builder_permission() {
  *   The name of the form to download.
  */
 function xml_form_builder_export($form_name) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   header('Content-Type: text/xml', TRUE);
   header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
-  $definition = XMLFormDatabase::Get($form_name);
+  $definition = XMLFormRepository::Get($form_name);
   echo $definition->saveXML();
 
   exit();
@@ -290,21 +290,21 @@ function xml_form_builder_get_delete_form_path($form_name) {
  *   The Drupal Form, if it exists FALSE otherwise.
  */
 function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   module_load_include('inc', 'xml_form_api', 'XMLForm');
   module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-  if (!XMLFormDatabase::Exists($form_name)) {
+  if (!XMLFormRepository::Exists($form_name)) {
     drupal_set_message(t('The form "%name" does not exist.', array('%name' => $form_name)));
     return FALSE;
   }
-  else if (!XMLFormDatabase::Valid($form_name)) {
+  else if (!XMLFormRepository::Valid($form_name)) {
     drupal_set_message(t('The drupal form "%name" exists but is not valid please notify the administrator.', array('%name' => $form_name)));
     return FALSE;
   }
   try {
     $xml_form = new XMLForm($form_state);
     if (!$xml_form->isInitialized()) { // Was not initialized from storage.
-      $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
+      $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
       $document = $definition->createXMLDocument($xml);
       $form = $definition->getForm();
       $xml_form->initialize($form, $document);
