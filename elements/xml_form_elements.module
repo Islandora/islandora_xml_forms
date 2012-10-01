@@ -104,7 +104,7 @@ function xml_form_elements_element_info() {
       '#process' => array('xml_form_elements_tabpanel_process'),
       '#user_data' => array('add' => TRUE, 'delete' => TRUE),
       //'#theme' => 'tabpanel',
-  	  '#theme_wrappers' => array('tabpanel'),
+      '#theme_wrappers' => array('tabpanel'),
     ),
     'tags' => array(
       '#input' => TRUE,
@@ -368,135 +368,107 @@ function theme_validate($element) {
 
 /**
  * AJAX callback to duplicate the parent element.
- * 
+ *
  * Used by TabPanels.
  * @param $form
  * @param $form_state
  */
 function xml_form_elements_duplicate($drupal_form, $form_state) {
-	$trigger = $form_state['triggering_element'];
-	$duplicate = $trigger['#ajax']['params']['duplicate'];
-	
-	// Duplicate Element
-	$form = new XMLForm($form_state);
-	$original = $form->findElement($duplicate);
-	$new_element = $form->duplicateOriginal($duplicate);
-	$original->parent->adopt($new_element);
-	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
-	
-	// Find the element to render.
-	module_load_include('inc', 'objective_forms', 'Utils');
-	$to_return = find_element($drupal_form, $trigger['#ajax']['params']['render']);
- 	return $to_return;
+  $trigger = $form_state['triggering_element'];
+  $duplicate = $trigger['#ajax']['params']['duplicate'];
+
+  // Duplicate Element
+  $form = new XMLForm($form_state);
+  $original = $form->findElement($duplicate);
+  $new_element = $form->duplicateOriginal($duplicate);
+  $original->parent->adopt($new_element);
+  drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+
+  // Find the element to render.
+  module_load_include('inc', 'objective_forms', 'Utils');
+  $to_return = find_element($drupal_form, $trigger['#ajax']['params']['render']);
+  return $to_return;
 }
 
 function xml_form_elements_delete_tab($drupal_form, $form_state) {
-	$trigger = $form_state['triggering_element'];
-	$remove = $trigger['#ajax']['params']['delete'];
-	$render = $trigger['#ajax']['params']['render'];
-	
-	// Remove Element
-	$xml_form = new XMLForm($form_state);
-	$xml_form->remove($remove);
-	
-	// Rebuild the form, validation and submit callbacks will be called.
-	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
-	
-	// Find the element to render.
-	module_load_include('inc', 'objective_forms', 'Utils');
-	$element = find_element($drupal_form, $render);
-	
-	// Respond to the request with JSON.
-	return $element;	
-}
-
-function xml_form_elements_add_tag(&$drupal_form, &$form_state) {
-	$tags = $form_state['triggering_element']['#ajax']['params']['target'];
-	
-	module_load_include('inc', 'objective_forms', 'Utils');
-	$tags = find_element($drupal_form, $tags); // Find the tags we are dealing with.
-	$children = get_element_children($tags, 'tag');
-	$input = &$tags[array_shift($children)]; // Get the input field.
-	//dsm($input, 'le input');
-
-	$input_hash = $input['#hash'];
-	
-	// Duplicate Element, set its default value to the submitted value.
-	$form = new XMLForm($form_state);
-	$input = $form->findElement($input_hash);
-	$new_element = $form->duplicateOriginal($input_hash);
-
-	$input->parent[] = $new_element; // Add to the form.
-
-	// Process and rebuild.
-	//$form_state['rebuild'] = TRUE;
-	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
-	
-	// Find the parent element to render.
-	$element = find_element($drupal_form, $tags['#hash']);
-	
-	// Respond to the request with JSON.
-	return $element;
+  module_load_include('inc', 'objective_forms', 'Utils');
+  $trigger = $form_state['triggering_element'];
+  $remove = $trigger['#ajax']['params']['delete'];
+  $render = $trigger['#ajax']['params']['render'];
+  $xml_form = new XMLForm($form_state);
+  $xml_form->remove($remove);
+  drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+  $element = find_element($drupal_form, $render);
+  return $element;
 }
 
 
-function xml_form_elements_delete_tag(&$drupal_form, &$form_state) {
-	$tag = $form_state['triggering_element']['#ajax']['params']['target'];
-	
-	// Duplicate Element, set its default value to the submitted value.
-	$form = new XMLForm($form_state);
-	$tag = $form->findElement($tag);
-	$render = $tag->parent->hash;
-	$form->remove($tag->hash);
-	
-	// Rebuild.
-	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
-	
-	// Find the parent element to render.
-	module_load_include('inc', 'objective_forms', 'Utils');
-	$element = find_element($drupal_form, $render);
-	
-	// Respond to the request with JSON.
-	return $element;
+/**
+ * Generic callback for all AJAX requests.
+ *
+ * @param array $form
+ *   The processed Drupal form.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The form element to render in response to the AJAX request.
+ */
+function xml_form_elements_ajax_callback($form, $form_state) {
+  return find_element($form, $form_state['triggering_element']['#ajax']['params']['render']);
 }
 
-function xml_form_elements_edit_tag(&$drupal_form, &$form_state) {
-	$hash = $form_state['triggering_element']['#ajax']['params']['target'];
-	
-	$form = new XMLForm($form_state);
-	module_load_include('inc', 'objective_forms', 'Utils');
-	$edit = find_element($drupal_form, $hash); // Find the tags we are dealing with.
-	$tags = get_form_element_parent($edit, $drupal_form);
-	$children = get_element_children($tags, 'tag');
-	$input = &$tags[array_pop($children)]; // Get the input field.
-	$parent = $form->findElement($tags['#hash']); // Parent
-	if (trim($input['#value']) != '') { // If the input field has a value create a tag for it.
-	    dsm($input, 'edit input (last tag)');
-		$new_element = $form->duplicateOriginal($input['#hash']);
-		$new_element['#default_value'] = $input['#value'];
-		//$parent->adopt($new_element, max(array_keys($parent->children)) + 1); // Append
-	}
-	else {
-	 $form->remove($input['#hash']);
-	}
-	
-	//form_set_value($input, $edit['#value'], $form_state); // Set input field value.
-	dsm($form_state, 'before remove');
-	$asdf = $form->remove($hash); // Its the input element now.
-	$asdf['#default_value'] = $edit['#value'];
-	dsm($form_state, 'after remove');
-	//asdf->orphan();
-	$parent->adopt($asdf, max(array_keys($parent->children)) + 1); //Make this field the last, so it's selected for the input.
-	dsm($asdf, 'moving');
-	
-	// Process/rebuild
-	//$drupal_form = drupal_rebuild_form($drupal_form['#form_id'], $form_state, $drupal_form);
-	drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+/**
+ * Not ideal a hook used for modifying tags during the build function.
+ */
+function xml_form_elements_form_element_tags_ajax_alter(FormElement $element, array &$form, array &$form_state) {
+  $triggering_element = $form_state['triggering_element'];
+  $action = $triggering_element['#ajax']['params']['action'];
+  switch($action) {
+    case 'add':
+      xml_form_elements_form_element_tags_ajax_add($element, $form, $form_state);
+      break;
+    case 'delete':
+      xml_form_elements_form_element_tags_ajax_delete($element, $form, $form_state);
+      break;
+    case 'edit':
+      xml_form_elements_form_element_tags_ajax_edit($element, $form, $form_state);
+      break;
+  }
+}
 
-	dsm($form_state, 'after process');
-	// Find the parent element to render.
-	$element = find_element($drupal_form, $tags['#hash']);
-	
-	// Respond to the request with JSON.
-	return $element;
+function xml_form_elements_form_element_tags_ajax_add(FormElement $element, array &$form, array &$form_state) {
+  $input_field = &$form[array_shift(element_children($form))];
+  $default_value =  $input_field['#default_value']; // Get Input Value as its not stored in the object form.
+  $input_field['#value'] = '';
+  $input = array_shift(array_values($element->children));
+  $tag = clone $input;
+  $input->parent->adopt($tag); // Create new tag and have it stored in the state.
+  $tag = $tag->toArray();
+  $tag['#default_value'] = $default_value;
+  $form[] = $tag; // Update drupal form.
+}
+
+function xml_form_elements_form_element_tags_ajax_delete(FormElement $element, array &$form, array &$form_state) {
+  $triggering_element = $form_state['triggering_element'];
+  $hash = $triggering_element['#ajax']['params']['child'];
+  $tag = $element->findElement($hash);
+  $tag->orphan();
+  foreach(element_children($form) as $child) {
+    if($form[$child]['#hash'] == $hash) {
+      unset($form[$child]);
+    }
+  }
+}
+
+function xml_form_elements_form_element_tags_ajax_edit(FormElement $element, array &$form, array &$form_state) {
+  $triggering_element = $form_state['triggering_element'];
+  $input_field = &$form[array_shift(element_children($form))];
+  if($input_field['#default_value'] != '') {
+    xml_form_elements_form_element_tags_ajax_add($element, $form, $form_state);
+  }
+  $hash = $triggering_element['#ajax']['params']['child'];
+  $tag_field = find_element($form, $hash);
+  $input_field['#value'] = $tag_field['#default_value'];
+  xml_form_elements_form_element_tags_ajax_delete($element, $form, $form_state);
 }

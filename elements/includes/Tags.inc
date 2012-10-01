@@ -6,6 +6,7 @@
  */
 module_load_include('inc', 'xml_form_elements', 'includes/Tag');
 
+
 class Tags {
   /**
    * Constants
@@ -72,9 +73,11 @@ class Tags {
     $button['#attributes'] = array('style' => 'display:none');
     $button['#value'] = t('Add');
     $button['#ajax'] = array(
-      'callback' => 'xml_form_elements_add_tag',
+      'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(
-        'target' => $element['#hash'],		
+        'render' => $element['#hash'],
+        'target' => $element['#hash'],
+	'action' => 'add'
       ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replaceWith',
@@ -90,9 +93,12 @@ class Tags {
     $button['#id'] = $button['#name'] = $child['#hash'] . '-remove';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ajax'] = array(
-      'callback' => 'xml_form_elements_delete_tag',
+      'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(
-        'target' => $child['#hash'],		
+        'render' => $element['#hash'],
+        'target' => $element['#hash'],
+	'child' => $child['#hash'],
+	'action' => 'delete'
       ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replaceWith',
@@ -108,9 +114,12 @@ class Tags {
     $button['#id'] = $button['#name'] = $child['#hash'] . '-edit';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#ajax'] = array(
-      'callback' => 'xml_form_elements_edit_tag',
+      'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(
-        'target' => $child['#hash'],		
+        'render' => $element['#hash'],
+        'target' => $element['#hash'],
+        'child' => $child['#hash'],
+	'action' => 'edit'
       ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replaceWith',
@@ -140,7 +149,7 @@ function template_preprocess_tags(&$vars) {
       $vars['tags'][$key] = $child;
     }
   }
-  $vars['input'] = array_pop($vars['tags']); // Last tag is the textfield, all others show up as icons with hidden inputs.
+  $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
 }
 
 /**
