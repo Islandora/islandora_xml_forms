@@ -367,43 +367,6 @@ function theme_validate($element) {
 }
 
 /**
- * AJAX callback to duplicate the parent element.
- *
- * Used by TabPanels.
- * @param $form
- * @param $form_state
- */
-function xml_form_elements_ajax_duplicate($drupal_form, $form_state) {
-  $trigger = $form_state['triggering_element'];
-  $duplicate = $trigger['#ajax']['params']['duplicate'];
-
-  // Duplicate Element
-  $form = new XMLForm($form_state);
-  $original = $form->findElement($duplicate);
-  $new_element = $form->duplicateOriginal($duplicate);
-  $original->parent->adopt($new_element);
-  drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
-
-  // Find the element to render.
-  module_load_include('inc', 'objective_forms', 'Utils');
-  $to_return = find_element($drupal_form, $trigger['#ajax']['params']['render']);
-  return $to_return;
-}
-
-function xml_form_elements_delete_tab($drupal_form, $form_state) {
-  module_load_include('inc', 'objective_forms', 'Utils');
-  $trigger = $form_state['triggering_element'];
-  $remove = $trigger['#ajax']['params']['delete'];
-  $render = $trigger['#ajax']['params']['render'];
-  $xml_form = new XMLForm($form_state);
-  $xml_form->remove($remove);
-  drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
-  $element = find_element($drupal_form, $render);
-  return $element;
-}
-
-
-/**
  * Generic callback for all AJAX requests.
  *
  * @param array $form
@@ -451,30 +414,6 @@ function xml_form_elements_form_element_tabs_ajax_delete(FormElement $element, a
       break;
     }
   }
-}
-
-/**
- * AJAX callback to duplicate the parent element.
- *
- * Used by TabPanels.
- * @param $form
- * @param $form_state
- */
-function _xml_form_elements_ajax_duplicate($drupal_form, $form_state) {
-  $trigger = $form_state['triggering_element'];
-  $duplicate = $trigger['#ajax']['params']['duplicate'];
-
-  // Duplicate Element
-  $form = new XMLForm($form_state);
-  $original = $form->findElement($duplicate);
-  $new_element = $form->duplicateOriginal($duplicate);
-  $original->parent->adopt($new_element);
-  drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
-
-  // Find the element to render.
-  module_load_include('inc', 'objective_forms', 'Utils');
-  $to_return = find_element($drupal_form, $trigger['#ajax']['params']['render']);
-  return $to_return;
 }
 
 /**
