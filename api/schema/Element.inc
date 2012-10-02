@@ -44,7 +44,7 @@ class XMLSchemaElement extends XMLSchemaNode {
     if ($this->getType()->localName == 'complexType') {
       $this->protected->addMember('complexType', $type);
     }
-    else if ($this->getType()->localName == 'simpleType') {
+    elseif ($this->getType()->localName == 'simpleType') {
       $this->protected->addMember('simpleType', $type);
     }
   }

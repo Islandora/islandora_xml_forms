@@ -4,7 +4,7 @@
 
 /**
  * @file
- * 
+ *
  * Unit Tests.
  */
 
@@ -28,7 +28,7 @@ class SchemaAPI_Element_TestCase extends DrupalUnitTestCase {
   }
 
   /**
-   * setUp() performs any pre-requisite tasks that need to happen. 
+   * setUp() performs any pre-requisite tasks that need to happen.
    */
   public function setUp() {
     // Enable any modules required for the test.

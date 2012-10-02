@@ -176,12 +176,12 @@ class XMLFormDatabase {
       $version = XMLFormDefinition::getVersion($definition);
       if (!$version->isLatestVersion()) {
         $definition = XMLFormDefinition::upgradeToLatestVersion($definition);
-      } 
+      }
       $num = db_update(self::table)
         ->fields(array('form' => $definition->saveXML()))
         ->condition('name', $form_name)
         ->execute();
-      if($num) {
+      if ($num) {
         return TRUE;
       }
       else {
@@ -205,7 +205,7 @@ class XMLFormDatabase {
       $num = db_delete(self::table)
         ->condition('name', $form_name)
         ->execute();
-      if($num) {
+      if ($num) {
         return TRUE;
       }
       else {

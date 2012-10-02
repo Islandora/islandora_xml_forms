@@ -77,7 +77,7 @@ Drupal.behaviors.xmlFormElementTabs = {
                   }
                 }
               });
-              
+
               jQuery('> select', item).each(function(index, select) {
                 var id = jQuery(select).attr('id');
                 var label = jQuery('label[for=' + id + ']');
@@ -94,16 +94,16 @@ Drupal.behaviors.xmlFormElementTabs = {
             if(html == "") {
               html = Drupal.t("Empty");
             }
-            
+
             if (Drupal.behaviors.xmlFormElementTabs.tabs.tool_tip != null) {
               Drupal.behaviors.xmlFormElementTabs.tabs.tool_tip.remove();
             }
             else {
               Drupal.behaviors.xmlFormElementTabs.tabs.tool_tip = jQuery(document.createElement('span')).addClass('tool_tip');
             }
-            
+
             Drupal.behaviors.xmlFormElementTabs.tabs.tool_tip.html(html);
-            
+
             var x = e.pageX + 20,
               y = e.pageY + 20,
               w = Drupal.behaviors.xmlFormElementTabs.tabs.tool_tip.width(),
@@ -116,7 +116,7 @@ Drupal.behaviors.xmlFormElementTabs = {
               'left': x,
               'top': y
             });
-            
+
             Drupal.behaviors.xmlFormElementTabs.tabs.tool_tip.appendTo('body');
           },
           function() {

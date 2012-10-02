@@ -45,7 +45,7 @@ class Path {
    * @param FormElement $element
    *
    * @throws
-   * @see Context::getNode
+   * @see Context::getNode()
    *
    * @return DOMNodeList
    */
