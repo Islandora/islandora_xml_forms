@@ -70,12 +70,13 @@ class TabPanel {
     $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
     $add['#suffix'] = '</div>';
     $add['#ajax'] = array(
-      //'path' => "xml/form/elements/ahah/duplicate/{$element['#hash']}/{$tabs['#hash']}",
       'params' => array(
-      	'duplicate' => $element['#hash'],
-        'render' => $tabs['#hash'],		
+      	'target' => $tabs['#hash'],
+        'render' => $tabs['#hash'],
+	'action' => 'add',
+      	'child' => $element['#hash']
       ),
-      'callback' => 'xml_form_elements_duplicate',
+      'callback' => 'xml_form_elements_ajax_callback',
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replaceWith',
       'effect' => 'fade',
@@ -102,10 +103,12 @@ class TabPanel {
     $delete['#prefix'] = '<div class="ui-tabpanel-delete-button">';
     $delete['#suffix'] = '</div>';
     $delete['#ajax'] = array(
-      'callback' => 'xml_form_elements_delete_tab',
+      'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(
-      	'delete' => $element['#hash'],
-      	'render' => $tabs['#hash'],
+      	'target' => $tabs['#hash'],
+        'render' => $tabs['#hash'],
+	'action' => 'delete',
+      	'child' => $element['#hash']
       ),
       'wrapper' => $tabs['#hash'], // The parents wrapper is set to the parents hash.
       'method' => 'replaceWith',
@@ -122,4 +125,3 @@ class TabPanel {
 function theme_tabpanel($vars) {
   return TabPanel::Theme($vars['element']);
 }
-

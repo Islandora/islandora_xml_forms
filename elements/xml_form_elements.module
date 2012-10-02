@@ -373,7 +373,7 @@ function theme_validate($element) {
  * @param $form
  * @param $form_state
  */
-function xml_form_elements_duplicate($drupal_form, $form_state) {
+function xml_form_elements_ajax_duplicate($drupal_form, $form_state) {
   $trigger = $form_state['triggering_element'];
   $duplicate = $trigger['#ajax']['params']['duplicate'];
 
@@ -416,6 +416,65 @@ function xml_form_elements_delete_tab($drupal_form, $form_state) {
  */
 function xml_form_elements_ajax_callback($form, $form_state) {
   return find_element($form, $form_state['triggering_element']['#ajax']['params']['render']);
+}
+
+/**
+ *
+ */
+function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, array &$form, array &$form_state) {
+  $triggering_element = $form_state['triggering_element'];
+  $action = $triggering_element['#ajax']['params']['action'];
+  switch($action) {
+    case 'add':
+      xml_form_elements_form_element_tabs_ajax_add($element, $form, $form_state);
+      break;
+    case 'delete':
+      xml_form_elements_form_element_tabs_ajax_delete($element, $form, $form_state);
+      break;
+  }
+}
+
+function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, array &$form, array &$form_state) {
+  $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
+  $new_tab = clone $tab;
+  $new_tab->eachDecendant(function($element) { $element->default_value = NULL; });
+  $element->adopt($new_tab);
+  $form[] = $new_tab->toArray();
+}
+
+function xml_form_elements_form_element_tabs_ajax_delete(FormElement $element, array &$form, array &$form_state) {
+  $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
+  $tab->orphan();
+  foreach(element_children($form) as $child) {
+    if($form[$child]['#hash'] == $tab->hash) {
+      unset($form[$child]);
+      break;
+    }
+  }
+}
+
+/**
+ * AJAX callback to duplicate the parent element.
+ *
+ * Used by TabPanels.
+ * @param $form
+ * @param $form_state
+ */
+function _xml_form_elements_ajax_duplicate($drupal_form, $form_state) {
+  $trigger = $form_state['triggering_element'];
+  $duplicate = $trigger['#ajax']['params']['duplicate'];
+
+  // Duplicate Element
+  $form = new XMLForm($form_state);
+  $original = $form->findElement($duplicate);
+  $new_element = $form->duplicateOriginal($duplicate);
+  $original->parent->adopt($new_element);
+  drupal_process_form($drupal_form['#form_id'], $drupal_form, $form_state);
+
+  // Find the element to render.
+  module_load_include('inc', 'objective_forms', 'Utils');
+  $to_return = find_element($drupal_form, $trigger['#ajax']['params']['render']);
+  return $to_return;
 }
 
 /**
