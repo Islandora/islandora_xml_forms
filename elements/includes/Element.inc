@@ -23,8 +23,6 @@ class Element {
     static $load = TRUE;
     if ($load) {
       drupal_add_js('misc/jquery.form.js'); // Required
-     // drupal_add_js('misc/ahah.js'); // Required
-     // drupal_add_js(PATH_XML_FORM_ELEMENTS_JS . 'ahah.js');
       $load = FALSE;
     }
   }
@@ -98,6 +96,7 @@ class Element {
     $form = new XMLForm($form_state);
     $original = $form->findElement($duplicate);
     $new_element = $form->duplicateOriginal($duplicate);
+    $new_element->eachDecendant('Element::removeDefault');
     $original->parent->adopt($new_element);
     $drupal_form = Ahah::rebuildForm($form_id, $form_build_id, $drupal_form, $form_state);
     // Find the element to render.
@@ -105,6 +104,15 @@ class Element {
     $element = find_element($drupal_form, $render);
     // Respond to the request with JSON.
     Ahah::respond($element);
+  }
+
+  /**
+    * Used by the duplicate function to clear default values of descendants
+    * 
+    * @param type $child 
+    */
+  public static function removeDefault($child) {
+     $child->default_value = '';
   }
 
   /**
