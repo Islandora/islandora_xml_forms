@@ -16,6 +16,14 @@
  *   The html where the Form Builder GUI will be rendered.
  */
 function xml_form_builder_edit($form_name) {
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+
+  if (!XMLFormDatabase::Exists($form_name)) {
+    drupal_set_message(t('Form "%name" does not exist.', array('%name' => $form_name)), 'error');
+    drupal_not_found();
+    exit();
+  }
+
   xml_form_builder_edit_include_css();
   xml_form_builder_edit_include_js();
   xml_form_builder_create_element_type_store();
@@ -78,7 +86,7 @@ function xml_form_builder_edit_include_js() {
 function xml_form_builder_edit_save($form_name) {
   module_load_include('inc', 'xml_form_builder', 'JSONFormDefinition');
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
-  module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+  module_load_include('inc', 'xml_form_api', 'XMLFormDatabase');
   try {
     $definition = new JSONFormDefinition($_POST['data']); // @TODO: this data needs to be sanitized. Can we get this data through the form API?
     list($properties, $form) = $definition->getPropertiesAndForm();
@@ -194,7 +202,7 @@ function xml_form_builder_get_element_types() {
   static $cache;
   if (!isset($cache)) {
     $cache = array();
-    //XXX: --Adam Errr...  why not just call module_invoke_all?
+    // process each so that we can pass values by reference to the module invoke
     foreach (module_implements('element_info') as $module) {
       $elements = module_invoke($module, 'element_info');
       if (isset($elements) && is_array($elements)) {

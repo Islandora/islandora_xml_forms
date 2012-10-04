@@ -18,11 +18,11 @@
  *   The Drupal Form.
  */
 function xml_form_builder_copy($form, array &$form_state, $form_name) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   if (isset($_POST['cancel'])) {
     drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
   }
-  if (!XMLFormDatabase::Exists($form_name)) {
+  if (!XMLFormRepository::Exists($form_name)) {
     drupal_set_message(t('Form "%name" does not exist.', array('%name' => $form_name)), 'error');
     drupal_not_found();
     exit();
@@ -60,9 +60,9 @@ function xml_form_builder_copy($form, array &$form_state, $form_name) {
  *   The Drupal Form State.
  */
 function xml_form_builder_copy_validate_name(array $element, array &$form_state) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   $form_name = &$form_state['values']['form_name'];
-  if (XMLFormDatabase::Exists($form_name)) {
+  if (XMLFormRepository::Exists($form_name)) {
     $error_msg = t('The given form name "%name" is already in use. Form names must be unique.', array('%name' => $form_name));
     form_set_error('form_name', $error_msg);
   }
@@ -80,11 +80,11 @@ function xml_form_builder_copy_validate_name(array $element, array &$form_state)
  *   The Drupal Form State.
  */
 function xml_form_builder_copy_submit(array $form, array &$form_state) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   if ($form_state['clicked_button']['#name'] == 'copy') {
     $original = $form_state['values']['original'];
     $form_name = $form_state['values']['form_name'];
-    if (XMLFormDatabase::Copy($original, $form_name)) {
+    if (XMLFormRepository::Copy($original, $form_name)) {
       drupal_set_message(t('Successfully copied form: "%name".', array('%name' => $form_name)));
       $form_state['redirect'] = xml_form_builder_get_edit_form_path($form_name);
       return;
