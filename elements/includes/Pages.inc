@@ -19,7 +19,7 @@
  * @param array $complete_form
  *   The drupal form.
  */
-function xml_form_elements_process_pages_add_resources(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_pages_process_add_resources(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   static $load = TRUE;
   if ($load) {
     module_load_include('inc', 'xml_form_elements', 'includes/Element');
@@ -41,7 +41,7 @@ function xml_form_elements_process_pages_add_resources(array $element, $edit, ar
  * @param array $complete_form
  * @return array
  */
-function xml_form_elements_process_pages_add_pagers(array $element, $edit, array &$form_state, array $complete_form = NULL) {
+function xml_form_elements_pages_process_add_pagers(array $element, $edit, array &$form_state, array $complete_form = NULL) {
   $element['#id'] = $element['#hash'];
   $children = element_children($element);
   $count = count($children);
@@ -49,7 +49,7 @@ function xml_form_elements_process_pages_add_pagers(array $element, $edit, array
   foreach ($children as $key) {
     $back = $i != 0;
     $next = $i != ($count - 1);
-    xml_form_elements_process_pages_add_pager($element, $element[$key], $back, $next);
+    xml_form_elements_pages_process_add_pager($element, $element[$key], $back, $next);
     $i++;
   }
   return $element;
@@ -62,7 +62,7 @@ function xml_form_elements_process_pages_add_pagers(array $element, $edit, array
  * @param type $back
  * @param type $next
  */
-function xml_form_elements_process_pages_add_pager(array $element, array &$page, $back, $next) {
+function xml_form_elements_pages_process_add_pager(array $element, array &$page, $back, $next) {
   if ($back) {
     $last = array_pop(element_children($page));
     if (isset($page[$last]['#type']) && $page[$last]['#type'] == 'submit') {
@@ -107,7 +107,7 @@ function xml_form_elements_process_pages_add_pager(array $element, array &$page,
  * @param array $complete_form
  * @return string
  */
-function xml_form_elements_process_page_initialize(array $element, &$form_state, $complete_form = NULL) {
+function xml_form_elements_page_process_initialize(array $element, &$form_state, $complete_form = NULL) {
   if (isset($element['#hash'])) {
     $element['#id'] = $element['#hash'];
   }

@@ -15,6 +15,11 @@ root {
     display: block;
 }
 
+div.xml-form-elements-tabs.ui-tabs .ui-tabs-nav li.ui-tabs-selected a {
+    color: #555555;
+    background: none;
+    font-weight: normal;
+}
 
 .ui-tabs-panel >.ui-tabpanel-add-button > input.progress-disabled {
     float: none;

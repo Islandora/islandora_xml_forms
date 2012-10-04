@@ -57,14 +57,15 @@ class Tabs {
  *
  * @param array $vars
  */
-function template_preprocess_tabs_content(&$vars) {
-  $tabs = $vars['tabs'];
+function template_preprocess_tabs(&$vars) {
+  $tabs = $vars['element'];
   // Header Info
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
   $vars['collapsed'] = $tabs['#collapsed'] == TRUE;
   // Get Tabpanels
   $keys = element_children($tabs);
   $children = array();
+
   foreach ($keys as $key) {
     $children[$key] = &$tabs[$key];
   }
@@ -91,14 +92,4 @@ function template_preprocess_tabs_content(&$vars) {
     $vars['content'] = '';
     drupal_set_message(t('Attempted to create a tabs: %name, without defining any child tabpanels.', array('%name' => $name)), 'error');
   }
-}
-
-/**
- * Theme Hook for tags elements.
- */
-function theme_tabs($element) {
-  // TODO: Should this theme tabs be declared in hook_theme()?
-  // TODO Please change this theme call to use an associative array for the $variables parameter.
-  $content = theme('tabs_content', $element);
-  return theme('form_element', $element, $content);
 }
