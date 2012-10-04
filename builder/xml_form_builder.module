@@ -14,12 +14,15 @@ define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
 define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
 define('PERM_XML_FORM_BUILDER_EDIT_FORMS', 'Edit XML Forms');
 define('PERM_XML_FORM_BUILDER_DELETE_FORMS', 'Delete XML Forms');
-define('MENU_XML_FORM_BUILDER_VIEW', 'admin/islandora/xml/form/%/view');
-define('MENU_XML_FORM_BUILDER_COPY', 'admin/islandora/xml/form/%/copy');
-define('MENU_XML_FORM_BUILDER_EDIT', 'admin/islandora/xml/form/%/edit');
-define('MENU_XML_FORM_BUILDER_DELETE', 'admin/islandora/xml/form/%/delete');
-define('MENU_CALLBACK_XML_FORM_BUILDER_EXPORT', 'admin/islandora/xml/form/%/export');
-define('MENU_CALLBACK_XML_FORM_BUILDER_SAVE', 'admin/islandora/xml/form/%/edit/save');
+define('MENU_XML_FORM_BUILDER_MAIN', 'admin/islandora/xmlform');
+define('MENU_XML_FORM_BUILDER_CREATE', 'admin/islandora/xmlform/create');
+define('MENU_XML_FORM_BUILDER_IMPORT', 'admin/islandora/xmlform/import');
+define('MENU_XML_FORM_BUILDER_VIEW', 'admin/islandora/xmlform/%/view');
+define('MENU_XML_FORM_BUILDER_COPY', 'admin/islandora/xmlform/%/copy');
+define('MENU_XML_FORM_BUILDER_EDIT', 'admin/islandora/xmlform/%/edit');
+define('MENU_XML_FORM_BUILDER_DELETE', 'admin/islandora/xmlform/%/delete');
+define('MENU_CALLBACK_XML_FORM_BUILDER_EXPORT', 'admin/islandora/xmlform/%/export');
+define('MENU_CALLBACK_XML_FORM_BUILDER_SAVE', 'admin/islandora/xmlform/%/edit/save');
 
 /**
  * Implements hook_menu. Register menus().
@@ -31,9 +34,9 @@ function xml_form_builder_menu() {
    * Inital page. Lists the existing forms showing a preview of each. The user is provided with links for
    * creating, editing, deleting, or copying forms.
    */
-  $items['admin/islandora/xmlform'] = array(
-    'title' => 'XML Form Builder',
-    'description' => 'Manage XML-based Forms.',
+  $items[MENU_XML_FORM_BUILDER_MAIN] = array(
+    'title' => 'Form Builder',
+    'description' => 'Create, manage and edit XML-based forms.',
     'file' => 'Main.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_main',
@@ -44,13 +47,26 @@ function xml_form_builder_menu() {
   /**
    * Presents a form that allows the user to create a new form.
    */
-  $items['admin/islandora/xmlform/create'] = array(
+  $items[MENU_XML_FORM_BUILDER_CREATE] = array(
     'title' => 'Create Form',
     'description' => 'Create a new Form.',
     'file' => 'Create.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_create'),
+    'page arguments' => array('xml_form_builder_create', 'create'),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
+    'type' => MENU_LOCAL_ACTION,
+  );
+  /**
+   * Presents a form that allows the user to create a new form.
+   */
+  $items[MENU_XML_FORM_BUILDER_IMPORT] = array(
+    'title' => 'Import Form',
+    'description' => 'Import a form from an existing definition.',
+    'file' => 'Create.inc',
+    'file path' => drupal_get_path('module', 'xml_form_builder'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_create', 'import'),
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_LOCAL_ACTION,
   );
@@ -63,7 +79,7 @@ function xml_form_builder_menu() {
     'file' => 'Preview.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_preview', 4),
+    'page arguments' => array('xml_form_builder_preview', 3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_CALLBACK,
   );
@@ -74,7 +90,7 @@ function xml_form_builder_menu() {
     'title' => 'Export Form',
     'description' => 'Export a form.',
     'page callback' => 'xml_form_builder_export',
-    'page arguments' => array(4),
+    'page arguments' => array(3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_CALLBACK,
   );
@@ -87,7 +103,7 @@ function xml_form_builder_menu() {
     'file' => 'Copy.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_copy', 4),
+    'page arguments' => array('xml_form_builder_copy', 3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
@@ -100,7 +116,7 @@ function xml_form_builder_menu() {
     'file' => 'Edit.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_edit',
-    'page arguments' => array(4),
+    'page arguments' => array(3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
@@ -113,7 +129,7 @@ function xml_form_builder_menu() {
     'file' => 'Edit.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_edit_save',
-    'page arguments' => array(4),
+    'page arguments' => array(3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
@@ -126,7 +142,7 @@ function xml_form_builder_menu() {
     'file' => 'Delete.inc',
     'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_delete', 4),
+    'page arguments' => array('xml_form_builder_delete', 3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_DELETE_FORMS),
     'type' => MENU_CALLBACK,
   );
@@ -139,8 +155,8 @@ function xml_form_builder_menu() {
  * @return array
  */
 function xml_form_builder_forms($form_id, $xml) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
-  if (XMLFormDatabase::Exists($form_id) && XMLFormDatabase::Valid($form_id)) {
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
+  if (XMLFormRepository::Exists($form_id) && XMLFormRepository::Valid($form_id)) {
     return array(
       $form_id => array(
         'callback' => 'xml_form_builder_get_form',
@@ -186,10 +202,10 @@ function xml_form_builder_permission() {
  *   The name of the form to download.
  */
 function xml_form_builder_export($form_name) {
-  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   header('Content-Type: text/xml', TRUE);
   header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
-  $definition = XMLFormDatabase::Get($form_name);
+  $definition = XMLFormRepository::Get($form_name);
   echo $definition->saveXML();
 
   exit();
@@ -274,21 +290,21 @@ function xml_form_builder_get_delete_form_path($form_name) {
  *   The Drupal Form, if it exists FALSE otherwise.
  */
 function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) {
-  form_load_include($form_state, 'inc', 'xml_form_builder', 'XMLFormDatabase');
+  form_load_include($form_state, 'inc', 'xml_form_builder', 'XMLFormRepository');
   form_load_include($form_state, 'inc', 'xml_form_api', 'XMLForm');
   form_load_include($form_state, 'inc', 'xml_form_api', 'XMLFormDefinition');
-  if (!XMLFormDatabase::Exists($form_name)) {
+  if (!XMLFormRepository::Exists($form_name)) {
     drupal_set_message(t('The form "%name" does not exist.', array('%name' => $form_name)));
     return FALSE;
   }
-  else if (!XMLFormDatabase::Valid($form_name)) {
+  else if (!XMLFormRepository::Valid($form_name)) {
     drupal_set_message(t('The drupal form "%name" exists but is not valid please notify the administrator.', array('%name' => $form_name)));
     return FALSE;
   }
   try {
     $xml_form = new XMLForm($form_state);
     if (!$xml_form->isInitialized()) { // Was not initialized from storage.
-      $definition = new XMLFormDefinition(XMLFormDatabase::Get($form_name));
+      $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
       $document = $definition->createXMLDocument($xml);
       $form = $definition->getForm();
       $xml_form->initialize($form, $document);
