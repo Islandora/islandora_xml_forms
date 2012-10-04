@@ -142,7 +142,7 @@ Ext.formbuilder.createTreePanel = function() {
             form.setValues(values);
           }
           else {
-            Ext.getCmp('ahah').collapse();
+            Ext.getCmp('ajax').collapse();
             Ext.getCmp('ahah_progress').collapse();
           }
           var actions = data.actions;

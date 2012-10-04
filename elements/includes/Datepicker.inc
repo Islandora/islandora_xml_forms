@@ -13,10 +13,10 @@ class Datepicker {
    * @staticvar boolean $load
    *   Keeps us from loading the same files multiple times, while not required it just saves some time.
    */
-  public static function addRequiredResources() {
+  public static function addRequiredResources(&$form_state) {
     static $load = TRUE;
     if ($load) {
-      module_load_include('inc', 'xml_form_elements', 'includes/Element');
+      form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
       //Element::addRequiredResources();
       Element::addUIWidgets('ui.datepicker');
       Element::addUIThemeStyles(array('ui.core.css', 'ui.datepicker.css', 'ui.theme.css'));
@@ -38,7 +38,7 @@ class Datepicker {
    *   The complete Drupal form definition.
    */
   public static function process(array $element, array &$form_state, array $complete_form = NULL) {
-    self::addRequiredResources();
+    self::addRequiredResources($form_state);
     return $element;
   }
 
@@ -52,7 +52,6 @@ class Datepicker {
 function theme_datepicker($variables) {
   $element = $variables['element'];
 
-  // TODO: Should this theme datepicker be declared in hook_theme()?
   $size = empty($element['#size']) ? '' : ' size="' . $element['#size'] . '"';
   $maxlength = empty($element['#maxlength']) ? '' : ' maxlength="' . $element['#maxlength'] . '"';
   $class = array('form-text', 'datepicker');
