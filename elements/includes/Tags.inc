@@ -73,6 +73,7 @@ class Tags {
     $button['#id'] = $button['#name'] = $element['#hash'] . '-add';
     $button['#attributes'] = array('style' => 'display:none');
     $button['#value'] = t('Add');
+    $button['#limit_validation_errors'][] = $element['#parents'];
     $button['#ajax'] = array(
       'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(
@@ -93,6 +94,7 @@ class Tags {
     $button['#size'] = 30;
     $button['#id'] = $button['#name'] = $child['#hash'] . '-remove';
     $button['#attributes'] = array('style' => 'display:none');
+    $button['#limit_validation_errors'][] = $element['#parents'];
     $button['#ajax'] = array(
       'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(
@@ -114,6 +116,7 @@ class Tags {
     $button['#size'] = 30;
     $button['#id'] = $button['#name'] = $child['#hash'] . '-edit';
     $button['#attributes'] = array('style' => 'display:none');
+    $button['#limit_validation_errors'][] = $element['#parents'];
     $button['#ajax'] = array(
       'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(

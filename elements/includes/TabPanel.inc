@@ -60,7 +60,7 @@ class TabPanel {
    * @param FormElement $tabpanel
    * @return FormElement
    */
-  private static function createAddButton(array &$element, array & $complete_form, $label) {
+  private static function createAddButton(array &$element, array &$complete_form, $label) {
     $tabs = get_form_element_parent($element, $complete_form);
     $add['#type'] = 'button';
     $add['#weight'] = 4;
@@ -69,6 +69,7 @@ class TabPanel {
     $add['#value'] = $label;
     $add['#prefix'] = '<div class="ui-tabpanel-add-button">';
     $add['#suffix'] = '</div>';
+    $add['#limit_validation_errors'][] = $element['#parents'];
     $add['#ajax'] = array(
       'params' => array(
       	'target' => $tabs['#hash'],
@@ -102,6 +103,7 @@ class TabPanel {
     );
     $delete['#prefix'] = '<div class="ui-tabpanel-delete-button">';
     $delete['#suffix'] = '</div>';
+    $delete['#limit_validation_errors'][] = $element['#parents'];
     $delete['#ajax'] = array(
       'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(
