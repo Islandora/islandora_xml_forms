@@ -54,3 +54,12 @@ function xml_form_builder_schema() {
   );
   return $schema;
 }
+
+/**
+ * Implements hook_update_N().
+ *
+ * Force a menu update.
+ */
+function xml_form_builder_update_7100() {
+  menu_rebuild();
+}
