@@ -86,7 +86,7 @@ function xml_form_builder_edit_include_js() {
 function xml_form_builder_edit_save($form_name) {
   module_load_include('inc', 'xml_form_builder', 'JSONFormDefinition');
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
-  module_load_include('inc', 'xml_form_api', 'XMLFormDatabase');
+  module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
   try {
     $definition = new JSONFormDefinition($_POST['data']); // @TODO: this data needs to be sanitized. Can we get this data through the form API?
     list($properties, $form) = $definition->getPropertiesAndForm();
