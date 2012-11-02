@@ -8,40 +8,40 @@
  */
 Ext.formbuilder.createPropertiesForm = function() {
     return Ext.create('Ext.form.Panel', {
-        title: 'Properties Form',
+        title: Drupal.t('Properties Form'),
         region: 'center',
         margin: '1 1 1 0',
         frame: true,
         items:  [{
             xtype: 'fieldset',
-            title: 'Root Element',
+            title: Drupal.t('Root Element'),
             items: [{
                 xtype: 'textfield',
                 id: 'localName',
                 name: 'localName',
-                fieldLabel: 'Root Element Name',
+                fieldLabel: Drupal.t('Root Element Name'),
                 allowBlank: false,
                 anchor: '100%'
             },{
                 xtype: 'textfield',
                 id: 'uri',
                 name: 'uri',
-                fieldLabel: 'Namespace URI',
+                fieldLabel: Drupal.t('Namespace URI'),
                 anchor: '100%'
             }]
         },{
             xtype: 'fieldset',
-            title: 'Schema',
+            title: Drupal.t('Schema'),
             items: [{
                 xtype: 'textfield',
                 id: 'schema',
                 name: 'schema',
-                fieldLabel: 'Name',
+                fieldLabel: Drupal.t('Name'),
                 anchor: '100%'
             }]
         },{
             xtype: 'formgrid',
-            title: 'Namespaces',
+            title: Drupal.t('Namespaces'),
             id: 'namespaces',
             name: 'namespaces',
             height: 300,
@@ -53,7 +53,7 @@ Ext.formbuilder.createPropertiesForm = function() {
             columns: [{
                 xtype: 'gridcolumn',
                 dataIndex: 'key',
-                header: 'Prefix',
+                header: Drupal.t('Prefix'),
                 sortable: true,
                 width: 150,
                 field: {
@@ -62,7 +62,7 @@ Ext.formbuilder.createPropertiesForm = function() {
             },{
                 xtype: 'gridcolumn',
                 dataIndex: 'value',
-                header: 'URI',
+                header: Drupal.t('URI'),
                 sortable: true,
                 flex: 1,
                 field: {
