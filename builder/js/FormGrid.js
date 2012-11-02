@@ -23,14 +23,14 @@ Ext.define('Form.Grid', {
       viewConfig: {
         plugins: {
           ptype: 'gridviewdragdrop',
-          dragText: 'Drag and drop to reorganize'
+          dragText: Drupal.t('Drag and drop to reorganize')
         }
       },
       dockedItems: [{
         xtype: 'toolbar',
         items: [{
           iconCls: 'icon-add',
-          text: 'Add',
+          text: Drupal.t('Add'),
           scope: this,
           handler: function() {
             var rec = Ext.ModelManager.create(me.modelInitTmpl, me.store.model.modelName);
@@ -41,7 +41,7 @@ Ext.define('Form.Grid', {
           }
         }, {
           iconCls: 'icon-delete',
-          text: 'Delete',
+          text: Drupal.t('Delete'),
           disabled: true,
           itemId: 'delete',
           scope: this,

@@ -10,7 +10,7 @@ Ext.formbuilder.createTreePanel = function() {
         ptype: 'treeviewdragdrop'
       }
     },
-    title: 'Elements',
+    title: Drupal.t('Elements'),
     store: this.elementStore,
     region: 'west',
     width: 230,
@@ -22,7 +22,7 @@ Ext.formbuilder.createTreePanel = function() {
       xtype: 'toolbar',
       items: [{
         xtype: 'button',
-        text: 'Add',
+        text: Drupal.t('Add'),
         handler: function() {
           var tree = Ext.formbuilder.treePanel;
           var selectionModel = tree.getSelectionModel();
@@ -40,7 +40,7 @@ Ext.formbuilder.createTreePanel = function() {
         }
       }, {
         xtype: 'button',
-        text: 'Copy',
+        text: Drupal.t('Copy'),
         handler: function() {
           var tree = Ext.formbuilder.treePanel;
           var selectionModel = tree.getSelectionModel();
@@ -51,7 +51,7 @@ Ext.formbuilder.createTreePanel = function() {
         }
       }, {
         xtype: 'button',
-        text: 'Paste',
+        text: Drupal.t('Paste'),
         handler: function() {
           var tree = Ext.formbuilder.treePanel;
           var selectionModel = tree.getSelectionModel();
@@ -68,7 +68,7 @@ Ext.formbuilder.createTreePanel = function() {
         }
       }, {
         xtype: 'button',
-        text: 'Delete',
+        text: Drupal.t('Delete'),
         handler: function() {
           var tree = Ext.formbuilder.treePanel;
           var selectionModel = tree.getSelectionModel();
