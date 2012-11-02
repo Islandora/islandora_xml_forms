@@ -1233,7 +1233,7 @@ Ext.formbuilder.createElementForm = function () {
           columns: [{
             xtype: 'gridcolumn',
             dataIndex: 'value',
-            header: 'Function',
+            header: Drupal.t('Function'),
             sortable: true,
             flex: 1,
             field: {
