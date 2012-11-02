@@ -17,7 +17,7 @@ Ext.formbuilder.createElementForm = function () {
       xtype: 'textfield',
       id: 'key',
       name: 'key',
-      fieldLabel: 'Identifier',
+      fieldLabel: Drupal.t('Identifier'),
       width: 640,
       listeners: {
         render: function() {
@@ -48,7 +48,7 @@ Ext.formbuilder.createElementForm = function () {
           store: this.elementTypeStore,
           displayField: 'display',
           valueField: 'value',
-          fieldLabel: 'Type',
+          fieldLabel: Drupal.t('Type'),
           queryMode: 'local',
           editable: false,
 	  allowBlank: false,
@@ -899,7 +899,7 @@ Ext.formbuilder.createElementForm = function () {
           xtype: 'checkbox',
           id: 'executes_submit_callback',
           name: 'executes_submit_callback',
-          fieldLabel: 'Executes Submit Callback',
+          fieldLabel: Drupal.t('Executes Submit Callback'),
           inputValue: true,
           listeners: {
             render: function() {
@@ -964,7 +964,7 @@ Ext.formbuilder.createElementForm = function () {
             xtype: 'textfield',
             id: 'ahah-effect',
             name: 'ahah_effect',
-            fieldLabel: 'Effect',
+            fieldLabel: Drupal.t('Effect'),
             listeners: {
               render: function() {
                 Ext.create('Ext.tip.ToolTip', {

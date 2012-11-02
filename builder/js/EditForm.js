@@ -140,7 +140,7 @@ Ext.app = (function() {
                 margin: '1 1 1 0',
                 items: [{
                     xtype: 'fieldset',
-                    title: 'Common Form Controls',
+                    title: Drupal.t('Common Form Controls'),
                     collapsible: true,
                     items: [{
                         xtype: 'textfield',
