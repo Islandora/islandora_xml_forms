@@ -45,18 +45,18 @@ function xml_form_builder_main() {
     $name = $form_info['name'];
     if($form_info['indb']) {
       $type = t('Custom');
-      $copy = l('Copy', xml_form_builder_get_copy_form_path($name));
-      $edit = l('Edit', xml_form_builder_get_edit_form_path($name));
-      $view = l('View', xml_form_builder_get_view_form_path($name));
-      $export = l('Export', xml_form_builder_get_export_form_path($name));
-      $delete = l('Delete', xml_form_builder_get_delete_form_path($name));
+      $copy = l(t('Copy'), xml_form_builder_get_copy_form_path($name));
+      $edit = l(t('Edit'), xml_form_builder_get_edit_form_path($name));
+      $view = l(t('View'), xml_form_builder_get_view_form_path($name));
+      $export = l(t('Export'), xml_form_builder_get_export_form_path($name));
+      $delete = l(t('Delete'), xml_form_builder_get_delete_form_path($name));
     }
     else {
       $type = t('Built-in');
-      $copy = l('Copy', xml_form_builder_get_copy_form_path($name));
+      $copy = l(t('Copy'), xml_form_builder_get_copy_form_path($name));
       $edit = '';
-      $view = l('View', xml_form_builder_get_view_form_path($name));
-      $export = l('Export', xml_form_builder_get_export_form_path($name));
+      $view = l(t('View'), xml_form_builder_get_view_form_path($name));
+      $export = l(t('Export'), xml_form_builder_get_export_form_path($name));
       $delete = '';
     }
 

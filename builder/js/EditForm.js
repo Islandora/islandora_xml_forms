@@ -599,7 +599,7 @@ Ext.app = (function() {
                 buttons: [{
                     text: 'Save',
                     handler: function() {
-                        alert("Saved");
+                        alert(Drupal.t("Saved"));
                     }
                 }],
                 items:  [{
