@@ -24,7 +24,7 @@ Ext.formbuilder.createElementForm = function () {
           Ext.create('Ext.tip.ToolTip', {
             target: 'key',
             anchor: 'left',
-            html: 'Identifies this form element. It is used as the drupal form array key for this element.'
+            html: Drupal.t('Identifies this form element. It is used as the drupal form array key for this element.')
           });
         }
       }

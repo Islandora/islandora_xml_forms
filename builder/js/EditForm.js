@@ -698,7 +698,7 @@ Ext.app = (function() {
         },
         createFormPreview: function() { // Use an iframe...
             var view_url = url.replace(/\/edit/i, '/view');
-            var preview = "<iframe src='" + view_url + "' width='100%' height='100%'><p>Your browser does not support iframes.</p></iframe>";
+            var preview = "<iframe src='" + view_url + "' width='100%' height='100%'><p>" + Drupal.t('Your browser does not support iframes.') + "</p></iframe>";
             return Ext.create('Ext.form.Panel', {
                 title: Drupal.t('Preview'),
                 html: preview
