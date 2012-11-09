@@ -192,28 +192,16 @@ EOT;
 /**
  * Gets a list of all the existing element types defined by the elements hook.
  *
- * @staticvar array $cache
- *   The cached list of existing element types.
- *
  * @return array
  *   A list of all the existing element types.
  */
 function xml_form_builder_get_element_types() {
-  static $cache;
-  if (!isset($cache)) {
-    $cache = array();
-    // process each so that we can pass values by reference to the module invoke
-    foreach (module_implements('element_info') as $module) {
-      $elements = module_invoke($module, 'element_info');
-      if (isset($elements) && is_array($elements)) {
-        $cache = array_merge_recursive($cache, $elements);
-      }
-    }
+  $output = &drupal_static(__FUNCTION__);
+
+  if (!isset($output)) {
+    $types = array_keys(module_invoke_all('element_info'));
+    $output = drupal_map_assoc($types);
   }
-  $types = array_keys($cache);
-  $output = array();
-  foreach ($types as $type) {
-    $output[$type] = $type;
-  }
+
   return $output;
 }

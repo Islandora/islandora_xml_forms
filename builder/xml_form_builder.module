@@ -4,8 +4,6 @@
  * @file
  *
  */
-module_load_include('inc', 'xml_form_builder', 'Edit'); // Needed to make use of AHAH functions...
-module_load_include('inc', 'xml_form_builder', 'Preview'); // Needed to make use of AHAH functions...
 
 /**
  * Constants
@@ -14,6 +12,7 @@ define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
 define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
 define('PERM_XML_FORM_BUILDER_EDIT_FORMS', 'Edit XML Forms');
 define('PERM_XML_FORM_BUILDER_DELETE_FORMS', 'Delete XML Forms');
+define('PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS', 'Associate XML Forms');
 define('MENU_XML_FORM_BUILDER_MAIN', 'admin/islandora/xmlform');
 define('MENU_XML_FORM_BUILDER_CREATE', 'admin/islandora/xmlform/create');
 define('MENU_XML_FORM_BUILDER_IMPORT', 'admin/islandora/xmlform/import');
@@ -21,13 +20,15 @@ define('MENU_XML_FORM_BUILDER_VIEW', 'admin/islandora/xmlform/%/view');
 define('MENU_XML_FORM_BUILDER_COPY', 'admin/islandora/xmlform/%/copy');
 define('MENU_XML_FORM_BUILDER_EDIT', 'admin/islandora/xmlform/%/edit');
 define('MENU_XML_FORM_BUILDER_DELETE', 'admin/islandora/xmlform/%/delete');
+define('MENU_XML_FORM_BUILDER_ASSOCIATIONS', 'admin/islandora/xmlform/%/associations');
+define('MENU_XML_FORM_BUILDER_ASSOCIATE', 'admin/islandora/xmlform/%/associate/%');
+define('MENU_XML_FORM_BUILDER_DISASSOCIATE', 'admin/islandora/xmlform/%/disassociate/%');
+define('MENU_XML_FORM_BUILDER_CONTENT_MODEL_AUTOCOMPLETE', 'admin/islandora/xmlform_autocomplete');
 define('MENU_CALLBACK_XML_FORM_BUILDER_EXPORT', 'admin/islandora/xmlform/%/export');
 define('MENU_CALLBACK_XML_FORM_BUILDER_SAVE', 'admin/islandora/xmlform/%/edit/save');
 
 /**
- * Implements hook_menu. Register menus().
- *
- * @return array
+ * Implements hook_menu().
  */
 function xml_form_builder_menu() {
   /**
@@ -38,7 +39,6 @@ function xml_form_builder_menu() {
     'title' => 'Form Builder',
     'description' => 'Create, manage and edit XML-based forms.',
     'file' => 'Main.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_main',
     //'page arguments' => array('xml_form_builder_main'),
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
@@ -51,7 +51,6 @@ function xml_form_builder_menu() {
     'title' => 'Create Form',
     'description' => 'Create a new Form.',
     'file' => 'Create.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_create', 'create'),
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
@@ -64,7 +63,6 @@ function xml_form_builder_menu() {
     'title' => 'Import Form',
     'description' => 'Import a form from an existing definition.',
     'file' => 'Create.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_create', 'import'),
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
@@ -77,7 +75,6 @@ function xml_form_builder_menu() {
     'title' => 'Preview Form',
     'description' => 'Preview a form.',
     'file' => 'Preview.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_preview', 3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
@@ -101,7 +98,6 @@ function xml_form_builder_menu() {
     'title' => 'Copy Form',
     'description' => 'Copy an existing Form.',
     'file' => 'Copy.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_copy', 3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
@@ -114,7 +110,6 @@ function xml_form_builder_menu() {
     'title' => 'Edit Form',
     'description' => 'Edit a Form.',
     'file' => 'Edit.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_edit',
     'page arguments' => array(3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
@@ -127,7 +122,6 @@ function xml_form_builder_menu() {
     'title' => 'Edit Form',
     'description' => 'Edit a Form.',
     'file' => 'Edit.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'xml_form_builder_edit_save',
     'page arguments' => array(3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
@@ -140,21 +134,66 @@ function xml_form_builder_menu() {
     'title' => 'Delete Form',
     'description' => 'Delete a Form.',
     'file' => 'Delete.inc',
-    'file path' => drupal_get_path('module', 'xml_form_builder'),
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_delete', 3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_DELETE_FORMS),
+    'type' => MENU_CALLBACK,
+  );
+
+  /**
+   * Present the form to associate forms with content models and datastream IDs.
+   */
+  $items[MENU_XML_FORM_BUILDER_ASSOCIATIONS] = array(
+    'title' => 'Associate Form "@form"',
+    'title arguments' => array('@form' => 3),
+    'description' => 'Associate a form.',
+    'file' => 'includes/associations.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_associations_form', 3),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
+    'type' => MENU_CALLBACK,
+    'tab_parent' => MENU_XML_FORM_BUILDER_MAIN,
+  );
+
+  // Remove existing associations, redirect back to list.
+  $items[MENU_XML_FORM_BUILDER_DISASSOCIATE] = array(
+    'title' => 'Disable Form Association',
+    'description' => 'Disable associated form.',
+    'file' => 'includes/associations.inc',
+    'page callback' => 'xml_form_builder_disable_association',
+    'page arguments' => array(3,5),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS), // Use something fedora specific.
+    'type' => MENU_CALLBACK,
+  );  
+  // Enable default/hook associations, redirect back to list.
+  $items[MENU_XML_FORM_BUILDER_ASSOCIATE] = array(
+    'title' => 'Enable Form Association',
+    'description' => 'Enables an associated form.',
+    'file' => 'includes/associations.inc',
+    'page callback' => 'xml_form_builder_enable_association',
+    'page arguments' => array(3,5),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS), // Use something fedora specific.
+    'type' => MENU_CALLBACK,
+  );
+  // Enable default/hook associations, redirect back to list.
+  $items[MENU_XML_FORM_BUILDER_CONTENT_MODEL_AUTOCOMPLETE] = array(
+    'title' => 'Autocomplete callback',
+    'description' => 'Autocomplete a Fedora content model PID.',
+    'file' => 'includes/content_models.autocomplete.inc',
+    'page callback' => 'xml_form_builder_content_model_autocomplete',
+    'page arguments' => array(3,5),
+    'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS), // Use something fedora specific.
     'type' => MENU_CALLBACK,
   );
   return $items;
 }
 
 /**
- * Implements hook_form().
+ * Implements hook_forms().
  *
- * @return array
+ * Acquires the form from XMLFormRepository, if it exists and is valid.
  */
-function xml_form_builder_forms($form_id, $xml) {
+function xml_form_builder_forms($form_id, $args) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   if (XMLFormRepository::Exists($form_id) && XMLFormRepository::Valid($form_id)) {
     return array(
@@ -170,7 +209,7 @@ function xml_form_builder_forms($form_id, $xml) {
 }
 
 /**
- * Implements hook_permission. Register permissions().
+ * Implements hook_permission().
  *
  * @return array
  */
@@ -191,6 +230,10 @@ function xml_form_builder_permission() {
     PERM_XML_FORM_BUILDER_DELETE_FORMS => array(
       'title' => t('Delete XML forms'),
       'description' => t('Permanently delete any XML form.'),
+    ),
+    PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS => array(
+      'title' => t('Associate XML forms'),
+      'description' => t('Associate forms with content models and datastream identifiers.'),
     ),
   );
 }
@@ -277,8 +320,23 @@ function xml_form_builder_get_delete_form_path($form_name) {
 }
 
 /**
+ * Gets the path to the associations page for the given form name.
+ *
+ * @param string $form_name
+ *   The form to load the associations page with,
+ *
+ * @return string
+ *   The path to the associations page.
+ */
+function xml_form_builder_get_associate_form_path($form_name) {
+  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_ASSOCIATIONS);
+}
+
+/**
  * Gets a Form from the database.
  *
+ * @param array $form
+ *   An array containing any "wrapping" elements.
  * @param array $form_state
  *   The Drupal Form State
  * @param string $form_name
@@ -289,7 +347,7 @@ function xml_form_builder_get_delete_form_path($form_name) {
  * @return array
  *   The Drupal Form, if it exists FALSE otherwise.
  */
-function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) {
+function xml_form_builder_get_form(array $form, array &$form_state, $form_name, $xml = NULL) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'XMLFormRepository');
   form_load_include($form_state, 'inc', 'xml_form_api', 'XMLForm');
   form_load_include($form_state, 'inc', 'xml_form_api', 'XMLFormDefinition');
@@ -309,23 +367,29 @@ function xml_form_builder_get_form(array &$form_state, $form_name, $xml = NULL) 
       $form = $definition->getForm();
       $xml_form->initialize($form, $document);
     }
-    /**
-     * Deals with a bug in drupals AHAH, where the user would be redirected to a different page.
-     * This is fixed in Drupal 7.
-     *
-     * This bit of code ensures that the url from which this function is called is the url where the code submits.
-     * Rather than the last used AHAH callback.
-     */
-    $xml_form['#action'] = $form_state['storage']['#action'] = isset($form_state['storage']['#action']) ? $form_state['storage']['#action'] : url($_GET['q']); // AHAH bug workaround.
-    $form = $xml_form->toArray($form_state);
+    $form = array_merge($form, $xml_form->toArray($form_state));
   }
   catch (Exception $e) {
     /**
-     * Catch any errors that occured and display them to the user so that they may correct their form definition.
+     * Catch any errors that occured and display them to the user so that they
+     * may correct their form definition.
      */
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message(filter_xss($msg), 'error');
     return FALSE;
   }
   return $form;
+}
+
+/**     
+ * Implements hook_theme().
+ */ 
+function xml_form_builder_theme() {
+  return array(
+    'xml_form_builder_association_table' => array(
+      'variables' => array('list' => NULL),
+      'template' => 'xml-form-builder-association-table',
+      'path' => drupal_get_path('module', 'xml_form_builder') . '/templates',
+    ),
+  );
 }
