@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -164,7 +165,7 @@ function xml_form_builder_menu() {
     'page arguments' => array(3,5),
     'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS), // Use something fedora specific.
     'type' => MENU_CALLBACK,
-  );  
+  );
   // Enable default/hook associations, redirect back to list.
   $items[MENU_XML_FORM_BUILDER_ASSOCIATE] = array(
     'title' => 'Enable Form Association',
@@ -355,7 +356,7 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
     drupal_set_message(t('The form "%name" does not exist.', array('%name' => $form_name)));
     return FALSE;
   }
-  else if (!XMLFormRepository::Valid($form_name)) {
+  elseif (!XMLFormRepository::Valid($form_name)) {
     drupal_set_message(t('The drupal form "%name" exists but is not valid please notify the administrator.', array('%name' => $form_name)));
     return FALSE;
   }
@@ -381,9 +382,9 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
   return $form;
 }
 
-/**     
+/**
  * Implements hook_theme().
- */ 
+ */
 function xml_form_builder_theme() {
   return array(
     'xml_form_builder_association_table' => array(
@@ -392,4 +393,213 @@ function xml_form_builder_theme() {
       'path' => drupal_get_path('module', 'xml_form_builder') . '/templates',
     ),
   );
+}
+
+/**
+ * Implements hook_islandora_ingest_steps().
+ *
+ * If the given configuration has more that one metadata form association add the select form step, if it only has one
+ * The add that metadata form as a step.
+ */
+function xml_form_builder_islandora_ingest_steps(array $configuration) {
+  module_load_include('inc', 'xml_form_builder', 'includes/associations');
+  $models = isset($configuration['models']) ? $configuration['models'] : array();
+  $associations = xml_form_builder_get_associations(array(), $models, array(), TRUE);
+  $num_associations = count($associations);
+  if ($num_associations > 1) {
+    $association = current($associations);
+    return array(
+      array(
+        'weight' => 0,
+        'type' => 'form',
+        'form_id' => 'xml_form_builder_select_association_form',
+        'args' => array($associations)
+      ),
+      array(
+        'weight' => 5,
+        'type' => 'form',
+        'form_id' => 'xml_form_builder_metadata_form',
+        'args' => array($association)
+      )
+    );
+  }
+  elseif ($num_associations == 1) {
+    $association = array_pop($associations);
+    return array(
+      array(
+        'weight' => 5,
+        'type' => 'form',
+        'form_id' => 'xml_form_builder_metadata_form',
+        'args' => array($association)
+      ));
+  }
+  return NULL;
+}
+
+/**
+ * The select association form.
+ *
+ * This is used as part of the ingest process.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ * @param array $associations
+ *   The form associations to select from.
+ *
+ * @return array
+ *   A drupal form definition.
+ */
+function xml_form_builder_select_association_form(array $form, array &$form_state, array $associations) {
+  $form_state['associations'] = $associations;
+  $models = array_map(function($o) { return $o['content_model']; }, $associations);
+  $model_labels = array_map(function($o) { return islandora_get_object_by_id($o)->label; }, $models);
+  $selected_model = isset($form_state['values']['models']) ? $form_state['values']['models'] : current($models);
+  $selected_model_associations = array_filter($associations, function($o) use($selected_model) { return $o['content_model'] == $selected_model; });
+  $forms = array_map(function($o) { return $o['form_name']; }, $selected_model_associations);
+  $selected_form = isset($form_state['values']['forms']) ? $form_state['values']['forms'] : current($forms);
+  $multiple_forms = count($forms) > 1;
+  return array(
+    'models' => array(
+      '#options' => array_combine($models, $model_labels),
+      '#title' => t('Select a Content Model'),
+      '#type' => 'select',
+      '#default_value' => $selected_model,
+      '#ajax' => array(
+        'callback' => 'xml_form_builder_select_association_form_ajax_callback',
+        'method' => 'replace',
+        'effect' => 'fade',
+        'event' => 'change',
+        'wrapper' => 'form-select-wrapper'
+      )
+    ),
+    'forms' => array(
+      '#type' => $multiple_forms ? 'select' : 'hidden',
+      '#title' => t('Select a Form'),
+      '#options' => $multiple_forms ? array_combine($forms, $forms) : NULL,
+      '#default_value' => $selected_form,
+      '#prefix' => '<div id="form-select-wrapper">',
+      '#suffix' => '</div>'
+    )
+  );
+}
+
+/**
+ * The AJAX callback for the Content Model select field in the select association form.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ *
+ * @return array
+ *   A drupal form definition.
+ */
+function xml_form_builder_select_association_form_ajax_callback(array $form, array $form_state) {
+  return $form['forms'];
+}
+
+/**
+ * Submit handler modifies the metadata step. Reverting the changes if the association has changed.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ */
+function xml_form_builder_select_association_form_submit(array $form, array &$form_state) {
+  $values = $form_state['values'];
+  $association_matches = function($o) use($values) { return $o['content_model'] == $values['models'] && $o['form_name'] == $values['forms']; };
+  $association = array_pop(array_filter($form_state['associations'], $association_matches));
+  $steps = &islandora_ingest_form_get_steps($form_state);
+  $metadata_step_index = NULL;
+  array_walk($steps, function($v, $k) use(&$metadata_step_index) { if(isset($v['form_id']) && $v['form_id'] == 'xml_form_builder_metadata_form') $metadata_step_index = $k; });
+  $metadata_step = &$steps[$metadata_step_index];
+  $original_association = $metadata_step['args'][0];
+  if ($association != $original_association) { // We need to correct this change.
+    $object = $form_state['islandora']['objects'][0];
+    $dsid = $original_association['dsid'];
+    $object->purgeDatastream($dsid);
+    unset($metadata_step['values']);
+    $metadata_step['args'] = array($association);
+  }
+}
+
+/**
+ * The metadata form.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ * @param array $associations
+ *   The form associations to select from.
+ *
+ * @return array
+ *   A drupal form definition.
+ */
+function xml_form_builder_metadata_form(array $form, array &$form_state, array $association) {
+  form_load_include($form_state, 'inc', 'xml_form_builder', 'XMLFormRepository');
+  form_load_include($form_state, 'inc', 'xml_form_api', 'XMLForm');
+  form_load_include($form_state, 'inc', 'xml_form_api', 'XMLFormDefinition');
+  $form_name = $association['form_name'];
+  $xml = NULL;
+  // @todo Make title field required always.
+  // @todo Modify existing datastream.
+  if (!XMLFormRepository::Exists($form_name)) {
+    drupal_set_message(t('The form "%name" does not exist.', array('%name' => $form_name)));
+    return FALSE;
+  }
+  elseif (!XMLFormRepository::Valid($form_name)) {
+    drupal_set_message(t('The drupal form "%name" exists but is not valid please notify the administrator.', array('%name' => $form_name)));
+    return FALSE;
+  }
+  try {
+    $xml_form = new XMLForm($form_state);
+    if (!$xml_form->isInitialized()) { // Was not initialized from storage.
+      $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
+      $document = $definition->createXMLDocument($xml);
+      $form = $definition->getForm();
+      $xml_form->initialize($form, $document);
+    }
+    $form = array_merge($form, $xml_form->toArray($form_state));
+  }
+  catch (Exception $e) {
+    /**
+     * Catch any errors that occured and display them to the user so that they
+     * may correct their form definition.
+     */
+    $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
+    drupal_set_message(filter_xss($msg), 'error');
+    return FALSE;
+  }
+  return $form;
+}
+
+/**
+ *
+ */
+function xml_form_builder_metadata_form_submit(array $form, array &$form_state) {
+  $step_info = &islandora_ingest_form_get_step_info($form_state);
+  $association = $step_info['args'][0];
+  $title_field = drupal_array_get_nested_value($form, $association['title_field']);
+  $object = islandora_ingest_form_get_object($form_state); // Only support 1 for now.
+  $object->label = $title_field['#value'];
+  $object->models = array($association['content_model']);
+  $dsid = $association['dsid'];
+  if (empty($object[$dsid])) {
+    $ds = $object->constructDatastream($dsid, 'M');
+    $object->ingestDatastream($ds);
+  }
+  else {
+    $ds = $object[$dsid];
+  }
+  $xml_form = new XMLForm($form_state);
+  $doc = $xml_form->submit($form, $form_state);
+  $ds->setContentFromString($doc->document->saveXML());
+  $ds->label = "$dsid Record";
+  $ds->mimetype = 'text/xml';
+  // @todo remove step storage when xml forms is changed to use step storage.
+  // @todo transform to DC.
 }

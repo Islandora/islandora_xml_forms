@@ -11,12 +11,11 @@
 function xml_form_builder_content_model_autocomplete($string) {
   $content_models = xml_form_builder_get_content_model_names();
   $output = array();
-  foreach ($content_models as $value) {
-    if (preg_match("/{$string}/i", $value) !== 0) {
-      $output[$value] = $value;
+  foreach ($content_models as $model => $label) {
+    if (preg_match("/{$string}/i", $label) !== 0) {
+      $output[$model] = $label;
     }
   }
-  $output[$string] = $string;
   return drupal_json_output($output);
 }
 
@@ -24,34 +23,31 @@ function xml_form_builder_content_model_autocomplete($string) {
  * Gets a map of form names suitable for use as select #options.
  */
 function xml_form_builder_get_content_model_names() {
-  $content = xml_form_builder_query_content_models();
-  return islandora_content_model_forms_parse_query($content);
+  $results = xml_form_builder_query_content_models();
+  $ret = array();
+  foreach ($results as $result) {
+    $ret[$result['model']['value']] = "{$result['label']['value']} ({$result['model']['value']})";
+  }
+  return $ret;
 }
 
 /**
  * Perform a resource index query to determine get a list of content models.
  *
- * Only returns content models with at least one subscribing object. 
+ * Only returns content models with at least one subscribing object.
  *
  * @return array
  *   An array of RI results, as given by the Tuque RI query interface.
  */
 function xml_form_builder_query_content_models() {
-  module_load_include('inc', 'islandora', 'includes/tuque');
-
   $connection = new IslandoraTuque();
-
-  $query = 'select $object $model from <#ri>
-  where (walk($model <fedora-model:hasModel><info:fedora/fedora-system:ContentModel-3.0>
-  and $model <fedora-model:hasModel> $object))
-  minus $object <mulgara:is><info:fedora/fedora-system:FedoraObject-3.0>
-  minus $object <mulgara:is><info:fedora/fedora-system:ContentModel-3.0>
-  minus $object <mulgara:is><info:fedora/fedora-system:ServiceDefinition-3.0>
-  minus $object <mulgara:is><info:fedora/fedora-system:ServiceDeployment-3.0>
-  order by $object';
-
+  $query = 'select $model $label from <#ri> where
+            $model <fedora-model:hasModel> <info:fedora/fedora-system:ContentModel-3.0> and $model <fedora-model:label> $label
+            minus $model <mulgara:is><info:fedora/fedora-system:FedoraObject-3.0>
+            minus $model <mulgara:is><info:fedora/fedora-system:ContentModel-3.0>
+            minus $model <mulgara:is><info:fedora/fedora-system:ServiceDefinition-3.0>
+            minus $model <mulgara:is><info:fedora/fedora-system:ServiceDeployment-3.0>';
   $results = $connection->repository->ri->itqlQuery($query);
-
   return $results;
 }
 
@@ -68,9 +64,7 @@ function xml_form_builder_parse_query($content) {
   foreach ($content as $model) {
     $content_models[] = $model['object']['value'];
   }
-
   $content_models = array_unique($content_models);
   $content_models = array_values($content_models);
-
   return $content_models;
 }
