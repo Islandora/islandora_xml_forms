@@ -1,4 +1,3 @@
-
 <?php
 
 /**
@@ -251,7 +250,6 @@ function xml_form_builder_export($form_name) {
   header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
   $definition = XMLFormRepository::Get($form_name);
   echo $definition->saveXML();
-
   exit();
 }
 
@@ -597,7 +595,10 @@ function xml_form_builder_metadata_form_submit(array $form, array &$form_state) 
   }
   $xml_form = new XMLForm($form_state);
   $doc = $xml_form->submit($form, $form_state);
-  $ds->setContentFromString($doc->document->saveXML());
+  $doc = $doc->document;
+  $doc->preserveWhiteSpace = TRUE;
+  $doc->formatOutput = TRUE;
+  $ds->setContentFromString(trim($doc->saveXML()));
   $ds->label = "$dsid Record";
   $ds->mimetype = 'text/xml';
   // @todo remove step storage when xml forms is changed to use step storage.
