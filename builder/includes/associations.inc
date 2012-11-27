@@ -21,7 +21,7 @@
  * @return array
  *   All the associations that match the given constraints.
  */
-function xml_form_builder_get_associations(array $forms = array(), array $models = array(), array $dsids = array(), $only_enabled = FALSE) {
+function xml_form_builder_get_associations(array $forms = array(), array $models = array(), array $dsids = array(), $only_enabled = TRUE) {
   $associations = xml_form_builder_get_database_associations($forms , $models, $dsids);
   $associations = array_merge($associations, xml_form_builder_get_hook_associations($forms , $models, $dsids, $only_enabled));
   return $associations;
@@ -29,6 +29,8 @@ function xml_form_builder_get_associations(array $forms = array(), array $models
 
 /**
  * Gets an array of all associations stored in the database as constrained by the given parameters.
+ *
+ * Effectively it works as if each parameter has is and'ed with the others.
  *
  * @param array $forms
  *   Limit the associations returned to only ones that associate the given forms.
@@ -42,12 +44,18 @@ function xml_form_builder_get_associations(array $forms = array(), array $models
  */
 function xml_form_builder_get_database_associations(array $forms = array(), array $models = array(), array $dsids = array()) {
   $query = db_select('xml_form_builder_form_associations', 'fa')->fields('fa');
-  $conditions = db_or();
-  $add_condition = function($value, $key, $label) use(&$conditions) { $conditions->condition($label, $value); };
-  array_walk($forms, $add_condition, 'form_name');
-  array_walk($models, $add_condition, 'content_model');
-  array_walk($dsids, $add_condition, 'dsid');
-  $query->condition($conditions);
+  $add_conditions = function(SelectQuery $query, $label, array $values) {
+    if (!empty($values)) {
+      $conditions = db_or();
+      foreach ($values as $value) {
+        $conditions->condition($label, $value);
+      }
+      $query->condition($conditions);
+    }
+  };
+  $add_conditions($query, 'form_name', $forms);
+  $add_conditions($query, 'content_model', $models);
+  $add_conditions($query, 'dsid', $dsids);
   $associations = array();
   foreach ($query->execute() as $result) {
     $title_field = &$result->title_field;
