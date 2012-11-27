@@ -436,7 +436,7 @@ function xml_form_builder_islandora_ingest_steps(array $configuration) {
     'type' => 'form',
     'form_id' => 'xml_form_builder_ingest_form',
     'module' => 'xml_form_builder',
-    'file' => 'includes/select_association.form.inc',
+    'file' => 'includes/ingest.form.inc',
     'args' => array($association)
   ) : NULL;
   return array($select_association_step, $metadata_step);
