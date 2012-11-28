@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -97,19 +97,19 @@ Ext.formbuilder.createTreePanel = function() {
           form.loadRecord(record);
           //attributes
           var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];
-          form_grids.forEach(function(name) {
+          Ext.Array.each(form_grids, function(name) {
             var converted = [];
             if(data[name] instanceof Object) {
               $.each(data[name], function(i, n) {
                 converted.push({
-                  key: i, 
+                  key: i,
                   value: n
                 });
               });
             }
             else if(data[name] instanceof Array) {
               $.each(data[name], function(i, n) {
-                converted.push({ 
+                converted.push({
                   value: n
                 });
               });
@@ -206,10 +206,9 @@ Ext.formbuilder.createTreePanel = function() {
             Ext.getCmp('actions_update').collapse();
             Ext.getCmp('actions_delete').collapse();
           }
-                    
+
         }
       }
     }
   });
 }
-
