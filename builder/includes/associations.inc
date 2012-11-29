@@ -159,10 +159,68 @@ function xml_form_builder_get_transforms() {
   return $tranforms;
 }
 
+
+/**
+ * Gets the path to the transform identified by the given transform name.
+ *
+ * @param string $transfrom
+ *   The short name for the transform.
+ *
+ * @return
+ *   The path to the given transform if found, FALSE otherwise.
+ */
+function xml_form_builder_get_transform_file($transform) {
+  $transforms = xml_form_builder_get_transforms();
+  // No transform has no file.
+  unset($transforms['No Transform']);
+  foreach ($transforms as $name => $path) {
+    if ($transform == $name) {
+      return $path;
+    }
+  }
+  return FALSE;
+}
+
+/**
+ * Transform form generated XML to Dublin Core.
+ *
+ * @param string $transform
+ *   The path to the transform xslt.
+ * @param DOMDocument $source_document
+ *   The source document to transform.
+ * @param FedoraObject $object
+ *   The object that the transform is form.
+ *
+ * @return DOMDocument
+ *   The transformed DC.
+ */
+function islandora_content_model_forms_transform_document($transform, $source_document, $object) {
+  if ($transform !== NULL) {
+    $xsl = new DOMDocument();
+    $xsl->load($transform);
+    $xslt = new XSLTProcessor();
+    $xslt->importStyleSheet($xsl);
+    $document = $xslt->transformToDoc($source_document);
+    if ($document) {
+      $xpath = new DOMXPath($document);
+      // Set the Label
+      $results = $xpath->query("*[local-name()='title']");
+      $results->item(0)->nodeValue = $object->label;
+      // Set the Pid
+      $results = $xpath->query("*[local-name()='identifier']");
+      $results->item(0)->nodeValue = $object->id;
+      if (isset($document->documentElement)) {
+        return $document;
+      }
+    }
+  }
+  return NULL;
+}
+
 /**
  * Implements hook_xml_form_builder_get_transforms().
  *
- * Grabs any XSL(T)s from the "transforms" directory inside of this module.
+ * Grabs any XSLTs from the "transforms" directory inside of this module.
  */
 function xml_form_builder_xml_form_builder_get_transforms() {
   $p = drupal_get_path('module', 'xml_form_builder');

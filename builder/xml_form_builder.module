@@ -458,3 +458,78 @@ function xml_form_builder_islandora_edit_datastream_registry(FedoraObject $objec
     );
   }
 }
+
+/**
+ * This function is used by both the ingestion and edit processes to update the
+ * given object.
+ *
+ * @param FedoraObject $object
+ *   The object to update.
+ * @param array $association
+ *   The association used to update the objects datastreams.
+ * @param XMLDocument $document
+ *   The generated metadata document to add to the object.
+ * @param string $label
+ *   A new label for the given object.
+ */
+function xml_form_builder_update_object(FedoraObject $object, array $association, XMLDocument $document, $label) {
+  $object->label = $label;
+  $object->models = array($association['content_model']);
+  $doc = xml_form_builder_update_metadata_datastream($object, $association['dsid'], $document);
+  xml_form_builder_update_dc_datastream($object, $association['transform'], $doc);
+}
+
+/**
+ * Updates the given metadata datastream with the given document.
+ *
+ * @param FedoraObject $object
+ *   The object to update.
+ * @param array $datastream_id
+ *   The datastream to update.
+ * @param XMLDocument $document
+ *   The generated metadata document to apply to the datastream.
+ */
+function xml_form_builder_update_metadata_datastream(FedoraObject $object, $datastream_id, XMLDocument $document) {
+  if (empty($object[$datastream_id])) {
+    $datastream = $object->constructDatastream($datastream_id, 'M');
+    $object->ingestDatastream($datastream);
+  }
+  else {
+    $datastream = $object[$datastream_id];
+  }
+  $document = $document->document;
+  $document->preserveWhiteSpace = TRUE;
+  $document->formatOutput = TRUE;
+  $datastream->setContentFromString(trim($document->saveXML()));
+  $datastream->label = "$datastream_id Record";
+  $datastream->mimetype = 'text/xml';
+  return $document;
+}
+
+/**
+ * Updates the DC datastream by applying the given transform to the given
+ * document.
+ *
+ * @param FedoraObject $object
+ *   The object whose DC will be updated.
+ * @param string $transform
+ *   The transform to apply, as defined by the forms association.
+ * @param DOMDocument $document
+ *   The document to transform.
+ */
+function xml_form_builder_update_dc_datastream(FedoraObject $object, $transform, DOMDocument $document) {
+  module_load_include('inc', 'xml_form_builder', 'includes/associations');
+  $transform = xml_form_builder_get_transform_file($transform);
+  if ($transform) {
+    if (empty($object['DC'])) {
+      $dc_datastream = $object->constructDatastream('DC', 'X');
+      $dc->label = 'DC Record';
+      $object->ingestDatastream($dc_datastream);
+    }
+    else {
+      $dc_datastream = $object['DC'];
+    }
+    $transformed_dc_doc = islandora_content_model_forms_transform_document($transform, $document, $object);
+    $dc->setContentFromString($transformed_dc_doc->saveXML());
+  }
+}

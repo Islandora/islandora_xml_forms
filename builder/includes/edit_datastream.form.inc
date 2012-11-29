@@ -152,16 +152,11 @@ function xml_form_builder_edit_datastream_form_metadata_form(array $form, array 
 function xml_form_builder_edit_datastream_form_metadata_form_submit(array $form, array &$form_state) {
   $datastream = $form_state['datastream'];
   $association = $form_state['association'];
-  $title_field = drupal_array_get_nested_value($form, $association['title_field']);
   $object = $datastream->parent;
-  $object = islandora_object_load($object->id);
-  $object->label = $title_field['#value'];
+  $title_field = drupal_array_get_nested_value($form, $association['title_field']);
+  $label = $title_field['#value'];
   $xml_form = new XMLForm($form_state);
-  $doc = $xml_form->submit($form, $form_state);
-  $doc = $doc->document;
-  $doc->preserveWhiteSpace = TRUE;
-  $doc->formatOutput = TRUE;
-  $datastream->setContentFromString(trim($doc->saveXML()));
-  $form['redirect'] = 'islandora/object/{$object->id}/manage';
-  // @todo transform to DC.
+  $document = $xml_form->submit($form, $form_state);
+  xml_form_builder_update_object($object, $association, $document, $label);
+  $form_state['redirect'] = "islandora/object/{$object->id}/manage";
 }

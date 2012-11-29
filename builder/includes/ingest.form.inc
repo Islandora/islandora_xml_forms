@@ -46,27 +46,11 @@ function xml_form_builder_ingest_form(array $form, array &$form_state, array $as
 function xml_form_builder_ingest_form_submit(array $form, array &$form_state) {
   $step_info = &islandora_ingest_form_get_step_info($form_state);
   $association = $step_info['args'][0];
-  $title_field = drupal_array_get_nested_value($form, $association['title_field']);
-  // Only support 1 for now.
   $object = islandora_ingest_form_get_object($form_state);
-  $object->label = $title_field['#value'];
-  $object->models = array($association['content_model']);
-  $dsid = $association['dsid'];
-  if (empty($object[$dsid])) {
-    $ds = $object->constructDatastream($dsid, 'M');
-    $object->ingestDatastream($ds);
-  }
-  else {
-    $ds = $object[$dsid];
-  }
   $xml_form = new XMLForm($form_state);
-  $doc = $xml_form->submit($form, $form_state);
-  $doc = $doc->document;
-  $doc->preserveWhiteSpace = TRUE;
-  $doc->formatOutput = TRUE;
-  $ds->setContentFromString(trim($doc->saveXML()));
-  $ds->label = "$dsid Record";
-  $ds->mimetype = 'text/xml';
+  $document = $xml_form->submit($form, $form_state);
+  $title_field = drupal_array_get_nested_value($form, $association['title_field']);
+  $label = $title_field['#value'];
+  xml_form_builder_update_object($object, $association, $document, $label);
   // @todo remove step storage when xml forms is changed to use step storage.
-  // @todo transform to DC.
 }
