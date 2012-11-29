@@ -196,7 +196,7 @@ function xml_form_builder_menu() {
     'page arguments' => array('xml_form_builder_edit_datastream_form', 3),
     'access callback' => 'islandora_object_datastream_access_callback',
     'access arguments' => array(FEDORA_VIEW, 2, 3),
-    'load arguments' => array('%map'),
+    'load arguments' => array(2),
     'type' => MENU_CALLBACK,
   );
   return $items;
