@@ -148,7 +148,7 @@ function xml_form_builder_menu() {
     'title' => 'Associate Form "@form"',
     'title arguments' => array('@form' => 3),
     'description' => 'Associate a form.',
-    'file' => 'includes/associations.inc',
+    'file' => 'includes/associations.form.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_associations_form', 3),
     'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
@@ -160,7 +160,7 @@ function xml_form_builder_menu() {
   $items[MENU_XML_FORM_BUILDER_DISASSOCIATE] = array(
     'title' => 'Disable Form Association',
     'description' => 'Disable associated form.',
-    'file' => 'includes/associations.inc',
+    'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_disable_association',
     'page arguments' => array(3,5),
     // @todo Use something fedora specific.
@@ -171,7 +171,7 @@ function xml_form_builder_menu() {
   $items[MENU_XML_FORM_BUILDER_ASSOCIATE] = array(
     'title' => 'Enable Form Association',
     'description' => 'Enables an associated form.',
-    'file' => 'includes/associations.inc',
+    'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_enable_association',
     'page arguments' => array(3,5),
     // @todo Use something fedora specific.
@@ -400,7 +400,7 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
 function xml_form_builder_theme() {
   return array(
     'xml_form_builder_association_table' => array(
-      'variables' => array('list' => NULL),
+      'variables' => array('associations' => NULL),
       'template' => 'xml-form-builder-association-table',
       'path' => drupal_get_path('module', 'xml_form_builder') . '/templates',
     ),

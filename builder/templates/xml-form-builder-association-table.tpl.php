@@ -18,7 +18,7 @@
         <th><?php print t('Has template'); ?></th>
         <th><?php print t('Operations'); ?></th>
       </tr>
-      <?php foreach ($list as $association) : ?>
+      <?php foreach ($associations as $association) : ?>
       <tr>
         <td><?php print $association['content_model'] ?></td>
         <td><?php print ($association['type'] == 'hook') ? t('Built-in') : t('Custom') ?></td>
@@ -42,4 +42,3 @@
     </table>
   </div>
 </div>
-
