@@ -219,8 +219,8 @@ function xml_form_builder_disable_association($form_name, $id) {
           ))
         ->execute();
     }
+    drupal_set_message(t('Successfully disabled association.'));
   }
-  drupal_set_message(t('Successfully disabled association.'));
   drupal_goto(xml_form_builder_get_associate_form_path($form_name));
 }
 
