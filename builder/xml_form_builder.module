@@ -529,7 +529,7 @@ function xml_form_builder_update_dc_datastream(FedoraObject $object, $transform,
     else {
       $dc_datastream = $object['DC'];
     }
-    $transformed_dc_doc = islandora_content_model_forms_transform_document($transform, $document, $object);
-    $dc->setContentFromString($transformed_dc_doc->saveXML());
+    $transformed_dc_doc = xml_form_builder_transform_document($transform, $document, $object);
+    $dc_datastream->setContentFromString($transformed_dc_doc->saveXML());
   }
 }

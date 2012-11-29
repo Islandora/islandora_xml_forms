@@ -191,7 +191,7 @@ function xml_form_builder_get_transform_file($transform) {
  * @return DOMDocument
  *   The transformed DC.
  */
-function islandora_content_model_forms_transform_document($transform, $source_document, $object) {
+function xml_form_builder_transform_document($transform, $source_document, $object) {
   if ($transform !== NULL) {
     $xsl = new DOMDocument();
     $xsl->load($transform);
@@ -227,7 +227,7 @@ function xml_form_builder_xml_form_builder_get_transforms() {
   if ($dir !== FALSE) {
     while (($file = readdir($dir)) !== FALSE) {
       if (preg_match('/\.xslt?$/', $file)) {
-        $transforms["$file (Islandora)"] = "$include_path/$file";
+        $transforms["$file"] = "$include_path/$file";
       }
     }
   }
