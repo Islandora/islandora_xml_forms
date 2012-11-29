@@ -154,7 +154,7 @@ function xml_form_builder_edit_datastream_form_metadata_form_submit(array $form,
   $association = $form_state['association'];
   $title_field = drupal_array_get_nested_value($form, $association['title_field']);
   $object = $datastream->parent;
-  $object = islandora_get_object_by_id($object->id);
+  $object = islandora_object_load($object->id);
   $object->label = $title_field['#value'];
   $xml_form = new XMLForm($form_state);
   $doc = $xml_form->submit($form, $form_state);

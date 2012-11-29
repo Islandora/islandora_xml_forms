@@ -26,7 +26,7 @@ function xml_form_builder_select_association_form(array $form, array &$form_stat
   $form_state['associations'] = $associations;
   $models = array_map(function($o) { return $o['content_model']; }, $associations);
   $models = array_unique($models);
-  $model_labels = array_map(function($o) { return islandora_get_object_by_id($o)->label; }, $models);
+  $model_labels = array_map(function($o) { return islandora_object_load($o)->label; }, $models);
   $selected_model = isset($form_state['values']['models']) ? $form_state['values']['models'] : current($models);
   $selected_model_associations = array_filter($associations, function($o) use($selected_model) { return $o['content_model'] == $selected_model; });
   $forms = array_map(function($o) { return $o['form_name']; }, $selected_model_associations);
