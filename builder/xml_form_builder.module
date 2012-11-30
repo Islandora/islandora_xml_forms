@@ -463,7 +463,7 @@ function xml_form_builder_islandora_edit_datastream_registry(FedoraObject $objec
  * This function is used by both the ingestion and edit processes to update the
  * given object.
  *
- * @param FedoraObject $object
+ * @param AbstractFedoraObject $object
  *   The object to update.
  * @param array $association
  *   The association used to update the objects datastreams.
@@ -472,7 +472,7 @@ function xml_form_builder_islandora_edit_datastream_registry(FedoraObject $objec
  * @param string $label
  *   A new label for the given object.
  */
-function xml_form_builder_update_object(FedoraObject $object, array $association, XMLDocument $document, $label) {
+function xml_form_builder_update_object(AbstractFedoraObject $object, array $association, XMLDocument $document, $label) {
   $object->label = $label;
   $object->models = array($association['content_model']);
   $doc = xml_form_builder_update_metadata_datastream($object, $association['dsid'], $document);
@@ -482,14 +482,14 @@ function xml_form_builder_update_object(FedoraObject $object, array $association
 /**
  * Updates the given metadata datastream with the given document.
  *
- * @param FedoraObject $object
+ * @param AbstractFedoraObject $object
  *   The object to update.
  * @param array $datastream_id
  *   The datastream to update.
  * @param XMLDocument $document
  *   The generated metadata document to apply to the datastream.
  */
-function xml_form_builder_update_metadata_datastream(FedoraObject $object, $datastream_id, XMLDocument $document) {
+function xml_form_builder_update_metadata_datastream(AbstractFedoraObject $object, $datastream_id, XMLDocument $document) {
   if (empty($object[$datastream_id])) {
     $datastream = $object->constructDatastream($datastream_id, 'M');
     $object->ingestDatastream($datastream);
@@ -510,14 +510,14 @@ function xml_form_builder_update_metadata_datastream(FedoraObject $object, $data
  * Updates the DC datastream by applying the given transform to the given
  * document.
  *
- * @param FedoraObject $object
+ * @param AbstractFedoraObject $object
  *   The object whose DC will be updated.
  * @param string $transform
  *   The transform to apply, as defined by the forms association.
  * @param DOMDocument $document
  *   The document to transform.
  */
-function xml_form_builder_update_dc_datastream(FedoraObject $object, $transform, DOMDocument $document) {
+function xml_form_builder_update_dc_datastream(AbstractFedoraObject $object, $transform, DOMDocument $document) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   $transform = xml_form_builder_get_transform_file($transform);
   if ($transform) {
