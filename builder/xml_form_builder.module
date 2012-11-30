@@ -203,6 +203,15 @@ function xml_form_builder_menu() {
 }
 
 /**
+ * Implements hook_admin_paths().
+ */
+function xml_form_builder_admin_paths() {
+  $paths = array();
+  $paths['islandora/edit_form/*/*'] = TRUE;
+  return $paths;
+}
+
+/**
  * Implements hook_forms().
  *
  * Acquires the form from XMLFormRepository, if it exists and is valid.
