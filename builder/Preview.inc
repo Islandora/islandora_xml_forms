@@ -9,9 +9,11 @@
 /**
  * Render the preview form.
  *
- * This show the user what their form will look like. When it is submitted it will show the user what the generated XML
- * Looks like.
+ * This shows the user what their form will look like. When it is submitted it
+ * will show the user what the generated XML looks like.
  *
+ * @param array $form
+ *   Any wrapping form elements.
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name
@@ -20,13 +22,10 @@
  * @return array
  *   A Drupal Form that repersents the given form, identified by $form_name.
  */
-function xml_form_builder_preview($form, array &$form_state, $form_name) {
-  $form = xml_form_builder_get_form($form_state, $form_name);
-  if ($form === FALSE) {
-    return array();
-  }
-
-  return $form;
+function xml_form_builder_preview(array $form, array &$form_state, $form_name) {
+  // Make sure we can find ourself, for AJAX.
+  form_load_include($form_state, 'inc', 'xml_form_builder', 'Preview');
+  return xml_form_builder_get_form($form, $form_state, $form_name);
 }
 
 /**
