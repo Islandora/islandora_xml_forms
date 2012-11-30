@@ -23,6 +23,7 @@ class Tags {
     static $load = TRUE;
     if ($load) {
       form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
+      form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Tag');
       Element::addRequiredResources();
       Element::addJS('tags.js');
       Element::addCSS('tags.css');

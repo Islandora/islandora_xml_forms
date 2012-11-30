@@ -263,10 +263,12 @@ function xml_form_elements_form_element_tags_ajax_alter(FormElement $element, ar
 }
 
 function xml_form_elements_form_element_tags_ajax_add(FormElement $element, array &$form, array &$form_state) {
-  $input_field = &$form[array_shift(element_children($form))];
+  $form_children = element_children($form);
+  $input_field = &$form[array_shift($form_children)];
   $default_value = $input_field['#default_value']; // Get Input Value as its not stored in the object form.
   $input_field['#value'] = '';
-  $input = array_shift(array_values($element->children));
+  $element_children = array_values($element->children);
+  $input = array_shift($element_children);
   $tag = clone $input;
   $input->parent->adopt($tag); // Create new tag and have it stored in the state.
   $tag = $tag->toArray();

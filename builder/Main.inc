@@ -34,33 +34,30 @@ function xml_form_builder_main() {
       ),
       array(
         'data' => t('Operations'),
-        'colspan' => 5,
+        'colspan' => 6,
       ),
     ),
     'rows' => array(),
   );
 
   foreach($names as $form_info) {
-
     $name = $form_info['name'];
     if($form_info['indb']) {
       $type = t('Custom');
-      $copy = l(t('Copy'), xml_form_builder_get_copy_form_path($name));
       $edit = l(t('Edit'), xml_form_builder_get_edit_form_path($name));
-      $view = l(t('View'), xml_form_builder_get_view_form_path($name));
-      $export = l(t('Export'), xml_form_builder_get_export_form_path($name));
       $delete = l(t('Delete'), xml_form_builder_get_delete_form_path($name));
     }
     else {
       $type = t('Built-in');
-      $copy = l(t('Copy'), xml_form_builder_get_copy_form_path($name));
       $edit = '';
-      $view = l(t('View'), xml_form_builder_get_view_form_path($name));
-      $export = l(t('Export'), xml_form_builder_get_export_form_path($name));
       $delete = '';
     }
+    $copy = l(t('Copy'), xml_form_builder_get_copy_form_path($name));
+    $view = l(t('View'), xml_form_builder_get_view_form_path($name));
+    $export = l(t('Export'), xml_form_builder_get_export_form_path($name));
+    $associate = l(t('Associate'), xml_form_builder_get_associate_form_path($name));
 
-    $table['rows'][] = array($name, $type, $copy, $edit, $view, $export, $delete);
+    $table['rows'][] = array($name, $type, $copy, $edit, $view, $export, $delete, $associate);
   }
 
   return theme('table', $table);
