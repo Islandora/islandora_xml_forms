@@ -86,16 +86,10 @@ function xml_form_builder_select_association_form_ajax_callback(array $form, arr
 function xml_form_builder_select_association_form_submit(array $form, array &$form_state) {
   $values = $form_state['values'];
   $association_matches = function($o) use($values) { return $o['content_model'] == $values['models'] && $o['form_name'] == $values['forms']; };
-  $association = array_pop(array_filter($form_state['associations'], $association_matches));
-  $steps = &islandora_ingest_form_get_steps($form_state);
-  $metadata_step_index = NULL;
-  array_walk($steps, function($v, $k) use(&$metadata_step_index) {
-      if (isset($v['form_id']) && $v['form_id'] == 'xml_form_builder_ingest_form') {
-        $metadata_step_index = $k;
-      }
-    }
-  );
-  $metadata_step = &$steps[$metadata_step_index];
+  $filtered_associations = array_filter($form_state['associations'], $association_matches);
+  $association = array_pop($filtered_associations);
+
+  $metadata_step = &xml_form_builder_get_metadata_step($form_state);
   $original_association = $metadata_step['args'][0];
   if ($association != $original_association) {
     $object = $form_state['islandora']['objects'][0];
@@ -105,3 +99,23 @@ function xml_form_builder_select_association_form_submit(array $form, array &$fo
     $metadata_step['args'] = array($association, $object);
   }
 }
+
+/**
+ * Grab the step entry for the metadata ingest form.
+ *
+ * @param array $form_state
+ * @return array
+ *   Reference to the array defining the ingest step.
+ */
+function &xml_form_builder_get_metadata_step(array &$form_state) {
+  $steps = &islandora_ingest_form_get_steps($form_state);
+  $metadata_step_index = NULL;
+  array_walk($steps, function($v, $k) use(&$metadata_step_index) {
+      if (isset($v['form_id']) && $v['form_id'] == 'xml_form_builder_ingest_form') {
+        $metadata_step_index = $k;
+      }
+    }
+  );
+  return $steps[$metadata_step_index];
+}
+

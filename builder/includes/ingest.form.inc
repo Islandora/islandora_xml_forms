@@ -28,8 +28,9 @@ function xml_form_builder_ingest_form(array $form, array &$form_state, array $as
   $form = xml_form_builder_get_form($form, $form_state, $form_name, $xml);
   if ($form !== FALSE) {
     // Make the Object label field required.
-    $title_field = &drupal_array_get_nested_value($form, $association['title_field']);
-    $title_field['#required'] = TRUE;
+    $title_element = $association['title_field'];
+    $title_element[] = '#required';
+    drupal_array_set_nested_value($form, $title_element, TRUE);
   }
   return $form;
 }
