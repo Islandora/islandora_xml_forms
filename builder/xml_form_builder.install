@@ -151,10 +151,13 @@ function xml_form_builder_update_7100() {
         'length' => 128,
         'not NULL' => TRUE,
       ),
-      'title_field' => array(        'description' => 'The form field that you want to use for the objects label.',
-        'type' => 'varchar',
-        'length' => 128,
-        'not NULL' => TRUE,
+      'title_field' => array(
+       'description' => 'The form field that you want to use for the objects label.',
+       'type' => 'varchar',
+       'length' => 256,
+       'not NULL' => TRUE,
+       'binary' => TRUE,
+       'serialize' => TRUE,
       ),
       'transform' => array(
         'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datas
@@ -213,4 +216,35 @@ tream.',
   $t = get_t();
 
   return $t('Copied form associations from deprecated "islandora_content_model_forms".');
+}
+
+/**
+ * Change title field to store a (serialized) array.
+ */
+function xml_form_builder_update_7101() {
+  $results = db_select('xml_form_builder_form_associations', 'fa')
+    ->fields('fa', array('id', 'title_field'))
+    ->execute()
+    ->fetchAll();
+
+  db_change_field('xml_form_builder_form_associations', 'title_field', 'title_field', array(
+    'description' => 'The form field that you want to use for the objects label.',
+    'type' => 'varchar',
+    'length' => 256,
+    'not NULL' => TRUE,
+    'binary' => TRUE,
+    'serialize' => TRUE,
+  ));
+
+  foreach ($results as $association) {
+    $title_field = $association->title_field;
+    $title_field = substr($title_field, 2, -2);
+    $title_field = explode("']['", $title_field);
+    db_update('xml_form_builder_form_associations')
+      ->fields(array(
+        'title_field' => serialize($title_field),
+      ))
+      ->condition('id', $association->id)
+      ->execute();
+  }
 }

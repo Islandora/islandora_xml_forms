@@ -84,10 +84,7 @@ function xml_form_builder_get_database_associations(array $forms = array(), arra
   $add_conditions($query, 'dsid', $dsids);
   $associations = array();
   foreach ($query->execute() as $result) {
-    $title_field = &$result->title_field;
-    $title_field = str_replace("'", "", $title_field);
-    $title_field = substr($title_field, 1, strlen($title_field) - 2);
-    $title_field = explode("][", $title_field);
+    $result->title_field = unserialize($result->title_field);
     $associations[$result->id] = (array) $result;
     $associations[$result->id]['in_db'] = TRUE;
     $associations[$result->id]['enabled'] = TRUE;

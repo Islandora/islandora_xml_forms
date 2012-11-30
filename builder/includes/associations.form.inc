@@ -151,15 +151,14 @@ function xml_form_builder_get_title_options($form_name) {
         foreach ($elements as $element) {
           $result = $xpath->query('ancestor-or-self::node()[@name]', $element);
           $ancestors = dom_node_list_to_array($result);
-          $value = $label = '';
+          $ancestors_array = array();
           if (count($ancestors) > 0) {
             foreach ($ancestors as $ancestor) {
               $name = $ancestor->getAttribute('name');
-              $value .= "['$name']";
-              $label .= "['$name']";
+              $ancestors_array[] = (string)$name;
             }
           }
-          $output[$value] = $label;
+          $output[serialize($ancestors_array)] = "['" . implode("']['", $ancestors_array) . "']";
         }
         return $output;
       }
