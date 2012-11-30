@@ -40,15 +40,18 @@ function xml_form_builder_get_content_model_names() {
  *   An array of RI results, as given by the Tuque RI query interface.
  */
 function xml_form_builder_query_content_models() {
-  $connection = new IslandoraTuque();
-  $query = 'select $model $label from <#ri> where
+  $connection = islandora_get_tuque_connection();
+  if ($connection) {
+    $query = 'select $model $label from <#ri> where
             $model <fedora-model:hasModel> <info:fedora/fedora-system:ContentModel-3.0> and $model <fedora-model:label> $label
             minus $model <mulgara:is><info:fedora/fedora-system:FedoraObject-3.0>
             minus $model <mulgara:is><info:fedora/fedora-system:ContentModel-3.0>
             minus $model <mulgara:is><info:fedora/fedora-system:ServiceDefinition-3.0>
             minus $model <mulgara:is><info:fedora/fedora-system:ServiceDeployment-3.0>';
-  $results = $connection->repository->ri->itqlQuery($query);
-  return $results;
+    $results = $connection->repository->ri->itqlQuery($query);
+    return $results;
+  }
+  return array();
 }
 
 /**
