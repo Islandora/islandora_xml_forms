@@ -20,7 +20,8 @@
  *   A drupal form definition.
  */
 function xml_form_builder_ingest_form(array $form, array &$form_state, array $association) {
-  form_load_include($form_state, 'inc', 'xml_form_builder', 'ingest.form.inc');
+  form_load_include($form_state, 'inc', 'xml_form_builder', 'ingest.form');
+
   $form_name = $association['form_name'];
   $dsid = $association['dsid'];
   $object = islandora_ingest_form_get_object($form_state);
