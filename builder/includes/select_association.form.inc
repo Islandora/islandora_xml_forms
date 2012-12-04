@@ -59,6 +59,12 @@ function xml_form_builder_select_association_form(array $form, array &$form_stat
     );
   }
   else {
+    // XXX: This should be using #default_value, but this leads to the old
+    //   previous values being kept in the #value, and therefore markup
+    //   containing the old value being supplied to the client after AJAX
+    //   requests...  #value means it can not be changed by users, but that
+    //   shouldn't be an issue...  There is an issue with not regenerating the
+    //   cache, but that is handled below.
     $form['forms'] = array(
       '#type' => 'hidden',
       '#value' => $selected_form,
@@ -69,9 +75,6 @@ function xml_form_builder_select_association_form(array $form, array &$form_stat
     '#prefix' => '<div id="form-select-wrapper">',
     '#suffix' => '</div>'
   );
-
-  #dsm($selected_form, 'selected');
-  #dsm($form, 'form');
 
   return $form;
 }
@@ -89,6 +92,9 @@ function xml_form_builder_select_association_form(array $form, array &$form_stat
  *   A drupal form definition.
  */
 function xml_form_builder_select_association_form_ajax_callback(array $form, array $form_state) {
+  // XXX: This form_set_cache() should not be necessary, but there seems to be
+  //   an issue with how the form API handles hidden fields (and therefore
+  //   affecting when there is a single form)...
   form_set_cache($form_state['values']['form_build_id'], $form, $form_state);
   return $form['forms'];
 }
