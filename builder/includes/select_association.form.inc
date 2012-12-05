@@ -116,14 +116,28 @@ function xml_form_builder_select_association_form_submit(array $form, array &$fo
   $filtered_associations = array_filter($form_state['associations'], $association_matches);
   $association = array_pop($filtered_associations);
 
-  $metadata_step = &xml_form_builder_get_metadata_step($form_state);
-  $original_association = $metadata_step['args'][0];
-  if ($association != $original_association) {
-    $object = $form_state['islandora']['objects'][0];
-    $dsid = $original_association['dsid'];
-    $object->purgeDatastream($dsid);
-    unset($metadata_step['values']);
-    $metadata_step['args'] = array($association, $object);
+  $storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
+  $original_association = $storage['association'];
+  if ($storage['association'] != $association) {
+    $storage['association'] = $association;
+    unset($form_state['storage']['objective_form_storage']);
+
+    if ($storage['association_used']) {
+      $object = islandora_ingest_form_get_object($form_state);
+      $dsid = $original_association['dsid'];
+      $object->purgeDatastream($dsid);
+      if ($dsid != 'DC') {
+        $object->purgeDatastream('DC');
+      }
+      $metadata_step = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+      unset($metadata_step['values']);
+      $storage['association_used'] = FALSE;
+    }
+  }
+
+  // Keep track if the association was used to generate markup.
+  if (!isset($storage['association_used'])) {
+    $storage['association_used'] = FALSE;
   }
 }
 
