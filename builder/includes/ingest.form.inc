@@ -19,8 +19,11 @@
  * @return array
  *   A drupal form definition.
  */
-function xml_form_builder_ingest_form(array $form, array &$form_state, array $association) {
+function xml_form_builder_ingest_form(array $form, array &$form_state) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'ingest.form');
+
+  $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
+  $association = $association_step_storage['association'];
 
   $form_name = $association['form_name'];
   $dsid = $association['dsid'];
@@ -46,13 +49,15 @@ function xml_form_builder_ingest_form(array $form, array &$form_state, array $as
  *   The Drupal form state.
  */
 function xml_form_builder_ingest_form_submit(array $form, array &$form_state) {
-  $step_info = &islandora_ingest_form_get_step_info($form_state);
-  $association = $step_info['args'][0];
+  $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
+  $association = $association_step_storage['association'];
+
   $object = islandora_ingest_form_get_object($form_state);
   $xml_form = new XMLForm($form_state);
   $document = $xml_form->submit($form, $form_state);
   $title_field = drupal_array_get_nested_value($form, $association['title_field']);
   $label = $title_field['#value'];
   xml_form_builder_update_object($object, $association, $document, $label);
-  // @todo remove step storage when xml forms is changed to use step storage.
+
+  $association_step_storage['association_used'] = TRUE;
 }
