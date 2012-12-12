@@ -66,7 +66,7 @@ class Delete implements Action {
     $results = $this->path->query($document, $element);
     $results = dom_node_list_to_array($results);
     foreach ($results as $node) {
-      $this->delete($node);
+      $this->doDelete($node);
     }
     return TRUE;
   }
@@ -75,7 +75,7 @@ class Delete implements Action {
    *
    * @param DOMNode $node
    */
-  private function delete(DOMNode $node) {
+  private function doDelete(DOMNode $node) {
     $node->parentNode->removeChild($node);
   }
 
