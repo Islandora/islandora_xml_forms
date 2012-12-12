@@ -139,7 +139,7 @@ class Create implements Action {
           htmlspecialchars(html_entity_decode($value, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') :
           NULL; // Filter the value.
       $parent = $results->item(0);
-      $created = $this->create($document, $value);
+      $created = $this->doCreate($document, $value);
       $this->append($document, $created, $parent);
       $document->registry->register($element->hash, $created);
       return TRUE;
@@ -153,7 +153,7 @@ class Create implements Action {
    * @param mixed $value
    * @return DOMNode
    */
-  private function create(XMLDocument $document, $value) {
+  private function doCreate(XMLDocument $document, $value) {
     $action = array(
       self::Element => 'createElement',
       self::Attribute => 'createAttribute',
