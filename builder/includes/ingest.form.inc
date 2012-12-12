@@ -59,5 +59,9 @@ function xml_form_builder_ingest_form_submit(array $form, array &$form_state) {
   $label = $title_field['#value'];
   xml_form_builder_update_object($object, $association, $document, $label);
 
+  // XXX: Restricts to the usage of a single content model.
+  $configuration = &islandora_ingest_form_get_configuration($form_state);
+  $configuration['models'] = array($association['content_model']);
+
   $association_step_storage['association_used'] = TRUE;
 }
