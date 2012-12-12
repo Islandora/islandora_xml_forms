@@ -128,8 +128,9 @@ function xml_form_builder_edit_datastream_form_metadata_form(array $form, array 
   $xml = $datastream->content;
   $form = xml_form_builder_get_form($form, $form_state, $form_name, $xml);
   // Make the Object label field required.
-  $title_field = &drupal_array_get_nested_value($form, $association['title_field']);
-  $title_field['#required'] = TRUE;
+  $title_field_parents = $association['title_field'];
+  $title_field_parents[] = '#required';
+  $title_field = drupal_array_set_nested_value($form, $title_field_parents, TRUE);
   $form['update'] = array(
     '#type' => 'submit',
     '#value' => t('Update'),
@@ -153,8 +154,10 @@ function xml_form_builder_edit_datastream_form_metadata_form_submit(array $form,
   $datastream = $form_state['datastream'];
   $association = $form_state['association'];
   $object = $datastream->parent;
+
   $title_field = drupal_array_get_nested_value($form, $association['title_field']);
   $label = $title_field['#value'];
+
   $xml_form = new XMLForm($form_state);
   $document = $xml_form->submit($form, $form_state);
   xml_form_builder_update_object($object, $association, $document, $label);

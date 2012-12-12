@@ -74,7 +74,7 @@ class Update implements Action {
     $results = $this->path->query($document, $element);
     $results = dom_node_list_to_array($results);
     foreach ($results as $node) {
-      $this->update($node, $value);
+      $this->doUpdate($node, $value);
     }
     return TRUE;
   }
@@ -85,7 +85,7 @@ class Update implements Action {
    * @param DOMNode $node
    * @param mixed $value
    */
-  private function update(DOMNode $node, $value) {
+  private function doUpdate(DOMNode $node, $value) {
     $node->nodeValue = $value;
   }
 
