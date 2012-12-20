@@ -44,7 +44,9 @@ class Element {
    *   An list of files to be included from the jquery theme. Or a single file name.
    */
   public static function addUIThemeStyles($files = array()) {
-    self::addFiles('drupal_add_css', PATH_XML_FORM_ELEMENTS_JQUERY_THEME, $files, 'theme');
+    self::addFiles('drupal_add_css', PATH_XML_FORM_ELEMENTS_JQUERY_THEME, $files, array(
+      'group' => CSS_THEME,
+    ));
   }
 
   /**
@@ -62,7 +64,9 @@ class Element {
    * @param type $files
    */
   public static function addCSS($files = array()) {
-    self::addFiles('drupal_add_css', PATH_XML_FORM_ELEMENTS_CSS, $files, 'theme');
+    self::addFiles('drupal_add_css', PATH_XML_FORM_ELEMENTS_CSS, $files, array(
+      'group' => CSS_THEME,
+    ));
   }
 
   /**
@@ -76,7 +80,8 @@ class Element {
    *   The file(s) to be added.
    */
   private static function addFiles($function, $path, $files = array(), $additional_argument = NULL) {
-    $files = is_array($files) ? $files : array($files); // Convert string to array if needed.
+    // Convert string to array.
+    $files = (array)$files;
     foreach ($files as $file) {
       $function($path . $file, $additional_argument);
     }
