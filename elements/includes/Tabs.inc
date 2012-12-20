@@ -14,10 +14,10 @@ class Tabs {
    * @staticvar boolean $load
    *   Keeps us from loading the same files multiple times, while not required it just saves some time.
    */
-  public static function addRequiredResources() {
+  public static function addRequiredResources(array &$form_state) {
     static $load = TRUE;
     if ($load) {
-      module_load_include('inc', 'xml_form_elements', 'includes/Element');
+      form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
       Element::addRequiredResources();
       Element::addUIWidgets('ui.tabs');
       Element::addUIThemeStyles(array('ui.core.css', 'ui.tabs.css', 'ui.theme.css'));
@@ -35,7 +35,7 @@ class Tabs {
    * @param array $complete_form
    */
   public static function process(array $element, array &$form_state, array $complete_form = NULL) {
-    self::addRequiredResources();
+    self::addRequiredResources($form_state);
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
     return $element;
