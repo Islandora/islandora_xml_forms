@@ -199,23 +199,36 @@ tream.',
     'xml_form_builder_form_associations' => 'islandora_content_model_forms',
   );
 
+  $output = array();
+  $t = get_t();
   foreach($schema as $name => $schema_info) {
-    db_create_table($name, $schema_info);
+    try {
+      db_create_table($name, $schema_info);
+    }
+    catch (DatabaseSchemaObjectExistsException $e) {
+      $output[] = $t('Table "@name" already exists.', array('@name' => $name));
+    }
 
-    $results = db_select($old_name[$name], 'o')
-      ->fields('o')
-      ->execute()
-      ->fetchAll();
-    foreach ($results as $result) {
-      db_insert($name)
-        ->fields((array)$result)
-        ->execute();
+    $old = $old_name[$name];
+
+    if (db_table_exists($old)) {
+      // XXX: If the schema changes significantly in the future, this should be
+      //  moved there and updated.
+      $results = db_select($old, 'o')
+        ->fields('o')
+        ->execute()
+        ->fetchAll();
+      foreach ($results as $result) {
+        db_insert($name)
+          ->fields((array)$result)
+          ->execute();
+      }
+
+      $output[] = $t('Copied info from old table "@old".', array('@old' => $old));
     }
   }
 
-  $t = get_t();
-
-  return $t('Copied form associations from deprecated "islandora_content_model_forms".');
+  return implode(' ', $output);
 }
 
 /**
@@ -238,13 +251,17 @@ function xml_form_builder_update_7101() {
 
   foreach ($results as $association) {
     $title_field = $association->title_field;
-    $title_field = substr($title_field, 2, -2);
-    $title_field = explode("']['", $title_field);
-    db_update('xml_form_builder_form_associations')
-      ->fields(array(
-        'title_field' => serialize($title_field),
-      ))
-      ->condition('id', $association->id)
-      ->execute();
+    // Avoid operating on already serialized arrays (if associations have been
+    //  created before running the updates).
+    if (!is_array(@unserialize($title_field))) {
+      $title_field = substr($title_field, 2, -2);
+      $title_field = explode("']['", $title_field);
+      db_update('xml_form_builder_form_associations')
+        ->fields(array(
+          'title_field' => serialize($title_field),
+        ))
+        ->condition('id', $association->id)
+        ->execute();
+    }
   }
 }
