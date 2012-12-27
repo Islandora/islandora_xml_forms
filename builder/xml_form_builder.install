@@ -219,6 +219,7 @@ tream.',
         ->execute()
         ->fetchAll();
       foreach ($results as $result) {
+        unset($result->id);
         db_insert($name)
           ->fields((array)$result)
           ->execute();
