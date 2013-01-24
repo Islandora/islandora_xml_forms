@@ -192,8 +192,12 @@ class XMLFormDatabase {
    *   TRUE if successful FALSE otherwise.
    */
   public static function Delete($form_name) {
+    $association_table = 'islandora_content_model_forms';
     if (self::Exists($form_name)) {
       db_query("DELETE FROM {%s} WHERE name = '%s'", self::table, $form_name);
+      if (module_exists('islandora_content_model_forms') && db_table_exists($association_table)) {
+        db_query("DELETE FROM {%s} WHERE form_name = '%s'", $association_table, $form_name);
+      }
       return TRUE;
     }
     return FALSE;
