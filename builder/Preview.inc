@@ -9,9 +9,11 @@
 /**
  * Render the preview form.
  *
- * This show the user what their form will look like. When it is submitted it will show the user what the generated XML
- * Looks like.
+ * This shows the user what their form will look like. When it is submitted it
+ * will show the user what the generated XML looks like.
  *
+ * @param array $form
+ *   Any wrapping form elements.
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name
@@ -20,17 +22,10 @@
  * @return array
  *   A Drupal Form that repersents the given form, identified by $form_name.
  */
-function xml_form_builder_preview($form, array &$form_state, $form_name) {
-  $form = xml_form_builder_get_form($form_state, $form_name);
-  if ($form === FALSE) {
-    return array();
-  }
-  /**
-   * Deals with a bug in drupals AHAH, where the user would be redirected to a different page.
-   * This is fixed in Drupal 7.
-   */
-  $form['#action'] = url("admin/islandora/xml/form/$form_name/view"); // AHAH bug workaround.
-  return $form;
+function xml_form_builder_preview(array $form, array &$form_state, $form_name) {
+  // Make sure we can find ourself, for AJAX.
+  form_load_include($form_state, 'inc', 'xml_form_builder', 'Preview');
+  return xml_form_builder_get_form($form, $form_state, $form_name);
 }
 
 /**
@@ -44,7 +39,6 @@ function xml_form_builder_preview($form, array &$form_state, $form_name) {
  *   The Drupal Form State.
  */
 function xml_form_builder_preview_submit(array $form, array &$form_state) {
-  module_load_include('inc', 'xml_form_api', 'XMLForm');
   try {
     $xml_form = new XMLForm($form_state);
     $document = $xml_form->submit($form, $form_state);
@@ -55,7 +49,7 @@ function xml_form_builder_preview_submit(array $form, array &$form_state) {
     $message = 'File: ' . $e->getFile() . '</br>';
     $message .= 'Line: ' . $e->getLine() . '</br>';
     $message .= 'Error: ' . $e->getMessage() . '</br>';
-    drupal_set_message($message, 'error');
+    drupal_set_message(filter_xss($message), 'error');
     $form_state['rebuild'] = TRUE;
   }
 }

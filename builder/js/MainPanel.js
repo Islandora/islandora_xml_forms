@@ -43,7 +43,7 @@ Ext.formbuilder.createMainPanel = function(children){
     return Ext.create('Ext.panel.Panel', {
         width: 960,
         height: 820,
-        title: 'Form Editor',
+        title: Drupal.t('Form Editor'),
         layout: 'border',
         renderTo: 'xml-form-builder-editor',
         items: children,
@@ -55,7 +55,7 @@ Ext.formbuilder.createMainPanel = function(children){
             xtype: 'toolbar',
             items: [{
                 xtype: 'button',
-                text: 'Form Properties',
+                text: Drupal.t('Form Properties'),
                 handler: function() {
                     Ext.formbuilder.showPropertiesForm();
                 }
@@ -63,7 +63,7 @@ Ext.formbuilder.createMainPanel = function(children){
                 xtype: 'tbfill'
             },{
                 xtype: 'button',
-                text: 'Save & Preview',
+                text: Drupal.t('Save & Preview'),
                 handler: function() {
                     Ext.formbuilder.save(true);
                 }
@@ -71,7 +71,7 @@ Ext.formbuilder.createMainPanel = function(children){
                 xtype: 'tbseparator'
             },{
                 xtype: 'button',
-                text: 'Save',
+                text: Drupal.t('Save'),
                 handler: function() {
                     Ext.formbuilder.save(false);
                 }

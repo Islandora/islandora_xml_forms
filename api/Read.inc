@@ -73,13 +73,13 @@ class Read implements Action {
        */
       $results = new DOMNodeList();
     }
-    /*if ($results->length) {
+    /* if ($results->length) {
      $result = $results->item(0);
      drupal_set_message('&nbsp;->Result: ' . $result->tagName);
      }
      else {
      drupal_set_message('&nbsp;->Result: None');
-     }*/
+     } */
     return $results;
   }
 

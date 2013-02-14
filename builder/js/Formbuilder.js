@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -74,7 +74,7 @@ Ext.formbuilder = (function() {
       if(record.data['namespaces'] instanceof Object) {
         jQuery.each(record.data['namespaces'], function(i, n) {
           namespaces.push({
-            key: i, 
+            key: i,
             value: n
           });
         });
@@ -109,7 +109,7 @@ Ext.formbuilder = (function() {
           });
           return output;
         }
-        form_array_grids.forEach(function(name) {
+        Ext.Array.each(form_array_grids, function(name) {
           var store = Ext.getCmp(name).store;
           record.set(name, toArray(store));
         });
@@ -123,7 +123,7 @@ Ext.formbuilder = (function() {
           });
           return output;
         }
-        form_map_grids.forEach(function(name) {
+        Ext.Array.each(form_map_grids, function(name) {
           var store = Ext.getCmp(name).store;
           record.set(name, toObject(store));
         });

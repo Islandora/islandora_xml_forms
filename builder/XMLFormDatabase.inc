@@ -22,8 +22,12 @@ class XMLFormDatabase {
    */
   public static function Exists($form_name) {
     //@TODO: integrate 'fancy' 'dynamic' self::table
-    $query = db_query('SELECT count(name) FROM {xml_forms} WHERE name = :name', array(':name' => $form_name));
-    $count = $query->fetchField();
+    $count = db_select('xml_forms', 'xf')
+      ->condition('xf.name', $form_name)
+      ->fields('xf', array('name'))
+      ->execute()
+      ->rowCount();
+
     return $count == 1;
   }
 
@@ -92,7 +96,7 @@ class XMLFormDatabase {
     $names = array();
     $result = db_query('SELECT name FROM {xml_forms}')->fetchCol();
     foreach ($result AS $data) {
-      $names[$data] = $data;
+      $names[] = array('name' => $data, 'indb' => TRUE);
     }
     return $names;
   }
@@ -176,12 +180,12 @@ class XMLFormDatabase {
       $version = XMLFormDefinition::getVersion($definition);
       if (!$version->isLatestVersion()) {
         $definition = XMLFormDefinition::upgradeToLatestVersion($definition);
-      } 
+      }
       $num = db_update(self::table)
         ->fields(array('form' => $definition->saveXML()))
         ->condition('name', $form_name)
         ->execute();
-      if($num) {
+      if ($num) {
         return TRUE;
       }
       else {
@@ -205,7 +209,7 @@ class XMLFormDatabase {
       $num = db_delete(self::table)
         ->condition('name', $form_name)
         ->execute();
-      if($num) {
+      if ($num) {
         return TRUE;
       }
       else {

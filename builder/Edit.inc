@@ -16,6 +16,14 @@
  *   The html where the Form Builder GUI will be rendered.
  */
 function xml_form_builder_edit($form_name) {
+  module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+
+  if (!XMLFormDatabase::Exists($form_name)) {
+    drupal_set_message(t('Form "%name" does not exist.', array('%name' => $form_name)), 'error');
+    drupal_not_found();
+    exit();
+  }
+
   xml_form_builder_edit_include_css();
   xml_form_builder_edit_include_js();
   xml_form_builder_create_element_type_store();
@@ -80,7 +88,7 @@ function xml_form_builder_edit_save($form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
   module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
   try {
-    $definition = new JSONFormDefinition($_POST['data']);
+    $definition = new JSONFormDefinition($_POST['data']); // @TODO: this data needs to be sanitized. Can we get this data through the form API?
     list($properties, $form) = $definition->getPropertiesAndForm();
     $definition = XMLFormDefinitionGenerator::Create($properties, $form);
     XMLFormDatabase::Update($form_name, $definition);
@@ -184,28 +192,16 @@ EOT;
 /**
  * Gets a list of all the existing element types defined by the elements hook.
  *
- * @staticvar array $cache
- *   The cached list of existing element types.
- *
  * @return array
  *   A list of all the existing element types.
  */
 function xml_form_builder_get_element_types() {
-  static $cache;
-  if (!isset($cache)) {
-    $cache = array();
-    //XXX: --Adam Errr...  why not just call module_invoke_all?
-    foreach (module_implements('element_info') as $module) {
-      $elements = module_invoke($module, 'element_info');
-      if (isset($elements) && is_array($elements)) {
-        $cache = array_merge_recursive($cache, $elements);
-      }
-    }
+  $output = &drupal_static(__FUNCTION__);
+
+  if (!isset($output)) {
+    $types = array_keys(module_invoke_all('element_info'));
+    $output = drupal_map_assoc($types);
   }
-  $types = array_keys($cache);
-  $output = array();
-  foreach ($types as $type) {
-    $output[$type] = $type;
-  }
+
   return $output;
 }

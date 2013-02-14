@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -10,7 +10,7 @@ Ext.formbuilder.createTreePanel = function() {
         ptype: 'treeviewdragdrop'
       }
     },
-    title: 'Elements',
+    title: Drupal.t('Elements'),
     store: this.elementStore,
     region: 'west',
     width: 230,
@@ -22,7 +22,7 @@ Ext.formbuilder.createTreePanel = function() {
       xtype: 'toolbar',
       items: [{
         xtype: 'button',
-        text: 'Add',
+        text: Drupal.t('Add'),
         handler: function() {
           var tree = Ext.formbuilder.treePanel;
           var selectionModel = tree.getSelectionModel();
@@ -40,7 +40,7 @@ Ext.formbuilder.createTreePanel = function() {
         }
       }, {
         xtype: 'button',
-        text: 'Copy',
+        text: Drupal.t('Copy'),
         handler: function() {
           var tree = Ext.formbuilder.treePanel;
           var selectionModel = tree.getSelectionModel();
@@ -51,7 +51,7 @@ Ext.formbuilder.createTreePanel = function() {
         }
       }, {
         xtype: 'button',
-        text: 'Paste',
+        text: Drupal.t('Paste'),
         handler: function() {
           var tree = Ext.formbuilder.treePanel;
           var selectionModel = tree.getSelectionModel();
@@ -68,7 +68,7 @@ Ext.formbuilder.createTreePanel = function() {
         }
       }, {
         xtype: 'button',
-        text: 'Delete',
+        text: Drupal.t('Delete'),
         handler: function() {
           var tree = Ext.formbuilder.treePanel;
           var selectionModel = tree.getSelectionModel();
@@ -97,12 +97,12 @@ Ext.formbuilder.createTreePanel = function() {
           form.loadRecord(record);
           //attributes
           var form_grids = [ 'attributes', 'element_validate', 'process', 'pre_render', 'post_render', 'after_build', 'options', 'user_data', 'submit', 'validate'];
-          form_grids.forEach(function(name) {
+          Ext.Array.each(form_grids, function(name) {
             var converted = [];
             if(data[name] instanceof Object) {
               jQuery.each(data[name], function(i, n) {
                 converted.push({
-                  key: i, 
+                  key: i,
                   value: n
                 });
               });
@@ -142,7 +142,7 @@ Ext.formbuilder.createTreePanel = function() {
             form.setValues(values);
           }
           else {
-            Ext.getCmp('ahah').collapse();
+            Ext.getCmp('ajax').collapse();
             Ext.getCmp('ahah_progress').collapse();
           }
           var actions = data.actions;
@@ -206,10 +206,9 @@ Ext.formbuilder.createTreePanel = function() {
             Ext.getCmp('actions_update').collapse();
             Ext.getCmp('actions_delete').collapse();
           }
-                    
+
         }
       }
     }
   });
 }
-

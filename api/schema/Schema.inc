@@ -114,7 +114,7 @@ class XMLSchema {
    */
   private function getSchemaLocation($filename) {
     $index = strrpos($filename, '/');
-    return substr($filename, 0, $index);
+    return drupal_substr($filename, 0, $index);
   }
 
   /**
@@ -137,9 +137,9 @@ class XMLSchema {
         if (($count = preg_match_all('/\.\.\//', $filename, $matches, PREG_OFFSET_CAPTURE)) > 0) {
           for ($i = 0; $i < $count; $i++) {
             $index = strrpos($location, '/');
-            $location = substr($location, 0, $index);
+            $location = drupal_substr($location, 0, $index);
           }
-          $filename = substr($filename, $matches[0][$count - 1][1] + 3); // +3 for "../"
+          $filename = drupal_substr($filename, $matches[0][$count - 1][1] + 3); // +3 for "../"
         }
         $path = $location . '/' . $filename;
         return $path;

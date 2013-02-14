@@ -14,10 +14,10 @@ class Tabs {
    * @staticvar boolean $load
    *   Keeps us from loading the same files multiple times, while not required it just saves some time.
    */
-  public static function addRequiredResources() {
+  public static function addRequiredResources(array &$form_state) {
     static $load = TRUE;
     if ($load) {
-      module_load_include('inc', 'xml_form_elements', 'includes/Element');
+      form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
       Element::addRequiredResources();
       Element::addUIWidgets('ui.tabs');
       Element::addUIThemeStyles(array('ui.core.css', 'ui.tabs.css', 'ui.theme.css'));
@@ -35,7 +35,7 @@ class Tabs {
    * @param array $complete_form
    */
   public static function process(array $element, array &$form_state, array $complete_form = NULL) {
-    self::addRequiredResources();
+    self::addRequiredResources($form_state);
     $element['#prefix'] = "<div class='clear-block' id='{$element['#hash']}'>";
     $element['#suffix'] = '</div>';
     return $element;
@@ -57,14 +57,15 @@ class Tabs {
  *
  * @param array $vars
  */
-function template_preprocess_tabs_content(&$vars) {
-  $tabs = $vars['tabs'];
+function template_preprocess_tabs(&$vars) {
+  $tabs = $vars['element'];
   // Header Info
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
   $vars['collapsed'] = $tabs['#collapsed'] == TRUE;
   // Get Tabpanels
   $keys = element_children($tabs);
   $children = array();
+
   foreach ($keys as $key) {
     $children[$key] = &$tabs[$key];
   }
@@ -91,14 +92,4 @@ function template_preprocess_tabs_content(&$vars) {
     $vars['content'] = '';
     drupal_set_message(t('Attempted to create a tabs: %name, without defining any child tabpanels.', array('%name' => $name)), 'error');
   }
-}
-
-/**
- * Theme Hook for tags elements.
- */
-function theme_tabs($element) {
-  // TODO: Should this theme tabs be declared in hook_theme()?
-  // TODO Please change this theme call to use an associative array for the $variables parameter.
-  $content = theme('tabs_content', $element);
-  return theme('form_element', $element, $content);
 }
