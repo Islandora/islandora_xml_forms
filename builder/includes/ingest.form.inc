@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * The ingest metadata form.
  */
 
@@ -13,18 +12,14 @@
  *   The Drupal form.
  * @param array $form_state
  *   The Drupal form state.
- * @param array $associations
- *   The form associations to select from.
+ * @param array $association
+ *   The form association.
  *
  * @return array
  *   A drupal form definition.
  */
-function xml_form_builder_ingest_form(array $form, array &$form_state) {
+function xml_form_builder_ingest_form(array $form, array &$form_state, array $association) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'ingest.form');
-
-  $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
-  $association = $association_step_storage['association'];
-
   $form_name = $association['form_name'];
   $dsid = $association['dsid'];
   $object = islandora_ingest_form_get_object($form_state);
@@ -40,8 +35,7 @@ function xml_form_builder_ingest_form(array $form, array &$form_state) {
 }
 
 /**
- * Updates the ingestable object's datastream as defined by the given
- * association.
+ * Updates the ingestable object's datastream.
  *
  * @param array $form
  *   The Drupal form.
@@ -49,19 +43,31 @@ function xml_form_builder_ingest_form(array $form, array &$form_state) {
  *   The Drupal form state.
  */
 function xml_form_builder_ingest_form_submit(array $form, array &$form_state) {
-  $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
-  $association = $association_step_storage['association'];
-
+  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  $association = $metadata_step_storage['association'];
   $object = islandora_ingest_form_get_object($form_state);
   $xml_form = new XMLForm($form_state);
   $document = $xml_form->submit($form, $form_state);
   $title_field = drupal_array_get_nested_value($form, $association['title_field']);
   $label = $title_field['#value'];
-  xml_form_builder_update_object($object, $association, $document, $label);
+  $metadata_step_storage['created'] = xml_form_builder_update_object($object, $association, $document, $label);
+}
 
-  // XXX: Restricts to the usage of a single content model.
-  $configuration = &islandora_ingest_form_get_configuration($form_state);
-  $configuration['models'] = array($association['content_model']);
-
-  $association_step_storage['association_used'] = TRUE;
+/**
+ * Undoes the submit, purging any datastreams created by this step.
+ *
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ */
+function xml_form_builder_ingest_form_undo_submit(array $form, array &$form_state) {
+  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  $object = islandora_ingest_form_get_object($form_state);
+  foreach ($metadata_step_storage['created'] as $dsid => $created) {
+    if ($created) {
+      $object->purgeDatastream($dsid);
+    }
+  }
+  unset($metadata_step_storage['created']);
 }

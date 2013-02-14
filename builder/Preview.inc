@@ -23,9 +23,13 @@
  *   A Drupal Form that repersents the given form, identified by $form_name.
  */
 function xml_form_builder_preview(array $form, array &$form_state, $form_name) {
-  // Make sure we can find ourself, for AJAX.
   form_load_include($form_state, 'inc', 'xml_form_builder', 'Preview');
-  return xml_form_builder_get_form($form, $form_state, $form_name);
+  $form = xml_form_builder_get_form($form, $form_state, $form_name);
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+  return $form;
 }
 
 /**

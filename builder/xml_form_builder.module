@@ -2,12 +2,10 @@
 
 /**
  * @file
- *
+ * Defines all the hooks this module implements.
  */
 
-/**
- * Constants
- */
+// Constants.
 define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
 define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
 define('PERM_XML_FORM_BUILDER_EDIT_FORMS', 'Edit XML Forms');
@@ -32,11 +30,6 @@ define('MENU_XML_FORM_BUILDER_EDIT_DATASTREAM', 'islandora/edit_form/%islandora_
  * Implements hook_menu().
  */
 function xml_form_builder_menu() {
-  /**
-   * Inital page. Lists the existing forms showing a preview of each.
-   * The user is provided with links for creating, editing, deleting, or copying
-   * forms.
-   */
   $items[MENU_XML_FORM_BUILDER_MAIN] = array(
     'title' => 'Form Builder',
     'description' => 'Create, manage and edit XML-based forms.',
@@ -45,9 +38,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_NORMAL_ITEM,
   );
-  /**
-   * Presents a form that allows the user to create a new form.
-   */
   $items[MENU_XML_FORM_BUILDER_CREATE] = array(
     'title' => 'Create Form',
     'description' => 'Create a new Form.',
@@ -57,9 +47,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_LOCAL_ACTION,
   );
-  /**
-   * Presents a form that allows the user to create a new form.
-   */
   $items[MENU_XML_FORM_BUILDER_IMPORT] = array(
     'title' => 'Import Form',
     'description' => 'Import a form from an existing definition.',
@@ -69,9 +56,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_LOCAL_ACTION,
   );
-  /**
-   * View a form.
-   */
   $items[MENU_XML_FORM_BUILDER_VIEW] = array(
     'title' => 'Preview Form',
     'description' => 'Preview a form.',
@@ -81,9 +65,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_CALLBACK,
   );
-  /**
-   * Export the form.
-   */
   $items[MENU_CALLBACK_XML_FORM_BUILDER_EXPORT] = array(
     'title' => 'Export Form',
     'description' => 'Export a form.',
@@ -92,9 +73,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
     'type' => MENU_CALLBACK,
   );
-  /**
-   * Presents a form that allows the user to copy an existing form.
-   */
   $items[MENU_XML_FORM_BUILDER_COPY] = array(
     'title' => 'Copy Form',
     'description' => 'Copy an existing Form.',
@@ -104,9 +82,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
     'type' => MENU_CALLBACK,
   );
-  /**
-   * Presents a form that allows the user to edit a form.
-   */
   $items[MENU_XML_FORM_BUILDER_EDIT] = array(
     'title' => 'Edit Form',
     'description' => 'Edit a Form.',
@@ -116,9 +91,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
-  /**
-   * Callback used by the edit form to save changes made to the form.
-   */
   $items[MENU_CALLBACK_XML_FORM_BUILDER_SAVE] = array(
     'title' => 'Edit Form',
     'description' => 'Edit a Form.',
@@ -128,9 +100,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
     'type' => MENU_CALLBACK,
   );
-  /**
-   * Presents a form that allows the user to delete a new form.
-   */
   $items[MENU_XML_FORM_BUILDER_DELETE] = array(
     'title' => 'Delete Form',
     'description' => 'Delete a Form.',
@@ -140,10 +109,6 @@ function xml_form_builder_menu() {
     'access arguments' => array(PERM_XML_FORM_BUILDER_DELETE_FORMS),
     'type' => MENU_CALLBACK,
   );
-
-  /**
-   * Present the form to associate forms with content models and datastream IDs.
-   */
   $items[MENU_XML_FORM_BUILDER_ASSOCIATIONS] = array(
     'title' => 'Associate Form "@form"',
     'title arguments' => array('@form' => 3),
@@ -155,7 +120,6 @@ function xml_form_builder_menu() {
     'type' => MENU_CALLBACK,
     'tab_parent' => MENU_XML_FORM_BUILDER_MAIN,
   );
-
   // Remove existing associations, redirect back to list.
   $items[MENU_XML_FORM_BUILDER_DISASSOCIATE] = array(
     'title' => 'Disable Form Association',
@@ -233,8 +197,6 @@ function xml_form_builder_forms($form_id, $args) {
 
 /**
  * Implements hook_permission().
- *
- * @return array
  */
 function xml_form_builder_permission() {
   return array(
@@ -383,7 +345,8 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
   }
   try {
     $xml_form = new XMLForm($form_state);
-    if (!$xml_form->isInitialized()) { // Was not initialized from storage.
+    // Was not initialized from storage.
+    if (!$xml_form->isInitialized()) {
       $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
       $document = $definition->createXMLDocument($xml);
       $form = $definition->getForm();
@@ -392,10 +355,8 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
     $form = array_merge($form, $xml_form->toArray($form_state));
   }
   catch (Exception $e) {
-    /**
-     * Catch any errors that occured and display them to the user so that they
-     * may correct their form definition.
-     */
+    // Catch any errors that occured and display them to the user so that they
+    // may correct their form definition.
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
     drupal_set_message(filter_xss($msg), 'error');
     return FALSE;
@@ -425,10 +386,12 @@ function xml_form_builder_theme() {
  */
 function xml_form_builder_islandora_ingest_steps(array &$form_state) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
-  $configuration = islandora_ingest_form_get_configuration($form_state);
-
-  $models = isset($configuration['models']) ? $configuration['models'] : array();
-  $associations = xml_form_builder_get_associations(array(), $models, array());
+  $shared_storage = islandora_ingest_form_get_shared_storage($form_state);
+  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
+  $association_step_storage['models'] = isset($association_step_storage['models']) ? $association_step_storage['models'] : $shared_storage['models'];
+  $associations = xml_form_builder_get_associations(array(), $association_step_storage['models'], array());
+  $metadata_step_storage['association'] = isset($metadata_step_storage['association']) ? $metadata_step_storage['association'] : current($associations);
   $num_associations = count($associations);
   $select_association_step = ($num_associations > 1) ? array(
     'weight' => 0,
@@ -436,29 +399,19 @@ function xml_form_builder_islandora_ingest_steps(array &$form_state) {
     'form_id' => 'xml_form_builder_select_association_form',
     'module' => 'xml_form_builder',
     'file' => 'includes/select_association.form.inc',
-    'args' => array($associations)
+    'args' => array($associations),
   ) : NULL;
-
-  $association = current($associations);
-  $storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
-  if (!isset($storage['association'])) {
-    unset($form_state['storage']['object_form_storage']);
-    $storage['association'] = $association;
-    $storage['association_used'] = FALSE;
-  }
-
   $metadata_step = ($num_associations >= 1) ? array(
     'weight' => 5,
     'type' => 'form',
     'form_id' => 'xml_form_builder_ingest_form',
     'module' => 'xml_form_builder',
     'file' => 'includes/ingest.form.inc',
-    'args' => array(),
+    'args' => array($metadata_step_storage['association']),
   ) : NULL;
-
   return array(
     'xml_form_builder_association_step' => $select_association_step,
-    'xml_form_builder_metadata_step' => $metadata_step
+    'xml_form_builder_metadata_step' => $metadata_step,
   );
 }
 
@@ -480,8 +433,7 @@ function xml_form_builder_islandora_edit_datastream_registry(FedoraObject $objec
 }
 
 /**
- * This function is used by both the ingestion and edit processes to update the
- * given object.
+ * This function is used by ingest/edit to update the given object.
  *
  * @param AbstractFedoraObject $object
  *   The object to update.
@@ -491,12 +443,18 @@ function xml_form_builder_islandora_edit_datastream_registry(FedoraObject $objec
  *   The generated metadata document to add to the object.
  * @param string $label
  *   A new label for the given object.
+ *
+ * @return array
+ *   An associative array where the keys are DSID's and the values are booleans
+ *   that state if the given datastream was created (TRUE) or updated (FALSE).
  */
 function xml_form_builder_update_object(AbstractFedoraObject $object, array $association, XMLDocument $document, $label) {
   $object->label = $label;
   $object->models = array($association['content_model']);
-  $doc = xml_form_builder_update_metadata_datastream($object, $association['dsid'], $document);
-  xml_form_builder_update_dc_datastream($object, $association['transform'], $doc);
+  $document = $document->document;
+  $created = xml_form_builder_update_metadata_datastream($object, $association['dsid'], $document);
+  $created_dc = xml_form_builder_update_dc_datastream($object, $association['transform'], $document);
+  return array($association['dsid'] => $created, 'DC' => $created_dc);
 }
 
 /**
@@ -506,29 +464,32 @@ function xml_form_builder_update_object(AbstractFedoraObject $object, array $ass
  *   The object to update.
  * @param array $datastream_id
  *   The datastream to update.
- * @param XMLDocument $document
- *   The generated metadata document to apply to the datastream.
+ * @param DOMDocument $document
+ *   The document to transform.
+ *
+ * @return bool
+ *   TRUE if the datastream was created, FALSE if it was updated.
  */
-function xml_form_builder_update_metadata_datastream(AbstractFedoraObject $object, $datastream_id, XMLDocument $document) {
+function xml_form_builder_update_metadata_datastream(AbstractFedoraObject $object, $datastream_id, DOMDocument $document) {
+  $created = FALSE;
   if (empty($object[$datastream_id])) {
     $datastream = $object->constructDatastream($datastream_id, 'M');
     $object->ingestDatastream($datastream);
+    $created = TRUE;
   }
   else {
     $datastream = $object[$datastream_id];
   }
-  $document = $document->document;
   $document->preserveWhiteSpace = TRUE;
   $document->formatOutput = TRUE;
   $datastream->setContentFromString(trim($document->saveXML()));
   $datastream->label = "$datastream_id Record";
   $datastream->mimetype = 'text/xml';
-  return $document;
+  return $created;
 }
 
 /**
- * Updates the DC datastream by applying the given transform to the given
- * document.
+ * Updates the DC datastream by applying the given transform.
  *
  * @param AbstractFedoraObject $object
  *   The object whose DC will be updated.
@@ -539,12 +500,14 @@ function xml_form_builder_update_metadata_datastream(AbstractFedoraObject $objec
  */
 function xml_form_builder_update_dc_datastream(AbstractFedoraObject $object, $transform, DOMDocument $document) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
+  $created = FALSE;
   $transform = xml_form_builder_get_transform_file($transform);
   if ($transform) {
     if (empty($object['DC'])) {
       $dc_datastream = $object->constructDatastream('DC', 'X');
       $dc_datastream->label = 'DC Record';
       $object->ingestDatastream($dc_datastream);
+      $created = TRUE;
     }
     else {
       $dc_datastream = $object['DC'];
@@ -552,4 +515,5 @@ function xml_form_builder_update_dc_datastream(AbstractFedoraObject $object, $tr
     $transformed_dc_doc = xml_form_builder_transform_document($transform, $document, $object);
     $dc_datastream->setContentFromString($transformed_dc_doc->saveXML());
   }
+  return $created;
 }
