@@ -57,7 +57,16 @@ function xml_form_elements_element_info() {
       '#process' => array('xml_form_elements_datepicker_process'),
       '#theme' => 'datepicker',
       '#theme_wrappers' => array('form_element'),
-    )
+    ),
+    'defaultable_markup' => array(
+      '#markup' => '',
+      '#pre_render' => array('xml_form_elements_default_value_to_markup', 'drupal_pre_render_markup'),
+    ),
+    'defaultable_item' => array(
+      '#markup' => '',
+      '#pre_render' => array('xml_form_elements_default_value_to_markup', 'drupal_pre_render_markup'),
+      '#theme_wrappers' => array('form_element'),
+    ),
   );
 }
 
@@ -299,3 +308,21 @@ function xml_form_elements_form_element_tags_ajax_edit(FormElement $element, arr
   $input_field['#value'] = $tag_field['#default_value'];
   xml_form_elements_form_element_tags_ajax_delete($element, $form, $form_state);
 }
+
+/**
+ * Pre-render callback; conditionally copy #default_value to #markup.
+ *
+ * Only copies if there is no #markup already set, and #default_value is not
+ * empty.
+ *
+ * @param array $elements
+ *   An array representing the given element.
+ */
+function xml_form_elements_default_value_to_markup($elements) {
+  if (empty($elements['#markup']) && !empty($elements['#default_value'])) {
+    $elements['#markup'] = $elements['#default_value'];
+  }
+
+  return $elements;
+}
+
