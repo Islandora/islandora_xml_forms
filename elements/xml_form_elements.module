@@ -345,7 +345,7 @@ function xml_form_elements_remove_empty_markup($elements) {
 }
 
 /**
- * Implements theme_hoook().
+ * Implements theme_hook().
  */
 function theme_xml_form_element(&$elements) {
  if (!empty($elements['element']['#children'])) {
