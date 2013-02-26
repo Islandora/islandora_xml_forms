@@ -60,12 +60,12 @@ function xml_form_elements_element_info() {
     ),
     'defaultable_markup' => array(
       '#markup' => '',
-      '#pre_render' => array('xml_form_elements_default_value_to_markup', 'drupal_pre_render_markup'),
+      '#pre_render' => array('xml_form_elements_default_value_to_markup', 'drupal_pre_render_markup', 'xml_form_elements_remove_empty_markup'),
     ),
     'defaultable_item' => array(
       '#markup' => '',
-      '#pre_render' => array('xml_form_elements_default_value_to_markup', 'drupal_pre_render_markup'),
-      '#theme_wrappers' => array('form_element'),
+      '#pre_render' => array('xml_form_elements_default_value_to_markup', 'drupal_pre_render_markup', 'xml_form_elements_remove_empty_markup'),
+      '#theme_wrappers' => array('xml_form_element'),
     ),
   );
 }
@@ -98,7 +98,10 @@ function xml_form_elements_theme($existing, $type, $theme, $path) {
     THEME_XML_FORM_ELEMENTS_DATEPICKER => array(
       'render element' => 'element',
       'file' => 'includes/Datepicker.inc',
-    )
+    ),
+    'xml_form_element' => array(
+      'render element' => 'element',
+    ),
   );
 }
 
@@ -322,7 +325,30 @@ function xml_form_elements_default_value_to_markup($elements) {
   if (empty($elements['#markup']) && !empty($elements['#default_value'])) {
     $elements['#markup'] = $elements['#default_value'];
   }
-
   return $elements;
 }
 
+/**
+ * Pre-render callback; removes empty markup from an element.
+ *
+ * @param array $elements
+ *   An array representing the given element.
+ */
+function xml_form_elements_remove_empty_markup($elements) {
+  $children = element_children($elements);
+  if (!empty($elements['#markup']) || count($children) > 0) {
+    return $elements;
+  }
+  else {
+    return array();
+  }   
+}
+
+/**
+ * Implements theme_hook().
+ */
+function theme_xml_form_element(&$elements) {
+ if (!empty($elements['element']['#children'])) {
+  return theme('form_element', $elements['element']);
+ }
+}
