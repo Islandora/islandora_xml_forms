@@ -2,8 +2,7 @@
 
 /**
  * @file
- *
- * STUFF
+ * Select association form.
  */
 
 /**
@@ -19,69 +18,100 @@
  *   The form associations to select from.
  *
  * @return array
- *   A drupal form definition.
+ *   A Drupal form definition.
  */
 function xml_form_builder_select_association_form(array $form, array &$form_state, array $associations) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/select_association.form');
-
+  $get_default = function($name, $default) use(&$form_state) {
+    return isset($form_state['values'][$name]) ? $form_state['values'][$name] : $default;
+  };
   $form_state['associations'] = $associations;
-
-  $models = array_map(function($o) { return $o['content_model']; }, $associations);
-  $models = array_unique($models);
-  $model_labels = array_map(function($o) { return islandora_object_load($o)->label; }, $models);
-
-  $selected_model = isset($form_state['values']['models']) ? $form_state['values']['models'] : current($models);
-  $selected_model_associations = array_filter($associations, function($o) use($selected_model) { return $o['content_model'] == $selected_model; });
-  $forms = array_map(function($o) { return $o['form_name']; }, $selected_model_associations);
-  $selected_form = (isset($form_state['values']['forms']) && in_array($form_state['values']['forms'], $forms)) ? $form_state['values']['forms'] : current($forms);
+  $models = xml_form_builder_select_association_form_get_models($associations);
+  $selected_model = $get_default('models', key($models));
+  $forms = xml_form_builder_select_association_form_get_forms($associations, $selected_model);
+  $selected_form = $get_default('forms', key($forms));
+  // We check if the form exists incase the model was changed.
+  $selected_form = in_array($selected_form, $forms) ? $selected_form : key(current($forms));
   $multiple_forms = count($forms) > 1;
   $multiple_models = count($models) > 1;
-
-  $form['models'] =  array(
-    '#options' => $multiple_models ? array_combine($models, $model_labels) : NULL,
-    '#title' => t('Select a Content Model'),
-    '#type' => $multiple_models ? 'select' : 'hidden',
-    '#default_value' => $selected_model,
-    '#ajax' => array(
-      'callback' => 'xml_form_builder_select_association_form_ajax_callback',
-      'method' => 'replace',
-      'effect' => 'fade',
-      'event' => 'change',
-      'wrapper' => 'form-select-wrapper'
-    )
-  );
-  if ($multiple_forms) {
-    $form['forms'] = array(
+  return array(
+    'models' => array(
+      '#access' => $multiple_models,
+      '#type' => 'select',
+      '#title' => t('Select a Content Model'),
+      '#options' => $models,
+      '#default_value' => $selected_model,
+      '#ajax' => array(
+        'callback' => 'xml_form_builder_select_association_form_ajax_callback',
+        'method' => 'replace',
+        'effect' => 'fade',
+        'event' => 'change',
+        'wrapper' => 'forms-wrapper',
+      ),
+    ),
+    'forms' => array(
+      '#access' => $multiple_forms,
       '#type' => 'select',
       '#title' => t('Select a Form'),
-      '#options' => array_combine($forms, $forms),
+      '#prefix' => '<div id="forms-wrapper">',
+      '#suffix' => '</div>',
+      '#options' => $forms,
       '#default_value' => $selected_form,
-    );
-  }
-  else {
-    // XXX: This should be using #default_value, but this leads to the old
-    //   previous values being kept in the #value, and therefore markup
-    //   containing the old value being supplied to the client after AJAX
-    //   requests...  #value means it can not be changed by users, but that
-    //   shouldn't be an issue...  There is an issue with not regenerating the
-    //   cache, but that is handled below.
-    $form['forms'] = array(
-      '#type' => 'hidden',
-      '#value' => $selected_form,
-    );
-  }
-
-  $form['forms'] += array(
-    '#prefix' => '<div id="form-select-wrapper">',
-    '#suffix' => '</div>'
+    ),
+    'association' => array(
+      '#type' => 'value',
+      '#default_value' => current($associations),
+      '#value_callback' => 'xml_form_builder_select_association_form_value_callback',
+    ),
   );
-
-  return $form;
 }
 
 /**
- * The AJAX callback for the Content Model select field in the select
- * association form.
+ * Get the models to select from.
+ *
+ * @param array $associations
+ *   The form associations to select from.
+ *
+ * @return array
+ *   An associative array where the keys is the model ID and the value is the
+ *   models label.
+ */
+function xml_form_builder_select_association_form_get_models(array $associations) {
+  $get_model = function($o) {
+    return $o['content_model'];
+  };
+  $models = array_map($get_model, $associations);
+  $models = array_unique($models);
+  $get_label = function($o) {
+    return islandora_object_load($o)->label;
+  };
+  $model_labels = array_map($get_label, $models);
+  return array_combine($models, $model_labels);
+}
+
+/**
+ * Get the forms to select from for the given content model.
+ *
+ * @param array $associations
+ *   The form associations to select from.
+ *
+ * @return array
+ *   An associative array where the keys/value is the form name.
+ */
+function xml_form_builder_select_association_form_get_forms(array $associations, $selected_model) {
+  $get_selected_models = function($o) use($selected_model) {
+    return $o['content_model'] == $selected_model;
+  };
+  $selected_model_associations = array_filter($associations, $get_selected_models);
+  $get_form = function($o) {
+    return $o['form_name'];
+  };
+  $forms = array_map($get_form, $selected_model_associations);
+  return drupal_map_assoc($forms);
+}
+
+/**
+ * The AJAX callback for the models select field.
  *
  * @param array $form
  *   The Drupal form.
@@ -89,19 +119,32 @@ function xml_form_builder_select_association_form(array $form, array &$form_stat
  *   The Drupal form state.
  *
  * @return array
- *   A drupal form definition.
+ *   A Drupal form definition.
  */
 function xml_form_builder_select_association_form_ajax_callback(array $form, array $form_state) {
-  // XXX: This form_set_cache() should not be necessary, but there seems to be
-  //   an issue with how the form API handles hidden fields (and therefore
-  //   affecting when there is a single form)...
-  form_set_cache($form_state['values']['form_build_id'], $form, $form_state);
   return $form['forms'];
 }
 
 /**
- * Submit handler modifies the metadata step. Reverting the changes if the
- * association has changed.
+ * Populates the association field.
+ *
+ * @param array $element
+ *   The assocoiation element.
+ * @param mixed $input
+ *   The input for the element.
+ * @param array $form_state
+ *   The Drupal form state.
+ */
+function xml_form_builder_select_association_form_value_callback(array $element, $input, array &$form_state) {
+  $association_matches = function($o) use($form_state) {
+    return $o['content_model'] == $form_state['values']['models'] && $o['form_name'] == $form_state['values']['forms'];
+  };
+  $filtered_associations = array_filter($form_state['associations'], $association_matches);
+  return array_pop($filtered_associations);
+}
+
+/**
+ * Set the selected association in both the association/metadata steps.
  *
  * @param array $form
  *   The Drupal form.
@@ -109,54 +152,35 @@ function xml_form_builder_select_association_form_ajax_callback(array $form, arr
  *   The Drupal form state.
  */
 function xml_form_builder_select_association_form_submit(array $form, array &$form_state) {
-  $values = $form_state['values'];
-  $association_matches = function($o) use($values) {
-    return $o['content_model'] == $values['models'] && $o['form_name'] == $values['forms'];
-  };
-  $filtered_associations = array_filter($form_state['associations'], $association_matches);
-  $association = array_pop($filtered_associations);
-
-  $storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
-  $original_association = $storage['association'];
-  if ($storage['association'] != $association) {
-    $storage['association'] = $association;
-    unset($form_state['storage']['objective_form_storage']);
-
-    if ($storage['association_used']) {
-      $object = islandora_ingest_form_get_object($form_state);
-      $dsid = $original_association['dsid'];
-      $object->purgeDatastream($dsid);
-      if ($dsid != 'DC') {
-        $object->purgeDatastream('DC');
-      }
-      $metadata_step = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
-      unset($metadata_step['values']);
-      $storage['association_used'] = FALSE;
-    }
-  }
-
-  // Keep track if the association was used to generate markup.
-  if (!isset($storage['association_used'])) {
-    $storage['association_used'] = FALSE;
-  }
+  $shared_storage = &islandora_ingest_form_get_shared_storage($form_state);
+  $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
+  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  $association = $form_state['values']['association'];
+  // Store the selected association in both the association/metadata steps.
+  $association_step_storage['association'] = $metadata_step_storage['association'] = $association;
+  // Limit the list of models to the selected model. We may not want to do this
+  // in the future when we'll support ingesting multiple content models, at
+  // such a time we can create a seperate form for selecting content models and
+  // have it control what models are availible. Until then this will have to
+  // stand in.
+  $shared_storage['models'] = (array) $association['content_model'];
 }
 
 /**
- * Grab the step entry for the metadata ingest form.
+ * Undo's any changes the regular submit handler did.
  *
+ * @param array $form
+ *   The Drupal form.
  * @param array $form_state
- * @return array
- *   Reference to the array defining the ingest step.
+ *   The Drupal form state.
  */
-function &xml_form_builder_get_metadata_step(array &$form_state) {
-  $steps = &islandora_ingest_form_get_steps($form_state);
-  $metadata_step_index = NULL;
-  array_walk($steps, function($v, $k) use(&$metadata_step_index) {
-      if (isset($v['form_id']) && $v['form_id'] == 'xml_form_builder_ingest_form') {
-        $metadata_step_index = $k;
-      }
-    }
-  );
-  return $steps[$metadata_step_index];
+function xml_form_builder_select_association_form_undo_submit(array $form, array &$form_state) {
+  $shared_storage = &islandora_ingest_form_get_shared_storage($form_state);
+  $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
+  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  // Forget the selected association.
+  unset($association_step_storage['association']);
+  unset($metadata_step_storage['association']);
+  // Restore the list of models to their original value.
+  $shared_storage['models'] = $association_step_storage['models'];
 }
-
