@@ -103,7 +103,7 @@ function xml_form_builder_edit_datastream_form_select_association_form(array $fo
  */
 function xml_form_builder_edit_datastream_form_select_association_form_submit(array $form, array &$form_state) {
   $model = $form_state['values']['models'];
-  $form_name = $form_state['values']['forms'];
+  $form_name = $form_state['values']['available_forms'];
   $association_matches = function($o) use($model, $form_name) {
     return $o['content_model'] == $model && $o['form_name'] == $form_name;
   };
