@@ -23,38 +23,40 @@
 function xml_form_builder_select_association_form(array $form, array &$form_state, array $associations) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/select_association.form');
   $get_default = function($name, $default) use(&$form_state) {
-    return isset($form_state['values'][$name]) ? $form_state['values'][$name] : $default;
+    // @XXX This should use values semantically speaking, but Drupal is not
+    // updating that array on the first AJAX call.
+    return isset($form_state['input'][$name]) ? $form_state['input'][$name] : $default;
   };
   $form_state['associations'] = $associations;
   $models = xml_form_builder_select_association_form_get_models($associations);
   $selected_model = $get_default('models', key($models));
   $forms = xml_form_builder_select_association_form_get_forms($associations, $selected_model);
-  $selected_form = $get_default('forms', key($forms));
+  $selected_form = $get_default('available_forms', key($forms));
   // We check if the form exists incase the model was changed.
-  $selected_form = in_array($selected_form, $forms) ? $selected_form : key(current($forms));
+  $selected_form = in_array($selected_form, $forms) ? $selected_form : $forms[current($forms)];
+
   $multiple_forms = count($forms) > 1;
   $multiple_models = count($models) > 1;
   return array(
     'models' => array(
-      '#access' => $multiple_models,
-      '#type' => 'select',
       '#title' => t('Select a Content Model'),
+      '#type' => 'select',
+      '#access' => $multiple_models,
       '#options' => $models,
       '#default_value' => $selected_model,
       '#ajax' => array(
         'callback' => 'xml_form_builder_select_association_form_ajax_callback',
+        'wrapper' => 'forms_wrapper',
         'method' => 'replace',
         'effect' => 'fade',
-        'event' => 'change',
-        'wrapper' => 'forms-wrapper',
       ),
     ),
-    'forms' => array(
+    'available_forms' => array(
       '#access' => $multiple_forms,
-      '#type' => 'select',
       '#title' => t('Select a Form'),
-      '#prefix' => '<div id="forms-wrapper">',
+      '#prefix' => '<div id="forms_wrapper">',
       '#suffix' => '</div>',
+      '#type' => 'select',
       '#options' => $forms,
       '#default_value' => $selected_form,
     ),
@@ -122,7 +124,7 @@ function xml_form_builder_select_association_form_get_forms(array $associations,
  *   A Drupal form definition.
  */
 function xml_form_builder_select_association_form_ajax_callback(array $form, array $form_state) {
-  return $form['forms'];
+  return $form['available_forms'];
 }
 
 /**
@@ -137,7 +139,7 @@ function xml_form_builder_select_association_form_ajax_callback(array $form, arr
  */
 function xml_form_builder_select_association_form_value_callback(array $element, $input, array &$form_state) {
   $association_matches = function($o) use($form_state) {
-    return $o['content_model'] == $form_state['values']['models'] && $o['form_name'] == $form_state['values']['forms'];
+    return $o['content_model'] == $form_state['values']['models'] && $o['form_name'] == $form_state['values']['available_forms'];
   };
   $filtered_associations = array_filter($form_state['associations'], $association_matches);
   return array_pop($filtered_associations);
