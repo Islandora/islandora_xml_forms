@@ -18,14 +18,14 @@ class XMLFormDefinitionVersion {
 
   /**
    * The version which this class repersents.
-   * 
+   *
    * @var int
    */
   private $version;
 
   /**
    * The path to the directory where all the schema definitions are stored.
-   * 
+   *
    * @return string
    */
   public static function getPathToSchemaDefinitionDirectory() {
@@ -34,7 +34,7 @@ class XMLFormDefinitionVersion {
 
   /**
    * The path to the directory where all the XSL Transformations are stored.
-   * 
+   *
    * @return string
    */
   public static function getPathToXSLTransformDirectory() {
@@ -43,9 +43,9 @@ class XMLFormDefinitionVersion {
 
   /**
    * Gets a list of all the known versions of a XML Form Definition.
-   * 
+   *
    * @return Array
-   *   An array where all the values correspond to the defined versions of an XML Form Definition. 
+   *   An array where all the values correspond to the defined versions of an XML Form Definition.
    *   In order from oldest to most recent.
    */
   public static function getAllVersions() {
@@ -67,12 +67,12 @@ class XMLFormDefinitionVersion {
 
   /**
    * Checks to see if the given version number is valid.
-   * 
+   *
    * Valid schema numbers are defined by having a corresponding Schema file with the same version.
-   * 
-   * @param int $version 
+   *
+   * @param int $version
    *   A XML Form Definition version number.
-   * 
+   *
    * @return bool
    */
   public static function isValid($version) {
@@ -82,7 +82,7 @@ class XMLFormDefinitionVersion {
 
   /**
    * Gets the latest schema version number.
-   * 
+   *
    * @return int
    *   The latest version number.
    */
@@ -94,12 +94,12 @@ class XMLFormDefinitionVersion {
 
   /**
    * Gets the version number of the XML Form Definition.
-   * 
+   *
    * Also validates the document against that version number.s
-   * 
+   *
    * @param DOMDocument $definition
    *   The XML Form Definition.
-   * 
+   *
    * @return float
    *   The version of the XML Form Definition, if the XML Form Definition is not valid FALSE is returned.
    */
@@ -125,7 +125,7 @@ class XMLFormDefinitionVersion {
 
   /**
    * Creates an instance of the XMLFormDefinitionVersion.
-   * 
+   *
    * @param int $version
    *   The XML Form Definition Schema number.
    */
@@ -137,7 +137,7 @@ class XMLFormDefinitionVersion {
 
   /**
    * Gets the numerical repersentation of this version.
-   * 
+   *
    * @return int
    */
   public function get() {
@@ -146,7 +146,7 @@ class XMLFormDefinitionVersion {
 
   /**
    * Gets the next most recent version number from the version number given.
-   * 
+   *
    * @return XMLFormDefinitionVersion
    *   The next version number if the given version is not the latest, otherwise FALSE is returned.
    */
@@ -163,7 +163,7 @@ class XMLFormDefinitionVersion {
 
   /**
    * Checks to see if the XML Form Definition is at the most recent version.
-   * 
+   *
    * @return bool
    *   TRUE if it is the latest, FALSE otherwise.
    */
@@ -174,7 +174,7 @@ class XMLFormDefinitionVersion {
 
   /**
    * Gets the filename of the Schema that repersents this version.
-   * 
+   *
    * @return string
    */
   public function getSchemaFileName() {
@@ -184,7 +184,7 @@ class XMLFormDefinitionVersion {
 
   /**
    * Gets the filename of the XSL Transform that repersents this version.
-   * 
+   *
    * @return string
    */
   public function getTansformFileName() {
@@ -194,8 +194,8 @@ class XMLFormDefinitionVersion {
 
   /**
    * Gets an XSLTProcessor that has been initialized with the transform specified by $version.
-   * 
-   * @param int $version 
+   *
+   * @param int $version
    */
   public function getTransform() {
     $filename = $this->getTansformFileName();
@@ -218,22 +218,22 @@ class XMLFormDefinition {
 
   /**
    * The DOMDocument that repersents the Form Definition.
-   * 
+   *
    * @var DOMDocument
    */
   public $definition;
 
   /**
    * Gets the version number of the XML Form Definition.
-   * 
+   *
    * Also validates the document against that version number.s
-   * 
+   *
    * @throws Exception
    *  If the Version can not be determined or if the definition is not valid.
-   * 
+   *
    * @param DOMDocument $definition
    *   The XML Form Definition.
-   * 
+   *
    * @return float
    *   The version of the XML Form Definition, if the XML Form Definition is not valid FALSE is returned.
    */
@@ -266,12 +266,12 @@ class XMLFormDefinition {
 
   /**
    * Uses the XML Schema associated with the XML Form Definitions version to validate the definition
-   * 
+   *
    * @param DOMDocument $definition
    *   The XML Form Definition.
-   * @param XMLFormDefinitionVersion $version 
-   *   The schema version, if none is give the latest is used. 
-   * 
+   * @param XMLFormDefinitionVersion $version
+   *   The schema version, if none is give the latest is used.
+   *
    * @return boolean
    *   TRUE if the XML Form Definition is valid, FALSE otherwise.
    */
@@ -283,12 +283,12 @@ class XMLFormDefinition {
 
   /**
    * Incrementally upgrades the XML Form Definition, to its next version after its own.
-   * 
+   *
    * If the document is already at its latest version nothing occurs.
    *
    * @param DOMDocument $definition
    *   The XML Form Definition to upgrade. This may be modified by this function.
-   * 
+   *
    * @return XMLFormDefinitionVersion
    *   The upgraded version of the XML Form Definition.
    */
@@ -305,10 +305,10 @@ class XMLFormDefinition {
 
   /**
    * Repeatedly upgrades the XML Form Definition, till it reaches the latest version.
-   * 
-   * @param DOMDocument $definition 
+   *
+   * @param DOMDocument $definition
    *   The XML Form Definition to upgrade.
-   * 
+   *
    * @return XMLFormDefinition
    *   The upgraded XML Form Definition.
    */
@@ -321,8 +321,8 @@ class XMLFormDefinition {
 
   /**
    * Creates an instance of the XMLFormDefinition.
-   * 
-   * @param DOMDocument $definition 
+   *
+   * @param DOMDocument $definition
    */
   public function __construct(DOMDocument $definition) {
     $this->definition = self::upgradeToLatestVersion($definition);
@@ -333,9 +333,9 @@ class XMLFormDefinition {
 
   /**
    * Gets the definition.
-   * 
+   *
    * @return DOMDocument
-   *  
+   *
    */
   public function get() {
     return $this->definition;
@@ -343,7 +343,7 @@ class XMLFormDefinition {
 
   /**
    * Extracts the form section of the definition into a array.
-   * 
+   *
    * @return array
    *   The extracted form declaration from the XML Form Definition. This is also a valid Drupal form.
    */
@@ -354,10 +354,10 @@ class XMLFormDefinition {
 
   /**
    * Creates an XMLDocument instance from the properties stored within the XML Form Definition.
-   * 
-   * @param string $xml 
+   *
+   * @param string $xml
    *   The metadata to initalize the XMLDocument with.
-   * 
+   *
    * @return XMLDocument
    *   An initialized XMLDocument.
    */
@@ -373,7 +373,7 @@ class XMLFormDefinition {
 
   /**
    * Extracts the properties section of the definition into a array.
-   * 
+   *
    * @return array
    *   The extracted properties from the XML Form Definition.
    */
@@ -403,10 +403,10 @@ class XMLFormDefinition {
 
   /**
    * Gets the array repersentation of an Element from the XML Form Definition.
-   * 
-   * @param SimpleXMLElement $element 
+   *
+   * @param SimpleXMLElement $element
    *   The element declaration to transform into its Drupal form.
-   * 
+   *
    * @return array
    *   The Drupal form equivalent of the XML Form Definition element declaration.
    */
@@ -417,10 +417,10 @@ class XMLFormDefinition {
 
   /**
    * Transforms the properties section of an element declaration to its drupal repersentation.
-   * 
+   *
    * @param SimpleXMLElement $element
    *   An element declaration from the XML Form Definition.
-   * 
+   *
    * @return array
    *   The Drupal repersentation of this element's properties declaration.
    */
@@ -437,12 +437,12 @@ class XMLFormDefinition {
   }
 
   /**
-   * Gets the value of a property declared within the properties section of an element declaration 
+   * Gets the value of a property declared within the properties section of an element declaration
    * from the XML Form Definition.
-   * 
+   *
    * @param SimpleXMLElement $property
    *   An element property declaration from the XML Form Deinition.
-   * 
+   *
    * @return mixed
    *   The value of the property.
    */
@@ -461,10 +461,10 @@ class XMLFormDefinition {
 
   /**
    * Gets the name of the property to use as the array index of the property in the Drupal form.
-   * 
+   *
    * @param SimpleXMLElement $property
    *   An element property declaration from the XML Form Definition.
-   * 
+   *
    * @return string
    *   The property name.
    */
@@ -478,11 +478,11 @@ class XMLFormDefinition {
 
   /**
    * Transforms all the child declarations of the given element into their Drupal form repersentations.
-   * 
+   *
    * @param SimpleXMLElement $element
    *   The element declaration to transform into its Drupal form.
-   * 
-   * @return array 
+   *
+   * @return array
    *  All the transformed child declarations.
    */
   private function getElementChildren(SimpleXMLElement $element) {
@@ -506,11 +506,11 @@ class XMLFormDefinitionGenerator {
 
   /**
    * Creates an DOMDocument that defines an XML Form.
-   * 
+   *
    * @param array $properties
    *   The form properties.
-   * 
-   * @param array $form 
+   *
+   * @param array $form
    *   A Drupal form.
    *
    * @return DOMDocument
@@ -530,8 +530,8 @@ class XMLFormDefinitionGenerator {
 
   /**
    * Add's the properties to the root element, of the XML Form Definition.
-   * 
-   * @param SimpleXMLElement $definition 
+   *
+   * @param SimpleXMLElement $definition
    *   The root element of the XML Form Definition.
    * @param array $properties
    *   The form properties.
@@ -558,7 +558,7 @@ class XMLFormDefinitionGenerator {
 
   /**
    * Addes the form to the root element, of the XML Form Definition.
-   * 
+   *
    * @param SimpleXMLElement $definition
    *   The root element of the XML Form Definition.
    * @param FormElement $form
@@ -579,12 +579,12 @@ class XMLFormDefinitionGenerator {
 
   /**
    * Adds a element property to the properties section of an element declaration.
-   * 
+   *
    * @param SimpleXMLElement $properties
    *   The properties section of an element declaration.
    * @param string $key
    *   The properties name.
-   * @param mixed $value 
+   * @param mixed $value
    *   The properties value.
    */
   private static function AddElementProperty(SimpleXMLElement $properties, $key, $value) {
@@ -594,12 +594,12 @@ class XMLFormDefinitionGenerator {
 
   /**
    * Creates an XML Tag repersentation of propery.
-   *  
+   *
    * @param SimpleXMLElement $properties
    *   The parent to which the new property will belong to.
    * @param string $key
    *   The potential tag name for the newly created property.
-   * 
+   *
    * @return SimpleXMLElement
    *   The created Element Property.
    */
@@ -615,7 +615,7 @@ class XMLFormDefinitionGenerator {
 
   /**
    * Sets the Element Property.
-   * 
+   *
    * @param SimpleXMLElement $property
    *   The property whose value will be set.
    * @param mixed $value
@@ -635,17 +635,17 @@ class XMLFormDefinitionGenerator {
 
   /**
    * Checks to see if the given tag name can be used for an XML tags.
-   * 
+   *
    * Numbers are invalid XML tags.
-   * 
+   *
    * @param string $tag_name
    *   The proposed tag name.
-   * @return type 
+   * @return type
    *   TRUE if the name is valid FALSE otherwise.
    */
   private static function IsValidXMLTag($tag_name) {
     // start [A-Z] | "_" | [a-z]
-    // everything else is start plus | "-" | "." | [0-9] 
+    // everything else is start plus | "-" | "." | [0-9]
     return (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $tag_name) > 0) ? TRUE : FALSE;
   }
 
