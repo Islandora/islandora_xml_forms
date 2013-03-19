@@ -9,7 +9,7 @@ module_load_include('inc', 'xml_form_api', 'Path');
 module_load_include('inc', 'xml_schema_api', 'InsertOrderMap');
 
 /**
- * 
+ *
  */
 class Create implements Action {
   /**
@@ -21,20 +21,20 @@ class Create implements Action {
 
   /**
    * Path to the parent element, where the DOMNode will be created.
-   * 
+   *
    * @var Path
    */
   protected $path;
 
   /**
    * Path the this elements definition in the schema.
-   * 
+   *
    * @var path
    */
   protected $schema_path;
 
   /**
-   * Either Create::Element, Create::Attribute, Create::XML 
+   * Either Create::Element, Create::Attribute, Create::XML
    * @var integer
    */
   protected $type;
@@ -71,12 +71,12 @@ class Create implements Action {
 
   /**
    *
-   * @param array $params 
+   * @param array $params
    */
   public function __construct(array &$params) {
     $this->path = new Path($params['path'], new Context(new ContextType($params['context'])));
     $this->schema_path = isset($params['schema']) ? $params['schema'] : NULL;
-    $this->value = $params['value'];
+    $this->value = trim($params['value']);
     $this->type = $params['type'];
     switch ($this->type) {
       case self::XML:
@@ -97,7 +97,7 @@ class Create implements Action {
   }
 
   /**
-   * 
+   *
    * @return array
    */
   public function toDrupalForm() {
@@ -116,7 +116,7 @@ class Create implements Action {
    * @param NodeRegistry $registry
    * @param FormElement $element
    * @param mixed $value
-   * @return boolean 
+   * @return boolean
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
     /**
@@ -130,7 +130,7 @@ class Create implements Action {
    *
    * @param NodeRegistry $registry
    * @param FormElement $element
-   * @param mixed $value 
+   * @param mixed $value
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
     $results = $this->path->query($document, $element);
@@ -151,9 +151,10 @@ class Create implements Action {
    *
    * @param Document $document
    * @param mixed $value
-   * @return DOMNode 
+   * @return DOMNode
    */
   private function create(XMLDocument $document, $value) {
+    dd($value, 'value');
     $action = array(self::Element => 'createElement', self::Attribute => 'createAttribute', self::XML => 'createXML');
     try {
       return $this->$action[$this->type]($document, $value);
@@ -189,7 +190,7 @@ class Create implements Action {
    *
    * @param Document $document
    * @param mixed $value
-   * @return DOMAttr 
+   * @return DOMAttr
    */
   private function createAttribute(XMLDocument $document, $value) {
     if (isset($this->prefix)) {
@@ -208,7 +209,7 @@ class Create implements Action {
   /**
    *
    * @param Document $document
-   * @param DOMElement $value 
+   * @param DOMElement $value
    */
   private function createXML(XMLDocument $document, $value) {
     // Sigh... Oh DOM-API, your so backwards and useless.
@@ -224,7 +225,7 @@ class Create implements Action {
     $xml = strtr($this->value, array('%value%' => $value));
     $xml = "<root {$root_attributes}>$xml</root>";
     $this->fragment = $document->document->createDocumentFragment();
-    libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.  
+    libxml_use_internal_errors(TRUE); // Prevent Drupal from catching the error.
     $number_of_errors_before = count(libxml_get_errors());
     $this->fragment->appendXML($xml);
     $number_of_errors_after = count(libxml_get_errors());
@@ -240,7 +241,7 @@ class Create implements Action {
   /**
    *
    * @param DOMNode $child
-   * @param DOMElement $parent 
+   * @param DOMElement $parent
    */
   private function append(XMLDocument $document, DOMNode $child, DOMElement $parent) {
     $has_schema = isset($document->schema);

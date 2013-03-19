@@ -19,21 +19,21 @@ class Actions implements FormPropertyInterface {
 
   /**
    * If executed this object will create one or more DOMNodes in the Document.
-   * 
+   *
    * @var Create
    */
   public $create;
 
   /**
    * If executed this object will read one or more DOMNodes in the Document. It is used to populate the form.
-   * 
+   *
    * @var Read
    */
   public $read;
 
   /**
    * If executed this object will update one or more DOMNodes values in the Document.
-   * 
+   *
    * @var Update
    */
   public $update;
@@ -46,7 +46,7 @@ class Actions implements FormPropertyInterface {
 
   /**
    * Creates and Actions instance.
-   * 
+   *
    * @param array $value
    */
   public function __construct($value) {
@@ -66,26 +66,26 @@ class Actions implements FormPropertyInterface {
 
   /**
    * Get the appropriate Action to perform.
-   * 
-   * This is called by the FormProcesor, depending on the state of certian variables one of 
+   *
+   * This is called by the FormProcesor, depending on the state of certian variables one of
    * the following actions will be returned.
-   * 
-   * Note that these cases are the default, depending on other settings within the action 
+   *
+   * Note that these cases are the default, depending on other settings within the action
    * element the return Action may differ.
-   * 
+   *
    * Create
    *  The FormElement in question doesn't have a registered DOMNode.
    * Update
    *  The FormElement that corresponds to the Node in question is still part of the definition.
    * Delete
    *  The FormElement in question, no longer exists in the form and it has a registered DOMNode.
-   * 
+   *
    * @param XMLDocument $document
    * @param DOMNode $node
    * @param mixed $value
-   * 
+   *
    * @return array
-   *  Gets the action type and the Action object. Example: 
+   *  Gets the action type and the Action object. Example:
    *    array(string, Action);
    */
   public function getAppropriateAction(XMLDocument $document, FormElement $element, $value = NULL) {
@@ -103,11 +103,11 @@ class Actions implements FormPropertyInterface {
 
   /**
    * Check the Delete Action's properties to determine if we should remove this FormElement.
-   * 
+   *
    * @param XMLDocument $document
    * @param FormElement $element
    * @param mixed $value
-   * 
+   *
    * @return boolean
    */
   private function shouldDelete(XMLDocument $document, FormElement $element, $value = NULL) {
@@ -119,7 +119,7 @@ class Actions implements FormPropertyInterface {
 
   /**
    * Check the Update Action's properties to determine if we should update this FormElement.
-   * 
+   *
    * @param XMLDocument $document
    * @param FormElement $element
    * @param mixed $value
@@ -134,11 +134,11 @@ class Actions implements FormPropertyInterface {
 
   /**
    * Check the Create Action's properties to determine if we should create this FormElement.
-   * 
+   *
    * @param XMLDocument $document
    * @param FormElement $element
    * @param mixed $value
-   * 
+   *
    * @return boolean
    */
   private function shouldCreate(XMLDocument $document, FormElement $element, $value = NULL) {
@@ -150,7 +150,7 @@ class Actions implements FormPropertyInterface {
 
   /**
    * Converts this object to a Drupal Form Property value.
-   * 
+   *
    * @return mixed
    *   Returns the array repersentation of this class, which can be used within a Drupal Form.
    */

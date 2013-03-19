@@ -10,20 +10,20 @@ module_load_include('inc', 'xml_form_api', 'ActionInterface');
 module_load_include('inc', 'xml_form_api', 'Path');
 
 /**
- * 
+ *
  */
 class Read implements Action {
 
   /**
    * Path to the parent element, where the DOMNode will be created.
-   * 
+   *
    * @var Path
    */
   protected $path;
 
   /**
    * Construct Read Action.
-   * 
+   *
    * @param array $params
    *   The parameters that initialize this object.
    */
@@ -32,7 +32,7 @@ class Read implements Action {
   }
 
   /**
-   * 
+   *
    * @return array
    */
   public function toDrupalForm() {
@@ -47,7 +47,7 @@ class Read implements Action {
    * @param NodeRegistry $registry
    * @param FormElement $element
    * @param mixed $value
-   * @return boolean 
+   * @return boolean
    */
   public function shouldExecute(XMLDocument $document, FormElement $element, $value = NULL) {
     return TRUE; // Its always safe to read!
@@ -57,7 +57,7 @@ class Read implements Action {
    *
    * @param NodeRegistry $registry
    * @param FormElement $element
-   * @param mixed $value 
+   * @param mixed $value
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
     //drupal_set_message('Read (Action)');
@@ -67,8 +67,8 @@ class Read implements Action {
       $results = $this->path->query($document, $element);
     } catch (XMLFormsContextNotFoundException $e) {
       /**
-       * Ignore context not found, in this case the context node 
-       * should be created during the submit process. 
+       * Ignore context not found, in this case the context node
+       * should be created during the submit process.
        */
       $results = new DOMNodeList();
     }

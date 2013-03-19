@@ -2,16 +2,16 @@
 
 /**
  * @file
- * 
+ *
  * Callbacks and functions used in the Edit Form Page, for rendering the Form Builder GUI.
  */
 
 /**
  * Includes all the required CSS/JS files needed to render the Form Builder GUI.
- *  
- * @param string $form_name 
+ *
+ * @param string $form_name
  *   The name of the form to edit.
- * 
+ *
  * @return string
  *   The html where the Form Builder GUI will be rendered.
  */
@@ -69,9 +69,9 @@ function xml_form_builder_edit_include_js() {
 
 /**
  * Save changes made to the form definition client side.
- * 
+ *
  * Transforms the submited JSON into a Form Definition which is then stored in the database as an XML Form Definition.
- * 
+ *
  * @param string $form_name
  *   The name of the form to update.
  */
@@ -92,7 +92,7 @@ function xml_form_builder_edit_save($form_name) {
 
 /**
  * Creates an inline javascript file that creates an ExtJS store containing all the possible form field types.
- * 
+ *
  * Used in the Element Type Combo Box, in the Element form of the Form Builder GUI.
  */
 function xml_form_builder_create_element_type_store() {
@@ -123,10 +123,10 @@ EOT;
 
 /**
  * Creates an inline javascript file that creates an ExtJS store containing the form properties.
- * 
+ *
  * Used to populate the 'Form Properties' Form.
- * 
- * @param string $form_name 
+ *
+ * @param string $form_name
  *   The name of the form which properties will be used.
  */
 function xml_form_builder_create_properties_store($form_name) {
@@ -156,10 +156,10 @@ EOT;
 
 /**
  * Creates an inline javascript file that creates an ExtJS store containing the form elements.
- * 
+ *
  * Used to populate the 'Elements Tree'.
- * 
- * @param string $form_name 
+ *
+ * @param string $form_name
  *   The name of the form which will be used.
  */
 function xml_form_builder_create_element_store($form_name) {
@@ -179,12 +179,12 @@ EOT;
 
 /**
  * Gets a list of all the existing element types defined by the elements hook.
- * 
+ *
  * @staticvar array $cache
  *   The cached list of existing element types.
- * 
+ *
  * @return array
- *   A list of all the existing element types. 
+ *   A list of all the existing element types.
  */
 function xml_form_builder_get_element_types() {
   static $cache;
