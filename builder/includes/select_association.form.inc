@@ -128,7 +128,13 @@ function xml_form_builder_select_association_form_ajax_callback(array $form, arr
     return $form['available_forms'];
   }
   else {
-    return '<div id="forms_wrapper"></div>';
+    return array(
+      '#type' => 'html_tag',
+      '#tag' => 'div',
+      '#attributes' => array(
+        'id' => 'forms_wrapper',
+      ),
+    );
   }
 }
 
