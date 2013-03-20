@@ -124,7 +124,18 @@ function xml_form_builder_select_association_form_get_forms(array $associations,
  *   A Drupal form definition.
  */
 function xml_form_builder_select_association_form_ajax_callback(array $form, array $form_state) {
-  return $form['available_forms'];
+  if ($form['available_forms']['#access']) {
+    return $form['available_forms'];
+  }
+  else {
+    return array(
+      '#type' => 'html_tag',
+      '#tag' => 'div',
+      '#attributes' => array(
+        'id' => 'forms_wrapper',
+      ),
+    );
+  }
 }
 
 /**
