@@ -32,7 +32,7 @@ function xml_form_builder_delete($form, array &$form_state, $form_name) {
     'description' => array(
       '#type' => 'markup',
       '#prefix' => '<div>',
-      '#value' => t('Are you sure you want to delete the form <b>%name</b>. This action is irreversible.', array('%name' => $form_name)),
+      '#markup' => t('Are you sure you want to delete the form <b>%name</b> and all related form associations? This action is irreversible.', array('%name' => $form_name)),
       '#suffix' => '</div>',
     ),
     'delete' => array(
@@ -61,8 +61,18 @@ function xml_form_builder_delete($form, array &$form_state, $form_name) {
 function xml_form_builder_delete_submit(array $form, array &$form_state) {
   if ($form_state['clicked_button']['#name'] == 'delete') {
     module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+    module_load_include('inc', 'xml_form_builder', 'includes/associations');
     $form_name = $form_state['values']['form_name'];
     if (XMLFormDatabase::Delete($form_name)) {
+      foreach (xml_form_builder_get_associations(array($form_name)) as $assoc) {
+        db_delete('xml_form_builder_form_associations')
+          ->condition('id', intval($assoc['id']))
+          ->execute();
+        drupal_set_message(t('Deleted the association ID:%id with the form %form_name.', array(
+          '%id' => $assoc['id'],
+          '%form_name' => $form_name,
+        )));
+      }
       drupal_set_message(t('Successfully deleted form "%name".', array('%name' => $form_name)));
     }
     else {
