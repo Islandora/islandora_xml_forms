@@ -239,7 +239,7 @@ class XMLFormDefinition {
    */
   public static function getVersion(DOMDocument $definition) {
     if (empty($definition->documentElement)) {
-      throw new Exception(t('XML Form Definition is not valid.'));
+      throw new Exception(t('XML form definition is not valid.'));
     }
     $declares_version = $definition->documentElement->hasAttribute('version');
     if ($declares_version) {
@@ -248,7 +248,7 @@ class XMLFormDefinition {
       if (self::isValid($definition, $version)) {
         return $version;
       }
-      throw new Exception(t('XML Form Definition is not valid.'));
+      throw new Exception(t('XML form definition is not valid.'));
     }
     else { // Files with a version of 0 or 1 may not have their version declared. Check to see manually.
       $undeclared_versions = array(
@@ -261,7 +261,7 @@ class XMLFormDefinition {
         }
       }
     }
-    throw new Exception(t('Failed to determine the version of the XML Form Definition')); // Could not find the version.
+    throw new Exception(t('Failed to determine the version of the XML form definition')); // Could not find the version.
   }
 
   /**
@@ -327,7 +327,7 @@ class XMLFormDefinition {
   public function __construct(DOMDocument $definition) {
     $this->definition = self::upgradeToLatestVersion($definition);
     if (!self::isValid($this->definition)) {
-      throw new Exception('Unable to Create XMLFormDefinition.');
+      throw new Exception('Unable to create XMLFormDefinition.');
     }
   }
 

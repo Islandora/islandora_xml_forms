@@ -69,7 +69,7 @@ class XMLForm extends Form {
       $this->storePersistantMembers();
     }
     else {
-      throw new Exception('Attempted to intialized the Form after it has already been intialized.');
+      throw new Exception('Attempted to intialized the form after it has already been intialized.');
     }
   }
 
