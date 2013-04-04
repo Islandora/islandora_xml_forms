@@ -161,7 +161,7 @@ class XMLFormsContextException extends Exception {
 class XMLFormsContextDefinitionException extends XMLFormsContextException {
 
   public function __construct(ContextType $type, FormElement $element) {
-    $message = "Specifies a xpath context of {$type} but none is defined. Check the form defintion";
+    $message = "Specifies an XPath context of {$type} but none is defined. Check the form defintion";
     parent::__construct($type, $element, $message);
   }
 

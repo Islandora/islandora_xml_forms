@@ -48,12 +48,12 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
         '#title' => t('Content Model'),
         '#required' => TRUE,
         '#autocomplete_path' => MENU_XML_FORM_BUILDER_CONTENT_MODEL_AUTOCOMPLETE,
-        '#description' => t('The content model to associate with a form. If the content model has no decendants it will not show up in autocomplete.'),
+        '#description' => t('The content model to associate with a form. If the content model has no decendents it will not show up in autocomplete.'),
         '#default_value' => isset($form_state['values']['content_model']) ? $form_state['values']['content_model'] : NULL,
       ),
       'dsid' => array(
         '#type' => 'textfield',
-        '#description' => t('The datastream ID of where the objects metadata is stored.'),
+        '#description' => t('The datastream ID where the object\'s metadata is stored.'),
         '#title' => t('Metadata Datastream ID'),
         '#required' => TRUE,
         '#default_value' => isset($form_state['values']['dsid']) ? $form_state['values']['dsid'] : NULL,
@@ -66,7 +66,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       'title_field' => array(
         '#type' => 'select',
         '#title' => t('Title Field'),
-        '#description' => t('The form field that you want to use for the objects label.'),
+        '#description' => t('The form field for the object\'s label.'),
         '#prefix' => '<div id="ahah-wrapper">',
         '#suffix' => '</div>',
         '#options' => xml_form_builder_get_title_options($form_name),
@@ -77,7 +77,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
         '#title' => t('XSL Transform'),
         '#options' => xml_form_builder_get_transforms(),
         '#default_value' => 'No Transform',
-        '#description' => t('A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.'),
+        '#description' => t('An XSL transform for setting the Fedora object\'s Dublin Core metadata datastream.'),
       ),
       'file' => array(
         '#type' => 'file',
@@ -192,7 +192,7 @@ function xml_form_builder_disable_association($form_name, $id) {
     db_delete('xml_form_builder_form_associations')
       ->condition('id', intval($id))
       ->execute();
-    drupal_set_message(t('Deleted the association ID:%id with the form %form_name.', array(
+    drupal_set_message(t('Deleted the association ID:%id from %form_name.', array(
           '%id' => $id,
           '%form_name' => $form_name,
         )));
