@@ -34,7 +34,7 @@ class Path {
    * @param Context $context
    */
   public function __construct($path, Context $context) {
-    $this->path = $path;
+    $this->path = trim($path);
     $this->context = $context;
   }
 

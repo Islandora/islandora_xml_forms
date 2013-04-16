@@ -75,8 +75,8 @@ class Create implements Action {
    */
   public function __construct(array &$params) {
     $this->path = new Path($params['path'], new Context(new ContextType($params['context'])));
-    $this->schema_path = isset($params['schema']) ? $params['schema'] : NULL;
-    $this->value = $params['value'];
+    $this->schema_path = isset($params['schema']) ? trim($params['schema']) : NULL;
+    $this->value = trim($params['value']);
     $this->type = $params['type'];
     switch ($this->type) {
       case self::XML:
