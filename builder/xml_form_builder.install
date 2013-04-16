@@ -90,6 +90,12 @@ function xml_form_builder_schema() {
         'length' => 128,
         'not NULL' => TRUE,
       ),
+      'self_transform' => array(
+        'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not NULL' => FALSE,
+      ),
       'template' => array(
         'description' => 'A sample metadata file used to prepopulate the form on ingest.',
         'type' => 'text',
@@ -126,7 +132,7 @@ function xml_form_builder_schema() {
  */
 function xml_form_builder_update_7100() {
   $schema = array();
-    $schema['xml_form_builder_form_associations'] = array(
+  $schema['xml_form_builder_form_associations'] = array(
     'description' => 'This table is used to store associations between XML Form API style form definitions, and the Content models that use them.',
     'fields' => array(
       'id' => array(
@@ -152,12 +158,12 @@ function xml_form_builder_update_7100() {
         'not NULL' => TRUE,
       ),
       'title_field' => array(
-       'description' => 'The form field that you want to use for the objects label.',
-       'type' => 'varchar',
-       'length' => 256,
-       'not NULL' => TRUE,
-       'binary' => TRUE,
-       'serialize' => TRUE,
+        'description' => 'The form field that you want to use for the objects label.',
+        'type' => 'varchar',
+        'length' => 256,
+        'not NULL' => TRUE,
+        'binary' => TRUE,
+        'serialize' => TRUE,
       ),
       'transform' => array(
         'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datas
@@ -201,11 +207,10 @@ tream.',
 
   $output = array();
   $t = get_t();
-  foreach($schema as $name => $schema_info) {
+  foreach ($schema as $name => $schema_info) {
     try {
       db_create_table($name, $schema_info);
-    }
-    catch (DatabaseSchemaObjectExistsException $e) {
+    } catch (DatabaseSchemaObjectExistsException $e) {
       $output[] = $t('Table "@name" already exists.', array('@name' => $name));
     }
 
@@ -215,14 +220,14 @@ tream.',
       // XXX: If the schema changes significantly in the future, this should be
       //  moved there and updated.
       $results = db_select($old, 'o')
-        ->fields('o')
-        ->execute()
-        ->fetchAll();
+              ->fields('o')
+              ->execute()
+              ->fetchAll();
       foreach ($results as $result) {
         unset($result->id);
         db_insert($name)
-          ->fields((array)$result)
-          ->execute();
+            ->fields((array) $result)
+            ->execute();
       }
 
       $output[] = $t('Copied info from old table "@old".', array('@old' => $old));
@@ -237,9 +242,9 @@ tream.',
  */
 function xml_form_builder_update_7101() {
   $results = db_select('xml_form_builder_form_associations', 'fa')
-    ->fields('fa', array('id', 'title_field'))
-    ->execute()
-    ->fetchAll();
+          ->fields('fa', array('id', 'title_field'))
+          ->execute()
+          ->fetchAll();
 
   db_change_field('xml_form_builder_form_associations', 'title_field', 'title_field', array(
     'description' => 'The form field that you want to use for the objects label.',
@@ -258,11 +263,11 @@ function xml_form_builder_update_7101() {
       $title_field = substr($title_field, 2, -2);
       $title_field = explode("']['", $title_field);
       db_update('xml_form_builder_form_associations')
-        ->fields(array(
-          'title_field' => serialize($title_field),
-        ))
-        ->condition('id', $association->id)
-        ->execute();
+          ->fields(array(
+            'title_field' => serialize($title_field),
+          ))
+          ->condition('id', $association->id)
+          ->execute();
     }
   }
 }
