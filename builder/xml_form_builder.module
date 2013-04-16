@@ -4,7 +4,6 @@
  * @file
  * Defines all the hooks this module implements.
  */
-
 // Constants.
 define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
 define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
@@ -126,7 +125,7 @@ function xml_form_builder_menu() {
     'description' => 'Disable associated form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_disable_association',
-    'page arguments' => array(3,5),
+    'page arguments' => array(3, 5),
     // @todo Use something fedora specific.
     'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
     'type' => MENU_CALLBACK,
@@ -137,7 +136,7 @@ function xml_form_builder_menu() {
     'description' => 'Enables an associated form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_enable_association',
-    'page arguments' => array(3,5),
+    'page arguments' => array(3, 5),
     // @todo Use something fedora specific.
     'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
     'type' => MENU_CALLBACK,
@@ -148,7 +147,7 @@ function xml_form_builder_menu() {
     'description' => 'Autocomplete a Fedora content model PID.',
     'file' => 'includes/content_models.autocomplete.inc',
     'page callback' => 'xml_form_builder_content_model_autocomplete',
-    'page arguments' => array(3,5),
+    'page arguments' => array(3, 5),
     // @todo Use something fedora specific.
     'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
     'type' => MENU_CALLBACK,
@@ -353,8 +352,7 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
       $xml_form->initialize($form, $document);
     }
     $form = array_merge($form, $xml_form->toArray($form_state));
-  }
-  catch (Exception $e) {
+  } catch (Exception $e) {
     // Catch any errors that occured and display them to the user so that they
     // may correct their form definition.
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
@@ -400,7 +398,7 @@ function xml_form_builder_islandora_ingest_steps(array &$form_state) {
     'module' => 'xml_form_builder',
     'file' => 'includes/select_association.form.inc',
     'args' => array($associations),
-  ) : NULL;
+      ) : NULL;
   $metadata_step = ($num_associations >= 1) ? array(
     'weight' => 5,
     'type' => 'form',
@@ -408,7 +406,7 @@ function xml_form_builder_islandora_ingest_steps(array &$form_state) {
     'module' => 'xml_form_builder',
     'file' => 'includes/ingest.form.inc',
     'args' => array($metadata_step_storage['association']),
-  ) : NULL;
+      ) : NULL;
   return array(
     'xml_form_builder_association_step' => $select_association_step,
     'xml_form_builder_metadata_step' => $metadata_step,
@@ -452,9 +450,40 @@ function xml_form_builder_update_object(AbstractFedoraObject $object, array $ass
   $object->label = $label;
   $object->models = array($association['content_model']);
   $document = $document->document;
+  if (isset($association['self_transform']) && $association['self_transform'] != 'No Transform') {
+    $document = xml_form_builder_transform_metadata_datastream($association['self_transform'], $document);
+  }
   $created = xml_form_builder_update_metadata_datastream($object, $association['dsid'], $document);
   $created_dc = xml_form_builder_update_dc_datastream($object, $association['transform'], $document);
   return array($association['dsid'] => $created, 'DC' => $created_dc);
+}
+
+/**
+ * Applies xslt to incoming datastream
+ *
+ * @param string name of xslt
+ * @param DOMDocument $source_document
+ * @return DOMDocument 
+ */
+function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDocument $source_document) {
+  $transform_path = NULL;
+  $transforms = xml_form_builder_get_self_transforms();
+  // No transform has no file.
+  unset($transforms['No Transform']);
+  foreach ($transforms as $name => $path) {
+    if ($transform == $name) {
+      $transform_path = $path;
+    }
+  }
+  if ($transform_path) {
+    $xsl = new DOMDocument();
+    $xsl->load($transform_path);
+    $xslt = new XSLTProcessor();
+    $xslt->importStyleSheet($xsl);
+    $document = $xslt->transformToDoc($source_document);
+    return $document;
+  }
+  return $source_document;
 }
 
 /**
