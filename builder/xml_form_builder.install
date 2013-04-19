@@ -244,9 +244,9 @@ tream.',
  */
 function xml_form_builder_update_7101() {
   $results = db_select('xml_form_builder_form_associations', 'fa')
-          ->fields('fa', array('id', 'title_field'))
-          ->execute()
-          ->fetchAll();
+   ->fields('fa', array('id', 'title_field'))
+   ->execute()
+   ->fetchAll();
 
   db_change_field('xml_form_builder_form_associations', 'title_field', 'title_field', array(
     'description' => 'The form field that you want to use for the objects label.',
