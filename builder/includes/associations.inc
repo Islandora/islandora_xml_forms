@@ -141,6 +141,7 @@ function xml_form_builder_get_hook_associations(array $forms = array(), array $m
   if ($only_enabled) {
     $filtered_associations = array_filter($filtered_associations, function($o) { return $o['enabled']; });
   }
+
   return $filtered_associations;
 }
 
@@ -152,6 +153,15 @@ function xml_form_builder_get_transforms() {
   // @todo Remove (deprecated) invokation if
   // "islandora_content_model_forms_get_transforms".
   $tranforms += module_invoke_all('islandora_content_model_forms_get_transforms');
+  $tranforms['No Transform'] = 'No Transform';
+  return $tranforms;
+}
+
+/**
+ * Wraps invocation of hook of the same name.
+ */
+function xml_form_builder_get_self_transforms() {
+  $tranforms = module_invoke_all('xml_form_builder_get_self_transforms');
   $tranforms['No Transform'] = 'No Transform';
   return $tranforms;
 }
@@ -223,6 +233,27 @@ function xml_form_builder_xml_form_builder_get_transforms() {
   $p = drupal_get_path('module', 'xml_form_builder');
   $transforms = array();
   $include_path = "$p/transforms";
+  $dir = opendir($include_path);
+  if ($dir !== FALSE) {
+    while (($file = readdir($dir)) !== FALSE) {
+      if (preg_match('/\.xslt?$/', $file)) {
+        $transforms["$file"] = "$include_path/$file";
+      }
+    }
+  }
+  closedir($dir);
+  return $transforms;
+}
+
+/**
+ * Implements hook_xml_form_builder_get_self_transforms().
+ *
+ * Grabs any XSLTs from the "self_transforms" directory inside of this module.
+ */
+function xml_form_builder_xml_form_builder_get_self_transforms() {
+  $path = drupal_get_path('module', 'xml_form_builder');
+  $transforms = array();
+  $include_path = "$path/self_transforms";
   $dir = opendir($include_path);
   if ($dir !== FALSE) {
     while (($file = readdir($dir)) !== FALSE) {
