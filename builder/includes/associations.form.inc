@@ -119,8 +119,8 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     'self_transform'
   );
   $object = array_intersect_key(
-          $form_state['values'],
-          array_combine($object_keys, $object_keys)
+    $form_state['values'],
+    array_combine($object_keys, $object_keys)
   );
   $object['template'] = '';
   $file_uploaded = $_FILES['files']['error']['file'] == 0;
@@ -198,8 +198,8 @@ function xml_form_builder_disable_association($form_name, $id) {
   // Database defined association.
   if ($association['in_db']) {
     db_delete('xml_form_builder_form_associations')
-        ->condition('id', intval($id))
-        ->execute();
+      ->condition('id', intval($id))
+      ->execute();
     drupal_set_message(t('Deleted the association ID:%id with the form %form_name.', array(
           '%id' => $id,
           '%form_name' => $form_name,
@@ -208,24 +208,24 @@ function xml_form_builder_disable_association($form_name, $id) {
   else {
     // Hook defined association
     $num_results = db_select('xml_form_builder_association_hooks', 'fa')
-            ->fields('fa')
-            ->condition('id', $id)
-            ->countQuery()
-            ->execute()
-            ->fetchField();
+      ->fields('fa')
+      ->condition('id', $id)
+      ->countQuery()
+      ->execute()
+      ->fetchField();
     if ($num_results == 1) {
       db_update('xml_form_builder_association_hooks')
-          ->fields(array('enabled' => (int) FALSE))
-          ->condition('id', $id)
-          ->execute();
+        ->fields(array('enabled' => (int) FALSE))
+        ->condition('id', $id)
+        ->execute();
     }
     else {
       db_insert('xml_form_builder_association_hooks')
-          ->fields(array(
-            'id' => $id,
-            'enabled' => (int) FALSE,
-          ))
-          ->execute();
+        ->fields(array(
+          'id' => $id,
+          'enabled' => (int) FALSE,
+        ))
+        ->execute();
     }
     drupal_set_message(t('Successfully disabled association.'));
   }
@@ -254,16 +254,16 @@ function xml_form_builder_enable_association($form_name, $id) {
   // Hook defined association, can't enable non hook associations.
   if (!$association['in_db']) {
     $num_results = db_select('xml_form_builder_association_hooks', 'fa')
-            ->fields('fa')
-            ->condition('id', $id)
-            ->countQuery()
-            ->execute()
-            ->fetchField();
+      ->fields('fa')
+      ->condition('id', $id)
+      ->countQuery()
+      ->execute()
+      ->fetchField();
     if ($num_results == 1) {
       db_update('xml_form_builder_association_hooks')
-          ->fields(array('enabled' => (int) TRUE))
-          ->condition('id', $id)
-          ->execute();
+        ->fields(array('enabled' => (int) TRUE))
+        ->condition('id', $id)
+        ->execute();
     }
     else {
       db_insert('xml_form_builder_association_hooks')

@@ -222,14 +222,14 @@ tream.',
       // XXX: If the schema changes significantly in the future, this should be
       //  moved there and updated.
       $results = db_select($old, 'o')
-              ->fields('o')
-              ->execute()
-              ->fetchAll();
+        ->fields('o')
+        ->execute()
+        ->fetchAll();
       foreach ($results as $result) {
         unset($result->id);
         db_insert($name)
-            ->fields((array) $result)
-            ->execute();
+          ->fields((array) $result)
+          ->execute();
       }
 
       $output[] = $t('Copied info from old table "@old".', array('@old' => $old));
@@ -265,11 +265,11 @@ function xml_form_builder_update_7101() {
       $title_field = substr($title_field, 2, -2);
       $title_field = explode("']['", $title_field);
       db_update('xml_form_builder_form_associations')
-          ->fields(array(
-            'title_field' => serialize($title_field),
-          ))
-          ->condition('id', $association->id)
-          ->execute();
+        ->fields(array(
+          'title_field' => serialize($title_field),
+        ))
+        ->condition('id', $association->id)
+        ->execute();
     }
   }
 }
