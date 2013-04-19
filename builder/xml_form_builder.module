@@ -463,14 +463,14 @@ function xml_form_builder_update_object(AbstractFedoraObject $object, array $ass
  *
  * @param string name of xslt
  * @param DOMDocument $source_document
- * @return DOMDocument 
+ * @return DOMDocument
  */
 function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDocument $source_document) {
   $transform_path = NULL;
   $transforms = xml_form_builder_get_self_transforms();
   // No transform has no file.
   unset($transforms['No Transform']);
-  if (array_key_exists($transform, $transforms)){
+  if (array_key_exists($transform, $transforms)) {
     $transform_path = $transforms[$transform];
   }
 
