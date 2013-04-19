@@ -27,10 +27,10 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/associations.form');
   $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
   $create_table_rows = function($o) {
-        $o['title_field'] = "['" . implode("']['", $o['title_field']) . "']";
-        $o['type'] = $o['in_db'] ? 'custom' : 'hook';
-        return $o;
-      };
+    $o['title_field'] = "['" . implode("']['", $o['title_field']) . "']";
+    $o['type'] = $o['in_db'] ? 'custom' : 'hook';
+    return $o;
+  };
   $form += array(
     'list' => array(
       '#type' => 'fieldset',

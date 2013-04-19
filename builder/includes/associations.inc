@@ -162,7 +162,6 @@ function xml_form_builder_get_transforms() {
  */
 function xml_form_builder_get_self_transforms() {
   $tranforms = module_invoke_all('xml_form_builder_get_self_transforms');
-  $tranforms += module_invoke_all('islandora_content_model_forms_get_self_transforms');
   $tranforms['No Transform'] = 'No Transform';
   return $tranforms;
 }

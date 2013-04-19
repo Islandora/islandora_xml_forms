@@ -470,11 +470,10 @@ function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDo
   $transforms = xml_form_builder_get_self_transforms();
   // No transform has no file.
   unset($transforms['No Transform']);
-  foreach ($transforms as $name => $path) {
-    if ($transform == $name) {
-      $transform_path = $path;
-    }
+  if (array_key_exists($transform, $transforms)){
+    $transform_path = $transforms[$transform];
   }
+
   if ($transform_path) {
     $xsl = new DOMDocument();
     $xsl->load($transform_path);

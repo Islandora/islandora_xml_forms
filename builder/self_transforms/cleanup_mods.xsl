@@ -7,23 +7,7 @@
 	<!-- normalize spaces in text -->
 	<xsl:template match="text()"><xsl:value-of select="normalize-space(.)"/></xsl:template>
 	<!-- restore missing prefix in attribute xlink:href (empty or default values are already taken care of by template of parent element) -->
-	<xsl:template match="@xlink:href">
-		<xsl:variable name="h" select="normalize-space(.)"/>
-		<xsl:variable name="p" select="substring-before($h,':')"/>
-		<xsl:attribute name="xlink:href">
-			<xsl:choose>
-				<xsl:when test="$p='po' or $p='gn' or $p='aat' or $p='building' or $p='http' or $p='https'"/>
-				<xsl:when test="../@xlink:arcrole">po:</xsl:when>
-				<xsl:when test="../@xlink:title='geonames'">gn:</xsl:when>
-				<xsl:when test="../@xlink:title='aat'">aat:</xsl:when>
-				<xsl:when test="../@xlink:title='building'">building:</xsl:when>
-				<xsl:when test="../@xlink:title='website'">http://</xsl:when>
-			</xsl:choose>
-			<xsl:value-of select="$h"/>
-		</xsl:attribute>
-	</xsl:template>
-	<!-- replace empty value of @xlink:type by 'simple' -->
-	<xsl:template match="@xlink:type[.='']"><xsl:attribute name="xlink:type">simple</xsl:attribute></xsl:template>
+
 	<!-- mods elements need special treatment - see below -->
 	<xsl:template match="mods:*"><xsl:call-template name="modsElement"/></xsl:template>
 	<!-- remove mods elements without text nodes in itself or descendants -->
