@@ -30,7 +30,7 @@ class Tag {
   }
 
   /**
-   * The default #process function for tabpanel's.
+   * The default #process function for tag's.
    *
    * Adds elements that allow for adding/remove form elements.
    *
@@ -49,7 +49,7 @@ class Tag {
 }
 
 /**
- * Theme hook for a tabpanel
+ * Theme hook for a tag
  */
 function theme_tag(&$vars) {
   return Tag::Theme($vars['element']);

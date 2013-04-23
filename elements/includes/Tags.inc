@@ -155,6 +155,9 @@ function template_preprocess_tags(&$vars) {
     }
   }
   $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
+  $vars['input']['#id'] = $tags['#id'];
+  $vars['input']['#size'] = $tags['#size'];
+  $vars['textfield'] = theme('textfield', $vars['input']); // theme the text field to take advantage of autocomplete
 }
 
 /**
