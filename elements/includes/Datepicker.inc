@@ -51,7 +51,7 @@ class Datepicker {
  */
 function theme_datepicker($variables) {
   $element = $variables['element'];
-  $array_switch = is_array($element)&& isset($element['#value']['value']);
+  $array_switch = is_array($element['#value']) && isset($element['#value']['value']);
   $element_val = $array_switch ? $element['#value']['value'] : $element['#value'];
   $size = empty($element['#size']) ? '' : ' size="' . $element['#size'] . '"';
   $maxlength = empty($element['#maxlength']) ? '' : ' maxlength="' . $element['#maxlength'] . '"';

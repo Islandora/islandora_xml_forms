@@ -466,6 +466,7 @@ function xml_form_builder_update_object(AbstractFedoraObject $object, array $ass
  * @return DOMDocument
  */
 function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDocument $source_document) {
+  module_load_include('inc', 'xml_form_builder', 'includes/associations');
   $transform_path = NULL;
   $transforms = xml_form_builder_get_self_transforms();
   // No transform has no file.
