@@ -2,31 +2,11 @@
 
 /**
  * @file
- *
  * Defines functions used for the installation of the xml_form_builder module.
  */
 
 /**
- * Implements hook_install().
- */
-function xml_form_builder_install() {
-  // TODO The drupal_(un)install_schema functions are called automatically in D7.
-  // drupal_install_schema('xml_form_builder')
-}
-
-/**
- * Implements hook_uninstall().
- */
-function xml_form_builder_uninstall() {
-  // TODO The drupal_(un)install_schema functions are called automatically in D7.
-  // drupal_uninstall_schema('xml_form_builder')
-}
-
-/**
  * Implements hook_schema().
- *
- * @return array
- *   The Schema definition
  */
 function xml_form_builder_schema() {
   $schema['xml_forms'] = array(
@@ -167,8 +147,7 @@ function xml_form_builder_update_7100() {
         'serialize' => TRUE,
       ),
       'transform' => array(
-        'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datas
-tream.',
+        'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.',
         'type' => 'varchar',
         'length' => 128,
         'not NULL' => TRUE,
@@ -220,7 +199,7 @@ tream.',
 
     if (db_table_exists($old)) {
       // XXX: If the schema changes significantly in the future, this should be
-      //  moved there and updated.
+      // moved there and updated.
       $results = db_select($old, 'o')
         ->fields('o')
         ->execute()
@@ -260,7 +239,7 @@ function xml_form_builder_update_7101() {
   foreach ($results as $association) {
     $title_field = $association->title_field;
     // Avoid operating on already serialized arrays (if associations have been
-    //  created before running the updates).
+    // created before running the updates).
     if (!is_array(@unserialize($title_field))) {
       $title_field = substr($title_field, 2, -2);
       $title_field = explode("']['", $title_field);

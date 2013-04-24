@@ -8,9 +8,11 @@
  */
 
 /**
- * Defines the associations form. This form lists all the associations of the
- * given XML form, allowing the user to delete/disable those associations, as
- * well as adding new associations to the given XML form.
+ * Defines the associations form.
+ *
+ * This form lists all the associations of the given XML form, allowing the
+ * user to delete/disable those associations, as well as adding new
+ * associations to the given XML form.
  *
  * @param array $form
  *   The drupal form.
@@ -36,8 +38,8 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       '#type' => 'fieldset',
       '#title' => t('Current associations'),
       '#value' => theme('xml_form_builder_association_table', array(
-        'associations' => array_map($create_table_rows, $associations)
-      ))
+        'associations' => array_map($create_table_rows, $associations),
+      )),
     ),
     'fieldset' => array(
       '#type' => 'fieldset',
@@ -77,7 +79,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
         '#title' => t('XSL Transform'),
         '#options' => xml_form_builder_get_transforms(),
         '#default_value' => 'No Transform',
-        '#description' => t('A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.'),
+        '#description' => t("A xsl transform for setting the Fedora Object's Dublin Core metadata datastream."),
       ),
       'self_transform' => array(
         '#type' => 'select',
@@ -101,8 +103,9 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
 }
 
 /**
- * Default submit handler for the associations form. It adds a new
- * association to the given form.
+ * Default submit handler for the associations form.
+ *
+ * It adds a new association to the given form.
  *
  * @param array $form
  *   The drupal form.
@@ -116,7 +119,7 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     'dsid',
     'title_field',
     'transform',
-    'self_transform'
+    'self_transform',
   );
   $object = array_intersect_key(
     $form_state['values'],
@@ -176,8 +179,10 @@ function xml_form_builder_get_title_options($form_name) {
 }
 
 /**
- * Remove the association identified by $id, either by deleting it from the
- * database, or marking it disabled if its provided by a hook.
+ * Remove the association identified by $id.
+ *
+ * Either by deleting it from the database, or marking it disabled if its
+ * provided by a hook.
  *
  * @param string $form_name
  *   The name of the form for which the associations are being adjusted.
@@ -201,12 +206,12 @@ function xml_form_builder_disable_association($form_name, $id) {
       ->condition('id', intval($id))
       ->execute();
     drupal_set_message(t('Deleted the association ID:%id with the form %form_name.', array(
-          '%id' => $id,
-          '%form_name' => $form_name,
-        )));
+      '%id' => $id,
+      '%form_name' => $form_name,
+    )));
   }
   else {
-    // Hook defined association
+    // Hook defined association.
     $num_results = db_select('xml_form_builder_association_hooks', 'fa')
       ->fields('fa')
       ->condition('id', $id)

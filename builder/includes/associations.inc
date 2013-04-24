@@ -9,7 +9,7 @@
 /**
  * Gets the requested association by its ID if it exists.
  *
- * @param string|int
+ * @param mixed $id
  *   The ID of the hook/database association to fetch.
  *
  * @return array
@@ -34,24 +34,25 @@ function xml_form_builder_get_association($id) {
  * @param array $models
  *   Limit the associations returned to only ones that associate the given
  *   content models.
- * @param array $dsid
+ * @param array $dsids
  *   Limit the associations returned to only ones that associate the given
  *   datastreams.
- * @param boolean $only_enabled
+ * @param bool $only_enabled
  *   Return only the hook associations that are enabled.
  *
  * @return array
  *   All the associations that match the given constraints.
  */
 function xml_form_builder_get_associations(array $forms = array(), array $models = array(), array $dsids = array(), $only_enabled = TRUE) {
-  $associations = xml_form_builder_get_database_associations($forms , $models, $dsids);
-  $associations = array_merge($associations, xml_form_builder_get_hook_associations($forms , $models, $dsids, $only_enabled));
+  $associations = xml_form_builder_get_database_associations($forms, $models, $dsids);
+  $associations = array_merge($associations, xml_form_builder_get_hook_associations($forms, $models, $dsids, $only_enabled));
   return $associations;
 }
 
 /**
- * Gets an array of all associations stored in the database as constrained by
- * the given parameters.
+ * Gets an array of all associations stored in the database.
+ *
+ * @note Constrained by the given parameters.
  *
  * Effectively it works as if each parameter has is and'ed with the others.
  *
@@ -61,7 +62,7 @@ function xml_form_builder_get_associations(array $forms = array(), array $models
  * @param array $models
  *   Limit the associations returned to only ones that associate the given
  *   content models.
- * @param array $dsid
+ * @param array $dsids
  *   Limit the associations returned to only ones that associate the given
  *   datastreams.
  *
@@ -93,8 +94,9 @@ function xml_form_builder_get_database_associations(array $forms = array(), arra
 }
 
 /**
- * Gets an array of all hook defined associations as constrained by the given
- * parameters.
+ * Gets an array of all hook defined associations.
+ *
+ * @note Constrained by the given parameters.
  *
  * @param array $forms
  *   Limit the associations returned to only ones that associate the given
@@ -102,10 +104,10 @@ function xml_form_builder_get_database_associations(array $forms = array(), arra
  * @param array $models
  *   Limit the associations returned to only ones that associate the given
  *   content models.
- * @param array $dsid
+ * @param array $dsids
  *   Limit the associations returned to only ones that associate the given
  *   datastreams.
- * @param boolean $only_enabled
+ * @param bool $only_enabled
  *   Return only the hook associations that are enabled.
  *
  * @return array
@@ -113,9 +115,10 @@ function xml_form_builder_get_database_associations(array $forms = array(), arra
  */
 function xml_form_builder_get_hook_associations(array $forms = array(), array $models = array(), array $dsids = array(), $only_enabled = TRUE) {
   $associations = module_invoke_all('islandora_xml_form_builder_form_associations');
-  // @todo: Remove deprecated "islandora_content_model_forms_form_associations" invocation.
+  // @todo: Remove deprecated "islandora_content_model_forms_form_associations"
+  // invocation.
   $associations += module_invoke_all('islandora_content_model_forms_form_associations');
-  // Filter associations based on given parameters
+  // Filter associations based on given parameters.
   $filtered_associations = array();
   foreach ($associations as $id => $association) {
     $association['id'] = $id;
@@ -139,9 +142,10 @@ function xml_form_builder_get_hook_associations(array $forms = array(), array $m
   }
   // Only include enabled associations.
   if ($only_enabled) {
-    $filtered_associations = array_filter($filtered_associations, function($o) { return $o['enabled']; });
+    $filtered_associations = array_filter($filtered_associations, function($o) {
+      return $o['enabled'];
+    });
   }
-
   return $filtered_associations;
 }
 
@@ -170,10 +174,10 @@ function xml_form_builder_get_self_transforms() {
 /**
  * Gets the path to the transform identified by the given transform name.
  *
- * @param string $transfrom
+ * @param string $transform
  *   The short name for the transform.
  *
- * @return
+ * @return mixed
  *   The path to the given transform if found, FALSE otherwise.
  */
 function xml_form_builder_get_transform_file($transform) {
@@ -210,10 +214,10 @@ function xml_form_builder_transform_document($transform, $source_document, $obje
     $document = $xslt->transformToDoc($source_document);
     if ($document) {
       $xpath = new DOMXPath($document);
-      // Set the Label
+      // Set the Label.
       $results = $xpath->query("*[local-name()='title']");
       $results->item(0)->nodeValue = $object->label;
-      // Set the Pid
+      // Set the Pid.
       $results = $xpath->query("*[local-name()='identifier']");
       $results->item(0)->nodeValue = $object->id;
       if (isset($document->documentElement)) {

@@ -1,9 +1,7 @@
 <?php
 /**
  * @file
- *
  * @TODO: needs documentation + list of all available variables
- *
  */
 ?>
 <div id="content-model-form-main">
