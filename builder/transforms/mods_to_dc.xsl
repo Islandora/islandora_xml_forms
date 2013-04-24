@@ -178,7 +178,8 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 
 	<xsl:template match="mods:originInfo">
 		<xsl:apply-templates select="*[@point='start']"/>
-		<xsl:for-each select="mods:dateIssued[not (@point='end' or @point='start')] | mods:dateCreated[not (@point='start' or @point='end')] | mods:dateCaptured[not (@point='start' or @point='end')] | mods:dateOther[not (@point='start' or @point='end')]">
+		<xsl:for-each
+			select="mods:dateIssued[@point!='start' and @point!='end'] |mods:dateCreated[@point!='start' and @point!='end'] | mods:dateCaptured[@point!='start' and @point!='end'] | mods:dateOther[@point!='start' and @point!='end']">
 			<dc:date>
 				<xsl:value-of select="."/>
 			</dc:date>
@@ -406,4 +407,3 @@ Version 1.0	2007-05-04 Tracy Meehleib <tmee@loc.gov>
 
 	
 </xsl:stylesheet>
-
