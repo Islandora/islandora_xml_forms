@@ -51,7 +51,8 @@ class Datepicker {
  */
 function theme_datepicker($variables) {
   $element = $variables['element'];
-
+  $array_switch = is_array($element['#value']) && isset($element['#value']['value']);
+  $element_val = $array_switch ? $element['#value']['value'] : $element['#value'];
   $size = empty($element['#size']) ? '' : ' size="' . $element['#size'] . '"';
   $maxlength = empty($element['#maxlength']) ? '' : ' maxlength="' . $element['#maxlength'] . '"';
   $class = array('form-text', 'datepicker');
@@ -60,7 +61,7 @@ function theme_datepicker($variables) {
   if (isset($element['#field_prefix'])) {
     $output .= '<span class="field-prefix">' . $element['#field_prefix'] . '</span> ';
   }
-  $output .= '<input type="text"' . $maxlength . ' name="' . $element['#name'] . '" id="' . $element['#id'] . '"' . $size . ' value="' . check_plain($element['#value']) . '"' . drupal_attributes($element['#attributes']) . ' />';
+  $output .= '<input type="text"' . $maxlength . ' name="' . $element['#name'] . '" id="' . $element['#id'] . '"' . $size . ' value="' . check_plain($element_val) . '"' . drupal_attributes($element['#attributes']) . ' />';
   if (isset($element['#field_suffix'])) {
     $output .= ' <span class="field-suffix">' . $element['#field_suffix'] . '</span>';
   }
