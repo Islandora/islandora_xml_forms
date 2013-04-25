@@ -5,12 +5,7 @@
  */
 ?>
 <div class="xml-form-elements-tags">
-  <input type="text"
-         name="<?php print "{$input['#name']}" ?>"
-         id="<?php print "{$element['#id']}" ?>"
-         size="<?php print "{$element['#size']}" ?>"
-         value="<?php print "{$input['#value']}" ?>"
-         class="form-text tag-editor">
+  <?php print $textfield; ?>
   <input type="image" src="<?php print $image_path ?>add.png" name="<?php print $add['#name'] ?>" id="<?php print $add['#id'] ?>" value="add">
   <div class="hidden-controls">
     <?php 
