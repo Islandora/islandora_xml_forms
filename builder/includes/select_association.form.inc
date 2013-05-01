@@ -171,12 +171,6 @@ function xml_form_builder_select_association_form_submit(array $form, array &$fo
   $association = $form_state['values']['association'];
   // Store the selected association in both the association/metadata steps.
   $association_step_storage['association'] = $metadata_step_storage['association'] = $association;
-  // Limit the list of models to the selected model. We may not want to do this
-  // in the future when we'll support ingesting multiple content models, at
-  // such a time we can create a seperate form for selecting content models and
-  // have it control what models are availible. Until then this will have to
-  // stand in.
-  $shared_storage['models'] = (array) $association['content_model'];
 }
 
 /**
@@ -188,12 +182,9 @@ function xml_form_builder_select_association_form_submit(array $form, array &$fo
  *   The Drupal form state.
  */
 function xml_form_builder_select_association_form_undo_submit(array $form, array &$form_state) {
-  $shared_storage = &islandora_ingest_form_get_shared_storage($form_state);
   $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
   $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
   // Forget the selected association.
   unset($association_step_storage['association']);
   unset($metadata_step_storage['association']);
-  // Restore the list of models to their original value.
-  $shared_storage['models'] = $association_step_storage['models'];
 }
