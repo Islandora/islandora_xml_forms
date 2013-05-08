@@ -387,6 +387,9 @@ function xml_form_builder_islandora_ingest_steps(array &$form_state) {
   $shared_storage = islandora_ingest_form_get_shared_storage($form_state);
   $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
   $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
+  if (empty($shared_storage['models'])) {
+    return;
+  }
   $associations = xml_form_builder_get_associations(array(), $shared_storage['models'], array());
   $metadata_step_storage['association'] = isset($metadata_step_storage['association']) ? $metadata_step_storage['association'] : current($associations);
   $num_associations = count($associations);
