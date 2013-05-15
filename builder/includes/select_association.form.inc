@@ -165,12 +165,8 @@ function xml_form_builder_select_association_form_value_callback(array $element,
  *   The Drupal form state.
  */
 function xml_form_builder_select_association_form_submit(array $form, array &$form_state) {
-  $shared_storage = &islandora_ingest_form_get_shared_storage($form_state);
   $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
-  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
-  $association = $form_state['values']['association'];
-  // Store the selected association in both the association/metadata steps.
-  $association_step_storage['association'] = $metadata_step_storage['association'] = $association;
+  $association_step_storage['association'] = $form_state['values']['association'];
 }
 
 /**
@@ -183,8 +179,5 @@ function xml_form_builder_select_association_form_submit(array $form, array &$fo
  */
 function xml_form_builder_select_association_form_undo_submit(array $form, array &$form_state) {
   $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
-  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
-  // Forget the selected association.
   unset($association_step_storage['association']);
-  unset($metadata_step_storage['association']);
 }
