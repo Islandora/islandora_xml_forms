@@ -85,7 +85,7 @@ abstract class XMLSchemaNode {
    */
   private function validateConstructorArguments(DOMElement $node) {
     if ($node->localName != $this->getLocalName()) {
-      throw new Exception("Argument invalided expected local name: {$this->getLocalName()} got: {$node->localName}.");
+      throw new Exception("Argument invalid; expected local name: {$this->getLocalName()} got: {$node->localName}.");
     }
   }
 
