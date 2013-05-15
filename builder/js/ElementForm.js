@@ -24,7 +24,7 @@ Ext.formbuilder.createElementForm = function () {
           Ext.create('Ext.tip.ToolTip', {
             target: 'key',
             anchor: 'left',
-            html: Drupal.t('Identifies this form element. It is used as the drupal form array key for this element.')
+            html: Drupal.t('Identifies this form element. It is used as the Drupal form array key for this element.')
           });
         }
       }
@@ -93,7 +93,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="description" id="description"></a>#description</h3>' +
               '<p><strong>Used by</strong>: <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#fieldset">fieldset</a>, <a href="#file">file</a>, <a href="#item">item</a>, <a href="#password">password</a>, <a href="#password_confirm">password_confirm</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
-              '<p><strong>Description</strong>: The description of the form element. Make sure to enclose inside the <a href="http://api.drupal.org/api/function/t">t</a>() function so this property can be translated.</p>' +
+              '<p><strong>Description</strong>: The description of the form element. Make sure to enclose inside the <a href="http://api.drupal.org/api/function/t">t</a>() function so that this property can be translated.</p>' +
               '<p><strong>Values</strong>: Mixed</p>')
               });
             }
@@ -110,7 +110,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="default_value" id="default_value"></a>#default_value</h3>' +
               '<p><strong>Used by</strong>: <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#hidden">hidden</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#token">token</a>, <a href="#weight">weight</a></p>' +
-              '<p><strong>Description</strong>: The value of the form element that will be displayed or selected initially if the form has not been submitted yet. <strong>Should NOT be confused with</strong> <strong><a href="#value">#value</a></strong>, which is a hard-coded value the user cannot change!</p>' +
+              '<p><strong>Description</strong>: The value of the form element that will be displayed or selected initially if the form has not been submitted yet. <strong>Should NOT be confused with</strong> <strong><a href="#value">#value</a></strong>, which is a hard-coded value that the user cannot change!</p>' +
               '<p><strong>Values</strong>: Mixed</p>')
               });
             }
@@ -128,7 +128,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="required" id="required"></a>#required</h3>' +
               '<p><strong>Used by</strong>: <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#file">file</a>, <a href="#password">password</a>, <a href="#password_confirm">password_confirm</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
-              '<p><strong>Description</strong>: Indicates whether or not the element is required. This automatically validates for empty fields, and flags inputs as required. File fields are <strong>NOT</strong> allowed to be required.</p>' +
+              '<p><strong>Description</strong>: Indicates whether or not the element is required. This automatically validates for empty fields and flags inputs as required. File fields are <strong>NOT</strong> allowed to be required.</p>' +
               '<p><strong>Values</strong>: TRUE or FALSE</p>')
               });
             }
@@ -174,7 +174,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-create-context',
                   anchor: 'left',
                   html: Drupal.t('<h3>Create - Context</h3>' +
-                '<p class="help">The context in which the path will be executed in.</p>')
+                '<p class="help">The context in which the path will be executed.</p>')
                 });
               }
             }
@@ -190,7 +190,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-create-path',
                   anchor: 'left',
                   html: Drupal.t('<h3>Create - Path</h3>' +
-                '<p class="help">An xpath to this element\'s parent element. This is used to detemine where this element will be inserted.</p>')
+                '<p class="help">An XPath expression to this element\'s parent. Used to detemine where this element will be inserted.</p>')
                 });
               }
             }
@@ -206,7 +206,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-create-schema',
                   anchor: 'left',
                   html: Drupal.t('<h3>Create - Schema</h3>' +
-                '<p class="help">An xpath to the definition of this element\'s parent. The xpath is executed in the schema defined in this form\'s properties. This is used to determine the insert order for this element.</p>')
+                '<p class="help">An XPath exporession to the definition of this element\'s parent. The XPath expression is executed in the schema defined in this form\'s properties. This is used to determine the insert order for this element.</p>')
                 });
               }
             }
@@ -248,7 +248,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-create-type',
                   anchor: 'left',
                   html: Drupal.t('<h3>Create - Type</h3>' +
-                '<p class="help">The type of node that will be created. If XML is specified, an xml snipped is expected in the value field.</p>')
+                '<p class="help">The type of node that will be created. If XML is specified, an XML snippet is expected in the value field.</p>')
                 });
               }
             }
@@ -264,7 +264,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-create-value',
                   anchor: 'left',
                   html: Drupal.t('<h3>Create - Value</h3>' +
-                '<p class="help">If the type is either Element or Attribute, the name of the element or attribute is expected. If the type is XML, an XML snippet is expected where the value of the form field will be inserted where ever the string %value% is used in the xml snippet.</p>')
+                '<p class="help">If the type is either Element or Attribute, the name of the element or attribute is expected. If the type is XML, an XML snippet is expected. The value of the form field will be inserted wherever the string %value% is used in the XML snippet.</p>')
                 });
               }
             }
@@ -310,7 +310,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-read-context',
                   anchor: 'left',
                   html: Drupal.t('<h3>Read - Context</h3>' +
-                '<p class="help">The context in which the path will be executed in.</p>')
+                '<p class="help">The context in which the path will be executed.</p>')
                 });
               }
             }
@@ -326,7 +326,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-read-path',
                   anchor: 'left',
                   html: Drupal.t('<h3>Read - Path</h3>' +
-                '<p class="help">The xpath to the node this form field repersents. The nodes value will be used to auto populate this form field. The node selected by this xpath can be used as the self context for the update and delete actions.</p>')
+                '<p class="help">An XPath expression to the node this form field repersents. The node\'s value will be used to automatically populate this form field. The node selected by this XPath expression can be used as the self context for the \'update\' and \'delete\' actions.</p>')
                 });
               }
             }
@@ -375,7 +375,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-update-context',
                   anchor: 'left',
                   html: Drupal.t('<h3>Update - Context</h3>' +
-                '<p class="help">The context in which the path will be executed in.</p>')
+                '<p class="help">The context in which the path will be executed.</p>')
                 });
               }
             }
@@ -392,7 +392,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-update-path',
                   anchor: 'left',
                   html: Drupal.t('<h3>Update - Path</h3>' +
-                '<p class="help">An xpath used to select one or more existing nodes within the document to update. The selected nodes values will be replaced by the value in the this form field.</p>')
+                '<p class="help">An XPath expression used to select one or more existing nodes within the document to update. The selected nodes values will be replaced by the value in the this form field.</p>')
                 });
               }
             }
@@ -408,7 +408,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-update-schema',
                   anchor: 'left',
                   html: Drupal.t('<h3>Update - Schema</h3>' +
-                '<p class="help">An xpath to the definition of this element. The xpath is executed in the schema defined in this form\'s properties. This is used to automatically validate submitted values for this form field.</p>')
+                '<p class="help">An XPath expression to the definition of this element. The XPath expression is executed in the schema defined in this form\'s properties. This is used to automatically validate submitted values for this form field.</p>')
                 });
               }
             }
@@ -457,7 +457,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-delete-context',
                   anchor: 'left',
                   html: Drupal.t('<h3>Delete - Context</h3>' +
-                '<p class="help">The context in which the path will be executed in.</p>')
+                '<p class="help">The context in which the path will be executed.</p>')
                 });
               }
             }
@@ -474,7 +474,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'actions-delete-path',
                   anchor: 'left',
                   html: Drupal.t('<h3>Delete - Path</h3>' +
-                '<p class="help">An xpath used to select one or more existing nodes within the document to delete. The selected nodes will be removed from the document.</p>')
+                '<p class="help">An XPath expression used to select one or more existing nodes within the document to delete. The selected nodes will be removed from the document.</p>')
                 });
               }
             }
@@ -497,7 +497,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html:  Drupal.t('<h3><a name="access" id="access"></a>#access</h3>' +
               '<p><strong>Used by</strong>: All elements and forms</p>' +
-              '<p><strong>Description</strong>: Whether the element is accessible or not; when FALSE, the element is not rendered and the user submitted value is not taken into consideration.</p>' +
+              '<p><strong>Description</strong>: Defines whether the element is accessible or not. When FALSE, the element is not rendered and the user-submitted value is not taken into consideration.</p>' +
               '<p><strong>Values</strong>: TRUE or FALSE.</p>')
               });
             }
@@ -515,7 +515,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="autocomplete_path" id="autocomplete_path"></a>#autocomplete_path</h3>' +
               '<p><strong>Used by</strong>: <a href="#textfield">textfield</a></p>' +
-              '<p><strong>Description</strong>: The path the AJAX autocomplete script uses as the source for autocompletion.</p>')
+              '<p><strong>Description</strong>: The path that the AJAX autocomplete script uses as the source for autocompletion.</p>')
               });
             }
           }
@@ -548,7 +548,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="cols" id="cols"></a>#cols</h3>' +
               '<p><strong>Used by</strong>: <a href="#textarea">textarea</a></p>' +
-              '<p><strong>Description</strong>: How many columns wide the textarea should be (see also <a href="#rows">#rows</a>)</p>' +
+              '<p><strong>Description</strong>: Defines how many columns the textarea should contain (see also <a href="#rows">#rows</a>).</p>' +
               '<p><strong>Values</strong>: A positive number</p>')
               });
             }
@@ -566,7 +566,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="disabled" id="disabled"></a>#disabled</h3>' +
               '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#file">file</a>, <a href="#image_button">image_button</a>, <a href="#password">password</a>, <a href="#password_confirm">password_confirm</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#submit">submit</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
-              '<p><strong>Description</strong>: Disables (greys out) a form input element. Note that disabling a form field doesn\'t necessarily prevent someone from submitting a value through DOM manipulation. It just tells the browser not to accept input.</p>' +
+              '<p><strong>Description</strong>: Disables (greys out) a form input element. Note that disabling a form field doesn\'t necessarily prevent someone from submitting a value through DOM manipulation; it just tells the browser not to accept input.</p>' +
               '<p><strong>Values</strong>: TRUE or FALSE</p>')
               });
             }
@@ -583,7 +583,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="delta" id="delta"></a>#delta</h3>' +
               '<p><strong>Used by</strong>: <a href="#weight">weight</a></p>' +
-              '<p><strong>Description</strong>: Number of weights to have selectable. For example, with $delta =&gt; 10, the weight selection box would display numbers from -10 to 10.</p>' +
+              '<p><strong>Description</strong>: The number of weights to have selectable. For example, with $delta =&gt; 10, the weight selection box would display numbers from -10 to 10.</p>' +
               '<p><strong>Values</strong>: A positive number</p>')
               });
             }
@@ -635,7 +635,7 @@ Ext.formbuilder.createElementForm = function () {
                 html: Drupal.t('<h3><a name="theme" id="theme"></a>#theme</h3>' +
               '<p><strong>Used by</strong>: All elements and forms.</p>' +
               '<p><strong>Description</strong>: Theme function to call for element.</p>' +
-              '<p><strong>Values</strong>: The name of a theme function, without the initial theme_.</p>')
+              '<p><strong>Values</strong>: The name of a theme function, without the initial <em>theme_</em> prefix.</p>')
               });
             }
           }
@@ -651,7 +651,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="weightval" id="weightval"></a>#weight</h3>' +
               '<p><strong>Used by</strong>: All elements</p>' +
-              '<p><strong>Description</strong>: Used to sort the list of form elements before being output; lower numbers appear before higher numbers.</p>' +
+              '<p><strong>Description</strong>: Used to sort the list of form elements before output; lower numbers appear before higher numbers.</p>' +
               '<p><strong>Values</strong>: A positive or negative number (integer or decimal)</p>')
               });
             }
@@ -752,7 +752,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="method" id="method"></a>#method</h3>' +
               '<p><strong>Used by</strong>: <a href="#form">form</a></p>' +
-              '<p><strong>Description</strong>: The HTTP method with which the form will be submitted.</p>' +
+              '<p><strong>Description</strong>: The HTTP method that will be used to submit the form.</p>' +
               '<p><strong>Values</strong>: GET or POST. Default is POST.</p>')
               });
             }
@@ -803,7 +803,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="return_value" id="return_value"></a>#return_value</h3>' +
               '<p><strong>Used by</strong>: <a href="#checkbox">checkbox</a>, <a href="#image_button">image_button</a>, <a href="#radio">radio</a></p>' +
-              '<p><strong>Description</strong>: Value element should return when selected</p>' +
+              '<p><strong>Description</strong>: The value that the element should return when selected.</p>' +
               '<p><strong>Values</strong>: Mixed</p>')
               });
             }
@@ -820,7 +820,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="rows" id="rows"></a>#rows</h3>' +
               '<p><strong>Used by</strong>: <a href="#textarea">textarea</a></p>' +
-              '<p><strong>Description</strong>: How many rows high the textarea should be (see also <a href="#cols">#cols</a>)</p>' +
+              '<p><strong>Description</strong>: Defines how many rows should be in the textarea (see also <a href="#cols">#cols</a>).</p>' +
               '<p><strong>Values</strong>: A positive number</p>')
               });
             }
@@ -837,7 +837,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="size" id="size"></a>#size</h3>' +
               '<p><strong>Used by</strong>:  <a href="#password">password</a>, <a href="#password_confirm">password_confirm</a>, <a href="#select">select</a>, <a href="#textfield">textfield</a></p>' +
-              '<p><strong>Description</strong>: Width of the textfield (in characters) or size of multiselect box (in lines).</p>' +
+              '<p><strong>Description</strong>: Width of the textfield (in characters), or size of the multiselect box (in lines).</p>' +
               '<p><strong>Values</strong>: A positive number.</p>')
               });
             }
@@ -854,7 +854,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="src" id="src"></a>#src</h3>' +
               '<p><strong>Used by</strong>: <a href="#image_button">image_button</a></p>' +
-              '<p><strong>Description</strong>: The URL of the image of the button.</p>' +
+              '<p><strong>Description</strong>: The button image\'s URL.</p>' +
               '<p><strong>Values</strong>: An URL.</p>')
               });
             }
@@ -908,7 +908,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="executes_submit_callback" id="executes_submit_callback"></a>#executes_submit_callback</h3>' +
               '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#image_button">image_button</a>, <a href="#submit">submit</a></p>' +
-              '<p><strong>Description</strong>: Indicates whether or not button should submit the form.</p>' +
+              '<p><strong>Description</strong>: Indicates whether or not the button should submit the form.</p>' +
               '<p><strong>Values</strong>: TRUE or FALSE</p>')
               });
             }
@@ -944,7 +944,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="resizable" id="resizable"></a>#resizable</h3>' +
               '<p><strong>Used by</strong>: <a href="#textarea">textarea</a></p>' +
-              '<p><strong>Description</strong>: Whether users should be allowed to resize the text area</p>' +
+              '<p><strong>Description</strong>: Indicates whether users should be allowed to resize the text area</p>' +
               '<p><strong>Values</strong>: TRUE or FALSE</p>')
               });
             }
@@ -971,7 +971,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'ahah-effect',
                   anchor: 'left',
                   html:  Drupal.t('<h3><a name="ahah_effect" id="ahah_effect"></a>#ajax[\'effect\']</h3>' +
-                '<p><strong>Description</strong>: Specifies the effect used when adding the content from an AHAH request. </p>' +
+                '<p><strong>Description</strong>: Specifies the effect used when adding content from an AHAH request. </p>' +
                 '<p><strong>Values</strong>: String. Possible values: \'none\' (default), \'fade\', \'slide\'. If the <a href="http://interface.eyecon.ro/">interface elements library</a> is installed, any effect with the name <em>effect</em>Toggle may also be used. </p>')
                 });
               }
@@ -987,7 +987,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'ahah-event',
                   anchor: 'left',
                   html: Drupal.t('<h3><a name="ahah_event" id="ahah_event"></a>#ajax[\'event\']</h3>' +
-                '<p><strong>Description</strong>: When this event occurs to this element, Drupal will perform an HTTP request in the background via Javascript.</p>' +
+                '<p><strong>Description</strong>: When this event occurs in this element, Drupal will perform an HTTP request in the background via JavaScript.</p>' +
                 '<p><strong>Values</strong>: String. Possible values: Any valid <a href="http://docs.jquery.com/Events">jQuery event</a>, including \'mousedown\', \'blur\', and \'change\'.'+
                 'Note that #ajax[\'event\'] does not need to be explicitly specified. Although it can be manually set, usually the <a href="#element_default_values">default value </a> will be sufficient.</p>')
                 });
@@ -1004,7 +1004,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'ahah-method',
                   anchor: 'left',
                   html: Drupal.t('<h3><a name="ahah_method" id="ahah_method"></a>#ajax[\'method\']</h3>' +
-                '<p><strong>Description</strong>: Modify the behavior of the returned HTML from an AHAH request when inserting into the <a href="#ajax_wrapper">#ajax_wrapper</a>. If not set, the returned HTML will replace the contents of the wrapper element, but it\'s also possible to use any of the available <a href="http://docs.jquery.com/DOM/Manipulation">jQuery operations for DOM manipulation</a>. </p>' +
+                '<p><strong>Description</strong>: Modifies the behavior of the returned HTML from an AHAH request when inserting into the <a href="#ajax_wrapper">#ajax_wrapper</a>. If not set, the returned HTML will replace the contents of the wrapper element, but it\'s also possible to use any of the available <a href="http://docs.jquery.com/DOM/Manipulation">jQuery operations for DOM manipulation</a>. </p>' +
                 '<p><strong>Values</strong>: String. Possible values: \'replace\' (default), \'after\', \'append\', \'before\', \'prepend\'.</p>')
                 });
               }
@@ -1020,7 +1020,7 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'ahah-path',
                   anchor: 'left',
                   html: Drupal.t('<h3><a name="ahah_path" id="ahah_path"></a>#ajax[\'path\']</h3>' +
-                '<p><strong>Description</strong>: If set, this property triggers AHAH behaviors on a form element. This is the Drupal menu path to a callback function which will generate HTML and return the string of HTML to Drupal. The result will be placed in the div specified in <a href="#ajax_wrapper">#ajax[\'wrapper\']</a>. </p>' +
+                '<p><strong>Description</strong>: If set, this property triggers AHAH behaviors on a form element. This is the Drupal menu path to a callback function which will generate HTML and return the HTML string to Drupal. The result will be placed in the <em>div</em> element specified in <a href="#ajax_wrapper">#ajax[\'wrapper\']</a>. </p>' +
                 '<p><strong>Values</strong>: String containing a Drupal menu path.</p>')
                 });
               }
@@ -1036,8 +1036,8 @@ Ext.formbuilder.createElementForm = function () {
                   target: 'ahah-wrapper',
                   anchor: 'left',
                   html: Drupal.t('<h3><a name="ahah_wrapper" id="ahah_wrapper"></a>#ajax[\'wrapper\']</h3>' +
-                '<p><strong>Description</strong>: This property defines the HTML id attribute of an element on the page will server as the destination for HTML returned by an AHAH request. Usually, a div element is used as the wrapper, as it provides the most flexibility for placement of elements before, after, or inside of it\'s HTML tags. This property  is required for using AHAH requests in on a form element.</p>' +
-                '<p><strong>Values</strong>: String containg a valid id attribute of an HTML element on the same page.</p>')
+                '<p><strong>Description</strong>: Defines the HTML <em>id</em> attribute of an element on the page that will serve as the destination for HTML returned by an AHAH request. A <em>div</em> element is generally used as the wrapper since it provides the most flexibility for placement of elements before, after or inside of its HTML tags. This property is required for using AHAH requests in a form element.</p>' +
+                '<p><strong>Values</strong>: String containg a valid <em>id</em> attribute of an HTML element on the same page.</p>')
                 });
               }
             }
@@ -1090,7 +1090,7 @@ Ext.formbuilder.createElementForm = function () {
                     target: 'ahah-progress-message',
                     anchor: 'top',
                     html: Drupal.t('<p>Possible values:</p>' +
-                  '<ul><li><strong>#ajax[\'progress\'][\'message\']</strong> String.  An optional message to the user; should be wrapped with <a href="/api/drupal/includes--common.inc/function/t/6" title="Translate strings to the page language or a given language." class="local">t</a>().</li></ul>')
+                  '<ul><li><strong>#ajax[\'progress\'][\'message\']</strong> String. An optional message to the user; should be wrapped with <a href="/api/drupal/includes--common.inc/function/t/6" title="Translate strings to the page language or a given language." class="local">t</a>().</li></ul>')
                   });
                 }
               }
@@ -1120,7 +1120,7 @@ Ext.formbuilder.createElementForm = function () {
                     target: 'ahah-progress-interval',
                     anchor: 'top',
                     html: Drupal.t('<p>Possible values:</p>' +
-                  '<li><strong>#ajax[\'progress\'][\'interval\']</strong> String. The interval to be used in updating the progress bar (as defined in progress.js).  Ony used if \'url\' is defined and \'type\' is \'bar\'.</li>')
+                  '<li><strong>#ajax[\'progress\'][\'interval\']</strong> String. The interval to be used in updating the progress bar (as defined in progress.js). Ony used if \'url\' is defined and \'type\' is \'bar\'.</li>')
                   });
                 }
               }
@@ -1156,7 +1156,7 @@ Ext.formbuilder.createElementForm = function () {
               '<a href="#textarea">textarea</a>,' +
               '<a href="#textfield">textfield</a>' +
               '</p>' +
-              '<p>An array of elements whose values control the behavior of the element with respect to the Drupal AHAH javascript methods.</p>')
+              '<p>An array of elements whose values control the behavior of the element with respect to Drupal AHAH JavaScript methods.</p>')
               });
             }
           }
@@ -1208,7 +1208,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="attributes" id="attributes"></a>#attributes</h3>' +
               '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#checkbox">checkbox</a>, <a href="#checkboxes">checkboxes</a>, <a href="#date">date</a>, <a href="#fieldset">fieldset</a>, <a href="#file">file</a>, <a href="#form">form</a>, <a href="#image_button">image_button</a>, <a href="#password">password</a>, <a href="#radio">radio</a>, <a href="#radios">radios</a>, <a href="#select">select</a>, <a href="#submit">submit</a>, <a href="#textarea">textarea</a>, <a href="#textfield">textfield</a>, <a href="#weight">weight</a></p>' +
-              '<p><strong>Description</strong>: Additional HTML attributes, such as \'class\' can be set using this mechanism.</p>' +
+              '<p><strong>Description</strong>: A mechanism allowing for setting of additional HTML attributes such as \'class\'.</p>' +
               '<p><strong>Values</strong>: Any HTML attribute not covered by other properties, e.g. <strong>class</strong> (for control types), <strong>enctype</strong> (for forms).</p>')
               });
             }
@@ -1285,7 +1285,7 @@ Ext.formbuilder.createElementForm = function () {
                 target: 'process',
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="process"></a>#process</h3>' +
-              '<p><strong>Description</strong>: An array of functions that are called when an element is processed. Using this callback, modules can "register" further actions. For example the "radios" form type is expanded to multiple radio buttons using a processing function.</p>' +
+              '<p><strong>Description</strong>: An array of functions that are called when an element is processed. Using this callback, modules can "register" further actions - for example, the "radios" form type is expanded to multiple radio buttons using a processing function.</p>' +
               '<p><strong>Values</strong>: Array of function names (strings)</p>')
               });
             }
@@ -1370,8 +1370,8 @@ Ext.formbuilder.createElementForm = function () {
               '<p><strong>Description</strong>:' +
               'Function(s) to call <strong>after</strong>' +
               'rendering in </a><a href="http://api.drupal.org/api/function/drupal_render/" class="local">drupal_render</a>()' +
-              'has occured. The named function is called with two arguments, the rendered element and its children. It returns the (potentially)' +
-              'altered) element content.</p>' +
+              'has occured. The named function is called with two arguments - the rendered element and its children. It returns the (potentially)' +
+              'altered element content.</p>' +
               '<p><strong>Values</strong>: An array of function names to call.</p>')
               });
             }
@@ -1458,7 +1458,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="options" id="options"></a>#options</h3>' +
               '<p><strong>Used by</strong>: <a href="#checkboxes">checkboxes</a>, <a href="#radios">radios</a>, <a href="#select">select</a></p>' +
-              '<p><strong>Description</strong>: Selectable options for a form element that allows multiple choices.</p>')
+              '<p><strong>Description</strong>: Selectable options for a form element that allow multiple choices.</p>')
               });
             }
           }
@@ -1506,7 +1506,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="weightval" id="weightval"></a>#user_data</h3>' +
               ' <p><strong>Used by</strong>: Custom elements</p>' +
-              '<p><strong>Description</strong>: Used by custom form elements such as tabpanels. Consult documentation about what values can be specified here.</p>')
+              '<p><strong>Description</strong>: Used by custom form elements such as tabpanels. Consult the documentation for more information on what values can be specified here.</p>')
               });
             }
           }
@@ -1544,7 +1544,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="submit-prop" id="submit-prop"></a>#submit</h3>' +
               '<p><strong>Used by</strong>: <a href="#button">button</a>, <a href="#form">form</a>, <a href="#image_button">image_button</a>, <a href="#submit">submit</a></p>' +
-              '<p><strong>Description</strong>: Contains a list of submit callbacks to be excuted on the form or only when a specific button is clicked.</p>' +
+              '<p><strong>Description</strong>: Contains a list of submit callbacks to be excuted on the form, or only when a specific button is clicked.</p>' +
               '<p><strong>Values</strong>: An array of function names.</p>')
               });
             }
@@ -1583,7 +1583,7 @@ Ext.formbuilder.createElementForm = function () {
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="validate" id="validate"></a>#validate</h3>' +
               '<p class="help"><strong>Used by</strong>: <a href="#button">button</a>, <a href="#image_button">image_button</a>, <a href="#form">form</a>, <a href="#submit">submit</a></p>' +
-              '<p><strong>Description</strong>: A list of custom validation functions that need to be passed.This is usually used to add additional validation functions to a form, or to use an alternate function rather than the default form validation function which is the form ID with <em>_validate</em> appended to it.</p>' +
+              '<p><strong>Description</strong>: A list of custom validation functions that need to be passed. This is usually used to add additional validation functions to a form, or to use an alternate function, as opposed to the default form validation function (the form ID with <em>_validate</em> appended to it).</p>' +
               '<p><strong>Values</strong>: An array of function names.</p>')
               });
             }

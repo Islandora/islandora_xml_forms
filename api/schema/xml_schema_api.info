@@ -1,5 +1,5 @@
 name = Islandora XML Schema API
-description = Provides functions and classes that allow for effective use of information stored within XML Schema's.
+description = Provides functions and classes that allow for effective use of information stored within XML schemas.
 
 dependencies[] = php_lib
 package =  Islandora Dependencies

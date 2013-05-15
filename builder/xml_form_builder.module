@@ -39,7 +39,7 @@ function xml_form_builder_menu() {
   );
   $items[MENU_XML_FORM_BUILDER_CREATE] = array(
     'title' => 'Create Form',
-    'description' => 'Create a new Form.',
+    'description' => 'Create a new form.',
     'file' => 'Create.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_create', 'create'),
@@ -74,7 +74,7 @@ function xml_form_builder_menu() {
   );
   $items[MENU_XML_FORM_BUILDER_COPY] = array(
     'title' => 'Copy Form',
-    'description' => 'Copy an existing Form.',
+    'description' => 'Copy an existing form.',
     'file' => 'Copy.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_copy', 3),
@@ -83,7 +83,7 @@ function xml_form_builder_menu() {
   );
   $items[MENU_XML_FORM_BUILDER_EDIT] = array(
     'title' => 'Edit Form',
-    'description' => 'Edit a Form.',
+    'description' => 'Edit a form.',
     'file' => 'Edit.inc',
     'page callback' => 'xml_form_builder_edit',
     'page arguments' => array(3),
@@ -92,7 +92,7 @@ function xml_form_builder_menu() {
   );
   $items[MENU_CALLBACK_XML_FORM_BUILDER_SAVE] = array(
     'title' => 'Edit Form',
-    'description' => 'Edit a Form.',
+    'description' => 'Edit a form.',
     'file' => 'Edit.inc',
     'page callback' => 'xml_form_builder_edit_save',
     'page arguments' => array(3),
@@ -101,7 +101,7 @@ function xml_form_builder_menu() {
   );
   $items[MENU_XML_FORM_BUILDER_DELETE] = array(
     'title' => 'Delete Form',
-    'description' => 'Delete a Form.',
+    'description' => 'Delete a form.',
     'file' => 'Delete.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_delete', 3),
@@ -339,7 +339,7 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
     return FALSE;
   }
   elseif (!XMLFormRepository::Valid($form_name)) {
-    drupal_set_message(t('The drupal form "%name" exists but is not valid please notify the administrator.', array('%name' => $form_name)));
+    drupal_set_message(t('The Drupal form "%name" exists but is not valid. Please notify the administrator.', array('%name' => $form_name)));
     return FALSE;
   }
   try {

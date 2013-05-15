@@ -176,7 +176,7 @@ class XMLSchema {
     else {
       $doc = new DOMDocument();
       if (!@$doc->load($filename)) { // If we can't find a document just fail, we shouldn't attempt any processing.
-        throw new Exception(t('Failed to Find Document: %filename', array('%filename' => $filename)));
+        throw new Exception(t('Failed to find document %filename', array('%filename' => $filename)));
       }
       XmlSchemaCache::Set($filename, $doc);
       return $doc;
