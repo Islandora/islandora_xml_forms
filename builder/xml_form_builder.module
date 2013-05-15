@@ -385,10 +385,11 @@ function xml_form_builder_theme() {
 function xml_form_builder_islandora_ingest_steps(array &$form_state) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   $shared_storage = islandora_ingest_form_get_shared_storage($form_state);
-  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
   $association_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_association_step');
   $associations = xml_form_builder_get_associations(array(), $shared_storage['models'], array());
-  $metadata_step_storage['association'] = isset($metadata_step_storage['association']) ? $metadata_step_storage['association'] : current($associations);
+  // If the user has selected association use that one, otherwise assume there
+  // is only one association.
+  $association = isset($association_step_storage['association']) ? $association_step_storage['association'] : reset($associations);
   $num_associations = count($associations);
   $select_association_step = ($num_associations > 1) ? array(
     'weight' => 0,
@@ -397,15 +398,15 @@ function xml_form_builder_islandora_ingest_steps(array &$form_state) {
     'module' => 'xml_form_builder',
     'file' => 'includes/select_association.form.inc',
     'args' => array($associations),
-      ) : NULL;
+  ) : NULL;
   $metadata_step = ($num_associations >= 1) ? array(
     'weight' => 5,
     'type' => 'form',
     'form_id' => 'xml_form_builder_ingest_form',
     'module' => 'xml_form_builder',
     'file' => 'includes/ingest.form.inc',
-    'args' => array($metadata_step_storage['association']),
-      ) : NULL;
+    'args' => array($association),
+  ) : NULL;
   return array(
     'xml_form_builder_association_step' => $select_association_step,
     'xml_form_builder_metadata_step' => $metadata_step,
