@@ -40,7 +40,9 @@ function xml_form_builder_ingest_form(array $form, array &$form_state, array $as
  * Alter the form such that previous will unset any stored form.
  */
 function xml_form_builder_form_xml_form_builder_ingest_form_alter(array &$form, array &$form_state) {
-  array_unshift($form['prev']['#submit'], 'xml_form_builder_ingest_form_previous_submit');
+  if (isset($form['prev']['#submit'])) {
+    array_unshift($form['prev']['#submit'], 'xml_form_builder_ingest_form_previous_submit');
+  }
 }
 
 /**
