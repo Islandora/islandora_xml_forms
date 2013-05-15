@@ -15,14 +15,14 @@
  *   The drupal form.
  * @param array $form_state
  *   The drupal form state.
- * @param FedoraDatastream $datastream
+ * @param AbstractDatastream $datastream
  *   The datastream to edit.
  *
  * @return array
  *   The form for selecting the association to edit the datastream, or the xml
  *   form for editing the datastream.
  */
-function xml_form_builder_edit_datastream_form(array $form, array &$form_state, FedoraDatastream $datastream) {
+function xml_form_builder_edit_datastream_form(array $form, array &$form_state, AbstractDatastream $datastream) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/edit_datastream');
   $form_state['datastream'] = $datastream;
   $associations = xml_form_builder_edit_datastream_form_get_associations($form_state, $datastream);
@@ -37,10 +37,10 @@ function xml_form_builder_edit_datastream_form(array $form, array &$form_state, 
  *
  * @param array $form_state
  *   The drupal form state.
- * @param FedoraDatastream $datastream
+ * @param AbstractDatastream $datastream
  *   The datastream to edit.
  */
-function xml_form_builder_edit_datastream_form_get_associations(array &$form_state, FedoraDatastream $datastream) {
+function xml_form_builder_edit_datastream_form_get_associations(array &$form_state, AbstractDatastream $datastream) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   if (isset($form_state['associations'])) {
     return $form_state['associations'];
@@ -54,7 +54,7 @@ function xml_form_builder_edit_datastream_form_get_associations(array &$form_sta
  *
  * @param array $form_state
  *   The drupal form state.
- * @param FedoraDatastream $datastream
+ * @param AbstractDatastream $datastream
  *   The datastream to edit.
  *
  * @return array
