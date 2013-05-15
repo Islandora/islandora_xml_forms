@@ -86,7 +86,7 @@ class NodeRegistry implements Serializable {
           $this->registered[$key] = $result->item(0);
         }
         else {
-          throw new Exception('Fatal error: Failed to restore DOMNode from stored path. Key: ' . $key . ' Path: ' . $path);
+          throw new Exception('Fatal error: failed to restore DOMNode from stored path. Key: ' . $key . ' Path: ' . $path);
         }
       }
       $this->restoredRequired = FALSE;
@@ -102,7 +102,7 @@ class NodeRegistry implements Serializable {
    */
   public function register($hash, DOMNode $node) {
     if ($this->restoredRequired) {
-      throw new Exception("DOMNodes can not be registered until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
+      throw new Exception("DOMNodes cannot be registered until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
     }
     $this->registered[$hash] = $node;
   }
@@ -127,7 +127,7 @@ class NodeRegistry implements Serializable {
    */
   public function get($hash) {
     if ($this->restoredRequired) {
-      throw new Exception("DOMNodes can not be retrieved until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
+      throw new Exception("DOMNodes cannot be retrieved until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
     }
     return $this->isRegistered($hash) ? $this->registered[$hash] : NULL;
   }
@@ -141,7 +141,7 @@ class NodeRegistry implements Serializable {
    */
   public function getRegistered() {
     if ($this->restoredRequired) {
-      throw new Exception("DOMNodes can not be retrieved until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
+      throw new Exception("DOMNodes cannot be retrieved until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
     }
     return $this->registered;
   }

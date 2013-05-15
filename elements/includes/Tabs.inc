@@ -90,6 +90,6 @@ function template_preprocess_tabs(&$vars) {
     $parents = $tabs['#array_parents'];
     $name = array_pop($parents);
     $vars['content'] = '';
-    drupal_set_message(t('Attempted to create a tabs: %name, without defining any child tabpanels.', array('%name' => $name)), 'error');
+    drupal_set_message(t('Attempted to create tab %name without defining any child tabpanels.', array('%name' => $name)), 'error');
   }
 }

@@ -78,7 +78,7 @@ class Namespaces implements IteratorAggregate {
     if ($prefix !== FALSE) {
       return $prefix;
     }
-    throw new XMLFormsNamespaceException("Namespace URI '$uri' was not defined, could not find the prefix.");
+    throw new XMLFormsNamespaceException("Namespace URI '$uri' was not defined; could not find the prefix.");
   }
 
   /**

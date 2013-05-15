@@ -1,5 +1,5 @@
 name = Islandora XML Forms
-description = Build/Store/Render drupal forms that allow for the manipulation of XML files.
+description = Build, store and render Drupal forms that allow for manipulation of XML files.
 dependencies[] = xml_form_api
 dependencies[] = xml_form_builder
 dependencies[] = xml_form_elements
