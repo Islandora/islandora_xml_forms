@@ -418,7 +418,7 @@ function xml_form_builder_islandora_ingest_steps(array &$form_state) {
 /**
  * Implements hook_islandora_edit_datastream_registry().
  */
-function xml_form_builder_islandora_edit_datastream_registry(FedoraObject $object, FedoraDatastream $datastream) {
+function xml_form_builder_islandora_edit_datastream_registry(AbstractObject $object, AbstractDatastream $datastream) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   $associations = xml_form_builder_get_associations(array(), $object->models, array($datastream->id));
   if (count($associations) > 0) {
@@ -435,7 +435,7 @@ function xml_form_builder_islandora_edit_datastream_registry(FedoraObject $objec
 /**
  * This function is used by ingest/edit to update the given object.
  *
- * @param AbstractFedoraObject $object
+ * @param AbstractObject $object
  *   The object to update.
  * @param array $association
  *   The association used to update the objects datastreams.
@@ -448,7 +448,7 @@ function xml_form_builder_islandora_edit_datastream_registry(FedoraObject $objec
  *   An associative array where the keys are DSID's and the values are booleans
  *   that state if the given datastream was created (TRUE) or updated (FALSE).
  */
-function xml_form_builder_update_object(AbstractFedoraObject $object, array $association, XMLDocument $document, $label) {
+function xml_form_builder_update_object(AbstractObject $object, array $association, XMLDocument $document, $label) {
   $object->label = $label;
   $object->models = array($association['content_model']);
   $document = $document->document;
@@ -491,7 +491,7 @@ function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDo
 /**
  * Updates the given metadata datastream with the given document.
  *
- * @param AbstractFedoraObject $object
+ * @param AbstractObject $object
  *   The object to update.
  * @param array $datastream_id
  *   The datastream to update.
@@ -501,7 +501,7 @@ function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDo
  * @return bool
  *   TRUE if the datastream was created, FALSE if it was updated.
  */
-function xml_form_builder_update_metadata_datastream(AbstractFedoraObject $object, $datastream_id, DOMDocument $document) {
+function xml_form_builder_update_metadata_datastream(AbstractObject $object, $datastream_id, DOMDocument $document) {
   $created = FALSE;
   if (empty($object[$datastream_id])) {
     $datastream = $object->constructDatastream($datastream_id, 'M');
@@ -522,14 +522,14 @@ function xml_form_builder_update_metadata_datastream(AbstractFedoraObject $objec
 /**
  * Updates the DC datastream by applying the given transform.
  *
- * @param AbstractFedoraObject $object
+ * @param AbstractObject $object
  *   The object whose DC will be updated.
  * @param string $transform
  *   The transform to apply, as defined by the forms association.
  * @param DOMDocument $document
  *   The document to transform.
  */
-function xml_form_builder_update_dc_datastream(AbstractFedoraObject $object, $transform, DOMDocument $document) {
+function xml_form_builder_update_dc_datastream(AbstractObject $object, $transform, DOMDocument $document) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   $created = FALSE;
   $transform = xml_form_builder_get_transform_file($transform);

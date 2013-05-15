@@ -199,7 +199,7 @@ function xml_form_builder_get_transform_file($transform) {
  *   The path to the transform xslt.
  * @param DOMDocument $source_document
  *   The source document to transform.
- * @param FedoraObject $object
+ * @param AbstractObject $object
  *   The object that the transform is form.
  *
  * @return DOMDocument
