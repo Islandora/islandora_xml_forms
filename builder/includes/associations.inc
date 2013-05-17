@@ -216,7 +216,7 @@ function xml_form_builder_transform_document($transform, $source_document, $obje
       $xpath = new DOMXPath($document);
       // Set the Label.
       $results = $xpath->query("*[local-name()='title']");
-      $results->item(0)->nodeValue = $object->label;
+      $results->item(0)->nodeValue = htmlspecialchars($object->label);
       // Set the Pid.
       $results = $xpath->query("*[local-name()='identifier']");
       $results->item(0)->nodeValue = $object->id;
