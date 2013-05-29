@@ -20,7 +20,6 @@ define('MENU_XML_FORM_BUILDER_DELETE', 'admin/islandora/xmlform/%/delete');
 define('MENU_XML_FORM_BUILDER_ASSOCIATIONS', 'admin/islandora/xmlform/%/associations');
 define('MENU_XML_FORM_BUILDER_ASSOCIATE', 'admin/islandora/xmlform/%/associate/%');
 define('MENU_XML_FORM_BUILDER_DISASSOCIATE', 'admin/islandora/xmlform/%/disassociate/%');
-define('MENU_XML_FORM_BUILDER_CONTENT_MODEL_AUTOCOMPLETE', 'admin/islandora/xmlform_autocomplete');
 define('MENU_CALLBACK_XML_FORM_BUILDER_EXPORT', 'admin/islandora/xmlform/%/export');
 define('MENU_CALLBACK_XML_FORM_BUILDER_SAVE', 'admin/islandora/xmlform/%/edit/save');
 define('MENU_XML_FORM_BUILDER_EDIT_DATASTREAM', 'islandora/edit_form/%islandora_object/%islandora_datastream');
@@ -136,17 +135,6 @@ function xml_form_builder_menu() {
     'description' => 'Enables an associated form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_enable_association',
-    'page arguments' => array(3, 5),
-    // @todo Use something fedora specific.
-    'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
-    'type' => MENU_CALLBACK,
-  );
-  // Enable default/hook associations, redirect back to list.
-  $items[MENU_XML_FORM_BUILDER_CONTENT_MODEL_AUTOCOMPLETE] = array(
-    'title' => 'Autocomplete callback',
-    'description' => 'Autocomplete a Fedora content model PID.',
-    'file' => 'includes/content_models.autocomplete.inc',
-    'page callback' => 'xml_form_builder_content_model_autocomplete',
     'page arguments' => array(3, 5),
     // @todo Use something fedora specific.
     'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),

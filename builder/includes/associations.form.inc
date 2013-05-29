@@ -49,7 +49,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
         '#type' => 'textfield',
         '#title' => t('Content Model'),
         '#required' => TRUE,
-        '#autocomplete_path' => MENU_XML_FORM_BUILDER_CONTENT_MODEL_AUTOCOMPLETE,
+        '#autocomplete_path' => ISLANDORA_CONTENT_MODELS_AUTOCOMPLETE,
         '#description' => t('The content model to associate with a form. If the content model has no decendents it will not show up in autocomplete.'),
         '#default_value' => isset($form_state['values']['content_model']) ? $form_state['values']['content_model'] : NULL,
       ),
