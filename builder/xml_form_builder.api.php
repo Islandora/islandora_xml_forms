@@ -29,7 +29,7 @@ function hook_islandora_xml_form_builder_forms() {
  *   An associative array mapping a shortened name to the full path of the
  *   transformation.
  */
-function hook_islandora_xml_form_builder_get_transforms() {
+function hook_xml_form_builder_get_transforms() {
   return array(
     'awesome.xslt' => 'sites/all/modules/my_cool_module/transforms/awesome.xslt',
   );
