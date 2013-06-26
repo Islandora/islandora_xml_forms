@@ -108,9 +108,6 @@ function xml_form_elements_theme($existing, $type, $theme, $path) {
     'xml_form_element' => array(
       'render element' => 'element',
     ),
-    'xml_form_elements_defaultable_markup' => array(
-      'render element' => 'element',
-    ),
   );
 }
 
