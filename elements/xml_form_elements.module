@@ -2,9 +2,9 @@
 
 /**
  * @file
- *
  * Hooks and constants for xml_form_elements.
  */
+
 /**
  * Constants
  */
@@ -24,8 +24,6 @@ define('PATH_XML_FORM_ELEMENTS_IMAGES', PATH_XML_FORM_ELEMENTS . 'images/');
 
 /**
  * Implements hook_element_info().
- *
- * @return array
  */
 function xml_form_elements_element_info() {
   return array(
@@ -60,11 +58,20 @@ function xml_form_elements_element_info() {
     ),
     'defaultable_markup' => array(
       '#markup' => '',
-      '#pre_render' => array('xml_form_elements_default_value_to_markup', 'drupal_pre_render_markup', 'xml_form_elements_remove_empty_markup'),
+      '#pre_render' => array(
+        'xml_form_elements_default_value_to_markup',
+        'drupal_pre_render_markup',
+        'xml_form_elements_remove_empty_markup',
+      ),
+      '#post_render' => array('xml_form_elements_defaultable_markup'),
     ),
     'defaultable_item' => array(
       '#markup' => '',
-      '#pre_render' => array('xml_form_elements_default_value_to_markup', 'drupal_pre_render_markup', 'xml_form_elements_remove_empty_markup'),
+      '#pre_render' => array(
+        'xml_form_elements_default_value_to_markup',
+        'drupal_pre_render_markup',
+        'xml_form_elements_remove_empty_markup',
+      ),
       '#theme_wrappers' => array('xml_form_element'),
     ),
   );
@@ -72,8 +79,6 @@ function xml_form_elements_element_info() {
 
 /**
  * Implements hook_theme().
- *
- * @return array
  */
 function xml_form_elements_theme($existing, $type, $theme, $path) {
   return array(
@@ -82,7 +87,8 @@ function xml_form_elements_theme($existing, $type, $theme, $path) {
       'template' => 'templates/Tabs',
       'file' => 'includes/Tabs.inc',
     ),
-    THEME_XML_FORM_ELEMENTS_TABPANEL => array( // The content of a single tabpanel.
+    // The content of a single tabpanel.
+    THEME_XML_FORM_ELEMENTS_TABPANEL => array(
       'render element' => 'element',
       'file' => 'includes/TabPanel.inc',
     ),
@@ -170,8 +176,6 @@ function xml_form_elements_tags_process(array $element, array &$form_state, arra
  *
  * @param array $element
  *   The element to be processed.
- * @param mixed $edit
- *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
  * @param array $complete_form
@@ -190,8 +194,6 @@ function xml_form_elements_tag_process($element, &$form_state, $complete_form) {
  *
  * @param array $element
  *   The element to be processed.
- * @param mixed $edit
- *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
  * @param array $complete_form
@@ -220,13 +222,10 @@ function xml_form_elements_ajax_callback($form, $form_state) {
   return find_element($form, $form_state['triggering_element']['#ajax']['params']['render']);
 }
 
-/**
- *
- */
 function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, array &$form, array &$form_state) {
   $triggering_element = $form_state['triggering_element'];
   $action = $triggering_element['#ajax']['params']['action'];
-  switch($action) {
+  switch ($action) {
     case 'add':
       xml_form_elements_form_element_tabs_ajax_add($element, $form, $form_state);
       break;
@@ -261,13 +260,15 @@ function xml_form_elements_form_element_tabs_ajax_delete(FormElement $element, a
 function xml_form_elements_form_element_tags_ajax_alter(FormElement $element, array &$form, array &$form_state) {
   $triggering_element = $form_state['triggering_element'];
   $action = $triggering_element['#ajax']['params']['action'];
-  switch($action) {
+  switch ($action) {
     case 'add':
       xml_form_elements_form_element_tags_ajax_add($element, $form, $form_state);
       break;
+
     case 'delete':
       xml_form_elements_form_element_tags_ajax_delete($element, $form, $form_state);
       break;
+
     case 'edit':
       xml_form_elements_form_element_tags_ajax_edit($element, $form, $form_state);
       break;
@@ -277,15 +278,18 @@ function xml_form_elements_form_element_tags_ajax_alter(FormElement $element, ar
 function xml_form_elements_form_element_tags_ajax_add(FormElement $element, array &$form, array &$form_state) {
   $form_children = element_children($form);
   $input_field = &$form[array_shift($form_children)];
-  $default_value = $input_field['#default_value']; // Get Input Value as its not stored in the object form.
+  // Get Input Value as its not stored in the object form.
+  $default_value = $input_field['#default_value'];
   $input_field['#value'] = '';
   $element_children = array_values($element->children);
   $input = array_shift($element_children);
   $tag = clone $input;
-  $input->parent->adopt($tag); // Create new tag and have it stored in the state.
+  // Create new tag and have it stored in the state.
+  $input->parent->adopt($tag);
   $tag = $tag->toArray();
   $tag['#default_value'] = $default_value;
-  $form[] = $tag; // Update drupal form.
+  // Update drupal form.
+  $form[] = $tag;
 }
 
 function xml_form_elements_form_element_tags_ajax_delete(FormElement $element, array &$form, array &$form_state) {
@@ -341,14 +345,38 @@ function xml_form_elements_remove_empty_markup($elements) {
   }
   else {
     return array();
-  }   
+  }
 }
 
 /**
  * Implements theme_hook().
  */
 function theme_xml_form_element(&$elements) {
- if (!empty($elements['element']['#children'])) {
-  return theme('form_element', $elements['element']);
- }
+  if (!empty($elements['element']['#children'])) {
+    return theme('form_element', $elements['element']);
+  }
+}
+
+/**
+ * Strips prefixes and suffixes from children who are empty.
+ *
+ * @param string $children
+ *   The markup attempted to be rendered.
+ * @param array $elements
+ *   An array of elements.
+ *
+ * @return string
+ *   The rendered children if there is markup, nothing otherwise.
+ */
+function xml_form_elements_defaultable_markup($children, &$elements) {
+  if (!empty($children)) {
+    return $children;
+  }
+  else {
+    // We need to strip away prefixes and suffixes when there is no markup
+    // to be rendered.
+    $elements['#prefix'] = '';
+    $elements['#suffix'] = '';
+    return '';
+  }
 }
