@@ -145,8 +145,8 @@ function xml_form_builder_menu() {
     'file' => 'includes/edit_datastream.form.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_edit_datastream_form', 3),
-    'access callback' => 'islandora_object_datastream_access_callback',
-    'access arguments' => array(FEDORA_METADATA_EDIT, 2, 3),
+    'access callback' => 'islandora_datastream_access',
+    'access arguments' => array(FEDORA_METADATA_EDIT, 3),
     'load arguments' => array(2),
     'type' => MENU_CALLBACK,
   );
