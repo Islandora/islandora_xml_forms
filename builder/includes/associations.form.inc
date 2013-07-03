@@ -8,9 +8,11 @@
  */
 
 /**
- * Defines the associations form. This form lists all the associations of the
- * given XML form, allowing the user to delete/disable those associations, as
- * well as adding new associations to the given XML form.
+ * Defines the associations form.
+ *
+ * This form lists all the associations of the given XML form, allowing the
+ * user to delete/disable those associations, as well as adding new
+ * associations to the given XML form.
  *
  * @param array $form
  *   The drupal form.
@@ -27,7 +29,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/associations.form');
   $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
   $create_table_rows = function($o) {
-    $o['title_field'] = "['". implode("']['", $o['title_field']) . "']";
+    $o['title_field'] = "['" . implode("']['", $o['title_field']) . "']";
     $o['type'] = $o['in_db'] ? 'custom' : 'hook';
     return $o;
   };
@@ -36,8 +38,8 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       '#type' => 'fieldset',
       '#title' => t('Current associations'),
       '#value' => theme('xml_form_builder_association_table', array(
-                  'associations' => array_map($create_table_rows, $associations)
-                ))
+        'associations' => array_map($create_table_rows, $associations),
+      )),
     ),
     'fieldset' => array(
       '#type' => 'fieldset',
@@ -47,13 +49,13 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
         '#type' => 'textfield',
         '#title' => t('Content Model'),
         '#required' => TRUE,
-        '#autocomplete_path' => MENU_XML_FORM_BUILDER_CONTENT_MODEL_AUTOCOMPLETE,
-        '#description' => t('The content model to associate with a form. If the content model has no decendants it will not show up in autocomplete.'),
+        '#autocomplete_path' => ISLANDORA_CONTENT_MODELS_AUTOCOMPLETE,
+        '#description' => t('The content model to associate with a form. If the content model has no decendents it will not show up in autocomplete.'),
         '#default_value' => isset($form_state['values']['content_model']) ? $form_state['values']['content_model'] : NULL,
       ),
       'dsid' => array(
         '#type' => 'textfield',
-        '#description' => t('The datastream ID of where the objects metadata is stored.'),
+        '#description' => t('The datastream ID where the object\'s metadata is stored.'),
         '#title' => t('Metadata Datastream ID'),
         '#required' => TRUE,
         '#default_value' => isset($form_state['values']['dsid']) ? $form_state['values']['dsid'] : NULL,
@@ -66,7 +68,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       'title_field' => array(
         '#type' => 'select',
         '#title' => t('Title Field'),
-        '#description' => t('The form field that you want to use for the objects label.'),
+        '#description' => t('The form field for the object\'s label.'),
         '#prefix' => '<div id="ahah-wrapper">',
         '#suffix' => '</div>',
         '#options' => xml_form_builder_get_title_options($form_name),
@@ -77,7 +79,14 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
         '#title' => t('XSL Transform'),
         '#options' => xml_form_builder_get_transforms(),
         '#default_value' => 'No Transform',
-        '#description' => t('A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.'),
+        '#description' => t("An XSL transform for setting the Fedora object's Dublin Core metadata datastream."),
+      ),
+      'self_transform' => array(
+        '#type' => 'select',
+        '#title' => t('Self XSL Transform'),
+        '#options' => xml_form_builder_get_self_transforms(),
+        '#default_value' => 'No Transform',
+        '#description' => t('An optional transformation applied to form data prior to ingestion.'),
       ),
       'file' => array(
         '#type' => 'file',
@@ -94,8 +103,9 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
 }
 
 /**
- * Default submit handler for the associations form. It adds a new
- * association to the given form.
+ * Default submit handler for the associations form.
+ *
+ * It adds a new association to the given form.
  *
  * @param array $form
  *   The drupal form.
@@ -109,6 +119,7 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     'dsid',
     'title_field',
     'transform',
+    'self_transform',
   );
   $object = array_intersect_key(
     $form_state['values'],
@@ -155,7 +166,7 @@ function xml_form_builder_get_title_options($form_name) {
           if (count($ancestors) > 0) {
             foreach ($ancestors as $ancestor) {
               $name = $ancestor->getAttribute('name');
-              $ancestors_array[] = (string)$name;
+              $ancestors_array[] = (string) $name;
             }
           }
           $output[serialize($ancestors_array)] = "['" . implode("']['", $ancestors_array) . "']";
@@ -168,8 +179,10 @@ function xml_form_builder_get_title_options($form_name) {
 }
 
 /**
- * Remove the association identified by $id, either by deleting it from the
- * database, or marking it disabled if its provided by a hook.
+ * Remove the association identified by $id.
+ *
+ * Either by deleting it from the database, or marking it disabled if its
+ * provided by a hook.
  *
  * @param string $form_name
  *   The name of the form for which the associations are being adjusted.
@@ -192,12 +205,13 @@ function xml_form_builder_disable_association($form_name, $id) {
     db_delete('xml_form_builder_form_associations')
       ->condition('id', intval($id))
       ->execute();
-    drupal_set_message(t('Deleted the association ID:%id with the form %form_name.', array(
-          '%id' => $id,
-          '%form_name' => $form_name,
-        )));
-  } else {
-    // Hook defined association
+    drupal_set_message(t('Deleted the association ID:%id from %form_name.', array(
+      '%id' => $id,
+      '%form_name' => $form_name,
+    )));
+  }
+  else {
+    // Hook defined association.
     $num_results = db_select('xml_form_builder_association_hooks', 'fa')
       ->fields('fa')
       ->condition('id', $id)
@@ -206,16 +220,16 @@ function xml_form_builder_disable_association($form_name, $id) {
       ->fetchField();
     if ($num_results == 1) {
       db_update('xml_form_builder_association_hooks')
-        ->fields(array('enabled' => (int)FALSE))
+        ->fields(array('enabled' => (int) FALSE))
         ->condition('id', $id)
         ->execute();
     }
     else {
       db_insert('xml_form_builder_association_hooks')
         ->fields(array(
-            'id' => $id,
-            'enabled' => (int)FALSE,
-          ))
+          'id' => $id,
+          'enabled' => (int) FALSE,
+        ))
         ->execute();
     }
     drupal_set_message(t('Successfully disabled association.'));
@@ -252,17 +266,17 @@ function xml_form_builder_enable_association($form_name, $id) {
       ->fetchField();
     if ($num_results == 1) {
       db_update('xml_form_builder_association_hooks')
-        ->fields(array('enabled' => (int)TRUE))
+        ->fields(array('enabled' => (int) TRUE))
         ->condition('id', $id)
         ->execute();
     }
     else {
       db_insert('xml_form_builder_association_hooks')
-        ->fields(array(
+          ->fields(array(
             'id' => $id,
-            'enabled' => (int)TRUE,
+            'enabled' => (int) TRUE,
           ))
-        ->execute();
+          ->execute();
     }
   }
   drupal_set_message(t('Successfully enabled association.'));

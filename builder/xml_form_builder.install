@@ -2,35 +2,15 @@
 
 /**
  * @file
- *
  * Defines functions used for the installation of the xml_form_builder module.
  */
 
 /**
- * Implements hook_install().
- */
-function xml_form_builder_install() {
-  // TODO The drupal_(un)install_schema functions are called automatically in D7.
-  // drupal_install_schema('xml_form_builder')
-}
-
-/**
- * Implements hook_uninstall().
- */
-function xml_form_builder_uninstall() {
-  // TODO The drupal_(un)install_schema functions are called automatically in D7.
-  // drupal_uninstall_schema('xml_form_builder')
-}
-
-/**
  * Implements hook_schema().
- *
- * @return array
- *   The Schema definition
  */
 function xml_form_builder_schema() {
   $schema['xml_forms'] = array(
-    'description' => 'This table is used to store XML Form API style form definitions.',
+    'description' => 'This table is used to store form definitions in XML Form API style.',
     'fields' => array(
       'id' => array(
         'type' => 'serial',
@@ -43,7 +23,7 @@ function xml_form_builder_schema() {
         'not null' => TRUE,
       ),
       'form' => array(
-        'description' => 'The xml based form definition.',
+        'description' => 'The XML-based form definition.',
         'type' => 'text',
         'size' => 'medium',
         'not null' => TRUE,
@@ -54,7 +34,7 @@ function xml_form_builder_schema() {
   );
 
   $schema['xml_form_builder_form_associations'] = array(
-    'description' => 'This table is used to store associations between XML Form API style form definitions, and the Content models that use them.',
+    'description' => 'This table is used to store associations between XML Form API style form definitions and the content models that use them.',
     'fields' => array(
       'id' => array(
         'type' => 'serial',
@@ -73,22 +53,28 @@ function xml_form_builder_schema() {
         'not NULL' => TRUE,
       ),
       'dsid' => array(
-        'description' => 'The datastream id of the metadata to be edited.',
+        'description' => 'The datastream ID of the metadata to be edited.',
         'type' => 'varchar',
         'length' => 128,
         'not NULL' => TRUE,
       ),
       'title_field' => array(
-        'description' => 'The form field that you want to use for the objects label.',
+        'description' => 'The form field for the object\'s label.',
         'type' => 'varchar',
         'length' => 128,
         'not NULL' => TRUE,
       ),
       'transform' => array(
-        'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.',
+        'description' => 'An XSL transform for setting the Fedora object\'s Dublin Core metadata datastream.',
         'type' => 'varchar',
         'length' => 128,
         'not NULL' => TRUE,
+      ),
+      'self_transform' => array(
+        'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.',
+        'type' => 'varchar',
+        'length' => 128,
+        'not NULL' => FALSE,
       ),
       'template' => array(
         'description' => 'A sample metadata file used to prepopulate the form on ingest.',
@@ -109,7 +95,7 @@ function xml_form_builder_schema() {
         'not NULL' => TRUE,
       ),
       'enabled' => array(
-        'description' => 'If the hook is enabled.',
+        'description' => 'The hook\'s status (enabled or not).',
         'type' => 'int',
         'size' => 'tiny',
         'not NULL' => TRUE,
@@ -125,9 +111,10 @@ function xml_form_builder_schema() {
  * Copy form associations from deprecated islandora_content_model_forms module.
  */
 function xml_form_builder_update_7100() {
+
   $schema = array();
-    $schema['xml_form_builder_form_associations'] = array(
-    'description' => 'This table is used to store associations between XML Form API style form definitions, and the Content models that use them.',
+  $schema['xml_form_builder_form_associations'] = array(
+    'description' => 'This table is used to store associations between XML Form API style form definitions and the content models that use them.',
     'fields' => array(
       'id' => array(
         'type' => 'serial',
@@ -146,13 +133,13 @@ function xml_form_builder_update_7100() {
         'not NULL' => TRUE,
       ),
       'dsid' => array(
-        'description' => 'The datastream id of the metadata to be edited.',
+        'description' => 'The datastream ID of the metadata to be edited.',
         'type' => 'varchar',
         'length' => 128,
         'not NULL' => TRUE,
       ),
       'title_field' => array(
-       'description' => 'The form field that you want to use for the objects label.',
+       'description' => "The form field for the object's label.",
        'type' => 'varchar',
        'length' => 256,
        'not NULL' => TRUE,
@@ -160,8 +147,7 @@ function xml_form_builder_update_7100() {
        'serialize' => TRUE,
       ),
       'transform' => array(
-        'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datas
-tream.',
+        'description' => "An XSL transform for setting the Fedora object's Dublin Core metadata datastream.",
         'type' => 'varchar',
         'length' => 128,
         'not NULL' => TRUE,
@@ -185,7 +171,7 @@ tream.',
         'not NULL' => TRUE,
       ),
       'enabled' => array(
-        'description' => 'If the hook is enabled.',
+        'description' => 'The hook\'s status (enabled or not).',
         'type' => 'int',
         'size' => 'tiny',
         'not NULL' => TRUE,
@@ -201,7 +187,7 @@ tream.',
 
   $output = array();
   $t = get_t();
-  foreach($schema as $name => $schema_info) {
+  foreach ($schema as $name => $schema_info) {
     try {
       db_create_table($name, $schema_info);
     }
@@ -213,7 +199,7 @@ tream.',
 
     if (db_table_exists($old)) {
       // XXX: If the schema changes significantly in the future, this should be
-      //  moved there and updated.
+      // moved there and updated.
       $results = db_select($old, 'o')
         ->fields('o')
         ->execute()
@@ -221,7 +207,7 @@ tream.',
       foreach ($results as $result) {
         unset($result->id);
         db_insert($name)
-          ->fields((array)$result)
+          ->fields((array) $result)
           ->execute();
       }
 
@@ -237,12 +223,12 @@ tream.',
  */
 function xml_form_builder_update_7101() {
   $results = db_select('xml_form_builder_form_associations', 'fa')
-    ->fields('fa', array('id', 'title_field'))
-    ->execute()
-    ->fetchAll();
+   ->fields('fa', array('id', 'title_field'))
+   ->execute()
+   ->fetchAll();
 
   db_change_field('xml_form_builder_form_associations', 'title_field', 'title_field', array(
-    'description' => 'The form field that you want to use for the objects label.',
+    'description' => 'The form field for the object\'s label.',
     'type' => 'varchar',
     'length' => 256,
     'not NULL' => TRUE,
@@ -253,7 +239,7 @@ function xml_form_builder_update_7101() {
   foreach ($results as $association) {
     $title_field = $association->title_field;
     // Avoid operating on already serialized arrays (if associations have been
-    //  created before running the updates).
+    // created before running the updates).
     if (!is_array(@unserialize($title_field))) {
       $title_field = substr($title_field, 2, -2);
       $title_field = explode("']['", $title_field);
@@ -264,5 +250,24 @@ function xml_form_builder_update_7101() {
         ->condition('id', $association->id)
         ->execute();
     }
+  }
+}
+
+/**
+ * Add self_transform field to table definition.
+ */
+function xml_form_builder_update_7102() {
+  $t = get_t();
+  $self_transform = array(
+    'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.',
+    'type' => 'varchar',
+    'length' => 128,
+    'not NULL' => FALSE,
+  );
+  try {
+    db_add_field('xml_form_builder_form_associations', 'self_transform', $self_transform);
+  }
+  catch (DatabaseSchemaObjectExistsException $e) {
+    $output[] = $t('Field "self_transform" already exists.');
   }
 }

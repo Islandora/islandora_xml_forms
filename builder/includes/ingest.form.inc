@@ -20,6 +20,8 @@
  */
 function xml_form_builder_ingest_form(array $form, array &$form_state, array $association) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'ingest.form');
+  $step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  $step_storage['association'] = $association;
   $form_name = $association['form_name'];
   $dsid = $association['dsid'];
   $object = islandora_ingest_form_get_object($form_state);
@@ -35,6 +37,24 @@ function xml_form_builder_ingest_form(array $form, array &$form_state, array $as
 }
 
 /**
+ * Alter the form such that previous will unset any stored form.
+ */
+function xml_form_builder_form_xml_form_builder_ingest_form_alter(array &$form, array &$form_state) {
+  if (isset($form['prev']['#submit'])) {
+    array_unshift($form['prev']['#submit'], 'xml_form_builder_ingest_form_previous_submit');
+  }
+}
+
+/**
+ * Unset the form storage.
+ */
+function xml_form_builder_ingest_form_previous_submit(array $form, array &$form_state) {
+  unset($form_state['storage'][FormStorage::STORAGE_ROOT]);
+  $step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  unset($step_storage['values']);
+}
+
+/**
  * Updates the ingestable object's datastream.
  *
  * @param array $form
@@ -43,14 +63,14 @@ function xml_form_builder_ingest_form(array $form, array &$form_state, array $as
  *   The Drupal form state.
  */
 function xml_form_builder_ingest_form_submit(array $form, array &$form_state) {
-  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
-  $association = $metadata_step_storage['association'];
+  $step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  $association = $step_storage['association'];
   $object = islandora_ingest_form_get_object($form_state);
   $xml_form = new XMLForm($form_state);
   $document = $xml_form->submit($form, $form_state);
   $title_field = drupal_array_get_nested_value($form, $association['title_field']);
   $label = $title_field['#value'];
-  $metadata_step_storage['created'] = xml_form_builder_update_object($object, $association, $document, $label);
+  $step_storage['created'] = xml_form_builder_update_object($object, $association, $document, $label);
 }
 
 /**
@@ -62,12 +82,13 @@ function xml_form_builder_ingest_form_submit(array $form, array &$form_state) {
  *   The Drupal form state.
  */
 function xml_form_builder_ingest_form_undo_submit(array $form, array &$form_state) {
-  $metadata_step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
+  $step_storage = &islandora_ingest_form_get_step_storage($form_state, 'xml_form_builder_metadata_step');
   $object = islandora_ingest_form_get_object($form_state);
-  foreach ($metadata_step_storage['created'] as $dsid => $created) {
+  foreach ($step_storage['created'] as $dsid => $created) {
     if ($created) {
       $object->purgeDatastream($dsid);
     }
   }
-  unset($metadata_step_storage['created']);
+  unset($step_storage['created']);
+  unset($step_storage['association']);
 }

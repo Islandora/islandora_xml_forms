@@ -29,7 +29,7 @@ function hook_islandora_xml_form_builder_forms() {
  *   An associative array mapping a shortened name to the full path of the
  *   transformation.
  */
-function hook_islandora_xml_form_builder_get_transforms() {
+function hook_xml_form_builder_get_transforms() {
   return array(
     'awesome.xslt' => 'sites/all/modules/my_cool_module/transforms/awesome.xslt',
   );
@@ -45,8 +45,8 @@ function hook_islandora_xml_form_builder_get_transforms() {
  *   - form_name: A string identifying a form visible to XML Forms.
  *   - dsid: A string identifying what datastream should be created using the
  *     XML generated on submission.
- *   - title_field: A string containing an "array path", identifying what value
- *     in the submitted form should be used as a title.
+ *   - title_field: An array containing the sequence of array keys identifying
+ *     what value in the submitted form should be used as a title
  *   - transform: A string identifying which transform can be used on the XML
  *     to produce DC.  Can be "No Transform" if the form generates DC.
  *   - template: A string whose contents should be used to prepopulate the
@@ -59,7 +59,7 @@ function hook_islandora_xml_form_builder_form_associations() {
       'content_model' => 'islandora:sp_basic_image',
       'form_name' => 'Image DC Form',
       'dsid' => 'DC',
-      'title_field' => "['dc:title']",
+      'title_field' => array('titleInfo', 'title'),
       'transform' => 'No Transform',
       'template' => FALSE,
     ),

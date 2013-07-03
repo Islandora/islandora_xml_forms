@@ -154,7 +154,14 @@ function template_preprocess_tags(&$vars) {
       $vars['tags'][$key] = $child;
     }
   }
-  $vars['input'] = array_shift($vars['tags']); // First tag is the textfield, all others show up as icons with hidden inputs.
+  // First tag is the textfield, all others show up as icons with hidden inputs.
+  $textfield = array(
+    'element' => array_shift($vars['tags']),
+  );
+  $textfield['element']['#id'] = $tags['#id'];
+  $textfield['element']['#size'] = $tags['#size'];
+  $textfield['element']['#autocomplete_path'] = isset($textfield['element']['#autocomplete_path']) ? $textfield['element']['#autocomplete_path'] : FALSE;
+  $vars['textfield'] = theme('textfield', $textfield); // theme the text field to take advantage of autocomplete
 }
 
 /**

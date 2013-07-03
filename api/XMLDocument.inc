@@ -186,7 +186,7 @@ class XMLDocument {
     $query_failed = $invalid_query || $lib_xml_error;
     if ($query_failed) {
       $error = libxml_get_last_error();
-      $invalid_query_msg = "XPath query failed, either the expression is malformed or the contextnode is invalid.";
+      $invalid_query_msg = "XPath query failed; either the expression is malformed or the contextnode is invalid.";
       $msg = $invalid_query ? $invalid_query_msg : $error->message;
       $msg .= '</br>Path: ' . $path;
       $msg .= isset($context) ? '</br>Context: ' . ($context->tagName) : '';

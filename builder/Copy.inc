@@ -85,11 +85,11 @@ function xml_form_builder_copy_submit(array $form, array &$form_state) {
     $original = $form_state['values']['original'];
     $form_name = $form_state['values']['form_name'];
     if (XMLFormRepository::Copy($original, $form_name)) {
-      drupal_set_message(t('Successfully copied form: "%name".', array('%name' => $form_name)));
+      drupal_set_message(t('Successfully copied form "%name".', array('%name' => $form_name)));
       $form_state['redirect'] = xml_form_builder_get_edit_form_path($form_name);
       return;
     }
-    drupal_set_message(t('Failed to copy form: "%name".', array('%name' => $form_name)), 'error');
+    drupal_set_message(t('Failed to copy form "%name".', array('%name' => $form_name)), 'error');
   }
   $form_state['redirect'] = MENU_XML_FORM_BUILDER_MAIN;
 }

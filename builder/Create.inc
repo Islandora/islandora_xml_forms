@@ -23,7 +23,7 @@ function xml_form_builder_create($form, array &$form_state, $type) {
   $return['#attributes'] = array(
     'enctype' => "multipart/form-data",
   );
-  
+
   $return['form_name'] = array(
     '#type' => 'textfield',
     '#title' => t('Form Name'),
@@ -126,12 +126,12 @@ function xml_form_builder_create_submit(array $form, array &$form_state) {
     $definition = xml_form_builder_create_get_uploaded_file();
     $definition = $definition ? $definition : xml_form_api_get_empty_form_definition();
     if (XMLFormRepository::Create($form_name, $definition)) {
-      drupal_set_message(t('Successfully created form: "%name".', array('%name' => $form_name)));
+      drupal_set_message(t('Successfully created form "%name".', array('%name' => $form_name)));
       $form_state['redirect'] = xml_form_builder_get_edit_form_path($form_name);
       return;
     }
     else {
-      drupal_set_message(t('Failed to create form: %name.', array('%name' => $form_name)), 'error');
+      drupal_set_message(t('Failed to create form %name.', array('%name' => $form_name)), 'error');
     }
   }
   $form_state['redirect'] = MENU_XML_FORM_BUILDER_MAIN;
