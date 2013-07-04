@@ -49,9 +49,7 @@ Ext.data.Types.ARRAY = {
         if(v instanceof Array) {
             var output = [];
             jQuery.each(v, function(i, n) {
-                output.push({
-                    value: n
-                });
+                output.push(n);
             });
             return output;
         } 
