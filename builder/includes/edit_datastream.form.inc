@@ -107,7 +107,8 @@ function xml_form_builder_edit_datastream_form_select_association_form_submit(ar
   $association_matches = function($o) use($model, $form_name) {
     return $o['content_model'] == $model && $o['form_name'] == $form_name;
   };
-  $form_state['association'] = array_pop(array_filter($form_state['associations'], $association_matches));
+  $matching_associations = array_filter($form_state['associations'], $association_matches);
+  $form_state['association'] = array_pop($matching_associations);
   $form_state['rebuild'] = TRUE;
 }
 
