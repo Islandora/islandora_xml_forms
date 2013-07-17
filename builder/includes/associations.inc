@@ -216,10 +216,21 @@ function xml_form_builder_transform_document($transform, $source_document, $obje
       $xpath = new DOMXPath($document);
       // Set the Label.
       $results = $xpath->query("*[local-name()='title']");
-      $results->item(0)->nodeValue = htmlspecialchars($object->label);
+      if ($results->length > 0) {
+        $results->item(0)->nodeValue = htmlspecialchars($object->label);
+      }
+      else {
+        watchdog('xml_form_builder', 'No "title" element in the transformed DC into which to set the object label. Make sure that one is created in the selected transform.', array(), WATCHDOG_WARNING, l($object->label, "islandora/object{$object->id}"));
+      }
       // Set the Pid.
       $results = $xpath->query("*[local-name()='identifier']");
-      $results->item(0)->nodeValue = $object->id;
+      if ($results->length > 0) {
+        $results->item(0)->nodeValue = $object->id;
+      }
+      else {
+        watchdog('xml_form_builder', 'No "identifier" element in the transformed DC into which to set the object ID. Make sure that one is created in the selected transform.', array(), WATCHDOG_WARNING, l($object->label, "islandora/object/{$object->id}"));
+      }
+
       if (isset($document->documentElement)) {
         return $document;
       }
