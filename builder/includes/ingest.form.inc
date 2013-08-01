@@ -25,7 +25,7 @@ function xml_form_builder_ingest_form(array $form, array &$form_state, array $as
   $form_name = $association['form_name'];
   $dsid = $association['dsid'];
   $object = islandora_ingest_form_get_object($form_state);
-  $template = is_string($association['template']) ? $association['template'] : NULL;
+  $template = is_string($association['template']) && !empty($association['template']) ? $association['template'] : NULL;
   $xml = isset($object[$dsid]) ? $object[$dsid]->content : $template;
   $form = xml_form_builder_get_form($form, $form_state, $form_name, $xml);
   if ($form !== FALSE) {
