@@ -146,7 +146,7 @@ function xml_form_builder_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_edit_datastream_form', 3),
     'access callback' => 'islandora_datastream_access',
-    'access arguments' => array(FEDORA_METADATA_EDIT, 3),
+    'access arguments' => array(ISLANDORA_METADATA_EDIT, 3),
     'load arguments' => array(2),
     'type' => MENU_CALLBACK,
   );
