@@ -4,25 +4,48 @@
  * @file
  * Defines all the hooks this module implements.
  */
+
 // Constants.
-define('PERM_XML_FORM_BUILDER_LIST_FORMS', 'List XML Forms');
-define('PERM_XML_FORM_BUILDER_CREATE_FORMS', 'Create XML Forms');
-define('PERM_XML_FORM_BUILDER_EDIT_FORMS', 'Edit XML Forms');
-define('PERM_XML_FORM_BUILDER_DELETE_FORMS', 'Delete XML Forms');
-define('PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS', 'Associate XML Forms');
-define('MENU_XML_FORM_BUILDER_MAIN', 'admin/islandora/xmlform');
-define('MENU_XML_FORM_BUILDER_CREATE', 'admin/islandora/xmlform/create');
-define('MENU_XML_FORM_BUILDER_IMPORT', 'admin/islandora/xmlform/import');
-define('MENU_XML_FORM_BUILDER_VIEW', 'admin/islandora/xmlform/%/view');
-define('MENU_XML_FORM_BUILDER_COPY', 'admin/islandora/xmlform/%/copy');
-define('MENU_XML_FORM_BUILDER_EDIT', 'admin/islandora/xmlform/%/edit');
-define('MENU_XML_FORM_BUILDER_DELETE', 'admin/islandora/xmlform/%/delete');
-define('MENU_XML_FORM_BUILDER_ASSOCIATIONS', 'admin/islandora/xmlform/%/associations');
-define('MENU_XML_FORM_BUILDER_ASSOCIATE', 'admin/islandora/xmlform/%/associate/%');
-define('MENU_XML_FORM_BUILDER_DISASSOCIATE', 'admin/islandora/xmlform/%/disassociate/%');
-define('MENU_CALLBACK_XML_FORM_BUILDER_EXPORT', 'admin/islandora/xmlform/%/export');
-define('MENU_CALLBACK_XML_FORM_BUILDER_SAVE', 'admin/islandora/xmlform/%/edit/save');
-define('MENU_XML_FORM_BUILDER_EDIT_DATASTREAM', 'islandora/edit_form/%islandora_object/%islandora_datastream');
+define('XML_FORM_BUILDER_LIST_FORMS_PERMS', 'List XML Forms');
+define('XML_FORM_BUILDER_CREATE_FORMS_PERMS', 'Create XML Forms');
+define('XML_FORM_BUILDER_EDIT_FORMS_PERMS', 'Edit XML Forms');
+define('XML_FORM_BUILDER_DELETE_FORMS_PERMS', 'Delete XML Forms');
+define('XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS', 'Associate XML Forms');
+
+define('XML_FORM_BUILDER_MAIN_MENU', 'admin/islandora/xmlform');
+define('XML_FORM_BUILDER_CREATE_MENU', 'admin/islandora/xmlform/create');
+define('XML_FORM_BUILDER_IMPORT_MENU', 'admin/islandora/xmlform/import');
+define('XML_FORM_BUILDER_VIEW_MENU', 'admin/islandora/xmlform/%/view');
+define('XML_FORM_BUILDER_COPY_MENU', 'admin/islandora/xmlform/%/copy');
+define('XML_FORM_BUILDER_EDIT_MENU', 'admin/islandora/xmlform/%/edit');
+define('XML_FORM_BUILDER_DELETE_MENU', 'admin/islandora/xmlform/%/delete');
+define('XML_FORM_BUILDER_ASSOCIATIONS_MENU', 'admin/islandora/xmlform/%/associations');
+define('XML_FORM_BUILDER_ASSOCIATE_MENU', 'admin/islandora/xmlform/%/associate/%');
+define('XML_FORM_BUILDER_DISASSOCIATE_MENU', 'admin/islandora/xmlform/%/disassociate/%');
+define('XML_FORM_BUILDER_EXPORT_CALLBACK', 'admin/islandora/xmlform/%/export');
+define('XML_FORM_BUILDER_SAVE_CALLBACK', 'admin/islandora/xmlform/%/edit/save');
+define('XML_FORM_BUILDER_EDIT_DATASTREAM_MENU', 'islandora/edit_form/%islandora_object/%islandora_datastream');
+
+// @codingStandardsIgnoreStart
+define('PERM_XML_FORM_BUILDER_LIST_FORMS', XML_FORM_BUILDER_LIST_FORMS_PERMS);
+define('PERM_XML_FORM_BUILDER_CREATE_FORMS', XML_FORM_BUILDER_CREATE_FORMS_PERMS);
+define('PERM_XML_FORM_BUILDER_EDIT_FORMS', XML_FORM_BUILDER_EDIT_FORMS_PERMS);
+define('PERM_XML_FORM_BUILDER_DELETE_FORMS', XML_FORM_BUILDER_DELETE_FORMS_PERMS);
+define('PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS', XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS);
+define('MENU_XML_FORM_BUILDER_MAIN', XML_FORM_BUILDER_MAIN_MENU);
+define('MENU_XML_FORM_BUILDER_CREATE', XML_FORM_BUILDER_CREATE_MENU);
+define('MENU_XML_FORM_BUILDER_IMPORT', XML_FORM_BUILDER_IMPORT_MENU);
+define('MENU_XML_FORM_BUILDER_VIEW', XML_FORM_BUILDER_VIEW_MENU);
+define('MENU_XML_FORM_BUILDER_COPY', XML_FORM_BUILDER_COPY_MENU);
+define('MENU_XML_FORM_BUILDER_EDIT', XML_FORM_BUILDER_EDIT_MENU);
+define('MENU_XML_FORM_BUILDER_DELETE', XML_FORM_BUILDER_DELETE_MENU);
+define('MENU_XML_FORM_BUILDER_ASSOCIATIONS', XML_FORM_BUILDER_ASSOCIATIONS_MENU);
+define('MENU_XML_FORM_BUILDER_ASSOCIATE', XML_FORM_BUILDER_ASSOCIATE_MENU);
+define('MENU_XML_FORM_BUILDER_DISASSOCIATE', XML_FORM_BUILDER_DISASSOCIATE_MENU);
+define('MENU_CALLBACK_XML_FORM_BUILDER_EXPORT', XML_FORM_BUILDER_EXPORT_CALLBACK);
+define('MENU_CALLBACK_XML_FORM_BUILDER_SAVE', XML_FORM_BUILDER_SAVE_CALLBACK);
+define('MENU_XML_FORM_BUILDER_EDIT_DATASTREAM', XML_FORM_BUILDER_EDIT_DATASTREAM_MENU);
+// @codingStandardsIgnoreEnd
 
 /**
  * Implements hook_menu().
