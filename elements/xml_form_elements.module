@@ -101,26 +101,26 @@ function xml_form_elements_element_info() {
  */
 function xml_form_elements_theme($existing, $type, $theme, $path) {
   return array(
-    THEME_XML_FORM_ELEMENTS_TABS => array(
+    XML_FORM_ELEMENTS_TABS_THEME => array(
       'render element' => 'element',
       'template' => 'templates/Tabs',
       'file' => 'includes/Tabs.inc',
     ),
     // The content of a single tabpanel.
-    THEME_XML_FORM_ELEMENTS_TABPANEL => array(
+    XML_FORM_ELEMENTS_TABPANEL_THEME => array(
       'render element' => 'element',
       'file' => 'includes/TabPanel.inc',
     ),
-    THEME_XML_FORM_ELEMENTS_TAGS => array(
+    XML_FORM_ELEMENTS_TAGS_THEME => array(
       'render element' => 'element',
       'template' => 'templates/Tags',
       'file' => 'includes/Tags.inc',
     ),
-    THEME_XML_FORM_ELEMENTS_TAG => array(
+    XML_FORM_ELEMENTS_TAG_THEME => array(
       'render element' => 'element',
       'file' => 'includes/Tag.inc',
     ),
-    THEME_XML_FORM_ELEMENTS_DATEPICKER => array(
+    XML_FORM_ELEMENTS_DATEPICKER_THEME => array(
       'render element' => 'element',
       'file' => 'includes/Datepicker.inc',
     ),
