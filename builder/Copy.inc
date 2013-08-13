@@ -20,7 +20,7 @@
 function xml_form_builder_copy($form, array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   if (isset($_POST['cancel'])) {
-    drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
+    drupal_goto(XML_FORM_BUILDER_MAIN_MENU);
   }
   if (!XMLFormRepository::Exists($form_name)) {
     drupal_set_message(t('Form "%name" does not exist.', array('%name' => $form_name)), 'error');
@@ -91,5 +91,5 @@ function xml_form_builder_copy_submit(array $form, array &$form_state) {
     }
     drupal_set_message(t('Failed to copy form "%name".', array('%name' => $form_name)), 'error');
   }
-  $form_state['redirect'] = MENU_XML_FORM_BUILDER_MAIN;
+  $form_state['redirect'] = XML_FORM_BUILDER_MAIN_MENU;
 }

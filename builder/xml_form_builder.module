@@ -51,119 +51,119 @@ define('MENU_XML_FORM_BUILDER_EDIT_DATASTREAM', XML_FORM_BUILDER_EDIT_DATASTREAM
  * Implements hook_menu().
  */
 function xml_form_builder_menu() {
-  $items[MENU_XML_FORM_BUILDER_MAIN] = array(
+  $items[XML_FORM_BUILDER_MAIN_MENU] = array(
     'title' => 'Form Builder',
     'description' => 'Create, manage and edit XML-based forms.',
     'file' => 'Main.inc',
     'page callback' => 'xml_form_builder_main',
-    'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items[MENU_XML_FORM_BUILDER_CREATE] = array(
+  $items[XML_FORM_BUILDER_CREATE_MENU] = array(
     'title' => 'Create Form',
     'description' => 'Create a new form.',
     'file' => 'Create.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_create', 'create'),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_CREATE_FORMS_PERMS),
     'type' => MENU_LOCAL_ACTION,
   );
-  $items[MENU_XML_FORM_BUILDER_IMPORT] = array(
+  $items[XML_FORM_BUILDER_IMPORT_MENU] = array(
     'title' => 'Import Form',
     'description' => 'Import a form from an existing definition.',
     'file' => 'Create.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_create', 'import'),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_CREATE_FORMS_PERMS),
     'type' => MENU_LOCAL_ACTION,
   );
-  $items[MENU_XML_FORM_BUILDER_VIEW] = array(
+  $items[XML_FORM_BUILDER_VIEW_MENU] = array(
     'title' => 'Preview Form',
     'description' => 'Preview a form.',
     'file' => 'Preview.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_preview', 3),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  $items[MENU_CALLBACK_XML_FORM_BUILDER_EXPORT] = array(
+  $items[XML_FORM_BUILDER_EXPORT_CALLBACK] = array(
     'title' => 'Export Form',
     'description' => 'Export a form.',
     'page callback' => 'xml_form_builder_export',
     'page arguments' => array(3),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_LIST_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  $items[MENU_XML_FORM_BUILDER_COPY] = array(
+  $items[XML_FORM_BUILDER_COPY_MENU] = array(
     'title' => 'Copy Form',
     'description' => 'Copy an existing form.',
     'file' => 'Copy.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_copy', 3),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_CREATE_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_CREATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  $items[MENU_XML_FORM_BUILDER_EDIT] = array(
+  $items[XML_FORM_BUILDER_EDIT_MENU] = array(
     'title' => 'Edit Form',
     'description' => 'Edit a form.',
     'file' => 'Edit.inc',
     'page callback' => 'xml_form_builder_edit',
     'page arguments' => array(3),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_EDIT_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  $items[MENU_CALLBACK_XML_FORM_BUILDER_SAVE] = array(
+  $items[XML_FORM_BUILDER_SAVE_CALLBACK] = array(
     'title' => 'Edit Form',
     'description' => 'Edit a form.',
     'file' => 'Edit.inc',
     'page callback' => 'xml_form_builder_edit_save',
     'page arguments' => array(3),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_EDIT_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_EDIT_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  $items[MENU_XML_FORM_BUILDER_DELETE] = array(
+  $items[XML_FORM_BUILDER_DELETE_MENU] = array(
     'title' => 'Delete Form',
     'description' => 'Delete a form.',
     'file' => 'Delete.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_delete', 3),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_DELETE_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_DELETE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  $items[MENU_XML_FORM_BUILDER_ASSOCIATIONS] = array(
+  $items[XML_FORM_BUILDER_ASSOCIATIONS_MENU] = array(
     'title' => 'Associate Form "@form"',
     'title arguments' => array('@form' => 3),
     'description' => 'Associate a form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('xml_form_builder_associations_form', 3),
-    'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
-    'tab_parent' => MENU_XML_FORM_BUILDER_MAIN,
+    'tab_parent' => XML_FORM_BUILDER_MAIN_MENU,
   );
   // Remove existing associations, redirect back to list.
-  $items[MENU_XML_FORM_BUILDER_DISASSOCIATE] = array(
+  $items[XML_FORM_BUILDER_DISASSOCIATE_MENU] = array(
     'title' => 'Disable Form Association',
     'description' => 'Disable associated form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_disable_association',
     'page arguments' => array(3, 5),
     // @todo Use something fedora specific.
-    'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
   // Enable default/hook associations, redirect back to list.
-  $items[MENU_XML_FORM_BUILDER_ASSOCIATE] = array(
+  $items[XML_FORM_BUILDER_ASSOCIATE_MENU] = array(
     'title' => 'Enable Form Association',
     'description' => 'Enables an associated form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_enable_association',
     'page arguments' => array(3, 5),
     // @todo Use something fedora specific.
-    'access arguments' => array(PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS),
+    'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  $items[MENU_XML_FORM_BUILDER_EDIT_DATASTREAM] = array(
+  $items[XML_FORM_BUILDER_EDIT_MENU_DATASTREAM] = array(
     'title' => 'Edit datastream',
     'file' => 'includes/edit_datastream.form.inc',
     'page callback' => 'drupal_get_form',
@@ -210,23 +210,23 @@ function xml_form_builder_forms($form_id, $args) {
  */
 function xml_form_builder_permission() {
   return array(
-    PERM_XML_FORM_BUILDER_LIST_FORMS => array(
+    XML_FORM_BUILDER_LIST_FORMS_PERMS => array(
       'title' => t('View XML forms'),
       'description' => t('View a list of all currently available XML forms.'),
     ),
-    PERM_XML_FORM_BUILDER_CREATE_FORMS => array(
+    XML_FORM_BUILDER_CREATE_FORMS_PERMS => array(
       'title' => t('Create XML forms'),
       'description' => t('Create new XML forms using the Form Builder.'),
     ),
-    PERM_XML_FORM_BUILDER_EDIT_FORMS => array(
+    XML_FORM_BUILDER_EDIT_FORMS_PERMS => array(
       'title' => t('Edit XML forms'),
       'description' => t('Edit existing XML forms using the Form Builder.'),
     ),
-    PERM_XML_FORM_BUILDER_DELETE_FORMS => array(
+    XML_FORM_BUILDER_DELETE_FORMS_PERMS => array(
       'title' => t('Delete XML forms'),
       'description' => t('Permanently delete any XML form.'),
     ),
-    PERM_XML_FORM_BUILDER_ASSOCIATE_FORMS => array(
+    XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS => array(
       'title' => t('Associate XML forms'),
       'description' => t('Associate forms with content models and datastream identifiers.'),
     ),
@@ -259,7 +259,7 @@ function xml_form_builder_export($form_name) {
  *   The path to the copy page.
  */
 function xml_form_builder_get_copy_form_path($form_name) {
-  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_COPY);
+  return str_replace('%', $form_name, XML_FORM_BUILDER_COPY_MENU);
 }
 
 /**
@@ -272,7 +272,7 @@ function xml_form_builder_get_copy_form_path($form_name) {
  *   The path to the edit page.
  */
 function xml_form_builder_get_edit_form_path($form_name) {
-  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_EDIT);
+  return str_replace('%', $form_name, XML_FORM_BUILDER_EDIT_MENU);
 }
 
 /**
@@ -285,7 +285,7 @@ function xml_form_builder_get_edit_form_path($form_name) {
  *   The path to the view page.
  */
 function xml_form_builder_get_view_form_path($form_name) {
-  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_VIEW);
+  return str_replace('%', $form_name, XML_FORM_BUILDER_VIEW_MENU);
 }
 
 /**
@@ -298,7 +298,7 @@ function xml_form_builder_get_view_form_path($form_name) {
  *   The path to the delete page.
  */
 function xml_form_builder_get_export_form_path($form_name) {
-  return str_replace('%', $form_name, MENU_CALLBACK_XML_FORM_BUILDER_EXPORT);
+  return str_replace('%', $form_name, XML_FORM_BUILDER_EXPORT_CALLBACK);
 }
 
 /**
@@ -311,7 +311,7 @@ function xml_form_builder_get_export_form_path($form_name) {
  *   The path to the delete page.
  */
 function xml_form_builder_get_delete_form_path($form_name) {
-  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_DELETE);
+  return str_replace('%', $form_name, XML_FORM_BUILDER_DELETE_MENU);
 }
 
 /**
@@ -324,7 +324,7 @@ function xml_form_builder_get_delete_form_path($form_name) {
  *   The path to the associations page.
  */
 function xml_form_builder_get_associate_form_path($form_name) {
-  return str_replace('%', $form_name, MENU_XML_FORM_BUILDER_ASSOCIATIONS);
+  return str_replace('%', $form_name, XML_FORM_BUILDER_ASSOCIATIONS_MENU);
 }
 
 /**
