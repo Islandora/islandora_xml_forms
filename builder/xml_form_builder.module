@@ -163,7 +163,7 @@ function xml_form_builder_menu() {
     'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  $items[XML_FORM_BUILDER_EDIT_MENU_DATASTREAM] = array(
+  $items[XML_FORM_BUILDER_EDIT_DATASTREAM_MENU] = array(
     'title' => 'Edit datastream',
     'file' => 'includes/edit_datastream.form.inc',
     'page callback' => 'drupal_get_form',
