@@ -16,7 +16,7 @@
  */
 function xml_form_builder_create($form, array &$form_state, $type) {
   if (isset($_POST['cancel'])) {
-    drupal_goto(MENU_XML_FORM_BUILDER_MAIN);
+    drupal_goto(XML_FORM_BUILDER_MAIN_MENU);
   }
   $return = array();
 
@@ -134,7 +134,7 @@ function xml_form_builder_create_submit(array $form, array &$form_state) {
       drupal_set_message(t('Failed to create form %name.', array('%name' => $form_name)), 'error');
     }
   }
-  $form_state['redirect'] = MENU_XML_FORM_BUILDER_MAIN;
+  $form_state['redirect'] = XML_FORM_BUILDER_MAIN_MENU;
 }
 
 /**
