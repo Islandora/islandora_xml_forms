@@ -19,6 +19,8 @@ Ext.formbuilder.createElementForm = function () {
       name: 'key',
       fieldLabel: Drupal.t('Identifier'),
       width: 640,
+      regex: /^[^!"#$%&'()*+,.\/\\:;<=>?@[\]^`{|}~]+$/,
+      regexText: "Invalid Identifier it must not contain (^!\"#$%&'()*+,.\/:;<=>?@[\]^`{|}~)",
       listeners: {
         render: function() {
           Ext.create('Ext.tip.ToolTip', {
@@ -121,6 +123,7 @@ Ext.formbuilder.createElementForm = function () {
           name: 'required',
           fieldLabel: Drupal.t('Required'),
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -490,6 +493,7 @@ Ext.formbuilder.createElementForm = function () {
           fieldLabel: Drupal.t('Access'),
           checked: true,
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -559,6 +563,7 @@ Ext.formbuilder.createElementForm = function () {
           name: 'disabled',
           fieldLabel: Drupal.t('Disabled'),
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -663,6 +668,7 @@ Ext.formbuilder.createElementForm = function () {
           fieldLabel: Drupal.t('Tree'),
           checked: true,
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -865,6 +871,7 @@ Ext.formbuilder.createElementForm = function () {
           name: 'collapsed',
           fieldLabel: Drupal.t('Collapsed'),
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -883,6 +890,7 @@ Ext.formbuilder.createElementForm = function () {
           name: 'collapsible',
           fieldLabel: Drupal.t('Collapsible'),
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -901,6 +909,7 @@ Ext.formbuilder.createElementForm = function () {
           name: 'executes_submit_callback',
           fieldLabel: Drupal.t('Executes Submit Callback'),
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -919,6 +928,7 @@ Ext.formbuilder.createElementForm = function () {
           name: 'multiple',
           fieldLabel: Drupal.t('Multiple'),
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
@@ -937,6 +947,7 @@ Ext.formbuilder.createElementForm = function () {
           name: 'resizable',
           fieldLabel: Drupal.t('Resizable'),
           inputValue: true,
+          uncheckedValue: false,
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {

@@ -41,24 +41,6 @@ Ext.define('MapModel', {
 });
 
 /**
- * PHP Numeric Array.
- */
-Ext.data.Types.ARRAY = {
-    type: 'array',
-    convert: function(v, data) {
-        if(v instanceof Array) {
-            var output = [];
-            jQuery.each(v, function(i, n) {
-                output.push({
-                    value: n
-                });
-            });
-            return output;
-        } 
-        return [];
-    }
-};
-/**
  * PHP Map object.
  */
 Ext.data.Types.MAP = {
@@ -156,7 +138,7 @@ Ext.define('Element', {
         defaultValue: true
     }, {
         name: 'after_build', // After Build Form Control
-        type: types.ARRAY
+        type: 'array'
     }, {
         name: 'ahah', 
         type: types.AHAH
@@ -190,7 +172,7 @@ Ext.define('Element', {
         type: 'boolean'
     }, {
         name: 'element_validate',
-        type: types.ARRAY
+        type: 'array'
     }, {
         name: 'executes_submit_callback',
         type: 'boolean'
@@ -216,16 +198,16 @@ Ext.define('Element', {
         type: types.MAP
     }, {
         name: 'post_render',
-        type: types.ARRAY
+        type: 'array'
     }, {
         name: 'prefix',
         type: 'string'
     }, {
         name: 'pre_render',
-        type: types.ARRAY
+        type: 'array'
     }, {
         name: 'process',
-        type: types.ARRAY
+        type: 'array'
     }, {
         name: 'required',
         type: 'boolean'
@@ -244,7 +226,7 @@ Ext.define('Element', {
         type: 'string'
     }, {
         name: 'submit',
-        type: types.ARRAY
+        type: 'array'
     }, {
         name: 'suffix',
         type: 'string'
@@ -260,7 +242,7 @@ Ext.define('Element', {
         defaultValue: true
     }, {
         name: 'validate',
-        type: types.ARRAY
+        type: 'array'
     }, {
         name: 'value',
         type: 'string'

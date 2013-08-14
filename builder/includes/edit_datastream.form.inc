@@ -107,7 +107,8 @@ function xml_form_builder_edit_datastream_form_select_association_form_submit(ar
   $association_matches = function($o) use($model, $form_name) {
     return $o['content_model'] == $model && $o['form_name'] == $form_name;
   };
-  $form_state['association'] = array_pop(array_filter($form_state['associations'], $association_matches));
+  $matching_associations = array_filter($form_state['associations'], $association_matches);
+  $form_state['association'] = array_pop($matching_associations);
   $form_state['rebuild'] = TRUE;
 }
 
@@ -153,7 +154,7 @@ function xml_form_builder_edit_datastream_form_metadata_form(array $form, array 
 function xml_form_builder_edit_datastream_form_metadata_form_submit(array $form, array &$form_state) {
   $datastream = $form_state['datastream'];
   $association = $form_state['association'];
-  $object = $datastream->parent;
+  $object = islandora_object_load($datastream->parent->id);
 
   $title_field = drupal_array_get_nested_value($form, $association['title_field']);
   $label = $title_field['#value'];

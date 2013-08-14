@@ -221,6 +221,7 @@ function xml_form_builder_export($form_name) {
   header('Content-Type: text/xml', TRUE);
   header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
   $definition = XMLFormRepository::Get($form_name);
+  $definition->formatOutput = TRUE;
   echo $definition->saveXML();
   exit();
 }
