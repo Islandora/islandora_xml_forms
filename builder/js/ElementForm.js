@@ -3,6 +3,38 @@
  * and open the template in the editor.
  */
 
+Ext.formbuilder.enableDisableXMLFields = function() {
+  var actions = [
+    'actions_create',
+    'actions_read',
+    'actions_update',
+    'actions_delete'
+  ];
+  var not_supported = [
+    'checkbox', 'checkboxes', 'date', 'file', 'managed_file',
+    'password_confirm', 'radio', 'radios', 'tableselect',
+    'vertical_tabs', 'weight', 'button', 'image_button', 'submit'
+  ];
+  var value = Ext.getCmp('type').getValue();
+  if (Ext.Array.contains(not_supported, value) ||
+      (value == 'select' && Ext.getCmp('multiple').getValue() == true)) {
+    Ext.Array.each(actions, function(action)  {
+      Ext.getCmp(action).cascade(function(c) {
+        if (c.isFormField)
+          c.disable();
+      }).disable();
+    });
+  }
+  else {
+    Ext.Array.each(actions, function(action)  {
+      Ext.getCmp(action).cascade(function(c) {
+        if (c.isFormField)
+          c.enable();
+      }).enable();
+    });
+  }
+};
+
 /**
  * Create a Form for Manipulating Element data.
  */
@@ -55,6 +87,9 @@ Ext.formbuilder.createElementForm = function () {
           editable: false,
           allowBlank: false,
           listeners: {
+            select: function(combo, records, eOpts) {
+              Ext.formbuilder.enableDisableXMLFields();
+            },
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
                 target: 'type',
@@ -930,6 +965,9 @@ Ext.formbuilder.createElementForm = function () {
           inputValue: true,
           uncheckedValue: false,
           listeners: {
+            change: function(combo, newValue, oldValue, eOpts) {
+              Ext.formbuilder.enableDisableXMLFields();
+            },
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
                 target: 'multiple',

@@ -88,8 +88,6 @@ Ext.formbuilder.createTreePanel = function() {
         Ext.formbuilder.saveElementForm();
         if(selections.length > 0) {
           var record = selections[0];
-          // Load by name...
-          Ext.formbuilder.showElementForm();
           var form = Ext.formbuilder.elementForm.getForm();
           //var data = Ext.clone(record.data);
           var data = record.data;
@@ -109,7 +107,7 @@ Ext.formbuilder.createTreePanel = function() {
             }
             else if(data[name] instanceof Array) {
               jQuery.each(data[name], function(i, n) {
-                converted.push({ 
+                converted.push({
                   value: n
                 });
               });
@@ -208,6 +206,9 @@ Ext.formbuilder.createTreePanel = function() {
           }
 
         }
+        // Load by name...
+        Ext.formbuilder.enableDisableXMLFields();
+        Ext.formbuilder.showElementForm();
       }
     }
   });
