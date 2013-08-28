@@ -149,7 +149,7 @@ Ext.formbuilder = (function() {
         }
         var actions = {};
         var has_actions = false;
-        if(values['actions_create'] == "on") {
+        if(values['actions_create'] == "on" && !form.findField('actions_create').disabled) {
           has_actions = true;
           actions.create = {
             context: values['actions_create_context'],
@@ -159,14 +159,14 @@ Ext.formbuilder = (function() {
             value: values['actions_create_value']
           };
         }
-        if(values['actions_read'] == "on") {
+        if(values['actions_read'] == "on" && !form.findField('actions_create').disabled) {
           has_actions = true;
           actions.read = {
             context: values['actions_read_context'],
             path: values['actions_read_path']
           };
         }
-        if(values['actions_update'] == "on") {
+        if(values['actions_update'] == "on" && !form.findField('actions_create').disabled) {
           has_actions = true;
           actions.update = {
             context: values['actions_update_context'],
@@ -174,7 +174,7 @@ Ext.formbuilder = (function() {
             schema: values['actions_update_schema']
           };
         }
-        if(values['actions_delete'] == "on") {
+        if(values['actions_delete'] == "on" && !form.findField('actions_create').disabled) {
           has_actions = true;
           actions['delete'] = {
             context: values['actions_delete_context'],
