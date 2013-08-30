@@ -60,9 +60,6 @@ class Read implements Action {
    * @param mixed $value
    */
   public function execute(XMLDocument $document, FormElement $element, $value = NULL) {
-    //drupal_set_message('Read (Action)');
-    //drupal_set_message('&nbsp;->Location: ' . $element->getLocation());
-    //drupal_set_message('&nbsp;->' . $this->path);
     try {
       $results = $this->path->query($document, $element);
     }
@@ -73,13 +70,6 @@ class Read implements Action {
        */
       $results = new DOMNodeList();
     }
-    /* if ($results->length) {
-     $result = $results->item(0);
-     drupal_set_message('&nbsp;->Result: ' . $result->tagName);
-     }
-     else {
-     drupal_set_message('&nbsp;->Result: None');
-     } */
     return $results;
   }
 
