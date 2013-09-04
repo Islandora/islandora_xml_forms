@@ -474,11 +474,15 @@ function xml_form_builder_update_object(AbstractObject $object, array $associati
 }
 
 /**
- * Applies xslt to incoming datastream
+ * Applies xslt to incoming datastream.
  *
- * @param string name of xslt
+ * @param xslt $transform
+ *   Name of xslt to be applied
  * @param DOMDocument $source_document
+ *   Document to be transformed
+ *
  * @return DOMDocument
+ *   Transformed document on success, original on failure.
  */
 function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDocument $source_document) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
@@ -516,19 +520,27 @@ function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDo
  */
 function xml_form_builder_update_metadata_datastream(AbstractObject $object, $datastream_id, DOMDocument $document) {
   $created = FALSE;
-  if (empty($object[$datastream_id])) {
+  $document->preserveWhiteSpace = TRUE;
+  $document->formatOutput = TRUE;
+  $ds_exists = empty($object[$datastream_id]) ? FALSE : TRUE;
+  if ($ds_exists) {
+    $datastream = $object[$datastream_id];
+    $datastream->setContentFromString(trim($document->saveXML()));
+    if ($datastream->label != "$datastream_id Record") {
+      $datastream->label = "$datastream_id Record";
+    }
+    if ($datastream->mimetype != 'text/xml') {
+      $datastream->mimetype = 'text/xml';
+    }
+  }
+  if (!$ds_exists) {
     $datastream = $object->constructDatastream($datastream_id, 'M');
+    $datastream->setContentFromString(trim($document->saveXML()));
+    $datastream->label = "$datastream_id Record";
+    $datastream->mimetype = 'text/xml';
     $object->ingestDatastream($datastream);
     $created = TRUE;
   }
-  else {
-    $datastream = $object[$datastream_id];
-  }
-  $document->preserveWhiteSpace = TRUE;
-  $document->formatOutput = TRUE;
-  $datastream->setContentFromString(trim($document->saveXML()));
-  $datastream->label = "$datastream_id Record";
-  $datastream->mimetype = 'text/xml';
   return $created;
 }
 
