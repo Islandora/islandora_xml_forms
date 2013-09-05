@@ -364,7 +364,8 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
       $xml_form->initialize($form, $document);
     }
     $form = array_merge($form, $xml_form->toArray($form_state));
-  } catch (Exception $e) {
+  }
+  catch (Exception $e) {
     // Catch any errors that occured and display them to the user so that they
     // may correct their form definition.
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
@@ -522,8 +523,7 @@ function xml_form_builder_update_metadata_datastream(AbstractObject $object, $da
   $created = FALSE;
   $document->preserveWhiteSpace = TRUE;
   $document->formatOutput = TRUE;
-  $ds_exists = empty($object[$datastream_id]) ? FALSE : TRUE;
-  if ($ds_exists) {
+  if (isset($object[$datastream_id])) {
     $datastream = $object[$datastream_id];
     $datastream->setContentFromString(trim($document->saveXML()));
     if ($datastream->label != "$datastream_id Record") {
@@ -533,7 +533,7 @@ function xml_form_builder_update_metadata_datastream(AbstractObject $object, $da
       $datastream->mimetype = 'text/xml';
     }
   }
-  if (!$ds_exists) {
+  else {
     $datastream = $object->constructDatastream($datastream_id, 'M');
     $datastream->setContentFromString(trim($document->saveXML()));
     $datastream->label = "$datastream_id Record";
