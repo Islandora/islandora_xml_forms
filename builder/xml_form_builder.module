@@ -364,7 +364,8 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
       $xml_form->initialize($form, $document);
     }
     $form = array_merge($form, $xml_form->toArray($form_state));
-  } catch (Exception $e) {
+  }
+  catch (Exception $e) {
     // Catch any errors that occured and display them to the user so that they
     // may correct their form definition.
     $msg = "File: {$e->getFile()}<br/>Line: {$e->getLine()}<br/>Error: {$e->getMessage()}";
@@ -474,11 +475,15 @@ function xml_form_builder_update_object(AbstractObject $object, array $associati
 }
 
 /**
- * Applies xslt to incoming datastream
+ * Applies xslt to incoming datastream.
  *
- * @param string name of xslt
+ * @param xslt $transform
+ *   Name of xslt to be applied
  * @param DOMDocument $source_document
+ *   Document to be transformed
+ *
  * @return DOMDocument
+ *   Transformed document on success, original on failure.
  */
 function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDocument $source_document) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
@@ -516,19 +521,26 @@ function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDo
  */
 function xml_form_builder_update_metadata_datastream(AbstractObject $object, $datastream_id, DOMDocument $document) {
   $created = FALSE;
-  if (empty($object[$datastream_id])) {
+  $document->preserveWhiteSpace = TRUE;
+  $document->formatOutput = TRUE;
+  if (isset($object[$datastream_id])) {
+    $datastream = $object[$datastream_id];
+    $datastream->setContentFromString(trim($document->saveXML()));
+    if ($datastream->label != "$datastream_id Record") {
+      $datastream->label = "$datastream_id Record";
+    }
+    if ($datastream->mimetype != 'text/xml') {
+      $datastream->mimetype = 'text/xml';
+    }
+  }
+  else {
     $datastream = $object->constructDatastream($datastream_id, 'M');
+    $datastream->setContentFromString(trim($document->saveXML()));
+    $datastream->label = "$datastream_id Record";
+    $datastream->mimetype = 'text/xml';
     $object->ingestDatastream($datastream);
     $created = TRUE;
   }
-  else {
-    $datastream = $object[$datastream_id];
-  }
-  $document->preserveWhiteSpace = TRUE;
-  $document->formatOutput = TRUE;
-  $datastream->setContentFromString(trim($document->saveXML()));
-  $datastream->label = "$datastream_id Record";
-  $datastream->mimetype = 'text/xml';
   return $created;
 }
 
