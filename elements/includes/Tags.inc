@@ -141,8 +141,9 @@ class Tags {
  * @param array $vars
  */
 function template_preprocess_tags(&$vars) {
+  global $base_url;
   $tags = &$vars['element'];
-  $vars['image_path'] = url(XML_FORM_ELEMENTS_IMAGES_PATH); // Location of images.
+  $vars['image_path'] =  $base_url . '/' . PATH_XML_FORM_ELEMENTS_IMAGES; // Location of images.  
   $vars['add'] = $tags['controls']['add']; // Visible Add Button
   $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL; // Hidden Edit Button
   $vars['remove'] = isset($tags['controls']['remove']) ? $tags['controls']['remove'] : NULL; // Hidden Remove Button
