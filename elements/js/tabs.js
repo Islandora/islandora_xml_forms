@@ -24,7 +24,7 @@ Drupal.behaviors.xmlFormElementTabs = {
       if(expandedTabs.length > 0) {
         expandedTabs.tabs({
           collapsible: true,
-          selected: expandedTabs.tabs('length')-1,
+          selected: expandedTabs.children('div').size() - 1,
           select: this.setCollapsibleIconOnSelect,
           create: this.setCollapsibleIconOnCreate
         });
