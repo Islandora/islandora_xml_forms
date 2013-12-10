@@ -24,10 +24,10 @@ Drupal.behaviors.xmlFormElementTabs = {
       
       if (expandedTabs.length === 1) {
         expandedTabs.tabs({
-            collapsible: true,
-            selected: expandedTabs.tabs('length') - 1,
-            select: this.setCollapsibleIconOnSelect,
-            create: this.setCollapsibleIconOnCreate
+          collapsible: true,
+          selected: expandedTabs.tabs('length') - 1,
+          select: this.setCollapsibleIconOnSelect,
+          create: this.setCollapsibleIconOnCreate
         });
       }
       else if (expandedTabs.length > 1) {
