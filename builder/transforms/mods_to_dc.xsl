@@ -7,6 +7,9 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- 
+	Version 1.3		2013-12-09 tmee@loc.gov
+	Fixed date transformation for dates without start/end points
+	
 	Version 1.2		2012-08-12 WS 
 	Upgraded to MODS 3.4
 	
@@ -178,12 +181,14 @@
 				<xsl:value-of select="."/>
 			</dc:date>
 		</xsl:for-each>
+		<xsl:apply-templates select="*[not(@point)]"/> 
 		
 		<xsl:for-each select="mods:publisher">
 			<dc:publisher>
 				<xsl:value-of select="."/>
 			</dc:publisher>
 		</xsl:for-each>
+	
 	</xsl:template>
 	
 	<xsl:template match="mods:dateIssued | mods:dateCreated | mods:dateCaptured">
@@ -348,6 +353,8 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+
 
 	<xsl:template match="mods:accessCondition">
 		<dc:rights>
