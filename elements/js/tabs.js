@@ -21,16 +21,37 @@ Drupal.behaviors.xmlFormElementTabs = {
           create: this.setCollapsibleIconOnCreate
         });
       }
-      if(expandedTabs.length > 0) {
+      
+      if (expandedTabs.length === 1) {
         expandedTabs.tabs({
-          collapsible: true,
-          selected: expandedTabs.children('div').size() - 1,
-          select: this.setCollapsibleIconOnSelect,
-          create: this.setCollapsibleIconOnCreate
+            collapsible: true,
+            selected: expandedTabs.tabs('length') - 1,
+            select: this.setCollapsibleIconOnSelect,
+            create: this.setCollapsibleIconOnCreate
         });
       }
-      if(this.nonCollapsibleTabs.length > 0) {
-        this.nonCollapsibleTabs.tabs({});
+      else if (expandedTabs.length > 1) {
+        jQuery.each(expandedTabs,function(key,tab) {
+          tab.tabs({
+            collapsible: true,
+            selected: tab.tabs('length') - 1,
+            select: this.setCollapsibleIconOnSelect,
+            create: this.setCollapsibleIconOnCreate
+          });
+        });
+      }
+      
+      if (this.nonCollapsibleTabs.length === 1) {
+        this.nonCollapsibleTabs.tabs({
+          selected: this.nonCollapsibleTabs.length.tabs('length') - 1,
+        });
+      }
+      else if (this.nonCollapsibleTabs.length > 1) {
+        jQuery.each(this.nonCollapsibleTabs,function(key,tab) {
+            jQuery(tab).tabs({
+                selected:jQuery(tab).tabs('length') - 1
+            });
+        });
       }
     },
     setCollapsibleIconOnSelect: function(event, ui) {
