@@ -4,7 +4,7 @@ Drupal.behaviors.xmlFormElementTabs = {
     tabs: null, // Collection of all tabpanels.
     collapsibleTabs: null,
     nonCollapsibleTabs: null,
-    loadPanels: function (collapse) {
+    loadPanels: function (collapse,context) {
       var load = '.xml-form-elements-tabs:not(.processed)';
       var collapsible = '.xml-form-elements-tabs-collapsible';
       var collapsed = '.xml-form-elements-tabs-collapsed';
@@ -22,37 +22,25 @@ Drupal.behaviors.xmlFormElementTabs = {
         });
       }
       
-      if (expandedTabs.length === 1) {
+      if(expandedTabs.length > 0) {
         expandedTabs.tabs({
           collapsible: true,
-          selected: expandedTabs.tabs('length') - 1,
           select: this.setCollapsibleIconOnSelect,
           create: this.setCollapsibleIconOnCreate
         });
       }
-      else if (expandedTabs.length > 1) {
-        jQuery.each(expandedTabs,function(key,tab) {
-          tab.tabs({
-            collapsible: true,
-            selected: tab.tabs('length') - 1,
-            select: this.setCollapsibleIconOnSelect,
-            create: this.setCollapsibleIconOnCreate
-          });
-        });
+      if(this.nonCollapsibleTabs.length > 0) {
+        this.nonCollapsibleTabs.tabs({});
       }
       
-      if (this.nonCollapsibleTabs.length === 1) {
-        this.nonCollapsibleTabs.tabs({
-          selected: this.nonCollapsibleTabs.length.tabs('length') - 1,
-        });
-      }
-      else if (this.nonCollapsibleTabs.length > 1) {
-        jQuery.each(this.nonCollapsibleTabs,function(key,tab) {
-            jQuery(tab).tabs({
-                selected:jQuery(tab).tabs('length') - 1
-            });
-        });
-      }
+      this.tabs.each(function(){
+        if(context.attr('class') === 'clear-block') {
+          var tab = context.find('.xml-form-elements-tabs');
+          tab.tabs({
+            selected: tab.tabs('length')-1
+          });
+        }
+      });
     },
     setCollapsibleIconOnSelect: function(event, ui) {
       var icon = jQuery('span.expand-tabpanel-icon:first', this);
@@ -157,8 +145,9 @@ Drupal.behaviors.xmlFormElementTabs = {
     }
   },
   attach: function (context, settings) {
-	  this.tabs.loadPanels(true);
+	  this.tabs.loadPanels(true,context);
 	  this.tabs.attachToolTips();
 	  this.tabs.enableActions();
+          
   }
 }
