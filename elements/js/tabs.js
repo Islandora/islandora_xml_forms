@@ -1,6 +1,6 @@
 Drupal.behaviors.xmlFormElementTabs = {
   tabs: {
-	tool_tip: null,
+    tool_tip: null,
     tabs: null, // Collection of all tabpanels.
     collapsibleTabs: null,
     nonCollapsibleTabs: null,
@@ -145,7 +145,7 @@ Drupal.behaviors.xmlFormElementTabs = {
     }
   },
   attach: function (context, settings) {
-	  this.tabs.loadPanels(true,context);
+	  this.tabs.loadPanels(true, context);
 	  this.tabs.attachToolTips();
 	  this.tabs.enableActions();
           
