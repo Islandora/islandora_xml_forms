@@ -4,7 +4,7 @@ Drupal.behaviors.xmlFormElementTabs = {
     tabs: null, // Collection of all tabpanels.
     collapsibleTabs: null,
     nonCollapsibleTabs: null,
-    loadPanels: function (collapse,context) {
+    loadPanels: function (collapse, context) {
       var load = '.xml-form-elements-tabs:not(.processed)';
       var collapsible = '.xml-form-elements-tabs-collapsible';
       var collapsed = '.xml-form-elements-tabs-collapsed';
@@ -37,7 +37,7 @@ Drupal.behaviors.xmlFormElementTabs = {
         if(context.attr('class') === 'clear-block') {
           var tab = context.find('.xml-form-elements-tabs');
           tab.tabs({
-            selected: tab.tabs('length')-1
+            selected: tab.tabs('length') - 1
           });
         }
       });
