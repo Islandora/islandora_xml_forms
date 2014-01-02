@@ -33,7 +33,7 @@ Drupal.behaviors.xmlFormElementTabs = {
       }
       this.tabs.each(function(){
         if(jQuery(context).attr('class') === 'clear-block') {
-          var tab = context.find('.xml-form-elements-tabs');
+          var tab = jQuery(context).find('.xml-form-elements-tabs');
           tab.tabs({
             selected: tab.tabs('length') - 1
           });
