@@ -18,7 +18,6 @@ class Tabs {
     static $load = TRUE;
     if ($load) {
       form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
-      Element::addRequiredResources();
       Element::addUIWidgets('ui.tabs');
       Element::addUIThemeStyles(array('ui.core.css', 'ui.tabs.css', 'ui.theme.css'));
       Element::addJS('tabs.js');

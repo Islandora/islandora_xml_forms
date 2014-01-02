@@ -16,17 +16,6 @@ module_load_include('inc', 'objective_forms', 'FormPopulator');
 class Element {
 
   /**
-   * Loads any javascript files which are needed for elements which use AHAH.
-   */
-  public static function addRequiredResources() {
-    static $load = TRUE;
-    if ($load) {
-      drupal_add_js('misc/jquery.form.js'); // Required
-      $load = FALSE;
-    }
-  }
-
-  /**
    * Includes the given jQuery UI widgets.
    *
    * @param array $files
