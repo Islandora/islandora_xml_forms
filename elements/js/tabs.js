@@ -21,7 +21,6 @@ Drupal.behaviors.xmlFormElementTabs = {
           create: this.setCollapsibleIconOnCreate
         });
       }
-      
       if(expandedTabs.length > 0) {
         expandedTabs.tabs({
           collapsible: true,
@@ -32,9 +31,8 @@ Drupal.behaviors.xmlFormElementTabs = {
       if(this.nonCollapsibleTabs.length > 0) {
         this.nonCollapsibleTabs.tabs({});
       }
-      
       this.tabs.each(function(){
-        if(context.attr('class') === 'clear-block') {
+        if(jQuery(context).attr('class') === 'clear-block') {
           var tab = context.find('.xml-form-elements-tabs');
           tab.tabs({
             selected: tab.tabs('length') - 1
