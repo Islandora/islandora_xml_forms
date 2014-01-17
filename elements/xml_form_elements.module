@@ -93,6 +93,12 @@ function xml_form_elements_element_info() {
       ),
       '#theme_wrappers' => array('xml_form_element'),
     ),
+    'creative_commons' => array(
+      '#input' => TRUE,
+      '#tree' => FALSE,
+      '#process' => array('xml_form_elements_creative_commons_process'),
+      '#value_callback' => 'xml_form_elements_creative_commons_value_callback',
+    ),
   );
 }
 
@@ -398,4 +404,25 @@ function xml_form_elements_defaultable_markup($children, &$elements) {
     $elements['#suffix'] = '';
     return '';
   }
+}
+
+/**
+ * Process for the creative_commons_process form element.
+ *
+ * The state of #tree is managed by this form element because #tree is needed
+ * for ajax but destroys the value_callback.
+ *
+ * @param array $element
+ *   The element to create.
+ * @param array $form_state
+ *   The form state.
+ * @param array $complete_form
+ *   The form.
+ *
+ * @return array
+ *   The form element.
+ */
+function xml_form_elements_creative_commons_process($element, &$form_state, $complete_form) {
+  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/creative_commons');
+  return xml_form_elements_creative_commons($element, $form_state);
 }
