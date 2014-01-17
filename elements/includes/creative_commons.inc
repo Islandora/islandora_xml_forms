@@ -211,9 +211,9 @@ function xml_form_elements_creative_commons_ajax(&$form, &$form_state) {
  * Left as a function for use by community modules.
  *
  * @param string $commercial
- *   'y' to allow 'n' to dissalow.
+ *   'y' to allow 'n' to disallow.
  * @param string $derivatives
- *   'y' to allow 'n' to dissalow.
+ *   'y' to allow 'n' to disallow.
  * @param string $jurisdiction
  *   Legal jurisdiction code.
  *
