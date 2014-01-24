@@ -86,12 +86,10 @@ function xml_form_builder_create_validate_name(array $element, array &$form_stat
 function xml_form_builder_create_validate(array $form, array &$form_state) {
   $file_uploaded = isset($_FILES['files']['error']['file']) && ($_FILES['files']['error']['file'] == 0);
   if ($file_uploaded) {
-    $file_is_xml = $_FILES['files']['type']['file'] == 'text/xml';
-    if ($file_is_xml) {
-      module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
-      $filename = $_FILES['files']['tmp_name']['file'];
-      $definition = new DOMDocument();
-      $definition->load($filename);
+    module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
+    $filename = $_FILES['files']['tmp_name']['file'];
+    $definition = new DOMDocument();
+    if (@$definition->load($filename)) {
       try {
         $version = XMLFormDefinition::getVersion($definition);
         if (!XMLFormDefinition::isValid($definition, $version)) {
@@ -103,7 +101,7 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
       }
     }
     else {
-      form_set_error('files', t('Form definitions must have a type of text/xml.'));
+      form_set_error('files', t('Could not validate uploaded file as XML.'));
     }
   }
 }
