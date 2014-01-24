@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * @file
+ * http://i.imgur.com/xjFp0MR.jpg
+ */
+
+class IslandoraTestContentModelFormTestTestCase extends IslandoraCollectionWebTestCase {
+
+  /**
+   * Test information.
+   *
+   * @see IslandoraWebTestCase::getInfo()
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Islandora XML Forms Test Solution Pack Tests',
+      'description' => 'XML form tests using the test solution pack.',
+      'group' => 'Islandora XML Forms',
+    );
+  }
+
+  /**
+   * Set up the test environment.
+   *
+   * @see IslandoraWebTestCase::setUp()
+   */
+  public function setUp() {
+    parent::setUp(array(
+      'islandora_basic_collection',
+      'xml_form_builder',
+      'islandora_test_cm',
+    ));
+  }
+
+  /**
+   * Tests for islandora_test_cm.
+   */
+  public function testTestContentModelForm() {
+    $user = $this->drupalCreateUser(array_keys(module_invoke_all('permission')));
+    $this->drupalLogin($user);
+
+    $label = $this->randomName();
+    $collection_pid = 'islandora:' . $this->randomName();
+    $this->createTestCollection($label, array('islandora:testCModel'), $collection_pid);
+
+    $title = $this->randomName();
+    $abstract = $this->randomName();
+    $language = $this->randomName();
+    $genre = 'default';
+    $edit = array(
+      'titleInfo[title]' => $title,
+      'abstract' => $abstract,
+      'language' => $language,
+      'genre' => $genre,
+    );
+    $this->drupalPost("islandora/object/$collection_pid/manage/overview/ingest", $edit, 'Next');
+    $edit = array(
+      'files[file]' => drupal_get_path('module', 'islandora_test_cm') . "/tests/fixtures/test.txt",
+    );
+    $this->drupalPost(NULL, $edit, 'Ingest');
+    $object = $this->getObjectFromPath($this->url);
+
+    $mods = $this->curlExec(array(
+      CURLOPT_URL => url("islandora/object/$object/datastream/MODS/download", array('absolute' => TRUE)),
+      CURLOPT_NOBODY => FALSE,
+    ));
+    $xml = new DOMDocument();
+    $xml->loadXML($mods);
+    $title_tags = $xml->getElementsByTagName('title');
+    $abstract_tags = $xml->getElementsByTagName('abstract');
+    $language_tags = $xml->getElementsByTagName('languageTerm');
+    $genre_tags = $xml->getElementsByTagName('genre');
+    if (is_object($title_tags->item(0))) {
+      $this->assertTrue($title_tags->item(0)->nodeValue == $title, "Sub-level element: Ingested title value of $title matches XML output value of {$title_tags->item(0)->nodeValue}.", 'Islandora');
+    }
+    else {
+      $this->fail("Sub-level element: Output MODS XML has no title node.", 'Islandora');
+    }
+    if (is_object($abstract_tags->item(0))) {
+      $this->assertTrue($abstract_tags->item(0)->nodeValue == $abstract, "Top-level element: Ingested abstract value of $abstract matches XML output value of {$abstract_tags->item(0)->nodeValue}.", 'Islandora');
+    }
+    else {
+      $this->fail("Top-level element: Output MODS XML has no abstract node.");
+    }
+    if (is_object($language_tags->item(0))) {
+      $this->assertTrue($language_tags->item(0)->nodeValue == $language, "Element with attributes: Ingested language value of $language matches XML output value of {$language_tags->item(0)->nodeValue}.", 'Islandora');
+    }
+    else {
+      $this->fail("Element with attributes: Output MODS XML has no language node.");
+    }
+    if (is_object($genre_tags->item(0))) {
+      $this->assertTrue($genre_tags->item(0)->nodeValue == $genre, "Select element: Ingested genre value of $genre matches XML output value of {$genre_tags->item(0)->nodeValue}.", 'Islandora');
+    }
+    else {
+      $this->fail("Select element: Output MODS XML has no genre node.");
+    }
+  }
+}

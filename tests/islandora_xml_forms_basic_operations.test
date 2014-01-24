@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file
+ * Tests to look at basic Islandora XML Form functions.
+ */
+
+class IslandoraXMLFormsBasicOperationTestCase extends IslandoraWebTestCase {
+
+  /**
+   * Test information.
+   *
+   * @see IslandoraWebTestCase::getInfo()
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Islandora XML Forms Basic Operations',
+      'description' => 'Tests basic operations for managing forms.',
+      'group' => 'Islandora XML Forms',
+    );
+  }
+
+  /**
+   * Set up the test environment.
+   *
+   * @see IslandoraWebTestCase::setUp()
+   */
+  public function setUp() {
+    parent::setUp(array(
+      'xml_form_builder',
+      'islandora_test_cm',
+    ));
+  }
+
+  /**
+   * Tests form functionality.
+   */
+  public function testFormOperations() {
+
+    // Log in.
+    $user = $this->drupalCreateUser(array_keys(module_invoke_all('permission')));
+    $this->drupalLogin($user);
+
+    // Copy form.
+    $form_name = $this->randomName();
+    $edit = array(
+      'form_name' => $form_name,
+    );
+    $this->drupalPost('admin/islandora/xmlform/Test Solution Pack MODS Form/copy', $edit, 'Copy');
+    $this->assertText('Successfully copied form "' . $form_name . '".', "Successfully made a copy of the Test Solution Pack Form.", 'Islandora');
+    $original_form = $this->curlExec(array(
+      CURLOPT_URL => url("admin/islandora/xmlform/Test Solution Pack MODS Form/export", array('absolute' => TRUE)),
+      CURLOPT_NOBODY => FALSE,
+    ));
+    $new_form = $this->curlExec(array(
+      CURLOPT_URL => url("admin/islandora/xmlform/$form_name/export", array('absolute' => TRUE)),
+      CURLOPT_NOBODY => FALSE,
+    ));
+    $this->assertEqual($original_form, $new_form, "Copied form is the same as the original form.");
+    $this->drupalPost("admin/islandora/xmlform/$form_name/delete", array(), 'Delete');
+    $this->assertText('Successfully deleted form "' . $form_name . '".', "Successfully deleted copy of the Test Solution Pack Form.", 'Islandora');
+
+    // Import form.
+    $form_name = $this->randomName();
+    $form_path = drupal_get_path('module', 'islandora_test_cm') . "/xml/islandora_test_cm_form_mods.xml";
+    $edit = array(
+      'form_name' => $form_name,
+      'files[file]' => $form_path,
+    );
+    $this->drupalPost('admin/islandora/xmlform/import', $edit, 'Create');
+    $form_creation_pass = $this->assertText('Successfully created form "' . $form_name . '".', "Successfully generated form from provided XML.", 'Islandora');
+
+    // View and submit from the imported form.
+    if ($form_creation_pass) {
+      $this->drupalGet("admin/islandora/xmlform/$form_name/view");
+      $this->assertResponse('200', "Form view page passed response of 200.");
+    }
+
+    // Get rid of the imported form.
+    $this->drupalPost("admin/islandora/xmlform/$form_name/delete", array(), 'Delete');
+    $this->assertText('Successfully deleted form "' . $form_name . '".', "Successfully deleted imported form.", 'Islandora');
+  }
+}
