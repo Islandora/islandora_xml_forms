@@ -23,9 +23,11 @@
 function xml_form_builder_select_association_form(array $form, array &$form_state, array $associations) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/select_association.form');
   $get_default = function($name, $default) use(&$form_state) {
-    // @XXX This should use values semantically speaking, but Drupal is not
-    // updating that array on the first AJAX call.
-    return isset($form_state['input'][$name]) ? $form_state['input'][$name] : $default;
+    // @XXX: This used to be using input instead of values but it has been
+    // switched back. The original input change was to fix a problem with
+    // AJAX not populating the dependent drop down at ingest time as of
+    // the 7.x-1.2 release. If this happens again this is the code to look at.
+    return isset($form_state['values'][$name]) ? $form_state['values'][$name] : $default;
   };
   $form_state['associations'] = $associations;
   $models = xml_form_builder_select_association_form_get_models($associations);
