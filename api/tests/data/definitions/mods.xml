@@ -27,14 +27,14 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <schema/>
                             <type>xml</type>
                             <value>&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:titleInfo[not(@type)]/mods:title</path>
+                            <path>//mods:mods[1]/mods:titleInfo[not(@type)]/mods:title</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -53,7 +53,7 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <schema/>
                             <type>xml</type>
@@ -61,7 +61,7 @@
                                 type='alternative'&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:titleInfo[@type='alternative']/mods:title</path>
+                            <path>//mods:mods[1]/mods:titleInfo[@type='alternative']/mods:title</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -87,7 +87,7 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;name
@@ -96,7 +96,7 @@
                                         type="text"&gt;creator&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:name[@type='personal']/mods:role[mods:roleTerm='creator']/../mods:namePart[not(@type)]</path>
+                                    <path>//mods:mods[1]/mods:name[@type='personal']/mods:role[mods:roleTerm='creator']/../mods:namePart[not(@type)]</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -127,7 +127,7 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;name
@@ -136,7 +136,7 @@
                                         type="text"&gt;contributor&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:name[@type='personal']/mods:role[mods:roleTerm='contributor']/../mods:namePart[not(@type)]</path>
+                                    <path>//mods:mods[1]/mods:name[@type='personal']/mods:role[mods:roleTerm='contributor']/../mods:namePart[not(@type)]</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -167,13 +167,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;name type='corporate'&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;role&gt;&lt;roleTerm authority="marcrelator" type="text"&gt;creator&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:name[@type='corporate']/mods:role[mods:roleTerm='creator']/../mods:namePart[not(@type)]</path>
+                                    <path>//mods:mods[1]/mods:name[@type='corporate']/mods:role[mods:roleTerm='creator']/../mods:namePart[not(@type)]</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -206,7 +206,7 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;name
@@ -215,7 +215,7 @@
                                         type="text"&gt;contributor&lt;/roleTerm&gt;&lt;/role&gt;&lt;/name&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:name[@type='corporate']/mods:role[mods:roleTerm='contributor']/../mods:namePart[not(@type)]</path>
+                                    <path>//mods:mods[1]/mods:name[@type='corporate']/mods:role[mods:roleTerm='contributor']/../mods:namePart[not(@type)]</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -248,13 +248,13 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>element</type>
                             <value>typeOfResource</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:typeOfResource</path>
+                            <path>//mods:mods[1]/mods:typeOfResource</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -273,13 +273,13 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>element</type>
                             <value>originInfo</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:originInfo</path>
+                            <path>//mods:mods[1]/mods:originInfo</path>
                             <context>document</context>
                         </read>
                     </actions>
@@ -484,13 +484,13 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;genre authority="marcgt"&gt;%value%&lt;/genre&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:genre[@authority='marcgt']</path>
+                            <path>//mods:mods[1]/mods:genre[@authority='marcgt']</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -509,14 +509,14 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;language&gt;&lt;languageTerm
                                 type="text"&gt;%value%&lt;/languageTerm&gt;&lt;/language&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:language/mods:languageTerm</path>
+                            <path>//mods:mods[1]/mods:language/mods:languageTerm</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -536,13 +536,13 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>element</type>
                             <value>physicalDescription</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:physicalDescription</path>
+                            <path>//mods:mods[1]/mods:physicalDescription</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -699,13 +699,13 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>element</type>
                             <value>abstract</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:abstract</path>
+                            <path>//mods:mods[1]/mods:abstract</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -731,13 +731,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>element</type>
                                     <value>targetAudience</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:targetAudience</path>
+                                    <path>//mods:mods[1]/mods:targetAudience</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -769,13 +769,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>element</type>
                                     <value>note</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:note[not(@type)]</path>
+                                    <path>//mods:mods[1]/mods:note[not(@type)]</path>
                                     <context>document</context>
                                 </read>
                             </actions>
@@ -819,13 +819,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;note type="admin"&gt;%value%&lt;/note&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:note[@type='admin']</path>
+                                    <path>//mods:mods[1]/mods:note[@type='admin']</path>
                                     <context>document</context>
                                 </read>
                                 <delete>
@@ -873,13 +873,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;note type="funding"&gt;%value%&lt;/note&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:note[@type='funding']</path>
+                                    <path>//mods:mods[1]/mods:note[@type='funding']</path>
                                     <context>document</context>
                                 </read>
                                 <delete>
@@ -927,13 +927,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;subject&gt;&lt;topic&gt;%value%&lt;/topic&gt;&lt;/subject&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:subject/mods:topic</path>
+                                    <path>//mods:mods[1]/mods:subject/mods:topic</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -964,13 +964,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;subject&gt;&lt;geographic&gt;%value%&lt;/geographic&gt;&lt;/subject&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:subject/mods:geographic</path>
+                                    <path>//mods:mods[1]/mods:subject/mods:geographic</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -1001,13 +1001,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;subject&gt;&lt;temporal&gt;%value%&lt;/temporal&gt;&lt;/subject&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:subject/mods:temporal</path>
+                                    <path>//mods:mods[1]/mods:subject/mods:temporal</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -1038,14 +1038,14 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;subject&gt;&lt;name
                                         type="personal"&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;/name&gt;&lt;/subject&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:subject/mods:name[@type='personal']/mods:namePart</path>
+                                    <path>//mods:mods[1]/mods:subject/mods:name[@type='personal']/mods:namePart</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -1076,14 +1076,14 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;subject&gt;&lt;name
                                         type="corporate"&gt;&lt;namePart&gt;%value%&lt;/namePart&gt;&lt;/name&gt;&lt;/subject&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:subject/mods:name[@type='corporate']/mods:namePart</path>
+                                    <path>//mods:mods[1]/mods:subject/mods:name[@type='corporate']/mods:namePart</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -1114,13 +1114,13 @@
                             <tree>true</tree>
                             <actions>
                                 <create>
-                                    <path>/mods:mods</path>
+                                    <path>//mods:mods[1]</path>
                                     <context>document</context>
                                     <type>xml</type>
                                     <value>&lt;subject&gt;&lt;genre&gt;%value%&lt;/genre&gt;&lt;/subject&gt;</value>
                                 </create>
                                 <read>
-                                    <path>/mods:mods/mods:subject/mods:genre</path>
+                                    <path>//mods:mods[1]/mods:subject/mods:genre</path>
                                     <context>document</context>
                                 </read>
                                 <update>
@@ -1144,14 +1144,14 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;relatedItem
                                 type='host'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:relatedItem[@type='host']/mods:titleInfo/mods:title</path>
+                            <path>//mods:mods[1]/mods:relatedItem[@type='host']/mods:titleInfo/mods:title</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -1169,14 +1169,14 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;relatedItem
                                 type='constituent'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:relatedItem[@type='constituent']/mods:titleInfo/mods:title</path>
+                            <path>//mods:mods[1]/mods:relatedItem[@type='constituent']/mods:titleInfo/mods:title</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -1194,14 +1194,14 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;relatedItem
                                 type='series'&gt;&lt;titleInfo&gt;&lt;title&gt;%value%&lt;/title&gt;&lt;/titleInfo&gt;&lt;/relatedItem&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</path>
+                            <path>//mods:mods[1]/mods:relatedItem[@type='series']/mods:titleInfo/mods:title</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -1219,13 +1219,13 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;identifier type='local'&gt;%value%&lt;/identifier&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:identifier[@type='local']</path>
+                            <path>//mods:mods[1]/mods:identifier[@type='local']</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -1243,13 +1243,13 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;identifier type='isbn'&gt;%value%&lt;/identifier&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:identifier[@type='isbn']</path>
+                            <path>//mods:mods[1]/mods:identifier[@type='isbn']</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -1267,13 +1267,13 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;identifier type='issn'&gt;%value%&lt;/identifier&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:identifier[@type='issn']</path>
+                            <path>//mods:mods[1]/mods:identifier[@type='issn']</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -1291,14 +1291,14 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;accessCondition
                                 type='useAndReproduction'&gt;%value%&lt;/accessCondition&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:accessCondition[@type='useAndReproduction']</path>
+                            <path>//mods:mods[1]/mods:accessCondition[@type='useAndReproduction']</path>
                             <context>document</context>
                         </read>
                         <update>
@@ -1315,7 +1315,7 @@
                     <tree>true</tree>
                     <actions>
                         <create>
-                            <path>/mods:mods</path>
+                            <path>//mods:mods[1]</path>
                             <context>document</context>
                             <type>xml</type>
                             <value>&lt;recordInfo&gt;&lt;languageOfCataloging&gt;&lt;languageTerm
@@ -1325,7 +1325,7 @@
                                 authority="iso639-2b"&gt;eng&lt;/languageTerm&gt;&lt;/languageOfCataloging&gt;&lt;/recordInfo&gt;</value>
                         </create>
                         <read>
-                            <path>/mods:mods/mods:recordInfo</path>
+                            <path>//mods:mods[1]/mods:recordInfo</path>
                             <context>document</context>
                         </read>
                     </actions>
