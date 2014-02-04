@@ -64,7 +64,7 @@ class IslandoraTestContentModelFormTestTestCase extends IslandoraCollectionWebTe
     );
     $this->drupalPost("islandora/object/$collection_pid/manage/overview/ingest", $edit, 'Next');
     $edit = array(
-      'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/fixtures/test.txt",
+      'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/test.txt",
     );
     $this->drupalPost(NULL, $edit, 'Ingest');
     $this->object = $this->getObjectFromPath($this->url);
