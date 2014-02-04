@@ -38,6 +38,22 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
   }
 
   /**
+   * Helper function to associate a form, since this gets done twice.
+   */
+  public function createFormAssociation() {
+    $edit = array(
+      'content_model' => 'islandora:testCModel',
+      'dsid' => $this->dsid,
+      'title_field' => "a:2:{i:0;s:9:\"titleInfo\";i:1;s:5:\"title\";}",
+      'transform' => "$this->custom_transform_filename",
+      'self_transform' => "$this->self_transform_filename",
+      'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/template.xml",
+    );
+    $this->drupalPost('admin/islandora/xmlform/Test Solution Pack MODS Form/associations', $edit, 'Add Association');
+    $this->assertText("Successfully added association.", "Successfully added association to Test Solution Pack MODS Form.", 'Islandora');
+  }
+
+  /**
    * Test form association disabling and enabling.
    *
    * I'd break this out into two functions, but the database gets wiped between
@@ -83,16 +99,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
 
     // Attempt to fill out and submit the form association form.
     $this->dsid = $this->randomName();
-    $edit = array(
-        'content_model' => 'islandora:testCModel',
-        'dsid' => $this->dsid,
-        'title_field' => "a:2:{i:0;s:9:\"titleInfo\";i:1;s:5:\"title\";}",
-        'transform' => "$this->custom_transform_filename",
-        'self_transform' => "$this->self_transform_filename",
-        'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/template.xml",
-      );
-    $this->drupalPost('admin/islandora/xmlform/Test Solution Pack MODS Form/associations', $edit, 'Add Association');
-    $this->assertText("Successfully added association.", "Successfully added association to Test Solution Pack MODS Form.", 'Islandora');
+    $this->createFormAssociation();
   }
 
   /**
@@ -100,19 +107,8 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
    */
   function testIngestWithAssociatedForm() {
     // First, we need to recreate that form association that just got dumped out
-    // of the previous SimpleTest database. We're cheating by using db_insert()
-    // this time, which is okay, since we already tested the manual method.
-    db_insert('xml_form_builder_form_associations')
-      ->fields(array(
-        'content_model' => 'islandora:testCModel',
-        'form_name' => 'Test Solution Pack MODS Form',
-        'dsid' => $this->dsid,
-        'title_field' => 'a:2:{i:0;s:9:"titleInfo";i:1;s:5:"title";}',
-        'transform' => $this->custom_transform_filename,
-        'self_transform' => $this->self_transform_filename,
-        'template' => file_get_contents(drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/template.xml"),
-      ))
-      ->execute();
+    // of the previous SimpleTest database.
+    $this->createFormAssociation();
     // Then, we need to disable the other association so it doesn't bother us.
     $this->drupalGet('admin/islandora/xmlform/Test Solution Pack MODS Form/associations');
     $this->clickLink('Disable');
@@ -263,11 +259,11 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
    */
   function testDeconstruct() {
     // Get rid of those custom XSLT files.
-    if (file_exists(DRUPAL_ROOT . "sites/all/modules/islandora_xml_forms/builder/transforms/{$this->custom_transform_filename}")) {
+    if (file_exists(DRUPAL_ROOT . "/sites/all/modules/islandora_xml_forms/builder/transforms/{$this->custom_transform_filename}")) {
       file_unmanaged_delete("sites/all/modules/islandora_xml_forms/builder/transforms/{$this->custom_transform_filename}");
       $this->pass("Deleted test custom transform {$this->custom_transform_filename}.", 'Islandora');
     }
-    if (file_exists(DRUPAL_ROOT . "sites/all/modules/islandora_xml_forms/builder/self_transforms/{$this->self_transform_filename}")) {
+    if (file_exists(DRUPAL_ROOT . "/sites/all/modules/islandora_xml_forms/builder/self_transforms/{$this->self_transform_filename}")) {
       file_unmanaged_delete("sites/all/modules/islandora_xml_forms/builder/self_transforms/{$this->self_transform_filename}");
       $this->pass("Deleted test custom self transform {$this->self_transform_filename}.", 'Islandora');
     }
