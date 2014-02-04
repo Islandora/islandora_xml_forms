@@ -78,8 +78,8 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     // them into their respective XML Form Builder transform folders.
     $this->custom_transform_filename = "{$this->randomName()}.xsl";
     $this->self_transform_filename = "{$this->randomName()}.xsl";
-    file_unmanaged_save_data(file_get_contents(drupal_get_path('module', 'islandora_test_cm') . "/xsl/mods_to_dc_custom.xsl"), "sites/all/modules/islandora_xml_forms/builder/transforms/$this->custom_transform_filename");
-    file_unmanaged_save_data(file_get_contents(drupal_get_path('module', 'islandora_test_cm') . "/xsl/self_transform.xsl"), "sites/all/modules/islandora_xml_forms/builder/self_transforms/$this->self_transform_filename");
+    file_unmanaged_save_data(file_get_contents(drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/xsl/mods_to_dc_custom.xsl"), "sites/all/modules/islandora_xml_forms/builder/transforms/$this->custom_transform_filename");
+    file_unmanaged_save_data(file_get_contents(drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/xsl/self_transform.xsl"), "sites/all/modules/islandora_xml_forms/builder/self_transforms/$this->self_transform_filename");
 
     // Attempt to fill out and submit the form association form.
     $this->dsid = $this->randomName();
@@ -89,7 +89,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
         'title_field' => "a:2:{i:0;s:9:\"titleInfo\";i:1;s:5:\"title\";}",
         'transform' => "$this->custom_transform_filename",
         'self_transform' => "$this->self_transform_filename",
-        'files[file]' => drupal_get_path('module', 'islandora_test_cm') . "/tests/fixtures/template.xml",
+        'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/template.xml",
       );
     $this->drupalPost('admin/islandora/xmlform/Test Solution Pack MODS Form/associations', $edit, 'Add Association');
     $this->assertText("Successfully added association.", "Successfully added association to Test Solution Pack MODS Form.", 'Islandora');
@@ -110,7 +110,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
         'title_field' => 'a:2:{i:0;s:9:"titleInfo";i:1;s:5:"title";}',
         'transform' => $this->custom_transform_filename,
         'self_transform' => $this->self_transform_filename,
-        'template' => file_get_contents(drupal_get_path('module', 'islandora_test_cm') . "/tests/fixtures/template.xml"),
+        'template' => file_get_contents(drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/template.xml"),
       ))
       ->execute();
     // Then, we need to disable the other association so it doesn't bother us.
@@ -125,7 +125,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     $this->drupalPost("islandora/object/$this->collection_pid/manage/overview/ingest", array(), 'Next');
     // Submit the form and see if it ingests.
     $edit = array(
-      'files[file]' => drupal_get_path('module', 'islandora_test_cm') . "/tests/fixtures/test.txt",
+      'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/test.txt",
     );
     $this->drupalPost(NULL, $edit, 'Ingest');
     $page_title = $this->xpath('//h1[@id="page-title"]');

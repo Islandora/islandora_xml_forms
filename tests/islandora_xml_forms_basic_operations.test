@@ -70,7 +70,7 @@ class IslandoraXMLFormsBasicOperationTestCase extends IslandoraWebTestCase {
 
     // Import the form.
     $form_name = $this->randomName();
-    $form_path = drupal_get_path('module', 'islandora_test_cm') . "/xml/islandora_test_cm_form_mods.xml";
+    $form_path = drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/xml/islandora_test_cm_form_mods.xml";
     $edit = array(
       'form_name' => $form_name,
       'files[file]' => $form_path,
