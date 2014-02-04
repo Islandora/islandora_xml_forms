@@ -14,7 +14,6 @@ before_install:
   - git clone -b 7.x git://github.com/Islandora/islandora.git
   - git clone -b 7.x git://github.com/Islandora/php_lib.git
   - git clone -b 7.x git://github.com/Islandora/objective_forms.git
-  - git clone -b 7.x git://github.com/discoverygarden/islandora_solution_pack_test.git
   - git clone -b 7.x git://github.com/Islandora/islandora_solution_pack_collection.git
   - export ISLANDORA_DIR=$HOME/islandora
   - $HOME/islandora/tests/scripts/travis_setup.sh
@@ -24,13 +23,13 @@ before_install:
   - ln -s $HOME/objective_forms sites/all/modules/objective_forms
   - ln -s $HOME/islandora_solution_pack_test sites/all/modules/islandora_solution_pack_test
   - ln -s $HOME/islandora_solution_pack_collection sites/all/modules/islandora_solution_pack_collection
-  - drush en --yes --user=1 xml_form_builder xml_form_elements islandora_basic_collection islandora_test_cm
+  - drush en --yes --user=1 xml_form_builder xml_form_elements islandora_basic_collection
 script:
-  # TODO: fix this so it ignores appropriate files.
+  # TODO: either fix this so it ignores appropriate files, or fix the plethora of files it flags.
   # - ant -buildfile sites/all/modules/islandora_xml_forms/build.xml lint
   - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_xml_forms
-  # TODO: oh my goodness this is a mess. someday, someone's going to have to clean this out.
+  # TODO: same as the previous TODO above.
   # - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_forms
-  # The copy, paste detector is commented out because it was recognizing whole classes as duplicate lines. TODO fix this
+  # TODO: the copy/paste detector is recognizing whole classes as duplicate lines. Fix this.
   # - phpcpd --names *.module,*.inc,*.test sites/all/modules/islandora_xml_forms
   - drush test-run --uri=http://localhost:8081 "Islandora XML Forms"
