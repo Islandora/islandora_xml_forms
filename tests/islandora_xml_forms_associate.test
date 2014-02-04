@@ -75,9 +75,9 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
       $this->fail("There are multiple 'Disable' links on the Test Solution Pack MODS form association page.");
     }
     $this->clickLink("Disable");
-    $this->drupalGet("islandora/object/$this->collection_pid/manage/overview/ingest");
-    // Assert that ingest steps still function despite no form association.
-    $this->assertText("Select file to upload", "Collection with no form associations skips directly to file upload step.", 'Islandora');
+    $this->drupalPost("islandora/object/$this->collection_pid/manage/overview/ingest", array(), 'Ingest');
+    // Assert that ingest still functions despite no form association.
+    $this->assertText("New Object", "Collection with no form associations skips form ingest step.", 'Islandora');
     // Test form association re-enabling.
     $this->drupalGet('admin/islandora/xmlform/Test Solution Pack MODS Form/associations');
     $this->clickLink('Enable');
@@ -118,14 +118,16 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     $this->assertFieldById('edit-abstract', 'Abstract', "Abstract from template is filled in.", 'Islandora');
     $this->assertFieldById('edit-language', 'Language', "Language from template is filled in.", 'Islandora');
     $this->assertFieldById('edit-genre', 'alternate', "Genre from template is selected.", 'Islandora');
-    $this->drupalPost("islandora/object/$this->collection_pid/manage/overview/ingest", array(), 'Next');
+    $this->drupalPost("islandora/object/$this->collection_pid/manage/overview/ingest", array(), 'Ingest');
     // Submit the form and see if it ingests.
-    $edit = array(
-      'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/test.txt",
-    );
-    $this->drupalPost(NULL, $edit, 'Ingest');
     $page_title = $this->xpath('//h1[@id="page-title"]');
-    $this->assertTrue(trim($page_title[0]) === "Title", "Page title correctly pulled from MODS DSID's titleInfo/title field.", 'Islandora');
+    if ($page_title[0]) {
+      $page_title = trim($page_title[0]);
+      $this->assertTrue($page_title === "Title", "Page title '$page_title' correctly pulled from MODS DSID's titleInfo/title field.", 'Islandora');
+    }
+    else {
+      $this->fail('No page title found on ingested object page.', 'Islandora');
+    }
     $this->object_pid = $this->getObjectFromPath($this->url);
     // Assert that both the MODS and DC datastreams were ingested.
     if (!$this->assertDatastreams($this->object_pid, array($this->dsid, 'DC'))) {

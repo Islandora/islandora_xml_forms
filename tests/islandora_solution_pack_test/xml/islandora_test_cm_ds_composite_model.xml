@@ -11,9 +11,6 @@
     <dsTypeModel ID="RELS-INT" optional="true">
         <form FORMAT_URI="info:fedora/fedora-system:FedoraRELSInt-1.0" MIME="application/rdf+xml"></form>
     </dsTypeModel>
-    <dsTypeModel ID="OBJ">
-        <form MIME="text/plain"></form>
-    </dsTypeModel>
     <dsTypeModel ID="TN">
         <form MIME="image/jpeg"></form>
     </dsTypeModel>
