@@ -30,37 +30,45 @@ class IslandoraXMLFormsBasicOperationTestCase extends IslandoraWebTestCase {
       'xml_form_builder',
       'islandora_test_cm',
     ));
+    // Create a new user for each test.
+    $user = $this->drupalCreateUser(array_keys(module_invoke_all('permission')));
+    $this->drupalLogin($user);
   }
 
   /**
-   * Tests form functionality.
+   * Tests form copy and delete functionality.
    */
-  public function testFormOperations() {
+  function testFormCopyDelete() {
 
-    // Log in.
-    $user = $this->drupalCreateUser(array_keys(module_invoke_all('permission')));
-    $this->drupalLogin($user);
-
-    // Copy form.
+    // Copy the form; give it a name.
     $form_name = $this->randomName();
     $edit = array(
       'form_name' => $form_name,
     );
     $this->drupalPost('admin/islandora/xmlform/Test Solution Pack MODS Form/copy', $edit, 'Copy');
-    $this->assertText('Successfully copied form "' . $form_name . '".', "Successfully made a copy of the Test Solution Pack Form.", 'Islandora');
-    $original_form = $this->curlExec(array(
-      CURLOPT_URL => url("admin/islandora/xmlform/Test Solution Pack MODS Form/export", array('absolute' => TRUE)),
-      CURLOPT_NOBODY => FALSE,
-    ));
-    $new_form = $this->curlExec(array(
-      CURLOPT_URL => url("admin/islandora/xmlform/$form_name/export", array('absolute' => TRUE)),
-      CURLOPT_NOBODY => FALSE,
-    ));
-    $this->assertEqual($original_form, $new_form, "Copied form is the same as the original form.");
-    $this->drupalPost("admin/islandora/xmlform/$form_name/delete", array(), 'Delete');
-    $this->assertText('Successfully deleted form "' . $form_name . '".', "Successfully deleted copy of the Test Solution Pack Form.", 'Islandora');
+    if ($this->assertText("Successfully copied form \"$form_name\".", "Successfully made a copy of the Test Solution Pack Form.", 'Islandora')) {
+      // Grab the original and new forms for comparison.
+      $original_form = $this->curlExec(array(
+        CURLOPT_URL => url("admin/islandora/xmlform/Test Solution Pack MODS Form/export", array('absolute' => TRUE)),
+        CURLOPT_NOBODY => FALSE,
+      ));
+      $new_form = $this->curlExec(array(
+        CURLOPT_URL => url("admin/islandora/xmlform/$form_name/export", array('absolute' => TRUE)),
+        CURLOPT_NOBODY => FALSE,
+      ));
+      $this->assertEqual($original_form, $new_form, "Copied form is the same as the original form.");
+      // Attempt to delete the form.
+      $this->drupalPost("admin/islandora/xmlform/$form_name/delete", array(), 'Delete');
+      $this->assertText("Successfully deleted form \"$form_name\".", "Successfully deleted copy of the Test Solution Pack Form.", 'Islandora');
+    }
+  }
 
-    // Import form.
+  /**
+   * Test Form import response and imported form view.
+   */
+  function testFormImportView() {
+
+    // Import the form.
     $form_name = $this->randomName();
     $form_path = drupal_get_path('module', 'islandora_test_cm') . "/xml/islandora_test_cm_form_mods.xml";
     $edit = array(
@@ -68,16 +76,10 @@ class IslandoraXMLFormsBasicOperationTestCase extends IslandoraWebTestCase {
       'files[file]' => $form_path,
     );
     $this->drupalPost('admin/islandora/xmlform/import', $edit, 'Create');
-    $form_creation_pass = $this->assertText('Successfully created form "' . $form_name . '".', "Successfully generated form from provided XML.", 'Islandora');
-
-    // View and submit from the imported form.
-    if ($form_creation_pass) {
+    if ($this->assertText("Successfully created form \"$form_name\".", "Successfully generated form from provided XML.", 'Islandora')) {
+      // View and submit from the imported form.
       $this->drupalGet("admin/islandora/xmlform/$form_name/view");
       $this->assertResponse('200', "Form view page passed response of 200.");
     }
-
-    // Get rid of the imported form.
-    $this->drupalPost("admin/islandora/xmlform/$form_name/delete", array(), 'Delete');
-    $this->assertText('Successfully deleted form "' . $form_name . '".', "Successfully deleted imported form.", 'Islandora');
   }
 }

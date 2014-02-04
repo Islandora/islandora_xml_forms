@@ -89,19 +89,20 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
     module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
     $filename = $_FILES['files']['tmp_name']['file'];
     $definition = new DOMDocument();
-    if (@$definition->load($filename)) {
-      try {
-        $version = XMLFormDefinition::getVersion($definition);
-        if (!XMLFormDefinition::isValid($definition, $version)) {
-          form_set_error('files', t('The given form definition is not valid.'));
-        }
-      }
-      catch (Exception $e) {
-        form_set_error('files', $e->getMessage());
+    try {
+      $definition->load($filename);
+    }
+    catch (Exception $e) {
+      form_set_error('files', t("Could not load uploaded file as XML, with error: {$e->getMessage()}"));
+    }
+    try {
+      $version = XMLFormDefinition::getVersion($definition);
+      if (!XMLFormDefinition::isValid($definition, $version)) {
+        form_set_error('files', t('The given form definition is not valid.'));
       }
     }
-    else {
-      form_set_error('files', t('Could not validate uploaded file as XML.'));
+    catch (Exception $e) {
+      form_set_error('files', $e->getMessage());
     }
   }
 }
