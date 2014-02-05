@@ -43,7 +43,7 @@ class IslandoraTestContentModelFormTestTestCase extends IslandoraCollectionWebTe
   /**
    * Tests ingesting a test collection and object. This sets up the actual test.
    */
-  function testTestContentModelIngest() {
+  public function testTestContentModelIngest() {
 
     $this->deleteObjectsOnTeardown = FALSE;
 
@@ -70,7 +70,7 @@ class IslandoraTestContentModelFormTestTestCase extends IslandoraCollectionWebTe
   /**
    * Checks the MODS datastream to see if it was properly formed.
    */
-  function testTestContentModelMODS() {
+  public function testTestContentModelMODS() {
     // Load the MODS datastream and grab all the expected elements.
     $mods = $this->curlExec(array(
       CURLOPT_URL => url("islandora/object/$this->object/datastream/MODS/download", array('absolute' => TRUE)),

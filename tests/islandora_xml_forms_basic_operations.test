@@ -38,7 +38,7 @@ class IslandoraXMLFormsBasicOperationTestCase extends IslandoraWebTestCase {
   /**
    * Tests form copy and delete functionality.
    */
-  function testFormCopyDelete() {
+  public function testFormCopyDelete() {
 
     // Copy the form; give it a name.
     $form_name = $this->randomName();
@@ -66,7 +66,7 @@ class IslandoraXMLFormsBasicOperationTestCase extends IslandoraWebTestCase {
   /**
    * Test Form import response and imported form view.
    */
-  function testFormImportView() {
+  public function testFormImportView() {
 
     // Import the form.
     $form_name = $this->randomName();

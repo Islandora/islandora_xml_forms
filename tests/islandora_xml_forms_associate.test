@@ -59,7 +59,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
    * I'd break this out into two functions, but the database gets wiped between
    * tests, so the disabling would have to be repeated anyhow.
    */
-  function testFormAssociationDisableEnable() {
+  public function testFormAssociationDisableEnable() {
     // First, we need a collection.
     $this->collection_pid = "islandora:{$this->randomName()}";
     $this->createTestCollection($this->randomName(), array('islandora:testCModel'), $this->collection_pid);
@@ -88,7 +88,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
   /**
    * Create a new form association with several controlled customizations.
    */
-  function testFormAssociationCreate() {
+  public function testFormAssociationCreate() {
 
     // Prep for this test by copying the test xslt transformations and pasting
     // them into their respective XML Form Builder transform folders.
@@ -105,7 +105,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
   /**
    * Check that the template is applied during ingest steps, then ingest.
    */
-  function testIngestWithAssociatedForm() {
+  public function testIngestWithAssociatedForm() {
     // First, we need to recreate that form association that just got dumped out
     // of the previous SimpleTest database.
     $this->createFormAssociation();
@@ -138,7 +138,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
   /**
    * Verify that MODS metadata was created correctly.
    */
-  function testMODSMetadata() {
+  public function testMODSMetadata() {
     // Load the MODS XML and grab the first result for each expected element.
     $object_xml = $this->curlExec(array(
       CURLOPT_URL => url("islandora/object/$this->object_pid/datastream/$this->dsid/download", array('absolute' => TRUE)),
@@ -194,7 +194,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
   /**
    * Verify that DC metadata was created correctly.
    */
-  function testDCMetadata() {
+  public function testDCMetadata() {
     // Load the DC XML and grab the result for each expected element. 'type' and
     // 'genre' both fit into dc:type; otherwise, this is functionally identical
     // to testMODSMetadata().
@@ -259,7 +259,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
   /**
    * Remove some of the stuff we set up after the final test.
    */
-  function testDeconstruct() {
+  public function testDeconstruct() {
     // Get rid of those custom XSLT files.
     if (file_exists(DRUPAL_ROOT . "/sites/all/modules/islandora_xml_forms/builder/transforms/{$this->custom_transform_filename}")) {
       file_unmanaged_delete("sites/all/modules/islandora_xml_forms/builder/transforms/{$this->custom_transform_filename}");
