@@ -31,13 +31,14 @@ Drupal.behaviors.xmlFormElementTabs = {
       if(this.nonCollapsibleTabs.length > 0) {
         this.nonCollapsibleTabs.tabs({});
       }
-      this.tabs.each(function(){
-        if(jQuery(context).attr('class') === 'clear-block') {
-          var tab = jQuery(context).find('.xml-form-elements-tabs');
+     this.tabs.each(function() {
+        results = jQuery(this).children(".clear-block").length;
+        jQuery(this).children(".clear-block").each(function() {
+          var tab = jQuery(this).find('.xml-form-elements-tabs');
           tab.tabs({
             selected: tab.tabs('length') - 1
           });
-        }
+        });
       });
     },
     setCollapsibleIconOnSelect: function(event, ui) {
@@ -146,6 +147,6 @@ Drupal.behaviors.xmlFormElementTabs = {
 	  this.tabs.loadPanels(true, context);
 	  this.tabs.attachToolTips();
 	  this.tabs.enableActions();
-          
+
   }
 }
