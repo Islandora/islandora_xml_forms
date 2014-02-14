@@ -1,27 +1,30 @@
 <?php
 
-
-
 /**
  * @file
- *
- * Defines a Class for associating DOMNodes with the 'self' context of FormElements.
+ * Defines a Class for associating DOMNodes with the 'self' FormElement context.
  */
+
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 
 /**
- * Registers the DOMNodes that defined the 'self' context of FormElements. A FormElement can have at most one DOMNode
- * repersenting its 'self' context, but a DOMNode can repersent the 'self' context for multiple FormElements.
+ * Registers the DOMNodes that defined the 'self' context of FormElements. A
+ * FormElement can have at most one DOMNode representing its 'self' context, but
+ * a DOMNode can represent the 'self' context for multiple FormElements.
  */
 class NodeRegistry implements Serializable {
 
   /**
-   * A map of FormElements to the DOMNodes that repersent the FormElements 'self' context.
-   * Where the keys of the array are the unique #hash property of a FormElement, and the value is the DOMNode
-   * repersenting the 'self' context of the FormElement.
+   * A map of FormElements to the DOMNodes that represents its 'self' context.
    *
-   * When this object is serialized the registered DOMNodes are converted to xpaths (since we can't serialize resources).
-   * Upon unserializing this object NodeRegistry::restored() must be called to convert the xpaths back to DOMNodes.
+   * Where the keys of the array are the unique #hash property of a FormElement,
+   * and the value is the DOMNode representing the 'self' context of the
+   * FormElement.
+   *
+   * When this object is serialized the registered DOMNodes are converted to
+   * XPaths (since we can't serialize resources). Upon un-serializing this
+   * object, NodeRegistry::restored() must be called to convert the XPaths back
+   * to DOMNodes.
    *
    * @var array
    */
@@ -32,7 +35,7 @@ class NodeRegistry implements Serializable {
    *
    * To restore this object call the NodeRegistry::restored() function.
    *
-   * @var boolean
+   * @var bool
    */
   protected $restoredRequired;
 
@@ -47,9 +50,11 @@ class NodeRegistry implements Serializable {
   /**
    * Serializes this object.
    *
-   * The registered DOMNodes are converted into xpaths, since DOMNodes cannot be serialized.
+   * The registered DOMNodes are converted into XPaths, since DOMNodes cannot be
+   * serialized.
    *
    * @return string
+   *   String representing the serialized object.
    */
   public function serialize() {
     $data = array();
@@ -60,11 +65,13 @@ class NodeRegistry implements Serializable {
   }
 
   /**
-   * Unserializes this object.
+   * Un-serializes this object.
    *
-   * Note that for this object to be fully functional NodeRegistry::restore() must also be called after unserialization.
+   * Note that for this object to be fully functional NodeRegistry::restore()
+   * must also be called after un-serialization.
    *
    * @param string $serialized
+   *   The serialized string.
    */
   public function unserialize($serialized) {
     $this->registered = unserialize($serialized);
@@ -72,10 +79,16 @@ class NodeRegistry implements Serializable {
   }
 
   /**
-   * Restores the registry, querying the registered xpaths and replacing them with the actual DOMNodes
-   * that they repersent.
+   * Restores the registry.
+   *
+   * Queries the registered XPaths and replaces them with the actual DOMNodes
+   * they represent.
    *
    * @param DOMDocument $document
+   *   The DOMDocument to restore the registry for.
+   *
+   * @throws Exception
+   *   When unable to restore DOMNodes from their stored path.
    */
   public function restore(DOMDocument $document) {
     if ($this->restoredRequired) {
@@ -94,11 +107,17 @@ class NodeRegistry implements Serializable {
   }
 
   /**
-   * Registers a 'self' context relationship between a FormElement identified by its
-   * unique #hash property and the given DOMNode.
+   * Registers a 'self' context relationship between a FormElement and DOMNode.
    *
-   * @param hash $hash
+   * This context is identified by its unique #hash property.
+   *
+   * @param string $hash
+   *   The #hash property of the FormElement to create the registry entry for.
    * @param DOMNode $node
+   *   The DOMNode to register with the FormElement.
+   *
+   * @throws Exception
+   *   If NodeRegistry::restoreRequired is flagged as true and this is called.
    */
   public function register($hash, DOMNode $node) {
     if ($this->restoredRequired) {
@@ -110,10 +129,11 @@ class NodeRegistry implements Serializable {
   /**
    * Checks if a the given FormElement is registered.
    *
-   * @param hash $hash
+   * @param string $hash
+   *   The #hash property of the FormElement to confirm registry for.
    *
-   * @return boolean
-   *   TRUE if the element is registered FALSE otherwise.
+   * @return bool
+   *   TRUE if the element is registered, FALSE otherwise.
    */
   public function isRegistered($hash) {
     return isset($this->registered[$hash]);
@@ -122,8 +142,14 @@ class NodeRegistry implements Serializable {
   /**
    * Get the registered DOMNode associated with the given FormElement.
    *
-   * @param hash $hash
+   * @param string $hash
+   *   The #hash property of the FormElement to get.
+   *
+   * @throws Exception
+   *   If NodeRegistry::restoreRequired is flagged as true and this is called.
+   *
    * @return DOMNode
+   *   The DOMNode registered to the FormElement with the given #hash property.
    */
   public function get($hash) {
     if ($this->restoredRequired) {
@@ -134,6 +160,9 @@ class NodeRegistry implements Serializable {
 
   /**
    * Gets all the registered DOMNodes.
+   *
+   * @throws Exception
+   *   If NodeRegistry::restoreRequired is flagged as true and this is called.
    *
    * @return array
    *   An array containing all registered DOMNodes where the array keys are the

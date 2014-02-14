@@ -2,26 +2,30 @@
 
 /**
  * @file
- *
- *  Allows forms to dynamically add new tabs to a tabpanel in a form.
+ * Allows forms to dynamically add new tabs to a tabpanel in a form.
  */
+
 module_load_include('inc', 'xml_form_elements', 'includes/Element');
 
 /**
- * A collection of static functions that allow for theming and processing tabpanels.
+ * Static functions that allow for theming and processing tabpanels.
  */
 class Tag {
+
   /**
    * Constants
    */
-  const RemoveButton = 'remove-tag';
-  const EditButton = 'edit-tag';
+  const REMOVE_BUTTON = 'remove-tag';
+  const EDIT_BUTTON = 'edit-tag';
 
   /**
    * TabPanel's theme hook.
    *
    * @param array $element
+   *   The theme element.
+   *
    * @return string
+   *   A div string to pass back to the theme.
    */
   public static function Theme($element) {
     $children = isset($element['#children']) ? $element['#children'] : '';
@@ -30,15 +34,19 @@ class Tag {
   }
 
   /**
-   * The default #process function for tag's.
+   * The default #process function for tags.
    *
    * Adds elements that allow for adding/remove form elements.
    *
    * @param array $element
-   * @param mixed $edit
+   *   The element to process.
    * @param array $form_state
+   *   The Drupal form state.
    * @param array $complete_form
+   *   The completed form.
+   *
    * @return array
+   *   The processed element.
    */
   public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
     $tags = &get_form_element_parent($element, $complete_form);
@@ -49,7 +57,7 @@ class Tag {
 }
 
 /**
- * Theme hook for a tag
+ * Theme hook for a tag.
  */
 function theme_tag(&$vars) {
   return Tag::Theme($vars['element']);

@@ -2,13 +2,14 @@
 
 /**
  * @file
- *
  * Callbacks and functions used in the Delete Form Page.
  */
 
 /**
  * Get the Delete Page Form.
  *
+ * @param array $form
+ *   The Drupal form.
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name

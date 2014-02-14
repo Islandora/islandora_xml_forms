@@ -139,12 +139,12 @@ function xml_form_builder_update_7100() {
         'not NULL' => TRUE,
       ),
       'title_field' => array(
-       'description' => "The form field for the object's label.",
-       'type' => 'varchar',
-       'length' => 256,
-       'not NULL' => TRUE,
-       'binary' => TRUE,
-       'serialize' => TRUE,
+        'description' => "The form field for the object's label.",
+        'type' => 'varchar',
+        'length' => 256,
+        'not NULL' => TRUE,
+        'binary' => TRUE,
+        'serialize' => TRUE,
       ),
       'transform' => array(
         'description' => "An XSL transform for setting the Fedora object's Dublin Core metadata datastream.",

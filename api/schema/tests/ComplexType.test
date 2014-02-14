@@ -1,34 +1,31 @@
 <?php
 
-
-
 /**
  * @file
- *
  * Unit Tests.
  */
 
 /**
  * Unit Tests for the FormControl class.
  */
-class SchemaAPI_ComplexType_TestCase extends DrupalUnitTestCase {
+class SchemaAPIComplexTypeTestCase extends DrupalUnitTestCase {
 
   /**
-   * Get Test info.
+   * Get test info.
    *
    * @return array
-   * Properties that are displayed in the test selection form.
+   *   Properties that are displayed in the test selection form.
    */
   public static function getInfo() {
     return array(
       'name' => 'ComplexType Unit Tests.',
       'description' => 'Unit tests for ComplexType.inc',
-      'group' => 'Schema API',
+      'group' => 'Islandora XML Forms Schema API',
     );
   }
 
   /**
-   * setUp() performs any pre-requisite tasks that need to happen.
+   * Performs any prerequisite tasks that need to happen.
    */
   public function setUp() {
     // Enable any modules required for the test.
@@ -38,20 +35,22 @@ class SchemaAPI_ComplexType_TestCase extends DrupalUnitTestCase {
   }
 
   /**
-   *
+   * The actual tests.
    */
   public function test() {
     $path = drupal_get_path('module', 'xml_schema_api');
     $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
-    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
+    // Path to the idinfo element.
+    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']';
     $node = $schema->getUniqueNode($path);
     $this->assertNotNull($node);
     $element = new XMLSchemaElement($schema, $node);
-    $this->assertNotNull($element);
-    $this->assertNotNull($element->complexType); // Element has a complex type.
-    $complexType = $element->complexType;
-    $this->assertNotNull($complexType->sequence);
+    $this->assertTrue(is_object($element));
+    // Element has a complex type.
+    $this->assertTrue(is_object($element->complexType));
+    $complex_type = $element->complexType;
+    $this->assertTrue(is_object($complex_type->sequence));
   }
 
 }

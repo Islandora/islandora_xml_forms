@@ -2,22 +2,21 @@
 
 /**
  * @file
- *
- * Provides a wrapper class around getting forms from the database or from hooks.
+ * Provides a wrapper class around getting forms from the database or hooks.
  */
 
 module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
 
 class XMLFormRepository extends XMLFormDatabase {
 
-
   /**
    * Returns forms defined by hooks in modules.
    *
-   * @return array()
-   *   'form_name' => array('form_file' => 'path/to/the/form')
+   * @return array[]
+   *   An array where the keys are the form names, paired with values which are
+   *   also arrays, in the format "array('form_file' => 'path/to/the/form')".
    */
-  private static function getFormsFromHook() {
+  protected static function getFormsFromHook() {
     return module_invoke_all('islandora_xml_form_builder_forms');
   }
 
@@ -27,18 +26,18 @@ class XMLFormRepository extends XMLFormDatabase {
    * @param string $form_name
    *   The name of the XML Form Definition.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if the given form exists, FALSE otherwise.
    */
   public static function Exists($form_name) {
     $in_database = parent::Exists($form_name);
 
-    if($in_database) {
+    if ($in_database) {
       return TRUE;
     }
-    
+
     $forms = self::getFormsFromHook();
-    if(isset($forms[$form_name])) {
+    if (isset($forms[$form_name])) {
       return TRUE;
     }
 
@@ -51,13 +50,13 @@ class XMLFormRepository extends XMLFormDatabase {
    * @param string $form_name
    *   The name of the XML Form Definition.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if the given form exists, FALSE otherwise.
    */
   public static function Valid($form_name) {
     $in_database = parent::Exists($form_name);
 
-    if($in_database) {
+    if ($in_database) {
       return parent::Valid($form_name);
     }
 
@@ -75,17 +74,17 @@ class XMLFormRepository extends XMLFormDatabase {
    */
   public static function Get($form_name) {
     $in_database = parent::Exists($form_name);
-    if($in_database) {
+    if ($in_database) {
       return parent::Get($form_name);
     }
 
     $hooks = self::getFormsFromHook();
-    if(!isset($hooks[$form_name])) {
+    if (!isset($hooks[$form_name])) {
       return FALSE;
     }
 
     $path = $hooks[$form_name]['form_file'];
-    if(!file_exists($path)) {
+    if (!file_exists($path)) {
       return FALSE;
     }
 
@@ -103,25 +102,36 @@ class XMLFormRepository extends XMLFormDatabase {
    * Gets a list of all defined form names.
    *
    * @return array
-   *   An array of defined form names, where both the key and the value are the forms name.
-   *   EX. array( 'name' => 'name' );
+   *   An array of defined form names, where both the key and the value are the
+   *   form's name, e.g. array('name' => 'name').
    */
   public static function GetNames() {
     $hook = self::getFormsFromHook();
     $hook_names = array();
-    foreach($hook as $key => $array) {
+    foreach ($hook as $key => $array) {
       $hook_names[] = array('name' => $key, 'indb' => FALSE);
     }
     usort($hook_names, array('XMLFormRepository', 'ComparisonFunction'));
 
     $db_names = parent::GetNames();
     usort($hook_names, array('XMLFormRepository', 'ComparisonFunction'));
-    
+
     $names = array_merge($hook_names, $db_names);
 
     return $names;
   }
 
+  /**
+   * Compares the strings inside the 'name' key for two arrays.
+   *
+   * @param array $a
+   *   The first array to use in the comparison; must contain a 'name' key.
+   * @param array $b
+   *   The second array to use in the comparison; must contain a 'name' key.
+   *
+   * @return int
+   *   The string comparison as a strnatcasecmp() integer.
+   */
   public static function ComparisonFunction($a, $b) {
     return strnatcasecmp($a['name'], $b['name']);
   }
@@ -130,8 +140,8 @@ class XMLFormRepository extends XMLFormDatabase {
    * Gets a list of all defined form names that have valid definitions.
    *
    * @return array
-   *   An array of defined form names, where both the key and the value are the forms name.
-   *   EX. array( 'name' => 'name' );
+   *   An array of defined form names, where both the key and the value are the
+   *   form's name, e.g. array('name' => 'name').
    */
   public static function GetValidNames() {
     $form_names = self::GetNames();
@@ -154,8 +164,8 @@ class XMLFormRepository extends XMLFormDatabase {
    * @param DOMDocument $definition
    *   A XML Form Definition.
    *
-   * @return boolean
-   *  TRUE if successful, otherwise FALSE.
+   * @return bool
+   *   TRUE if successful, otherwise FALSE.
    */
   public static function Create($form_name, DOMDocument $definition = NULL) {
     if (!self::Exists($form_name)) {
@@ -172,7 +182,7 @@ class XMLFormRepository extends XMLFormDatabase {
    * @param string $form_name_dest
    *   The name of the destination form which gets copied to.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if successful FALSE otherwise.
    */
   public static function Copy($form_name_src, $form_name_dest) {
