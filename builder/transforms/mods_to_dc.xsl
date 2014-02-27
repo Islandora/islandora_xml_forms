@@ -45,26 +45,11 @@
 	<xsl:output method="xml" indent="yes"/>
 	
 	<xsl:template match="/">
-		<xsl:choose>
-			<!-- WS: updated schema location -->
-		<xsl:when test="//mods:mods[1]">			
-			<srw_dc:dcCollection xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/resources/dc-schema.xsd">
-				<xsl:apply-templates/>
-			<xsl:for-each select="//mods:mods[1]/mods:mods">			
-				<srw_dc:dc xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/resources/dc-schema.xsd">
-				<xsl:apply-templates/>
-			</srw_dc:dc>
-			</xsl:for-each>
-			</srw_dc:dcCollection>
-		</xsl:when>
-		<xsl:otherwise>
-			<xsl:for-each select="//mods:mods[1]">
+		<xsl:for-each select="//mods:mods[1]">
 			<oai_dc:dc xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
 				<xsl:apply-templates/>
 			</oai_dc:dc>
-			</xsl:for-each>
-		</xsl:otherwise>
-		</xsl:choose>
+		</xsl:for-each>
 	</xsl:template>
 	
 	<xsl:template match="mods:titleInfo">
