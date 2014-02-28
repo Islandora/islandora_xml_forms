@@ -184,12 +184,28 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   }
 
   $response = xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction);
-  $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = (string) $response->{'license-uri'};
-  $element['license_fieldset']['license_output'] = array(
-    '#type' => 'item',
-    '#id' => $license_output_id,
-    '#markup' => '<strong>' . t('Selected license:') . '</strong><div>' . $response->html->asXml() . '</div>',
-  );
+  if ($response) {
+    $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = (string) $response->{'license-uri'};
+    $element['license_fieldset']['license_output'] = array(
+      '#type' => 'item',
+      '#id' => $license_output_id,
+      '#markup' => '<strong>' . t('Selected license:') . '</strong><div>' . $response->html->asXml() . '</div>',
+    );
+  }
+  else {
+    $arguments = '';
+    if ($commercial == 'n') {
+      $arguments = "$arguments-nc";
+    }
+    if ($derivatives == 'n') {
+      $arguments = "$arguments-nd";
+    }
+    elseif ($derivatives == 'sa') {
+      $arguments = "$arguments-sa";
+    }
+    $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = "http://creativecommons.org/licenses/by$arguments/2.5/$jurisdiction/";
+    $element['license_fieldset']['license_output'] = array();
+  }
 
   return $element;
 }
@@ -217,11 +233,12 @@ function xml_form_elements_creative_commons_ajax(&$form, &$form_state) {
  * @param string $jurisdiction
  *   Legal jurisdiction code.
  *
- * @return SimpleXMLElement
- *   The return from the REST API.
+ * @return mixed
+ *   SimpleXMLElement the return from the REST API.
+ *   FALSE if failed request.
  */
 function xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction) {
-  $rest_url = url(
+  $response = drupal_http_request(url(
     'http://api.creativecommons.org/rest/1.5/license/standard/get',
     array(
       'query' => array(
@@ -230,8 +247,11 @@ function xml_form_elements_get_creative_commons($commercial, $derivatives, $juri
         'jurisdiction' => $jurisdiction,
       ),
     )
-  );
-  return simplexml_load_file($rest_url);
+  ));
+  if ($response->code != 200) {
+    return FALSE;
+  }
+  return simplexml_load_string($response->data, 'SimpleXMLElement');
 }
 
 /**
