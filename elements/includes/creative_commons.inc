@@ -193,17 +193,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     );
   }
   else {
-    $arguments = '';
-    if ($commercial == 'n') {
-      $arguments = "$arguments-nc";
-    }
-    if ($derivatives == 'n') {
-      $arguments = "$arguments-nd";
-    }
-    elseif ($derivatives == 'sa') {
-      $arguments = "$arguments-sa";
-    }
-    $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = "http://creativecommons.org/licenses/by$arguments/2.5/$jurisdiction/";
+    $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction);
     $element['license_fieldset']['license_output'] = array();
   }
 
@@ -255,22 +245,28 @@ function xml_form_elements_get_creative_commons($commercial, $derivatives, $juri
 }
 
 /**
- * Value callback for creative commons element.
+ * Gets the value for the element.
  *
- * Input isn't set in form builder edits.
- *
- * @param array $element
- *   The element.
- * @param array $input
- *   The input of the element.
- * @param array $form_state
- *   The form state.
+ * @param string $commercial
+ *   'y' to allow 'n' to disallow.
+ * @param string $derivatives
+ *   'y' to allow 'n' to disallow.
+ * @param string $jurisdiction
+ *   Legal jurisdiction code.
  *
  * @return string
- *   The license URI.
+ *   The value of the element.
  */
-function xml_form_elements_creative_commons_value_callback(&$element, $input, &$form_state) {
-  if (isset($input) && $input && current_path() != 'system/ajax') {
-    return $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'];
+function xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction) {
+  $arguments = '';
+  if ($commercial == 'n') {
+    $arguments = "$arguments-nc";
   }
+  if ($derivatives == 'n') {
+    $arguments = "$arguments-nd";
+  }
+  elseif ($derivatives == 'sa') {
+    $arguments = "$arguments-sa";
+  }
+  return "http://creativecommons.org/licenses/by$arguments/2.5/$jurisdiction/";
 }
