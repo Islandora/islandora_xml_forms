@@ -431,7 +431,8 @@ function xml_form_elements_creative_commons_process($element, &$form_state, $com
  * Value callback for creative commons element.
  *
  * Input isn't set in form builder edits. Data from the process function can't
- * be relied on to be available in value callbacks because Drupal caches .
+ * be relied on to be available in value callbacks because Drupal caches before
+ * the element is processed.
  *
  * @param array $element
  *   The element.
