@@ -426,3 +426,33 @@ function xml_form_elements_creative_commons_process($element, &$form_state, $com
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/creative_commons');
   return xml_form_elements_creative_commons($element, $form_state);
 }
+
+/**
+ * Value callback for creative commons element.
+ *
+ * Input isn't set in form builder edits. Data from the process function can't
+ * be relied on to be available in value callbacks because Drupal caches before
+ * the element is processed.
+ *
+ * @param array $element
+ *   The element.
+ * @param array $input
+ *   The input of the element.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return string
+ *   The license URI.
+ */
+function xml_form_elements_creative_commons_value_callback(&$element, $input, &$form_state) {
+  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/creative_commons');
+  if (isset($input) && $input && current_path() != 'system/ajax') {
+    if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'])) {
+      return $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'];
+    }
+    else {
+      extract($input['license_fieldset']);
+      return xml_form_elements_creative_commons_value($allow_commercial, $allow_modifications, $license_jurisdiction);
+    }
+  }
+}
