@@ -568,8 +568,34 @@ function xml_form_builder_update_dc_datastream(AbstractObject $object, $transfor
     else {
       $dc_datastream = $object['DC'];
     }
+    // Since we typically use the LOC transform for MODS => DC, and
+    // mods:modsCollection results in DC format we don't support (non OAI), we
+    // catch this exceptional case here before transforming. This use case only
+    // handles a single MODS document within a mods:modsCollection if there are
+    // multiple or if the given document is not MODS the transform does nothing.
+    $document = xml_form_builder_transform_mods_collection_hack($document);
     $transformed_dc_doc = xml_form_builder_transform_document($transform, $document, $object);
     $dc_datastream->setContentFromString($transformed_dc_doc->saveXML());
   }
   return $created;
+}
+
+/**
+ * Extracts the MODS document from a mods:modsCollection element if present.
+ *
+ * For any document which does not have a mods:modsCollection element, the
+ * transform does nothing.
+ *
+ * @param DOMDocument $document
+ *   The Document to transform.
+ *
+ * @return DOMDocument
+ *   The transformed document.
+ */
+function xml_form_builder_transform_mods_collection_hack(DOMDocument $document) {
+  $xsl = new DOMDocument();
+  $xsl->load(drupal_get_path('module', 'xml_form_builder') . '/xml/extract_mods_from_collection.xsl');
+  $xslt = new XSLTProcessor();
+  $xslt->importStyleSheet($xsl);
+  return $xslt->transformToDoc($document);
 }
