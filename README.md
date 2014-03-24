@@ -69,6 +69,27 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 * [Islandora Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora)
 * [Islandora Dev Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora-dev)
 
+## FAQ
+
+Q. Can I convert an existing field to any form element type listed in the "Type" options under the "Common Form Controls" tab (or create new form elements using any form element type)?
+
+A. No. The following element types are not supported for full CRUD (create/read/update/delete) operations:
+
+  * checkbox
+  * checkboxes
+  * date
+  * file 
+  * managed_file
+  * password_confirm
+  * radio
+  * radios
+  * tableselect
+  * vertical_tabs
+  * weight
+  * button
+  * image_button
+  * submit
+
 ## Maintainers/Sponsors
 
 Current maintainers:
