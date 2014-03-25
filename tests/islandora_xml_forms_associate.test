@@ -211,14 +211,6 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     $language = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'language')->item(0);
     $identifier = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'identifier')->item(0);
 
-    // Assert dc:title.
-    if (is_object($title)) {
-      $this->assertTrue($title->nodeValue == 'Title', "DC 'title' field was correctly transformed using custom XSLT.", 'Islandora');
-    }
-    else {
-      $this->fail("No DC 'title' field entries found.", 'Islandora');
-    }
-
     // Assert dc:description.
     if (is_object($description)) {
       $this->assertTrue($description->nodeValue == 'Transformed Note', "DC 'description' field was correctly transformed using custom XSLT.", 'Islandora');
