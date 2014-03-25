@@ -193,47 +193,25 @@ function xml_form_builder_get_transform_file($transform) {
 }
 
 /**
- * Transform form generated XML to Dublin Core.
+ * Transform the given document using the given transform.
  *
  * @param string $transform
- *   The path to the transform xslt.
+ *   The path to the transform.
  * @param DOMDocument $source_document
  *   The source document to transform.
- * @param AbstractObject $object
- *   The object that the transform is form.
  *
  * @return DOMDocument
- *   The transformed DC.
+ *   The transformed document.
  */
-function xml_form_builder_transform_document($transform, $source_document, $object) {
+function xml_form_builder_transform_document($transform, $source_document) {
   if ($transform !== NULL) {
     $xsl = new DOMDocument();
     $xsl->load($transform);
     $xslt = new XSLTProcessor();
     $xslt->importStyleSheet($xsl);
     $document = $xslt->transformToDoc($source_document);
-    if ($document) {
-      $xpath = new DOMXPath($document);
-      // Set the Label.
-      $results = $xpath->query("*[local-name()='title']");
-      if ($results->length > 0) {
-        $results->item(0)->nodeValue = htmlspecialchars($object->label);
-      }
-      else {
-        watchdog('xml_form_builder', 'No "title" element in the transformed DC into which to set the object label. Make sure that one is created in the selected transform.', array(), WATCHDOG_WARNING, l($object->label, "islandora/object{$object->id}"));
-      }
-      // Set the Pid.
-      $results = $xpath->query("*[local-name()='identifier']");
-      if ($results->length > 0) {
-        $results->item(0)->nodeValue = $object->id;
-      }
-      else {
-        watchdog('xml_form_builder', 'No "identifier" element in the transformed DC into which to set the object ID. Make sure that one is created in the selected transform.', array(), WATCHDOG_WARNING, l($object->label, "islandora/object/{$object->id}"));
-      }
-
-      if (isset($document->documentElement)) {
-        return $document;
-      }
+    if ($document && isset($document->documentElement)) {
+      return $document;
     }
   }
   return NULL;

@@ -574,7 +574,7 @@ function xml_form_builder_update_dc_datastream(AbstractObject $object, $transfor
     // handles a single MODS document within a mods:modsCollection if there are
     // multiple or if the given document is not MODS the transform does nothing.
     $document = xml_form_builder_transform_mods_collection_hack($document);
-    $transformed_dc_doc = xml_form_builder_transform_document($transform, $document, $object);
+    $transformed_dc_doc = xml_form_builder_transform_document($transform, $document);
     $dc_datastream->setContentFromString($transformed_dc_doc->saveXML());
   }
   return $created;
