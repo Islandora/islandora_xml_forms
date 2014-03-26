@@ -11,7 +11,7 @@
         <th><?php print t('Content model'); ?></th>
         <th><?php print t('Type'); ?></th>
         <th><?php print t('Datastream ID'); ?></th>
-        <th><?php print t('Title field'); ?></th>
+        <th><?php print t('Label field'); ?></th>
         <th><?php print t('Transform'); ?></th>
         <th><?php print t('Self Transform'); ?></th>
         <th><?php print t('Has template'); ?></th>

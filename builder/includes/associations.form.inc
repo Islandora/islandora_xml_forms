@@ -67,7 +67,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       ),
       'title_field' => array(
         '#type' => 'select',
-        '#title' => t('Title Field'),
+        '#title' => t('Label Field'),
         '#description' => t('The form field for the object\'s label.'),
         '#prefix' => '<div id="ahah-wrapper">',
         '#suffix' => '</div>',
