@@ -204,7 +204,6 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     ));
     $dc_xml = new DOMDocument();
     $dc_xml->loadXML($object_xml);
-    $title = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'title')->item(0);
     $description = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'description')->item(0);
     $type = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'type')->item(0);
     $genre = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'type')->item(1);
