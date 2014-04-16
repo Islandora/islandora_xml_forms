@@ -130,7 +130,7 @@ function xml_form_builder_menu() {
     'description' => 'Preview a form.',
     'file' => 'Preview.inc',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_preview', 3),
+    'page arguments' => array('xml_form_builder_preview', 4),
     'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
@@ -138,7 +138,7 @@ function xml_form_builder_menu() {
     'title' => 'Export Form',
     'description' => 'Export a form.',
     'page callback' => 'xml_form_builder_export',
-    'page arguments' => array(3),
+    'page arguments' => array(4),
     'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
@@ -147,7 +147,7 @@ function xml_form_builder_menu() {
     'description' => 'Copy an existing form.',
     'file' => 'Copy.inc',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_copy', 3),
+    'page arguments' => array('xml_form_builder_copy', 4),
     'access arguments' => array(XML_FORM_BUILDER_CREATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
@@ -156,7 +156,7 @@ function xml_form_builder_menu() {
     'description' => 'Edit a form.',
     'file' => 'Edit.inc',
     'page callback' => 'xml_form_builder_edit',
-    'page arguments' => array(3),
+    'page arguments' => array(4),
     'access arguments' => array(XML_FORM_BUILDER_EDIT_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
@@ -165,7 +165,7 @@ function xml_form_builder_menu() {
     'description' => 'Edit a form.',
     'file' => 'Edit.inc',
     'page callback' => 'xml_form_builder_edit_save',
-    'page arguments' => array(3),
+    'page arguments' => array(4),
     'access arguments' => array(XML_FORM_BUILDER_EDIT_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
@@ -174,17 +174,17 @@ function xml_form_builder_menu() {
     'description' => 'Delete a form.',
     'file' => 'Delete.inc',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_delete', 3),
+    'page arguments' => array('xml_form_builder_delete', 4),
     'access arguments' => array(XML_FORM_BUILDER_DELETE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
   $items[XML_FORM_BUILDER_ASSOCIATIONS_MENU] = array(
     'title' => 'Associate Form "@form"',
-    'title arguments' => array('@form' => 3),
+    'title arguments' => array('@form' => 4),
     'description' => 'Associate a form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_associations_form', 3),
+    'page arguments' => array('xml_form_builder_associations_form', 4),
     'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
     'tab_parent' => XML_FORM_BUILDER_MAIN_MENU,
@@ -195,7 +195,7 @@ function xml_form_builder_menu() {
     'description' => 'Disable associated form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_disable_association',
-    'page arguments' => array(3, 5),
+    'page arguments' => array(4, 6),
     // @todo Use something fedora specific.
     'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
@@ -206,7 +206,7 @@ function xml_form_builder_menu() {
     'description' => 'Enables an associated form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'xml_form_builder_enable_association',
-    'page arguments' => array(3, 5),
+    'page arguments' => array(4, 6),
     // @todo Use something fedora specific.
     'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,

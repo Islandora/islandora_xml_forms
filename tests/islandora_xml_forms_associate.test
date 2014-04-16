@@ -49,7 +49,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
       'self_transform' => "$this->self_transform_filename",
       'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/template.xml",
     );
-    $this->drupalPost('admin/islandora/xmlform/Test Solution Pack MODS Form/associations', $edit, 'Add Association');
+    $this->drupalPost('admin/islandora/xmlform/forms/Test Solution Pack MODS Form/associations', $edit, 'Add Association');
     $this->assertText("Successfully added association.", "Successfully added association to Test Solution Pack MODS Form.", 'Islandora');
   }
 
@@ -63,7 +63,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     // First, we need a collection.
     $this->collection_pid = "islandora:{$this->randomName()}";
     $this->createTestCollection($this->randomName(), array('islandora:testCModel'), $this->collection_pid);
-    $this->drupalGet('admin/islandora/xmlform/Test Solution Pack MODS Form/associations');
+    $this->drupalGet('admin/islandora/xmlform/forms/Test Solution Pack MODS Form/associations');
 
     // Before we get going, let's make sure we're looking at a fresh Test
     // Solution Pack MODS Form association page.
@@ -79,7 +79,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     // Assert that ingest still functions despite no form association.
     $this->assertText("New Object", "Collection with no form associations skips form ingest step.", 'Islandora');
     // Test form association re-enabling.
-    $this->drupalGet('admin/islandora/xmlform/Test Solution Pack MODS Form/associations');
+    $this->drupalGet('admin/islandora/xmlform/forms/Test Solution Pack MODS Form/associations');
     $this->clickLink('Enable');
     $this->drupalGet("islandora/object/{$this->collection_pid}/manage/overview/ingest");
     $this->assertField('abstract', "Collection with replaced form association loads form during ingest.", 'Islandora');
@@ -110,7 +110,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     // of the previous SimpleTest database.
     $this->createFormAssociation();
     // Then, we need to disable the other association so it doesn't bother us.
-    $this->drupalGet('admin/islandora/xmlform/Test Solution Pack MODS Form/associations');
+    $this->drupalGet('admin/islandora/xmlform/forms/Test Solution Pack MODS Form/associations');
     $this->clickLink('Disable');
     // Load up the form, and see if the template fields are filled in properly.
     $this->drupalGet("islandora/object/$this->collection_pid/manage/overview/ingest");
