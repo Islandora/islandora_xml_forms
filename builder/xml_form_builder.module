@@ -12,18 +12,23 @@ define('XML_FORM_BUILDER_EDIT_FORMS_PERMS', 'Edit XML Forms');
 define('XML_FORM_BUILDER_DELETE_FORMS_PERMS', 'Delete XML Forms');
 define('XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS', 'Associate XML Forms');
 
-define('XML_FORM_BUILDER_MAIN_MENU', 'admin/islandora/xmlform');
-define('XML_FORM_BUILDER_CREATE_MENU', 'admin/islandora/xmlform/create');
-define('XML_FORM_BUILDER_IMPORT_MENU', 'admin/islandora/xmlform/import');
-define('XML_FORM_BUILDER_VIEW_MENU', 'admin/islandora/xmlform/%/view');
-define('XML_FORM_BUILDER_COPY_MENU', 'admin/islandora/xmlform/%/copy');
-define('XML_FORM_BUILDER_EDIT_MENU', 'admin/islandora/xmlform/%/edit');
-define('XML_FORM_BUILDER_DELETE_MENU', 'admin/islandora/xmlform/%/delete');
-define('XML_FORM_BUILDER_ASSOCIATIONS_MENU', 'admin/islandora/xmlform/%/associations');
-define('XML_FORM_BUILDER_ASSOCIATE_MENU', 'admin/islandora/xmlform/%/associate/%');
-define('XML_FORM_BUILDER_DISASSOCIATE_MENU', 'admin/islandora/xmlform/%/disassociate/%');
-define('XML_FORM_BUILDER_EXPORT_CALLBACK', 'admin/islandora/xmlform/%/export');
-define('XML_FORM_BUILDER_SAVE_CALLBACK', 'admin/islandora/xmlform/%/edit/save');
+define('XML_FORM_BUILDER_ADMIN_MENU', 'admin/islandora/xmlform');
+define('XML_FORM_BUILDER_MAIN_MENU', 'admin/islandora/xmlform/forms');
+define('XML_FORM_BUILDER_SETTINGS_MENU', 'admin/islandora/xmlform/settings');
+define('XML_FORM_BUILDER_XSLTS_MENU', 'admin/islandora/xmlform/xslts');
+define('XML_FORM_BUILDER_ADD_XSLTS_MENU', 'admin/islandora/xmlform/xslts/add_xslt');
+define('XML_FORM_BUILDER_ADD_DC_MAPPING_MENU', 'admin/islandora/xmlform/xslts/add_defualt_dc_mapping');
+define('XML_FORM_BUILDER_CREATE_MENU', 'admin/islandora/xmlform/forms/create');
+define('XML_FORM_BUILDER_IMPORT_MENU', 'admin/islandora/xmlform/forms/import');
+define('XML_FORM_BUILDER_VIEW_MENU', 'admin/islandora/xmlform/forms/%/view');
+define('XML_FORM_BUILDER_COPY_MENU', 'admin/islandora/xmlform/forms/%/copy');
+define('XML_FORM_BUILDER_EDIT_MENU', 'admin/islandora/xmlform/forms/%/edit');
+define('XML_FORM_BUILDER_DELETE_MENU', 'admin/islandora/xmlform/forms/%/delete');
+define('XML_FORM_BUILDER_ASSOCIATIONS_MENU', 'admin/islandora/xmlform/forms/%/associations');
+define('XML_FORM_BUILDER_ASSOCIATE_MENU', 'admin/islandora/xmlform/forms/%/associate/%');
+define('XML_FORM_BUILDER_DISASSOCIATE_MENU', 'admin/islandora/xmlform/forms/%/disassociate/%');
+define('XML_FORM_BUILDER_EXPORT_CALLBACK', 'admin/islandora/xmlform/forms/%/export');
+define('XML_FORM_BUILDER_SAVE_CALLBACK', 'admin/islandora/xmlform/forms/%/edit/save');
 define('XML_FORM_BUILDER_EDIT_DATASTREAM_MENU', 'islandora/edit_form/%islandora_object/%islandora_datastream');
 
 // @codingStandardsIgnoreStart
@@ -51,13 +56,56 @@ define('MENU_XML_FORM_BUILDER_EDIT_DATASTREAM', XML_FORM_BUILDER_EDIT_DATASTREAM
  * Implements hook_menu().
  */
 function xml_form_builder_menu() {
-  $items[XML_FORM_BUILDER_MAIN_MENU] = array(
+  $items[XML_FORM_BUILDER_ADMIN_MENU] = array(
     'title' => 'Form Builder',
+    'description' => 'Configure Islandora XML forms.',
+    'page callback' => 'xml_form_builder_main',
+    'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
+    'file' => 'Main.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items[XML_FORM_BUILDER_MAIN_MENU] = array(
+    'title' => 'Form Builder Forms',
     'description' => 'Create, manage and edit XML-based forms.',
     'file' => 'Main.inc',
     'page callback' => 'xml_form_builder_main',
     'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items[XML_FORM_BUILDER_SETTINGS_MENU] = array(
+    'title' => 'Settings',
+    'description' => 'Change form builder settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_settings_form'),
+    'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items[XML_FORM_BUILDER_XSLTS_MENU] = array(
+    'title' => 'XSLTs',
+    'description' => 'Manage XSLTs and defualt DC transforms.',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/xslts.form.inc',
+    'page arguments' => array('xml_form_builder_xslts_form'),
+    'access callback' => 'xml_form_builder_xslts_access',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items[XML_FORM_BUILDER_ADD_XSLTS_MENU] = array(
+    'title' => 'Add XSLT',
+    'description' => 'Upload an XSLT.',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/xslts.form.inc',
+    'page arguments' => array('xml_form_builder_add_xslt_form'),
+    'access callback' => 'xml_form_builder_xslts_access',
+    'type' => MENU_LOCAL_ACTION,
+  );
+  $items[XML_FORM_BUILDER_ADD_DC_MAPPING_MENU] = array(
+    'title' => 'Add Mapping',
+    'description' => 'Add a defualt DC transform mapping.',
+    'page callback' => 'drupal_get_form',
+    'file' => 'includes/xslts.form.inc',
+    'page arguments' => array('xml_form_builder_add_default_dc_transform_mapping_form'),
+    'access callback' => 'xml_form_builder_xslts_access',
+    'type' => MENU_LOCAL_ACTION,
   );
   $items[XML_FORM_BUILDER_CREATE_MENU] = array(
     'title' => 'Create Form',
@@ -174,6 +222,17 @@ function xml_form_builder_menu() {
     'type' => MENU_CALLBACK,
   );
   return $items;
+}
+
+/**
+ * Access callback for the XSLTs admin page.
+ */
+function xml_form_builder_xslts_access() {
+  if (user_access(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS) &&
+    variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
+    return TRUE;
+  }
+  return FALSE;
 }
 
 /**
@@ -466,11 +525,17 @@ function xml_form_builder_update_object(AbstractObject $object, array $associati
   $object->label = $label;
   $object->models = array($association['content_model']);
   $document = $document->document;
-  if (isset($association['self_transform']) && $association['self_transform'] != 'No Transform') {
+  $run_transforms = !variable_get('xml_form_builder_use_default_dc_xslts', FALSE);
+  if (isset($association['self_transform']) && $association['self_transform'] != 'No Transform' && $run_transforms) {
     $document = xml_form_builder_transform_metadata_datastream($association['self_transform'], $document);
   }
   $created = xml_form_builder_update_metadata_datastream($object, $association['dsid'], $document);
-  $created_dc = xml_form_builder_update_dc_datastream($object, $association['transform'], $document);
+
+  $created_dc = FALSE;
+  if ($run_transforms) {
+    $created_dc = xml_form_builder_update_dc_datastream($object, $association['transform'], $document);
+  }
+
   return array($association['dsid'] => $created, 'DC' => $created_dc);
 }
 
@@ -549,15 +614,18 @@ function xml_form_builder_update_metadata_datastream(AbstractObject $object, $da
  *
  * @param AbstractObject $object
  *   The object whose DC will be updated.
- * @param string $transform
- *   The transform to apply, as defined by the forms association.
+ * @param string|DOMDocument $transform
+ *   The transform to apply, as defined by the forms association or a
+ *   DOMDocument housing an XSLT.
  * @param DOMDocument $document
  *   The document to transform.
  */
 function xml_form_builder_update_dc_datastream(AbstractObject $object, $transform, DOMDocument $document) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   $created = FALSE;
-  $transform = xml_form_builder_get_transform_file($transform);
+  if (!($transform instanceof DOMDocument)) {
+    $transform = xml_form_builder_get_transform_file($transform);
+  }
   if ($transform) {
     if (empty($object['DC'])) {
       $dc_datastream = $object->constructDatastream('DC', 'X');
@@ -598,4 +666,70 @@ function xml_form_builder_transform_mods_collection_hack(DOMDocument $document) 
   $xslt = new XSLTProcessor();
   $xslt->importStyleSheet($xsl);
   return $xslt->transformToDoc($document);
+}
+
+/**
+ * Administration form for xml_form_builder.
+ *
+ * @param array $form
+ *   The form definition.
+ * @param array $form_state
+ *   The state of the form.
+ *
+ * @return array
+ *   The form definition.
+ */
+function xml_form_builder_settings_form(array $form, array &$form_state) {
+  $form = array(
+    'xml_form_builder_use_default_dc_xslts' => array(
+      '#type' => 'checkbox',
+      '#title' => t('Use Default DC XSLTs'),
+      '#description' => t('Enable the use of default metadata datastream to DC transforms.'),
+      '#default_value' => variable_get('xml_form_builder_use_default_dc_xslts', FALSE),
+    ),
+  );
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_help().
+ */
+function xml_form_builder_help($path) {
+  if ($path == 'admin/islandora/xmlform/settings') {
+    $output_array = array(
+      '#type' => 'item',
+      '#markup' => t('The "Use Default DC XSLTs" checkbox overrides the ability
+        to have a custom DC XSLT with each form association.  It does, however,
+        allow for the default XSLTs to be run whenever the source datastream is
+        updated.  It is recomended that this only be set at install time so as
+        to maintain consistent DC metadata.'
+      ),
+    );
+    return drupal_render($output_array);
+  }
+}
+
+/**
+ * Implements hook_islandora_derivative().
+ *
+ * Dynamically maps the derivatives based on the database.
+ */
+function xml_form_builder_islandora_derivative(AbstractObject $object) {
+  if (!variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
+    return;
+  }
+  module_load_include('inc', 'xml_form_builder', 'includes/db');
+  $mappings = xml_form_builder_get_default_dc_xslt_mappings();
+  $derivatives = array();
+  foreach ($mappings as $mapping) {
+    if (in_array($mapping['content_model'], $object->models)) {
+      $derivatives[] = array(
+        'source_dsid' => $mapping['dsid'],
+        'destination_dsid' => 'DC',
+        'function' => array('xml_form_builder_derive_dc'),
+        'file' => drupal_get_path('module', 'xml_form_builder') . '/includes/derivatives.inc',
+      );
+    }
+  }
+  return $derivatives;
 }

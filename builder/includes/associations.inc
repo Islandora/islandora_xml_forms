@@ -195,8 +195,8 @@ function xml_form_builder_get_transform_file($transform) {
 /**
  * Transform the given document using the given transform.
  *
- * @param string $transform
- *   The path to the transform.
+ * @param string|DOMDocument $transform
+ *   The path to the transform or the transform.
  * @param DOMDocument $source_document
  *   The source document to transform.
  *
@@ -205,8 +205,7 @@ function xml_form_builder_get_transform_file($transform) {
  */
 function xml_form_builder_transform_document($transform, $source_document) {
   if ($transform !== NULL) {
-    $xsl = new DOMDocument();
-    $xsl->load($transform);
+    $xsl = ($transform instanceof DOMDocument) ? $transform : DOMDocument::load($transform);
     $xslt = new XSLTProcessor();
     $xslt->importStyleSheet($xsl);
     $document = $xslt->transformToDoc($source_document);
