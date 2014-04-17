@@ -351,8 +351,6 @@ function xml_form_builder_uninstall() {
 }
 
 /**
- * Implements hook_update_N().
- *
  * Updates the DB to support uploaded transforms and default DC mappings.
  */
 function xml_form_builder_update_7103() {
