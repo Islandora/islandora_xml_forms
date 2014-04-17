@@ -205,7 +205,13 @@ function xml_form_builder_get_transform_file($transform) {
  */
 function xml_form_builder_transform_document($transform, $source_document) {
   if ($transform !== NULL) {
-    $xsl = ($transform instanceof DOMDocument) ? $transform : DOMDocument::load($transform);
+    if ($transform instanceof DOMDocument) {
+      $xsl = $transform;
+    }
+    else {
+      $xsl = new DOMDocument();
+      $xsl->load($transform);
+    }
     $xslt = new XSLTProcessor();
     $xslt->importStyleSheet($xsl);
     $document = $xslt->transformToDoc($source_document);
