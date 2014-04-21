@@ -126,6 +126,14 @@ function xml_form_builder_xslts_form_validate($form, &$form_state) {
         }
       }
     }
+    if (!array_search(1, $form_state['values']['xslts_table'])) {
+      form_set_error('xslts_table', 'Please select an XSLT to delete.');
+    }
+  }
+  elseif (in_array('dc_transforms', $form_state['clicked_button']['#array_parents'])) {
+    if (!array_search(1, $form_state['values']['transforms_table'])) {
+      form_set_error('transforms_table', 'Please select a transform to delete.');
+    }
   }
 }
 
@@ -180,6 +188,7 @@ function xml_form_builder_add_xslt_form_submit($form, &$form_state) {
     file_get_contents($file->uri),
     $form_state['values']['name']
   );
+  file_delete($file);
   $form_state['redirect'] = XML_FORM_BUILDER_XSLTS_MENU;
 }
 
