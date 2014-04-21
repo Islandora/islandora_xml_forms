@@ -695,7 +695,7 @@ function xml_form_builder_settings_form(array $form, array &$form_state) {
  * Implements hook_help().
  */
 function xml_form_builder_help($path) {
-  if ($path == 'XML_FORM_BUILDER_SETTINGS_MENU') {
+  if ($path == XML_FORM_BUILDER_SETTINGS_MENU) {
     $output_array = array(
       '#type' => 'item',
       '#markup' => t('The "Use Default DC XSLTs" checkbox overrides the ability
