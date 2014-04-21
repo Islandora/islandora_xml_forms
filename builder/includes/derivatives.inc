@@ -52,7 +52,7 @@ function xml_form_builder_derive_dc($object, $force = FALSE, $hook = array()) {
     'success' => TRUE,
     'messages' => array(
       array(
-        'message' => t('Created DC derivative for (!pid).'),
+        'message' => t('Created DC derivative for (@pid).'),
         'message_sub' => array('@pid' => $object->id),
         'type' => 'dsm',
         'severity' => 'status',
