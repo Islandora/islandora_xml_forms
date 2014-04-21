@@ -17,7 +17,7 @@ define('XML_FORM_BUILDER_MAIN_MENU', 'admin/islandora/xmlform/forms');
 define('XML_FORM_BUILDER_SETTINGS_MENU', 'admin/islandora/xmlform/settings');
 define('XML_FORM_BUILDER_XSLTS_MENU', 'admin/islandora/xmlform/xslts');
 define('XML_FORM_BUILDER_ADD_XSLTS_MENU', 'admin/islandora/xmlform/xslts/add_xslt');
-define('XML_FORM_BUILDER_ADD_DC_MAPPING_MENU', 'admin/islandora/xmlform/xslts/add_defualt_dc_mapping');
+define('XML_FORM_BUILDER_ADD_DC_MAPPING_MENU', 'admin/islandora/xmlform/xslts/add_default_dc_mapping');
 define('XML_FORM_BUILDER_CREATE_MENU', 'admin/islandora/xmlform/forms/create');
 define('XML_FORM_BUILDER_IMPORT_MENU', 'admin/islandora/xmlform/forms/import');
 define('XML_FORM_BUILDER_VIEW_MENU', 'admin/islandora/xmlform/forms/%/view');
@@ -82,7 +82,7 @@ function xml_form_builder_menu() {
   );
   $items[XML_FORM_BUILDER_XSLTS_MENU] = array(
     'title' => 'XSLTs',
-    'description' => 'Manage XSLTs and defualt DC transforms.',
+    'description' => 'Manage XSLTs and default DC transforms.',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/xslts.form.inc',
     'page arguments' => array('xml_form_builder_xslts_form'),
@@ -100,7 +100,7 @@ function xml_form_builder_menu() {
   );
   $items[XML_FORM_BUILDER_ADD_DC_MAPPING_MENU] = array(
     'title' => 'Add Mapping',
-    'description' => 'Add a defualt DC transform mapping.',
+    'description' => 'Add a default DC transform mapping.',
     'page callback' => 'drupal_get_form',
     'file' => 'includes/xslts.form.inc',
     'page arguments' => array('xml_form_builder_add_default_dc_transform_mapping_form'),

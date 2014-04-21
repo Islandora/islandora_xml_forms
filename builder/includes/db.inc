@@ -156,7 +156,7 @@ function xml_form_builder_remove_default_dc_transform_mapping($id) {
  * @return bool
  *   TRUE if the XSLT is in a transform, FALSE otherwise.
  */
-function xml_form_builder_xslt_is_a_defualt($xslt_id) {
+function xml_form_builder_xslt_is_a_default($xslt_id) {
   $count = db_select('xml_form_builder_default_xslts', 'x')
     ->fields('x', array('xslt_id'))
     ->condition("xslt_id", $xslt_id)

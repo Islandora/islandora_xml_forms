@@ -118,7 +118,7 @@ function xml_form_builder_xslts_form_validate($form, &$form_state) {
   if (in_array('xslts', $form_state['clicked_button']['#array_parents'])) {
     foreach ($form_state['values']['xslts_table'] as $uid => $delete) {
       if ($delete) {
-        if (xml_form_builder_xslt_is_a_defualt($uid)) {
+        if (xml_form_builder_xslt_is_a_default($uid)) {
           if (!isset($message_set)) {
             form_set_error('xslts_table', t('Please delete any transforms using the XSLTs first.'));
             $message_set = TRUE;
