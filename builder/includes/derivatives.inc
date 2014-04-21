@@ -16,7 +16,7 @@ function xml_form_builder_derive_dc($object, $force = FALSE, $hook = array()) {
       'success' => FALSE,
       'messages' => array(
         array(
-          'message' => 'DC creation failed: source DSID missing.',
+          'message' => t('DC creation failed: source DSID missing.'),
           'type' => 'watchdog',
           'severity' => WATCHDOG_ERROR,
         ),
@@ -39,7 +39,7 @@ function xml_form_builder_derive_dc($object, $force = FALSE, $hook = array()) {
       'success' => FALSE,
       'messages' => array(
         array(
-          'message' => 'DC creation failed.<br/> With stack: @trace',
+          'message' => t('DC creation failed.<br/> With stack: @trace'),
           'message_sub' => array('@trace' => $e->getTraceAsString()),
           'type' => 'watchdog',
           'severity' => WATCHDOG_ERROR,
@@ -52,7 +52,7 @@ function xml_form_builder_derive_dc($object, $force = FALSE, $hook = array()) {
     'success' => TRUE,
     'messages' => array(
       array(
-        'message' => 'Created DC derivative for (!pid).',
+        'message' => t('Created DC derivative for (!pid).'),
         'message_sub' => array('!pid' => $object->id),
         'type' => 'dsm',
         'severity' => 'status',

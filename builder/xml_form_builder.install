@@ -429,5 +429,5 @@ function xml_form_builder_update_7103() {
     db_create_table($name, $schema_info);
   }
 
-  return 'Updated database to support default DC XSLT mappings.';
+  return t('Updated database to support default DC XSLT mappings.');
 }
