@@ -21,6 +21,11 @@ class XMLSchemaRestriction extends XMLSchemaNode {
    */
   const LOCAL_NAME = 'restriction';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const LocalName = self::LOCAL_NAME;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Constructor function for the XMLSchemaRestriction class.
    *

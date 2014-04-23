@@ -18,6 +18,11 @@ class XMLSchemaSimpleContent extends XMLSchemaNode {
    */
   const LOCAL_NAME = 'simpleContent';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const LocalName = self::LOCAL_NAME;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Constructor function for the XMLSchemaSimpleContent class.
    *

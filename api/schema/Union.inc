@@ -17,6 +17,11 @@ class XMLSchemaUnion extends XMLSchemaNode {
    */
   const LOCAL_NAME = 'union';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const LocalName = self::LOCAL_NAME;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Constructor function for the XMLSchemaUnion class.
    *

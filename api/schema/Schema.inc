@@ -26,6 +26,12 @@ class XMLSchema {
   const PREFIX = 'xs';
   const URI = 'http://www.w3.org/2001/XMLSchema';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const prefix = self::PREFIX;
+  const uri = self::URI;
+  // @codingStandardsIgnoreEnd
+
   /**
    * A protected members object generated during this object's instantiation.
    *

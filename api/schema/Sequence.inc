@@ -19,6 +19,11 @@ class XMLSchemaSequence extends XMLSchemaNode {
    */
   const LOCAL_NAME = 'sequence';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const LocalName = self::LOCAL_NAME;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Constructor function for the XMLSchemaSequence class.
    *

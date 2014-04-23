@@ -9,6 +9,7 @@
  * Interface that all actions support.
  */
 interface ActionInterface {
+
   /**
    * Constants
    */
@@ -21,6 +22,15 @@ interface ActionInterface {
   const UPDATE = 3;
   // Delete a DOMNode.
   const DELETE = 4;
+
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const Undefined = self::UNDEFINED;
+  const Create = self::CREATE;
+  const Read = self::READ;
+  const Update = self::UPDATE;
+  const Delete = self::DELETE;
+  // @codingStandardsIgnoreEnd
 
   /**
    * Perform the designated action.

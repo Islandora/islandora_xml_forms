@@ -20,6 +20,11 @@ class XmlSchemaCache {
   const ID = 'xml-schema-table';
   const TYPE = 'cache';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const Type = self::TYPE;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Checks if the cache exists.
    *

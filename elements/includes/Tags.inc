@@ -14,6 +14,11 @@ class Tags {
    */
   const ADD_BUTTON = 'add-tag';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const AddButton = self::ADD_BUTTON;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Loads the required resources for displaying the Tabs element.
    *

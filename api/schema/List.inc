@@ -16,6 +16,11 @@ class XMLSchemaList extends XMLSchemaNode {
    */
   const LOCAL_NAME = 'list';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const LocalName = self::LOCAL_NAME;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Constructor function for the XMLSchemaList class.
    *

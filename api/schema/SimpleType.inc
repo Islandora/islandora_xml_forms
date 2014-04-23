@@ -21,6 +21,11 @@ class XMLSchemaSimpleType extends XMLSchemaNode {
    */
   const LOCAL_NAME = 'simpleType';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const LocalName = self::LOCAL_NAME;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Constructor function for the XMLSchemaSimpleType class.
    *

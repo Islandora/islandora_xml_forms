@@ -21,6 +21,12 @@ class Create implements ActionInterface {
   const ATTRIBUTE = 'attribute';
   const XML = 'xml';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const Element = self::ELEMENT;
+  const Attribute = self::ATTRIBUTE;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Path to the parent element, where the DOMNode will be created.
    *

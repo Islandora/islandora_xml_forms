@@ -18,6 +18,12 @@ class Tag {
   const REMOVE_BUTTON = 'remove-tag';
   const EDIT_BUTTON = 'edit-tag';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const RemoveButton = self::REMOVE_BUTTON;
+  const EditButton = self::EDIT_BUTTON;
+  // @codingStandardsIgnoreEnd
+
   /**
    * TabPanel's theme hook.
    *

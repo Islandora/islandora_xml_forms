@@ -35,6 +35,11 @@ class Namespaces implements IteratorAggregate {
    */
   const XMLNS = 'http://www.w3.org/2000/xmlns/';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const xmlns = self::XMLNS;
+  // @codingStandardsIgnoreEnd
+
   /**
    * The default namespace; it can be NULL.
    *

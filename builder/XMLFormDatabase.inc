@@ -12,6 +12,11 @@ class XMLFormDatabase {
    */
   const TABLE = 'xml_forms';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const table = self::TABLE;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Checks to see if the given form exists in the database.
    *

@@ -18,6 +18,12 @@ class TabPanel {
   const ADD_BUTTON = 'add-tabpanel';
   const DELETE_BUTTON = 'delete-tabpanel';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const AddButton = self::ADD_BUTTON;
+  const DeleteButton = self::DELETE_BUTTON;
+  // @codingStandardsIgnoreEnd
+
   /**
    * TabPanel's theme hook.
    *

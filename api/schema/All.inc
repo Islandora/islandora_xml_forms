@@ -19,6 +19,11 @@ class XMLSchemaAll extends XMLSchemaNode {
    */
   const LOCAL_NAME = 'all';
 
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const LocalName = self::LOCAL_NAME;
+  // @codingStandardsIgnoreEnd
+
   /**
    * Constructor function for the XMLSchemaAll class.
    *
