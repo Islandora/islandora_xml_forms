@@ -1,52 +1,57 @@
 <?php
 
-
-
 /**
  * @file
- *
- * Models a <xs:complexContent> element.
+ * Models an <xs:complexContent> element.
  */
+
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'xml_schema_api', 'Extension');
 module_load_include('inc', 'xml_schema_api', 'Restriction');
 
 /**
- * Models a <xs:complexContent> element.
+ * Models an <xs:complexContent> element.
  */
 class XMLSchemaComplexContent extends XMLSchemaNode {
+
   /**
    * Constants.
    */
-  const LocalName = 'complexContent';
+  const LOCAL_NAME = 'complexContent';
 
   /**
+   * Constructor function for the XMLSchemaComplexContent class.
    *
+   * @param XMLSchema $schema
+   *   The schema to use for the DOMElement.
    * @param DOMElement $node
+   *   The node to use for this instance.
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
-    $this->protected->addMembers(
-        array(
-      'extension' => $this->createChild(XMLSchemaExtension::LocalName),
-      'restriction' => $this->createChild(XMLSchemaRestriction::LocalName),
-    )
-    );
+    $this->protected->addMembers(array(
+      'extension' => $this->createChild(XMLSchemaExtension::LOCAL_NAME),
+      'restriction' => $this->createChild(XMLSchemaRestriction::LOCAL_NAME),
+    ));
   }
 
   /**
    * Returns the local name of this object.
    *
    * @return string
+   *   The local name of this object.
    */
   protected function getLocalName() {
-    return self::LocalName;
+    return self::LOCAL_NAME;
   }
 
   /**
+   * Returns the content of this object.
    *
+   * @return mixed
+   *   The content of the node if set; NULL otherwise.
    */
-  private function getContent() {
+  protected function getContent() {
     if ($this->extension) {
       return $this->extension;
     }
@@ -57,8 +62,13 @@ class XMLSchemaComplexContent extends XMLSchemaNode {
   }
 
   /**
+   * Adds child nodes using the specified parent InsertOrderNode.
    *
-   * @param XMLSchemaInsertOrderMapNode $parent
+   * @param InsertOrderNode $parent
+   *   The parent, with an insert order applied, as an InsertOrderNode.
+   *
+   * @return InsertOrderAny
+   *   The mapped node, with all children appended.
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     $content = $this->getContent();

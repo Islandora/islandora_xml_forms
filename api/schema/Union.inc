@@ -1,26 +1,29 @@
 <?php
 
-
-
 /**
  * @file
- *
- * Models a <xs:union> element.
+ * Models an <xs:union> element.
  */
+
 module_load_include('inc', 'xml_schema_api', 'Node');
 
 /**
- * Models a <xs:union> DOMElement.
+ * Models an <xs:union> DOMElement.
  */
 class XMLSchemaUnion extends XMLSchemaNode {
+
   /**
    * Constants.
    */
-  const LocalName = 'union';
+  const LOCAL_NAME = 'union';
 
   /**
+   * Constructor function for the XMLSchemaUnion class.
    *
+   * @param XMLSchema $schema
+   *   The schema to use for the DOMElement.
    * @param DOMElement $node
+   *   The node to use for this instance.
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
@@ -30,14 +33,20 @@ class XMLSchemaUnion extends XMLSchemaNode {
    * Returns the local name of this object.
    *
    * @return string
+   *   The local name of this object.
    */
   protected function getLocalName() {
-    return self::LocalName;
+    return self::LOCAL_NAME;
   }
 
   /**
+   * Included because it's in the abstraction, but (currently?) unused.
    *
-   * @param XMLSchemaInsertOrderMapNode $parent
+   * @param InsertOrderNode $parent
+   *   Mainly there because it's in the abstraction. Won't do a thing.
+   *
+   * @return NULL
+   *   Always null.
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     return NULL;

@@ -2,14 +2,14 @@
 
 /**
  * @file
- *
- * Allows for the editing of existing xml datastreams using forms associated
- * with the given datastream.
+ * Allows for editing existing XML datastreams using given, associated forms.
  */
 
 /**
- * Edit datastream form. Display's a select association form if more than one
- * association is defined for the given datastream.
+ * Edit datastream form.
+ *
+ * Displays a select association form if more than one association is defined
+ * for the given datastream.
  *
  * @param array $form
  *   The drupal form.
@@ -19,7 +19,7 @@
  *   The datastream to edit.
  *
  * @return array
- *   The form for selecting the association to edit the datastream, or the xml
+ *   The form for selecting the association to edit the datastream, or the XML
  *   form for editing the datastream.
  */
 function xml_form_builder_edit_datastream_form(array $form, array &$form_state, AbstractDatastream $datastream) {
@@ -39,25 +39,29 @@ function xml_form_builder_edit_datastream_form(array $form, array &$form_state, 
  *   The drupal form state.
  * @param AbstractDatastream $datastream
  *   The datastream to edit.
+ *
+ * @return array
+ *   An array of found associations.
  */
 function xml_form_builder_edit_datastream_form_get_associations(array &$form_state, AbstractDatastream $datastream) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   if (isset($form_state['associations'])) {
     return $form_state['associations'];
   }
- return xml_form_builder_get_associations(array(), $datastream->parent->models, array($datastream->id));
+  return xml_form_builder_get_associations(array(), $datastream->parent->models, array($datastream->id));
 }
 
 /**
- * Gets the selected form association. If only one association exists it is
- * used.
+ * Gets the selected form association.
+ *
+ * If only one association exists, it is used.
  *
  * @param array $form_state
  *   The drupal form state.
- * @param AbstractDatastream $datastream
- *   The datastream to edit.
+ * @param array $associations
+ *   A passed in array of associations.
  *
- * @return array
+ * @return array|NULL
  *   The selected association, or NULL if no association is selected.
  */
 function xml_form_builder_edit_datastream_form_get_association(array &$form_state, array $associations) {
@@ -94,7 +98,7 @@ function xml_form_builder_edit_datastream_form_select_association_form(array $fo
 }
 
 /**
- * Selects a association.
+ * Selects an association.
  *
  * @param array $form
  *   The drupal form.
@@ -121,6 +125,9 @@ function xml_form_builder_edit_datastream_form_select_association_form_submit(ar
  *   The drupal form state.
  * @param array $association
  *   The association to use for creating the edit datastream form.
+ *
+ * @return array
+ *   The Drupal form.
  */
 function xml_form_builder_edit_datastream_form_metadata_form(array $form, array &$form_state, array $association) {
   $form_state['association'] = $association;
@@ -142,9 +149,9 @@ function xml_form_builder_edit_datastream_form_metadata_form(array $form, array 
 }
 
 /**
- * Updates the content of the stored datastream with the generated xml from the
- * metadata form. Also updates the objects label, and applies a transform to
- * update the DC.
+ * Updates the datastream's content with generated xml from the metadata form.
+ *
+ * Also updates the objects label, and applies a transform to update the DC.
  *
  * @param array $form
  *   The drupal form.

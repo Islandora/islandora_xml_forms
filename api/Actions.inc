@@ -1,11 +1,10 @@
 <?php
 
-
-
 /**
  * @file
- *
+ * Action class.
  */
+
 module_load_include('inc', 'objective_forms', 'FormPropertyInterface');
 module_load_include('inc', 'xml_form_api', 'Create');
 module_load_include('inc', 'xml_form_api', 'Read');
@@ -18,28 +17,29 @@ module_load_include('inc', 'xml_form_api', 'Delete');
 class Actions implements FormPropertyInterface {
 
   /**
-   * If executed this object will create one or more DOMNodes in the Document.
+   * Create one or more DOMNodes in the Document.
    *
    * @var Create
    */
   public $create;
 
   /**
-   * If executed this object will read one or more DOMNodes in the Document. It is used to populate the form.
+   * Read one or more DOMNodes in the Document. Used to populate the form.
    *
    * @var Read
    */
   public $read;
 
   /**
-   * If executed this object will update one or more DOMNodes values in the Document.
+   * Update one or more DOMNodes values in the Document.
    *
    * @var Update
    */
   public $update;
 
   /**
-   * If executed this object will delete one or more DOMNodes in the Document.
+   * Delete one or more DOMNodes in the Document.
+   *
    * @var Delete
    */
   public $delete;
@@ -48,6 +48,7 @@ class Actions implements FormPropertyInterface {
    * Creates and Actions instance.
    *
    * @param array $value
+   *   Array of property values that can be set.
    */
   public function __construct($value) {
     if (isset($value['create']) && is_array($value['create'])) {
@@ -65,52 +66,64 @@ class Actions implements FormPropertyInterface {
   }
 
   /**
-   * Get the appropriate Action to perform.
+   * Get the appropriate ActionInterface to perform.
    *
-   * This is called by the FormProcesor, depending on the state of certian variables one of
-   * the following actions will be returned.
+   * This is called by the FormProcessor, depending on the state of certain
+   * variables one of the following actions will be returned.
    *
-   * Note that these cases are the default, depending on other settings within the action
-   * element the return Action may differ.
+   * Note that these cases are the default, depending on other settings within
+   * the action element the return ActionInterface may differ.
    *
    * Create
    *  The FormElement in question doesn't have a registered DOMNode.
    * Update
-   *  The FormElement that corresponds to the Node in question is still part of the definition.
+   *  The FormElement that corresponds to the Node in question is still part of
+   *   the definition.
    * Delete
-   *  The FormElement in question, no longer exists in the form and it has a registered DOMNode.
+   *  The FormElement in question, no longer exists in the form and it has a
+   *   registered DOMNode.
    *
    * @param XMLDocument $document
-   * @param DOMNode $node
+   *   The document to get the action for.
+   * @param FormElement $element
+   *   The element to get the action for.
    * @param mixed $value
+   *   The value to get the action for.
    *
    * @return array
-   *  Gets the action type and the Action object. Example:
-   *    array(string, Action);
+   *   Gets the action type and the ActionInterface object, such as (string,
+   *   ActionInterface).
    */
   public function getAppropriateAction(XMLDocument $document, FormElement $element, $value = NULL) {
     if ($this->shouldDelete($document, $element, $value)) {
-      return array(Action::Delete, $this->delete);
+      return array(ActionInterface::DELETE, $this->delete);
     }
     elseif ($this->shouldUpdate($document, $element, $value)) {
-      return array(Action::Update, $this->update);
+      return array(ActionInterface::UPDATE, $this->update);
     }
-    elseif ($this->shouldCreate($document, $element, $value)) { // Node is not registered
-      return array(Action::Create, $this->create);
+    // If node is not registered.
+    elseif ($this->shouldCreate($document, $element, $value)) {
+      return array(ActionInterface::CREATE, $this->create);
     }
-    return array(Action::Undefined, NULL);
+    return array(ActionInterface::UNDEFINED, NULL);
   }
 
   /**
-   * Check the Delete Action's properties to determine if we should remove this FormElement.
+   * Determine if we should remove this FormElement.
+   *
+   * Checks the Delete ActionInterface's properties to do so.
    *
    * @param XMLDocument $document
+   *   The document to check.
    * @param FormElement $element
+   *   The element to check.
    * @param mixed $value
+   *   The value to check deletion for.
    *
-   * @return boolean
+   * @return bool
+   *   TRUE if it should be removed; FALSE otherwise.
    */
-  private function shouldDelete(XMLDocument $document, FormElement $element, $value = NULL) {
+  protected function shouldDelete(XMLDocument $document, FormElement $element, $value = NULL) {
     if (isset($this->delete)) {
       return $this->delete->shouldExecute($document, $element, $value);
     }
@@ -118,14 +131,21 @@ class Actions implements FormPropertyInterface {
   }
 
   /**
-   * Check the Update Action's properties to determine if we should update this FormElement.
+   * Determine if we should update this FormElement.
+   *
+   * Checks the Update ActionInterface's properties to do so.
    *
    * @param XMLDocument $document
+   *   The document to check.
    * @param FormElement $element
+   *   The element to check.
    * @param mixed $value
-   * @return boolean
+   *   The value to check updating for.
+   *
+   * @return bool
+   *   TRUE if it should be updated; FALSE otherwise.
    */
-  private function shouldUpdate(XMLDocument $document, FormElement $element, $value = NULL) {
+  protected function shouldUpdate(XMLDocument $document, FormElement $element, $value = NULL) {
     if (isset($this->update)) {
       return $this->update->shouldExecute($document, $element, $value);
     }
@@ -133,15 +153,21 @@ class Actions implements FormPropertyInterface {
   }
 
   /**
-   * Check the Create Action's properties to determine if we should create this FormElement.
+   * Determine if we should create this FormElement.
+   *
+   * Checks the Create ActionInterface's properties to do so.
    *
    * @param XMLDocument $document
+   *   The document to check.
    * @param FormElement $element
+   *   The element to check.
    * @param mixed $value
+   *   The value to check creation for.
    *
-   * @return boolean
+   * @return bool
+   *   TRUE if it should be created; FALSE otherwise.
    */
-  private function shouldCreate(XMLDocument $document, FormElement $element, $value = NULL) {
+  protected function shouldCreate(XMLDocument $document, FormElement $element, $value = NULL) {
     if (isset($this->create)) {
       return $this->create->shouldExecute($document, $element, $value);
     }
@@ -152,7 +178,8 @@ class Actions implements FormPropertyInterface {
    * Converts this object to a Drupal Form Property value.
    *
    * @return mixed
-   *   Returns the array repersentation of this class, which can be used within a Drupal Form.
+   *   Returns the array representation of this class, which can be used within
+   *   a Drupal Form.
    */
   public function toDrupalForm() {
     return array(

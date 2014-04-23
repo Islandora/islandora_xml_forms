@@ -2,13 +2,14 @@
 
 /**
  * @file
- *
  * Callbacks and functions used in the Copy Form Page.
  */
 
 /**
  * Get the Copy Page Form.
  *
+ * @param array $form
+ *   The Drupal form.
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name
@@ -52,7 +53,9 @@ function xml_form_builder_copy($form, array &$form_state, $form_name) {
 }
 
 /**
- * Validates the name Drupal Form Element. Ensures that the name doesn't match any existing form names.
+ * Validates the name Drupal Form Element.
+ *
+ * Ensures that the name doesn't match any existing form names.
  *
  * @param array $element
  *   The name Drupal Form Element.
@@ -71,8 +74,9 @@ function xml_form_builder_copy_validate_name(array $element, array &$form_state)
 /**
  * Submit the Copy form. Copies a existing Form definition within the database.
  *
- * If the form definition was successfully copied, redirect the user to the edit form.
- * if not or the cancel button was clicked return the user to the main menu.
+ * If the form definition was successfully copied, redirect the user to the edit
+ * form. If not, or if the cancel button was clicked, return the user to the
+ * main menu.
  *
  * @param array $form
  *   The Drupal Form.

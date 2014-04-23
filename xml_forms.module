@@ -1,9 +1,15 @@
 <?php
 
 /**
+ * @file
+ * XML Forms base module.
+ */
+
+/**
  * Implements Hook Menu.
  *
  * @return array
+ *   Array of menu items.
  */
 function xml_forms_menu() {
   $items['schema/%'] = array(
@@ -21,6 +27,7 @@ function xml_forms_menu() {
  * Get the schema if it exists.
  *
  * @param string $filename
+ *   XSD to grab the schema from.
  */
 function xml_forms_get_schema($filename) {
   $path = drupal_get_path('module', 'xml_forms') . '/schema';
@@ -31,5 +38,4 @@ function xml_forms_get_schema($filename) {
   else {
     drupal_not_found();
   }
-  return;
 }
