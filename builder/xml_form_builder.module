@@ -527,7 +527,7 @@ function xml_form_builder_update_object(AbstractObject $object, array $associati
   $document = $document->document;
   $run_transforms = !variable_get('xml_form_builder_use_default_dc_xslts', FALSE);
   if (isset($association['self_transform']) && $association['self_transform'] != 'No Transform' && $run_transforms) {
-    $document = xml_form_builder_transform_metadata_datastream($association['self_transform'], $document);
+    $document = xml_form_builder_transform_metadata_datastream($document, $association['self_transform']);
   }
   $created = xml_form_builder_update_metadata_datastream($object, $association['dsid'], $document);
 
