@@ -99,10 +99,10 @@ class Create implements ActionInterface {
         $this->name = $this->value;
         $tag_name = explode(':', $this->name);
         if (count($tag_name) > 1) {
-          list($this->prefix, $this->local_name) = $tag_name;
+          list($this->prefix, $this->localName) = $tag_name;
         }
         else {
-          list($this->local_name) = $tag_name;
+          list($this->localName) = $tag_name;
         }
         break;
     }

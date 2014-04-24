@@ -542,15 +542,15 @@ function xml_form_builder_update_object(AbstractObject $object, array $associati
 /**
  * Applies xslt to incoming datastream.
  *
- * @param xslt $transform
- *   Name of xslt to be applied
  * @param DOMDocument $source_document
  *   Document to be transformed
+ * @param xslt $transform
+ *   Name of xslt to be applied
  *
  * @return DOMDocument
  *   Transformed document on success, original on failure.
  */
-function xml_form_builder_transform_metadata_datastream($transform = NULL, DOMDocument $source_document) {
+function xml_form_builder_transform_metadata_datastream(DOMDocument $source_document, $transform = NULL) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   $transform_path = NULL;
   $transforms = xml_form_builder_get_self_transforms();

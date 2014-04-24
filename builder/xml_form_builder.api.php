@@ -9,8 +9,8 @@
  * This hook allows modules to add default forms to form builder.
  *
  * @return array
- *   An associative array mapping unique names to associative arrays containing a
- *   single key:
+ *   An associative array mapping unique names to associative arrays containing
+ *   a single key:
  *   - form_file: A string containing the path to the form definition, relative
  *     to the webserver's document root (such that I might be opened
  */
