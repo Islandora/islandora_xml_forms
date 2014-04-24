@@ -1,37 +1,41 @@
 <?php
 
-
-
 /**
  * @file
- *
- * Models a <xs:choice> element.
+ * Models an <xs:choice> element.
  */
+
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'xml_schema_api', 'Node');
 module_load_include('inc', 'xml_schema_api', 'Element');
 
 /**
- * Models a <xs:choice> element.
+ * Models an <xs:choice> element.
  */
 class XMLSchemaChoice extends XMLSchemaNode {
+
   /**
    * Constants.
    */
-  const LocalName = 'choice';
+  const LOCAL_NAME = 'choice';
 
   /**
+   * Constructor function for the XMLSchemaChoice class.
    *
+   * @param XMLSchema $schema
+   *   The schema to use for the DOMElement.
    * @param DOMElement $node
+   *   The node to use for this instance.
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     parent::__construct($schema, $node);
     $this->protected->addMembers(array(
-      'element' => $this->createChildren(XMLSchemaElement::LocalName),
-      'choice' => $this->createChildren(XMLSchemaChoice::LocalName),
-      'sequence' => $this->createChildren(XMLSchemaSequence::LocalName),
-      'group' => $this->createChildren(XMLSchemaGroup::LocalName),
-      'children' => $this->createChildren(), // All children in the correct order.
+      'element' => $this->createChildren(XMLSchemaElement::LOCAL_NAME),
+      'choice' => $this->createChildren(XMLSchemaChoice::LOCAL_NAME),
+      'sequence' => $this->createChildren(XMLSchemaSequence::LOCAL_NAME),
+      'group' => $this->createChildren(XMLSchemaGroup::LOCAL_NAME),
+      // All children in the correct order.
+      'children' => $this->createChildren(),
     ));
   }
 
@@ -39,14 +43,20 @@ class XMLSchemaChoice extends XMLSchemaNode {
    * Returns the local name of this object.
    *
    * @return string
+   *   The local name of the object.
    */
   protected function getLocalName() {
-    return self::LocalName;
+    return self::LOCAL_NAME;
   }
 
   /**
+   * Adds the selected children using the specified parent InsertOrderNode.
    *
-   * @param XMLSchemaInsertOrderMapNode $parent
+   * @param InsertOrderNode $parent
+   *   The parent, with an insert order applied, as an InsertOrderNode.
+   *
+   * @return InsertOrderAny
+   *   The mapped node, with all children appended.
    */
   public function asInsertOrderNode(InsertOrderNode $parent = NULL) {
     list($min, $max) = $this->getMinMaxOccurs();

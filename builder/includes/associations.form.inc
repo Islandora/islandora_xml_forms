@@ -2,9 +2,10 @@
 
 /**
  * @file
+ * Handles the display and submission of the associations form.
  *
- * Handles the display and submission of the associations form, which is used to
- * associate xml forms with a given content model's datastream.
+ * This is then used to associate XML forms with a given content model's
+ * datastream.
  */
 
 /**
@@ -57,7 +58,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       ),
       'dsid' => array(
         '#type' => 'textfield',
-        '#description' => t('The datastream ID where the object\'s metadata is stored.'),
+        '#description' => t("The datastream ID where the object's metadata is stored."),
         '#title' => t('Metadata Datastream ID'),
         '#required' => TRUE,
         '#default_value' => isset($form_state['values']['dsid']) ? $form_state['values']['dsid'] : NULL,
@@ -69,8 +70,8 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       ),
       'title_field' => array(
         '#type' => 'select',
-        '#title' => t('Label Field'),
-        '#description' => t('The form field for the object\'s label.'),
+        '#title' => t('Title Field'),
+        '#description' => t("The form field for the object's label."),
         '#prefix' => '<div id="ahah-wrapper">',
         '#suffix' => '</div>',
         '#options' => xml_form_builder_get_title_options($form_name),

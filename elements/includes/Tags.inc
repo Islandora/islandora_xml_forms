@@ -2,22 +2,32 @@
 
 /**
  * @file
- *
+ * Class for form tags.
  */
+
 module_load_include('inc', 'xml_form_elements', 'includes/Tag');
 
-
 class Tags {
+
   /**
    * Constants
    */
-  const AddButton = 'add-tag';
+  const ADD_BUTTON = 'add-tag';
+
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const AddButton = self::ADD_BUTTON;
+  // @codingStandardsIgnoreEnd
 
   /**
    * Loads the required resources for displaying the Tabs element.
    *
-   * @staticvar boolean $load
-   *   Keeps us from loading the same files multiple times, while not required it just saves some time.
+   * @param array $form_state
+   *   The Drupal form state.
+   *
+   * @staticvar bool $load
+   *   Keeps us from loading the same files multiple times; while not required,
+   *   it just saves some time.
    */
   public static function addRequiredResources(&$form_state) {
     static $load = TRUE;
@@ -31,11 +41,17 @@ class Tags {
   }
 
   /**
+   * Processes the element.
    *
    * @param array $element
-   * @param type $edit
+   *   The element to process.
    * @param array $form_state
+   *   The Drupal form state.
    * @param array $complete_form
+   *   The completed form.
+   *
+   * @return array
+   *   The processed element.
    */
   public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
     self::addRequiredResources($form_state);
@@ -55,9 +71,21 @@ class Tags {
     return $element;
   }
 
+  /**
+   * Functionality to be passed to xml_form_elements_after_build_tags() below.
+   *
+   * @param array $form_element
+   *   The tag element.
+   * @param array $form_state
+   *   The Drupal form state.
+   *
+   * @return array
+   *   The modified $form_element.
+   */
   public static function AfterBuild(array $form_element, array &$form_state) {
     if ($form_element['#required']) {
-      $require = (count(element_children($form_element)) == 2) ? TRUE : FALSE; // 2 to include the controls element
+      // 2 to include the controls element.
+      $require = (count(element_children($form_element)) == 2) ? TRUE : FALSE;
       foreach (element_children($form_element) as $key) {
         $child = &$form_element[$key];
         $child['#required'] = $require;
@@ -66,7 +94,16 @@ class Tags {
     return $form_element;
   }
 
-  private static function createAddButton(array &$element) {
+  /**
+   * Creates a button that allows tags to duplicate.
+   *
+   * @param array $element
+   *   The tag form element.
+   *
+   * @return FormElement
+   *   The "add" button.
+   */
+  protected static function createAddButton(array &$element) {
     $button['#type'] = 'button';
     $button['#weight'] = 4;
     $button['#size'] = 30;
@@ -79,7 +116,7 @@ class Tags {
       'params' => array(
         'render' => $element['#hash'],
         'target' => $element['#hash'],
-	'action' => 'add'
+        'action' => 'add',
       ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replaceWith',
@@ -88,7 +125,19 @@ class Tags {
     return $button;
   }
 
-  private static function createRemoveButton(array &$element, array &$child) {
+  /**
+   * Creates a remove button that allows the user to remove this tag.
+   *
+   * @param array $element
+   *   The tag form element.
+   * @param array $child
+   *   The #hash value of the child element being removed; used to create the
+   *   button #id.
+   *
+   * @return FormElement
+   *   The "remove" button.
+   */
+  protected static function createRemoveButton(array &$element, array &$child) {
     $button['#type'] = 'button';
     $button['#weight'] = 4;
     $button['#size'] = 30;
@@ -100,8 +149,8 @@ class Tags {
       'params' => array(
         'render' => $element['#hash'],
         'target' => $element['#hash'],
-	'child' => $child['#hash'],
-	'action' => 'delete'
+        'child' => $child['#hash'],
+        'action' => 'delete',
       ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replaceWith',
@@ -110,7 +159,19 @@ class Tags {
     return $button;
   }
 
-  private static function createEditButton(array &$element, array &$child) {
+  /**
+   * Creates a remove button that allows the user to edit this tag.
+   *
+   * @param array $element
+   *   The tag form element.
+   * @param array $child
+   *   The #hash value of the child element being edited; used to create the
+   *   button #id.
+   *
+   * @return FormElement
+   *   The "edit" button.
+   */
+  protected static function createEditButton(array &$element, array &$child) {
     $button['#type'] = 'button';
     $button['#weight'] = 4;
     $button['#size'] = 30;
@@ -123,7 +184,7 @@ class Tags {
         'render' => $element['#hash'],
         'target' => $element['#hash'],
         'child' => $child['#hash'],
-	'action' => 'edit'
+        'action' => 'edit',
       ),
       'wrapper' => "ahah-{$element['#id']}-wrapper",
       'method' => 'replaceWith',
@@ -135,18 +196,24 @@ class Tags {
 }
 
 /**
- * Preprocess tabs theme hook.
+ * Pre-process tabs theme hook.
  *
  * @param array $vars
+ *   Theme variables.
  */
 function template_preprocess_tags(&$vars) {
   global $base_url;
   $tags = &$vars['element'];
-  $vars['image_path'] =  $base_url . '/' . PATH_XML_FORM_ELEMENTS_IMAGES; // Location of images.  
-  $vars['add'] = $tags['controls']['add']; // Visible Add Button
-  $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL; // Hidden Edit Button
-  $vars['remove'] = isset($tags['controls']['remove']) ? $tags['controls']['remove'] : NULL; // Hidden Remove Button
-  $vars['tags'] = array(); // Used to create tag icons, and hidden input fields.
+  // Location of images.
+  $vars['image_path'] = $base_url . '/' . PATH_XML_FORM_ELEMENTS_IMAGES;
+  // Visible Add Button.
+  $vars['add'] = $tags['controls']['add'];
+  // Hidden Edit Button.
+  $vars['edit'] = isset($tags['controls']['edit']) ? $tags['controls']['edit'] : NULL;
+  // Hidden Remove Button.
+  $vars['remove'] = isset($tags['controls']['remove']) ? $tags['controls']['remove'] : NULL;
+  // Used to create tag icons, and hidden input fields.
+  $vars['tags'] = array();
   $children = element_children($tags);
   foreach ($children as $key) {
     $child = $tags[$key];
@@ -154,25 +221,27 @@ function template_preprocess_tags(&$vars) {
       $vars['tags'][$key] = $child;
     }
   }
-  // First tag is the textfield, all others show up as icons with hidden inputs.
+  // First tag is the textfield; all others show up as icons with hidden inputs.
   $textfield = array(
     'element' => array_shift($vars['tags']),
   );
   $textfield['element']['#id'] = $tags['#id'];
   $textfield['element']['#size'] = $tags['#size'];
   $textfield['element']['#autocomplete_path'] = isset($textfield['element']['#autocomplete_path']) ? $textfield['element']['#autocomplete_path'] : FALSE;
-  $vars['textfield'] = theme('textfield', $textfield); // theme the text field to take advantage of autocomplete
+  // Theme the text field to take advantage of autocomplete.
+  $vars['textfield'] = theme('textfield', $textfield);
 }
 
 /**
- * Wrapper for Tags::AfterBuild, used as Drupal doesn't support static calls in this situation.
+ * Wrapper for Tags::AfterBuild to modify the provided tag element.
  *
- * Modifies the provided tag element.
+ * Used here as Drupal doesn't support static calls in this situation.
  *
  * @param array $form_element
  *   A tag element to be modified.
  * @param array $form_state
  *   The Drupal form state.
+ *
  * @return array
  *   The modified $form_element.
  */

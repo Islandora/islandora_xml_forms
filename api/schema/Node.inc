@@ -1,11 +1,10 @@
 <?php
 
-
-
 /**
  * @file
- *
+ * Abstraction for the XMLSchemaLOCAL_NAME classes.
  */
+
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'php_lib', 'LazyMembers');
 
@@ -15,34 +14,44 @@ module_load_include('inc', 'php_lib', 'LazyMembers');
 abstract class XMLSchemaNode {
 
   /**
+   * Array of DOMElement nodes.
    *
-   * @var type
+   * @var DOMElement[]
    */
   protected static $nodes = array();
+
   /**
    * The top level schema.
    *
    * @var XMLSchema
    */
   protected $schema;
+
   /**
+   * An instance of LazyMembers based on the $node passed into XMLSchemaNode.
    *
-   * @var ReadOnlyProtectedMembers
+   * @var LazyMembers
    */
   protected $protected;
 
   /**
+   * Registers the $node used to instantiate this class in the $nodes array.
    *
    * @param XMLSchemaNode $node
+   *   The XMLSchemaNode to register.
    */
   public static function register(XMLSchemaNode $node) {
     self::$nodes[] = $node;
   }
 
   /**
+   * Determines whether the given DOMElement is registered.
    *
    * @param DOMElement $element
-   * @return boolean
+   *   The DOMElement to confirm registry for.
+   *
+   * @return bool
+   *   TRUE if it is registered; FALSE otherwise.
    */
   public static function isRegistered(DOMElement $element) {
     foreach (self::$nodes as $node) {
@@ -54,8 +63,13 @@ abstract class XMLSchemaNode {
   }
 
   /**
+   * Attempts to find the given DOMElement in the array of registered nodes.
    *
    * @param DOMElement $element
+   *   The element to search for.
+   *
+   * @return mixed
+   *   A DOMElement if a match is found; NULL otherwise.
    */
   public static function find(DOMElement $element) {
     foreach (self::$nodes as $node) {
@@ -67,9 +81,12 @@ abstract class XMLSchemaNode {
   }
 
   /**
-   * Create a XMLSchemaNode
+   * Constructor function for the XMLSchemaNode class.
    *
+   * @param XMLSchema $schema
+   *   The schema to use for the DOMElement.
    * @param DOMElement $node
+   *   The node to use for this instance.
    */
   public function __construct(XMLSchema $schema, DOMElement $node) {
     $this->protected = new LazyMembers(array('node' => $node));
@@ -79,59 +96,76 @@ abstract class XMLSchemaNode {
   }
 
   /**
-   * Validate the constructor's arguments.
+   * Validates the constructor's arguments.
    *
    * @param DOMElement $node
+   *   The DOMElement passed into this class during instantiation.
+   *
+   * @throws Exception
+   *   If the LOCAL_NAME of the node passed in doesn't match the expected.
    */
-  private function validateConstructorArguments(DOMElement $node) {
+  protected function validateConstructorArguments(DOMElement $node) {
     if ($node->localName != $this->getLocalName()) {
       throw new Exception("Argument invalid; expected local name: {$this->getLocalName()} got: {$node->localName}.");
     }
   }
 
   /**
-   * Gets the subclasses local name.
+   * Gets the subclass's local name.
    *
    * @return string
+   *   The subclass's local name.
    */
   abstract protected function getLocalName();
 
   /**
-   * Used to convert this object to an InsertOrderMapNode
+   * Converts this object to an InsertOrderMapNode.
+   *
+   * @param InsertOrderNode $parent
+   *   The parent InsertOrderNode.
    */
   abstract public function asInsertOrderNode(InsertOrderNode $parent = NULL);
 
   /**
+   * Implementation of the __isset() overloading property.
    *
    * @param string $name
-   * @return boolean
+   *   The name of the member property to check if isset().
+   *
+   * @return bool
+   *   TRUE if it is set; FALSE otherwise.
    */
   public function __isset($name) {
     return isset($this->protected->$name);
   }
 
   /**
+   * Implementation of the __unset() overloading property.
    *
    * @param string $name
+   *   The name of the member property to unset.
    */
   public function __unset($name) {
     unset($this->protected->$name);
   }
 
   /**
-   * Get a protected member for read access.
+   * Gets a protected member for read access.
    *
    * @param string $name
+   *   The name of the member property to get.
    */
   public function __get($name) {
     return $this->protected->$name;
   }
 
   /**
-   * Set the protected members value.
+   * Set the protected member's value.
    *
    * @param string $name
+   *   The name of the protected member property to set.
    * @param mixed $value
+   *   The value to set the property to.
    */
   public function __set($name, $value) {
     $this->protected->$name = $value;
@@ -141,7 +175,10 @@ abstract class XMLSchemaNode {
    * Find all immediate children with the given local name.
    *
    * @param string $local_name
-   * @return array
+   *   A LOCAL_NAME to use when filtering children.
+   *
+   * @return DOMElement[]
+   *   An array of children found using the search.
    */
   protected function findChildren($local_name = NULL) {
     return isset($local_name) ?
@@ -150,9 +187,14 @@ abstract class XMLSchemaNode {
   }
 
   /**
-   * Finds a unique child amoung the immediate children of this element.
+   * Finds a unique child among the immediate children of this element.
    *
    * @param string $local_name
+   *   The LOCAL_NAME to use in the search.
+   *
+   * @return DOMElement|NULL
+   *   Either the only child found, the first child found out of many,
+   *   or NULL if there weren't any.
    */
   protected function findChild($local_name) {
     $children = $this->findChildren($local_name);
@@ -166,7 +208,10 @@ abstract class XMLSchemaNode {
    * Create all child elements of the given type.
    *
    * @param string $local_name
-   * @return array
+   *   An optional LOCAL_NAME to filter the children by.
+   *
+   * @return XMLSchemaNode[]
+   *   An array of XMLSchemaLOCAL_NAME objects.
    */
   protected function createChildren($local_name = NULL) {
     $output = array();
@@ -181,9 +226,11 @@ abstract class XMLSchemaNode {
    * Create a child element of the given type.
    *
    * @param string $local_name
-   * @param DOMElement $child
+   *   A LOCAL_NAME to filter the children by.
    *
-   * @return mixed
+   * @return XMLSchemaNode|NULL
+   *   An XMLSchemaLOCAL_NAME object if a child is found and created; NULL
+   *   otherwise.
    */
   protected function createChild($local_name) {
     $child = $this->findChild($local_name);
@@ -191,10 +238,13 @@ abstract class XMLSchemaNode {
   }
 
   /**
-   * Creates an a object defined by the local name of the given DOMNode if such a class exists.
+   * Creates an a object defined by the LOCAL_NAME of the given DOMNode.
    *
    * @param DOMElement $node
-   * @return mixed
+   *   The DOMNode to create a typed object for.
+   *
+   * @return XMLSchemaNode|NULL
+   *   An XMLSchemaLOCAL_NAME object if that class exists; NULL otherwise.
    */
   protected function createNodeTypedObject(DOMElement $node) {
     $class_name = "XMLSchema{$node->localName}";
@@ -212,6 +262,8 @@ abstract class XMLSchemaNode {
    * Get the min and max occurs.
    *
    * @return array
+   *   An array containing two keys (minimum, maximum). Each are set to 1 if
+   *   their respective attribute isn't set for this node.
    */
   public function getMinMaxOccurs() {
     $min = $this->node->hasAttribute('minOccurs') ? $this->node->getAttribute('minOccurs') : 1;

@@ -2,15 +2,15 @@
 
 /**
  * @file
- *
- * Provides a class that repersents a Form with JSON.
+ * Provides a class that represents a Form with JSON.
  */
+
 module_load_include('inc', 'php_lib', 'String');
 module_load_include('inc', 'php_lib', 'Array');
 module_load_include('inc', 'php_lib', 'Misc');
 
 /**
- * Given some JSON it retrieve the form properties and a Drupal form.
+ * Given some JSON, it retrieves the form properties and a Drupal form.
  */
 class JSONFormDefinition {
 
@@ -21,15 +21,16 @@ class JSONFormDefinition {
    *   The posted encoded JSON data.
    */
   public function __construct($json) {
-    $this->json = json_decode($json); // $this->json = json_decode($_POST['data']);
+    // In this case, $json equates to $_POST['data'].
+    $this->json = json_decode($json);
   }
 
   /**
    * Gets both the form properties and the form.
    *
    * @return array
-   *   An array were the first item is the form properties and the second is the form.
-   *   Ex. array($properties, $form)
+   *   An array where the first key is the form properties and the second is the
+   *   form, e.g. array($properties, $form)
    */
   public function getPropertiesAndForm() {
     return array($this->getProperties(), $this->getForm());
@@ -39,7 +40,7 @@ class JSONFormDefinition {
    * Gets the Form Properties.
    *
    * @return array
-   *  The form properties.
+   *   The form properties.
    */
   public function getProperties() {
     $properties = $this->json->properties;
@@ -53,7 +54,7 @@ class JSONFormDefinition {
   }
 
   /**
-   * Gets the Drupal repersentation of this JSON form.
+   * Gets the Drupal representation of this JSON form.
    *
    * @return array
    *   A Drupal form.
@@ -65,15 +66,15 @@ class JSONFormDefinition {
   }
 
   /**
-   * Gets the array repersentation of an element from the JSON Form Definition.
+   * Gets the array representation of an element from the JSON Form Definition.
    *
-   * @param stdClass $element
-   *   A JSON repersentation of a Drupal Form Element.
+   * @param object $element
+   *   A JSON representation of a Drupal Form Element.
    *
    * @return array
-   *   A Drupal repersentation of form element.
+   *   A Drupal representation of the form element.
    */
-  private function getElement(stdClass $element) {
+  protected function getElement(stdClass $element) {
     $key = isset($element->key) ? $element->key : NULL;
     $properties = $this->getElementProperties($element);
     $children = $this->getElementChildren($element);
@@ -81,15 +82,15 @@ class JSONFormDefinition {
   }
 
   /**
-   * Gets the array repersentation of an element's properties from the JSON Form Definition.
+   * Gets an element's properties from the JSON Form Definition as an array.
    *
-   * @param stdClass $element
-   *   A JSON repersentation of a Drupal Form Element.
+   * @param object $element
+   *   A JSON representation of a Drupal Form Element.
    *
    * @return array
-   *   A Drupal repersentation of form element's properties.
+   *   A Drupal representation of form element's properties.
    */
-  private function getElementProperties(stdClass $element) {
+  protected function getElementProperties(stdClass $element) {
     $ignore = array(
       'key',
       'text',
@@ -119,8 +120,10 @@ class JSONFormDefinition {
     );
     $controls = array();
     foreach ($element as $key => $value) {
-      if (array_search($key, $ignore) === FALSE) { // Is Control?
-        if ($this->validateProperty($key, $value)) { // Is the given valid
+      // Is it a control, or should the element be ignored?
+      if (array_search($key, $ignore) === FALSE) {
+        // Is the given property valid?
+        if ($this->validateProperty($key, $value)) {
           $controls["#$key"] = (is_object($value) || is_array($value)) ?
               $this->transformElementProperties((array) $value) :
               cast_string_to_type($value);
@@ -131,13 +134,15 @@ class JSONFormDefinition {
   }
 
   /**
-   * Converts explicit types to thier native repersentation.
+   * Converts explicit types to their native representation.
    *
    * @param array $property
+   *   The array of properties to convert.
    *
    * @return array
+   *   A converted array of native representations.
    */
-  private function transformElementProperties(array $property) {
+  protected function transformElementProperties(array $property) {
     $array = array();
     foreach ($property as $key => $value) {
       $array[cast_string_to_type($key)] = (is_object($value) || is_array($value)) ?
@@ -150,17 +155,17 @@ class JSONFormDefinition {
   /**
    * Checks if the given property and its value are valid.
    *
-   * This may be cast to the wayside at a later time...
+   * This may be cast to the wayside at a later time.
    *
    * @param string $name
    *   The name of the element property.
    * @param mixed $value
    *   The value of the element property.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if the property name and its value are valid.
    */
-  private function validateProperty($name, $value) {
+  protected function validateProperty($name, $value) {
     $controls = array(
       'type' => 'is_non_empty_string',
       'access' => 'is_bool',
@@ -210,19 +215,20 @@ class JSONFormDefinition {
     if (isset($controls[$name])) {
       return call_user_func($controls[$name], $value);
     }
-    return TRUE; // Assume valid for non specified controls.
+    // Assume valid for non specified controls.
+    return TRUE;
   }
 
   /**
    * Gets an array of the child elements of the given element.
    *
-   * @param stdClass $element
-   *   A JSON repersentation of a Drupal Form Element.
+   * @param object $element
+   *   A JSON representation of a Drupal Form Element.
    *
    * @return array
-   *   A Drupal repersentation of form element's child form elements.
+   *   A Drupal representation of form element's child form elements.
    */
-  private function getElementChildren(stdClass $element) {
+  protected function getElementChildren(stdClass $element) {
     $children = array();
     if (isset($element->elements)) {
       foreach ($element->elements as $child) {

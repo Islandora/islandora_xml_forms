@@ -2,8 +2,11 @@
 
 /**
  * @file
+ * Whoop whoop.
  *
- * Associate smociate..
+ * Nigel sez: "Associate smociate.."
+ *
+ * Well, someone says, anyway. I ain't looking up the blame.
  */
 
 /**

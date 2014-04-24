@@ -2,15 +2,19 @@
 
 /**
  * @file
- *
  * Callbacks and functions used in the Create Form Page.
  */
 
 /**
  * Get the Create Page Form.
  *
+ * @param array $form
+ *   The Drupal form.
  * @param array $form_state
  *   The Drupal Form State.
+ * @param string $type
+ *   The form type.
+ *
  * @return array
  *   The Drupal Form.
  */
@@ -32,7 +36,7 @@ function xml_form_builder_create($form, array &$form_state, $type) {
     '#element_validate' => array('xml_form_builder_create_validate_name'),
   );
 
-  if($type == 'import') {
+  if ($type == 'import') {
     $return['file'] = array(
       '#type' => 'file',
       '#title' => t('Form Definition'),
@@ -48,16 +52,18 @@ function xml_form_builder_create($form, array &$form_state, $type) {
   );
 
   $return['cancel'] = array(
-      '#type' => 'submit',
-      '#value' => t('Cancel'),
-      '#name' => 'cancel',
+    '#type' => 'submit',
+    '#value' => t('Cancel'),
+    '#name' => 'cancel',
   );
 
   return $return;
 }
 
 /**
- * Validates the name Drupal Form Element. Ensures that the name doesn't match any existing form names.
+ * Validates the name Drupal Form Element.
+ *
+ * Ensures that the name doesn't match any existing form names.
  *
  * @param array $element
  *   The name Drupal Form Element.
@@ -82,6 +88,10 @@ function xml_form_builder_create_validate_name(array $element, array &$form_stat
  *   The Drupal Form.
  * @param array $form_state
  *   The Drupal Form State.
+ *
+ * @throws Exception
+ *   If unable to load the uploaded file as XML, or if the form definition is
+ *   invalid.
  */
 function xml_form_builder_create_validate(array $form, array &$form_state) {
   $file_uploaded = isset($_FILES['files']['error']['file']) && ($_FILES['files']['error']['file'] == 0);
@@ -93,7 +103,7 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
       $definition->load($filename);
     }
     catch (Exception $e) {
-      form_set_error('files', t("Could not load uploaded file as XML, with error: {$e->getMessage()}"));
+      form_set_error('files', t("Could not load uploaded file as XML, with error: %error.", array('%error' => $e->getMessage())));
     }
     try {
       $version = XMLFormDefinition::getVersion($definition);
@@ -110,8 +120,9 @@ function xml_form_builder_create_validate(array $form, array &$form_state) {
 /**
  * Submit the Create form. Creates a new Form definition in the database.
  *
- * If the form definition was successfully created, redirect the user to the edit form.
- * if not or the cancel button was clicked return the user to the main menu.
+ * If the form definition was successfully created, redirect the user to the
+ * edit form. If not, or if the cancel button was clicked, return the user to
+ * the main menu.
  *
  * @param array $form
  *   The Drupal Form.

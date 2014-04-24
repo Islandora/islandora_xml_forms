@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Date picker controls.
+ */
+
 (function ($) {
     Drupal.behaviors.xmlFormElementDatepicker = {
         attach: function(context, settings) {
