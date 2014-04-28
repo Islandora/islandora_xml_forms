@@ -13,22 +13,22 @@ define('XML_FORM_BUILDER_DELETE_FORMS_PERMS', 'Delete XML Forms');
 define('XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS', 'Associate XML Forms');
 
 define('XML_FORM_BUILDER_ADMIN_MENU', 'admin/islandora/xmlform');
-define('XML_FORM_BUILDER_MAIN_MENU', 'admin/islandora/xmlform/forms');
-define('XML_FORM_BUILDER_SETTINGS_MENU', 'admin/islandora/xmlform/settings');
-define('XML_FORM_BUILDER_XSLTS_MENU', 'admin/islandora/xmlform/xslts');
-define('XML_FORM_BUILDER_ADD_XSLTS_MENU', 'admin/islandora/xmlform/xslts/add_xslt');
-define('XML_FORM_BUILDER_ADD_DC_MAPPING_MENU', 'admin/islandora/xmlform/xslts/add_default_dc_mapping');
-define('XML_FORM_BUILDER_CREATE_MENU', 'admin/islandora/xmlform/forms/create');
-define('XML_FORM_BUILDER_IMPORT_MENU', 'admin/islandora/xmlform/forms/import');
-define('XML_FORM_BUILDER_VIEW_MENU', 'admin/islandora/xmlform/forms/%/view');
-define('XML_FORM_BUILDER_COPY_MENU', 'admin/islandora/xmlform/forms/%/copy');
-define('XML_FORM_BUILDER_EDIT_MENU', 'admin/islandora/xmlform/forms/%/edit');
-define('XML_FORM_BUILDER_DELETE_MENU', 'admin/islandora/xmlform/forms/%/delete');
-define('XML_FORM_BUILDER_ASSOCIATIONS_MENU', 'admin/islandora/xmlform/forms/%/associations');
-define('XML_FORM_BUILDER_ASSOCIATE_MENU', 'admin/islandora/xmlform/forms/%/associate/%');
-define('XML_FORM_BUILDER_DISASSOCIATE_MENU', 'admin/islandora/xmlform/forms/%/disassociate/%');
-define('XML_FORM_BUILDER_EXPORT_CALLBACK', 'admin/islandora/xmlform/forms/%/export');
-define('XML_FORM_BUILDER_SAVE_CALLBACK', 'admin/islandora/xmlform/forms/%/edit/save');
+define('XML_FORM_BUILDER_MAIN_MENU', XML_FORM_BUILDER_ADMIN_MENU . '/forms');
+define('XML_FORM_BUILDER_SETTINGS_MENU', XML_FORM_BUILDER_ADMIN_MENU . '/settings');
+define('XML_FORM_BUILDER_XSLTS_MENU', XML_FORM_BUILDER_ADMIN_MENU . '/xslts');
+define('XML_FORM_BUILDER_ADD_XSLTS_MENU', XML_FORM_BUILDER_XSLTS_MENU . '/add_xslt');
+define('XML_FORM_BUILDER_ADD_DC_MAPPING_MENU', XML_FORM_BUILDER_XSLTS_MENU . '/add_default_dc_mapping');
+define('XML_FORM_BUILDER_CREATE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/create');
+define('XML_FORM_BUILDER_IMPORT_MENU', XML_FORM_BUILDER_MAIN_MENU . '/import');
+define('XML_FORM_BUILDER_VIEW_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/view');
+define('XML_FORM_BUILDER_COPY_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/copy');
+define('XML_FORM_BUILDER_EDIT_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/edit');
+define('XML_FORM_BUILDER_DELETE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/delete');
+define('XML_FORM_BUILDER_ASSOCIATIONS_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/associations');
+define('XML_FORM_BUILDER_ASSOCIATE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/associate/%');
+define('XML_FORM_BUILDER_DISASSOCIATE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/disassociate/%');
+define('XML_FORM_BUILDER_EXPORT_CALLBACK', XML_FORM_BUILDER_MAIN_MENU . '/%/export');
+define('XML_FORM_BUILDER_SAVE_CALLBACK', XML_FORM_BUILDER_MAIN_MENU . '/%/edit/save');
 define('XML_FORM_BUILDER_EDIT_DATASTREAM_MENU', 'islandora/edit_form/%islandora_object/%islandora_datastream');
 
 // @codingStandardsIgnoreStart
