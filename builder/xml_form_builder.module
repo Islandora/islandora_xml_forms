@@ -714,8 +714,8 @@ function xml_form_builder_help($path) {
  *
  * Dynamically maps the derivatives based on the database.
  */
-function xml_form_builder_islandora_derivative(AbstractObject $object) {
-  if (!variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
+function xml_form_builder_islandora_derivative(AbstractObject $object = NULL) {
+  if (!variable_get('xml_form_builder_use_default_dc_xslts', FALSE) || !$object) {
     return;
   }
   module_load_include('inc', 'xml_form_builder', 'includes/db');
