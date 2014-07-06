@@ -136,9 +136,11 @@ function xml_form_builder_edit_datastream_form_metadata_form(array $form, array 
   $xml = $datastream->content;
   $form = xml_form_builder_get_form($form, $form_state, $form_name, $xml);
   // Make the Object label field required.
-  $title_field_parents = $association['title_field'];
-  $title_field_parents[] = '#required';
-  $title_field = drupal_array_set_nested_value($form, $title_field_parents, TRUE);
+  if ($association['title_field']) {
+    $title_field_parents = $association['title_field'];
+    $title_field_parents[] = '#required';
+    drupal_array_set_nested_value($form, $title_field_parents, TRUE);
+  }
   $form['update'] = array(
     '#type' => 'submit',
     '#value' => t('Update'),
@@ -163,8 +165,11 @@ function xml_form_builder_edit_datastream_form_metadata_form_submit(array $form,
   $association = $form_state['association'];
   $object = islandora_object_load($datastream->parent->id);
 
-  $title_field = drupal_array_get_nested_value($form, $association['title_field']);
-  $label = $title_field['#value'];
+  $label = NULL;
+  if ($association['title_field']) {
+    $title_field = drupal_array_get_nested_value($form, $association['title_field']);
+    $label = $title_field['#value'];
+  }
 
   $xml_form = new XMLForm($form_state);
   $document = $xml_form->submit($form, $form_state);

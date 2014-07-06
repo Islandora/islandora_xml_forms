@@ -431,3 +431,17 @@ function xml_form_builder_update_7103() {
 
   return t('Updated database to support default DC XSLT mappings.');
 }
+
+/**
+ * Make title_field not required.
+ */
+function xml_form_builder_update_7104() {
+  db_change_field('xml_form_builder_form_associations', 'title_field', 'title_field', array(
+    'description' => 'The form field for the object\'s label.',
+    'type' => 'varchar',
+    'length' => 256,
+    'not NULL' => FALSE,
+    'binary' => TRUE,
+    'serialize' => TRUE,
+  ));
+}
