@@ -29,7 +29,7 @@ define('XML_FORM_BUILDER_ASSOCIATE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/assoc
 define('XML_FORM_BUILDER_DISASSOCIATE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/disassociate/%');
 define('XML_FORM_BUILDER_EXPORT_CALLBACK', XML_FORM_BUILDER_MAIN_MENU . '/%/export');
 define('XML_FORM_BUILDER_SAVE_CALLBACK', XML_FORM_BUILDER_MAIN_MENU . '/%/edit/save');
-define('XML_FORM_BUILDER_EDIT_DATASTREAM_MENU', 'islandora/edit_form/%islandora_object/%islandora_datastream');
+define('XML_FORM_BUILDER_EDIT_DATASTREAM_MENU', 'islandora/edit_form/%islandora_object/%');
 
 // @codingStandardsIgnoreStart
 define('PERM_XML_FORM_BUILDER_LIST_FORMS', XML_FORM_BUILDER_LIST_FORMS_PERMS);
@@ -213,11 +213,11 @@ function xml_form_builder_menu() {
   );
   $items[XML_FORM_BUILDER_EDIT_DATASTREAM_MENU] = array(
     'title' => 'Edit datastream',
-    'file' => 'includes/edit_datastream.form.inc',
+    'file' => 'includes/datastream.form.inc',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('xml_form_builder_edit_datastream_form', 3),
-    'access callback' => 'islandora_datastream_access',
-    'access arguments' => array(ISLANDORA_METADATA_EDIT, 3),
+    'page arguments' => array('xml_form_builder_datastream_form', 2, 3),
+    'access callback' => 'xml_form_builder_datastream_access',
+    'access arguments' => array(ISLANDORA_METADATA_EDIT, 2, 3),
     'load arguments' => array(2),
     'type' => MENU_CALLBACK,
   );
@@ -233,6 +233,16 @@ function xml_form_builder_xslts_access() {
     return TRUE;
   }
   return FALSE;
+}
+
+/**
+ * Access callback for editing / creating a datastream.
+ */
+function xml_form_builder_datastream_access($perm, AbstractObject $object, $dsid) {
+  if (isset($object[$dsid])) {
+    return islandora_datastream_access($perm, $object[$dsid]);
+  }
+  return islandora_object_access($perm, $object);
 }
 
 /**
@@ -515,14 +525,16 @@ function xml_form_builder_islandora_edit_datastream_registry(AbstractObject $obj
  * @param XMLDocument $document
  *   The generated metadata document to add to the object.
  * @param string $label
- *   A new label for the given object.
+ *   A new label for the given object, if NULL then the label is not set.
  *
  * @return array
  *   An associative array where the keys are DSID's and the values are booleans
  *   that state if the given datastream was created (TRUE) or updated (FALSE).
  */
-function xml_form_builder_update_object(AbstractObject $object, array $association, XMLDocument $document, $label) {
-  $object->label = $label;
+function xml_form_builder_update_object(AbstractObject $object, array $association, XMLDocument $document, $label = NULL) {
+  if ($label) {
+    $object->label = $label;
+  }
   $object->models = array($association['content_model']);
   $document = $document->document;
   $run_transforms = !variable_get('xml_form_builder_use_default_dc_xslts', FALSE);

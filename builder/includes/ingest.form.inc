@@ -28,7 +28,7 @@ function xml_form_builder_ingest_form(array $form, array &$form_state, array $as
   $template = is_string($association['template']) && !empty($association['template']) ? $association['template'] : NULL;
   $xml = isset($object[$dsid]) ? $object[$dsid]->content : $template;
   $form = xml_form_builder_get_form($form, $form_state, $form_name, $xml);
-  if ($form !== FALSE) {
+  if ($form !== FALSE && $association['title_field']) {
     // Make the Object label field required.
     $title_element = $association['title_field'];
     $title_element[] = '#required';
@@ -69,8 +69,11 @@ function xml_form_builder_ingest_form_submit(array $form, array &$form_state) {
   $object = islandora_ingest_form_get_object($form_state);
   $xml_form = new XMLForm($form_state);
   $document = $xml_form->submit($form, $form_state);
-  $title_field = drupal_array_get_nested_value($form, $association['title_field']);
-  $label = $title_field['#value'];
+  $label = NULL;
+  if ($association['title_field']) {
+    $title_field = drupal_array_get_nested_value($form, $association['title_field']);
+    $label = $title_field['#value'];
+  }
   $step_storage['created'] = xml_form_builder_update_object($object, $association, $document, $label);
 }
 

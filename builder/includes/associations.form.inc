@@ -31,7 +31,12 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
 
   $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
   $create_table_rows = function($o) {
-    $o['title_field'] = "['" . implode("']['", $o['title_field']) . "']";
+    if (is_string($o['title_field'])) {
+      $o['title_field'] = "['" . implode("']['", $o['title_field']) . "']";
+    }
+    else {
+      $o['title_field'] = t('None');
+    }
     $o['type'] = $o['in_db'] ? 'custom' : 'hook';
     return $o;
   };
@@ -75,7 +80,6 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
         '#prefix' => '<div id="ahah-wrapper">',
         '#suffix' => '</div>',
         '#options' => xml_form_builder_get_title_options($form_name),
-        '#required' => TRUE,
       ),
     ),
   );
@@ -131,6 +135,9 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     $form_state['values'],
     array_combine($object_keys, $object_keys)
   );
+  if (empty($object['title_field'])) {
+    $object['title_field'] = NULL;
+  }
   $object['template'] = '';
   $file_uploaded = $_FILES['files']['error']['file'] == 0;
   if ($file_uploaded) {
@@ -164,7 +171,7 @@ function xml_form_builder_get_title_options($form_name) {
       $result = $xpath->query('//element[@name]');
       $elements = dom_node_list_to_array($result);
       if (count($elements) > 0) {
-        $output = array();
+        $output = array(NULL => t('Do not set the label'));
         foreach ($elements as $element) {
           $result = $xpath->query('ancestor-or-self::node()[@name]', $element);
           $ancestors = dom_node_list_to_array($result);
@@ -181,7 +188,7 @@ function xml_form_builder_get_title_options($form_name) {
       }
     }
   }
-  return array(NULL => 'invalid');
+  return array(NULL => t('Do not set the label'));
 }
 
 /**
