@@ -107,7 +107,14 @@ public static function xml_form_elements_creative_commons($element, &$form_state
   if (!isset($form_state['input'][$element['#name']]) && isset($element['#default_value'])) {
     // Reversing this array facilitates value_callback mangling by community.
     $default_value_array = array_reverse(explode('/', $element['#default_value']));
-    $properties = explode('-', $default_value_array[3]);
+    // If there are only 3 elements, country is blank = international.
+    if (count($default_value_array) == 3) {
+      $default_keys = array('property' => 2);
+    }
+    else {
+      $default_keys = array('jurisdiction' => 1, 'property' => 3);
+    }
+    $properties = explode('-', $default_value_array[$default_keys['property']]);
 
     $commercial = variable_get('xml_form_builder_cc_default_allow_commercial', 'y');
     $derivatives = variable_get('xml_form_builder_cc_default_allow_derivatives', 'y');
@@ -131,7 +138,12 @@ public static function xml_form_elements_creative_commons($element, &$form_state
       }
     }
 
-    $jurisdiction = empty($default_value_array[1]) ? variable_get('xml_form_builder_cc_default_jurisdiction', 'international') : $default_value_array[1];
+    if (array_key_exists('jurisdiction', $default_keys)) {
+      $jurisdiction = empty($default_value_array[$default_keys['jurisdiction']]) ? variable_get('xml_form_builder_cc_default_jurisdiction', 'international') : $default_value_array[$default_keys['jurisdiction']];
+    }
+    else {
+      $jurisdiction = 'international';
+    }
   }
   else {
     $derivatives = isset($form_state['input'][$element['#name']]['license_fieldset']['allow_modifications']) ? $form_state['input'][$element['#name']]['license_fieldset']['allow_modifications'] : variable_get('xml_form_builder_cc_default_allow_derivatives', 'y');
