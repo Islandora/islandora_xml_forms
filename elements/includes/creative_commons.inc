@@ -7,78 +7,80 @@
 
 
 class CreativeCommons {
+
+
   
   public static $modification_options = array(
-    'y' => t('Yes'),
-    'n' => t('No'),
-    'sa' => t('Yes, as long as others share alike'),
+    'y' => 'Yes',
+    'n' => 'No',
+    'sa' => 'Yes, as long as others share alike',
   );
 
   public static $countries = array(
-    'international' => t('International'),
-    'ar' => t('Argentina'),
-    'au' => t('Australia'),
-    'at' => t('Austria'),
-    'be' => t('Belgium'),
-    'br' => t('Brazil'),
-    'bg' => t('Bulgaria'),
-    'ca' => t('Canada'),
-    'cl' => t('Chile'),
-    'cn' => t('China Mainland'),
-    'co' => t('Colombia'),
-    'cr' => t('Costa Rica'),
-    'hr' => t('Croatia'),
-    'cz' => t('Czech Republic'),
-    'dk' => t('Denmark'),
-    'ec' => t('Ecuador'),
-    'eg' => t('Egypt'),
-    'ee' => t('Estonia'),
-    'fi' => t('Finland'),
-    'fr' => t('France'),
-    'de' => t('Germany'),
-    'gr' => t('Greece'),
-    'gt' => t('Guatemala'),
-    'hk' => t('Hong kong'),
-    'hu' => t('Hungary'),
-    'in' => t('India'),
-    'ie' => t('Ireland'),
-    'il' => t('Israel'),
-    'it' => t('Italy'),
-    'jp' => t('Japan'),
-    'lu' => t('Luxembourg'),
-    'mk' => t('Macedonia'),
-    'my' => t('Malaysia'),
-    'mt' => t('Malta'),
-    'mx' => t('Mexico'),
-    'nl' => t('Netherlands'),
-    'nz' => t('New Zealand'),
-    'no' => t('Norway'),
-    'pe' => t('Peru'),
-    'ph' => t('Philippines'),
-    'pl' => t('Poland'),
-    'pt' => t('Portugal'),
-    'pr' => t('Puerto Rico'),
-    'ro' => t('Romania'),
-    'rs' => t('Serbia'),
-    'sg' => t('Singapore'),
-    'si' => t('Slovenia'),
-    'za' => t('South Africa'),
-    'kr' => t('South Korea'),
-    'es' => t('Spain'),
-    'se' => t('Sweden'),
-    'ch' => t('Switzerland'),
-    'tw' => t('Taiwan'),
-    'th' => t('Thailand'),
-    'uk' => t('UK: England & Wales'),
-    'scotland' => t('Uk: Scotland'),
-    'ug' => t('Uganda'),
-    'us' => t('United states'),
-    'vn' => t('Vietnam'),
+    'international' => 'International',
+    'ar' => 'Argentina',
+    'au' => 'Australia',
+    'at' => 'Austria',
+    'be' => 'Belgium',
+    'br' => 'Brazil',
+    'bg' => 'Bulgaria',
+    'ca' => 'Canada',
+    'cl' => 'Chile',
+    'cn' => 'China Mainland',
+    'co' => 'Colombia',
+    'cr' => 'Costa Rica',
+    'hr' => 'Croatia',
+    'cz' => 'Czech Republic',
+    'dk' => 'Denmark',
+    'ec' => 'Ecuador',
+    'eg' => 'Egypt',
+    'ee' => 'Estonia',
+    'fi' => 'Finland',
+    'fr' => 'France',
+    'de' => 'Germany',
+    'gr' => 'Greece',
+    'gt' => 'Guatemala',
+    'hk' => 'Hong kong',
+    'hu' => 'Hungary',
+    'in' => 'India',
+    'ie' => 'Ireland',
+    'il' => 'Israel',
+    'it' => 'Italy',
+    'jp' => 'Japan',
+    'lu' => 'Luxembourg',
+    'mk' => 'Macedonia',
+    'my' => 'Malaysia',
+    'mt' => 'Malta',
+    'mx' => 'Mexico',
+    'nl' => 'Netherlands',
+    'nz' => 'New Zealand',
+    'no' => 'Norway',
+    'pe' => 'Peru',
+    'ph' => 'Philippines',
+    'pl' => 'Poland',
+    'pt' => 'Portugal',
+    'pr' => 'Puerto Rico',
+    'ro' => 'Romania',
+    'rs' => 'Serbia',
+    'sg' => 'Singapore',
+    'si' => 'Slovenia',
+    'za' => 'South Africa',
+    'kr' => 'South Korea',
+    'es' => 'Spain',
+    'se' => 'Sweden',
+    'ch' => 'Switzerland',
+    'tw' => 'Taiwan',
+    'th' => 'Thailand',
+    'uk' => 'UK: England & Wales',
+    'scotland' => 'Uk: Scotland',
+    'ug' => 'Uganda',
+    'us' => 'United states',
+    'vn' => 'Vietnam',
   );
 
   public static $commercial_options = array(
-    'y' => t('Yes'),
-    'n' => t('No'),
+    'y' => 'Yes',
+    'n' => 'No',
   );
 /**
  * Creates a creative_commons form element.
@@ -137,6 +139,11 @@ public static function xml_form_elements_creative_commons($element, &$form_state
     $jurisdiction = isset($form_state['input'][$element['#name']]['license_fieldset']['license_jurisdiction']) ? $form_state['input'][$element['#name']]['license_fieldset']['license_jurisdiction'] : variable_get('xml_form_builder_cc_default_jurisdiction', 'international');
   }
 
+  // Fix for static variables
+  $modification_options = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$modification_options);
+  $commercial_options = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$commercial_options);
+  $jurisdiction = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$jurisdiction);
+
   // Form elements.
   $element['license_fieldset'] = array(
     '#type' => 'fieldset',
@@ -148,7 +155,7 @@ public static function xml_form_elements_creative_commons($element, &$form_state
   $element['license_fieldset']['allow_modifications'] = array(
     '#type' => 'select',
     '#title' => t('Allow modifications of your work?'),
-    '#options' => CreativeCommons::$modification_options,
+    '#options' => $modification_options,
     '#default_value' => $derivatives,
     '#ajax' => array(
       'wrapper' => $license_output_id,
@@ -159,7 +166,7 @@ public static function xml_form_elements_creative_commons($element, &$form_state
   $element['license_fieldset']['allow_commercial'] = array(
     '#type' => 'select',
     '#title' => t('Allow commercial uses of your work?'),
-    '#options' => CreativeCommons::$commercial_options,
+    '#options' => $commercial_options,
     '#default_value' => $commercial,
     '#ajax' => array(
       'wrapper' => $license_output_id,
@@ -170,7 +177,7 @@ public static function xml_form_elements_creative_commons($element, &$form_state
   $element['license_fieldset']['license_jurisdiction'] = array(
     '#type' => 'select',
     '#title' => t('License Jurisdiction'),
-    '#options' => CreativeCommons::$countries,
+    '#options' => $countries,
     '#default_value' => $jurisdiction,
     '#ajax' => array(
       'wrapper' => $license_output_id,
@@ -187,7 +194,7 @@ public static function xml_form_elements_creative_commons($element, &$form_state
     $element['#tree'] = FALSE;
   }
 
-  $response = xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction);
+  $response = CreativeCommons::xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction);
   if ($response) {
     $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = (string) $response->{'license-uri'};
     $element['license_fieldset']['license_output'] = array(
@@ -197,7 +204,7 @@ public static function xml_form_elements_creative_commons($element, &$form_state
     );
   }
   else {
-    $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction);
+    $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = CreativeCommons::xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction);
     $element['license_fieldset']['license_output'] = array();
   }
 
@@ -273,5 +280,19 @@ public static function xml_form_elements_creative_commons_value($commercial, $de
     $arguments = "$arguments-sa";
   }
   return "http://creativecommons.org/licenses/by$arguments/2.5/$jurisdiction/";
+}
+
+/**
+ * Static class variables can't be defined with the t(), 
+ * so this allows us to add it after the fact using array_walk.
+ *
+ * @param string $value
+ *    array value to apply t() to
+ *
+ * @return string
+ *    the t() modified string
+ */
+public static function xml_form_builder_fix_variables($value) {
+  return t($value);
 }
 }
