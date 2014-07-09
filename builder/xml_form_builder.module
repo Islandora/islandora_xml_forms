@@ -692,6 +692,7 @@ function xml_form_builder_transform_mods_collection_hack(DOMDocument $document) 
  *   The form definition.
  */
 function xml_form_builder_settings_form(array $form, array &$form_state) {
+  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/creative_commons');
   $form = array(
     'xml_form_builder_use_default_dc_xslts' => array(
       '#type' => 'checkbox',
@@ -700,6 +701,30 @@ function xml_form_builder_settings_form(array $form, array &$form_state) {
       '#default_value' => variable_get('xml_form_builder_use_default_dc_xslts', FALSE),
     ),
   );
+  $form['xml_form_builder_cc_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Creative Commons defaults'),
+    '#description' => t('Set defaults for use in the Creative Commons field when adding new objects.'),
+    'xml_form_builder_cc_default_allow_derivatives' => array(
+      '#type' => 'select',
+      '#title' => t('Allow modifications of your work?'),
+      '#options' => CreativeCommons::$modification_options,
+      '#default_value' => variable_get('xml_form_builder_cc_default_allow_derivatives', 'y'),
+    ),
+    'xml_form_builder_cc_default_allow_commercial' => array(
+      '#type' => 'select',
+      '#title' => t('Allow commercial uses of your work?'),
+      '#options' => CreativeCommons::$commercial_options,
+      '#default_value' => variable_get('xml_form_builder_cc_default_allow_commercial', 'y'),
+    ),
+    'xml_form_builder_cc_default_jurisdiction' => array(
+      '#type' => 'select',
+      '#title' => t('License Jurisdiction.'),
+      '#options' => CreativeCommons::$countries,
+      '#default_value' => variable_get('xml_form_builder_cc_default_jurisdiction', 'international'),
+    ),
+  );
+
   return system_settings_form($form);
 }
 

@@ -5,23 +5,16 @@
  * Code for creative commons form elements.
  */
 
-/**
- * Creates a creative_commons form element.
- *
- * @param array $form_state
- *   The form state.
- *
- * @return array
- *   The element definition.
- */
-function xml_form_elements_creative_commons($element, &$form_state) {
-  $modification_options = array(
+
+class CreativeCommons {
+  
+  public static $modification_options = array(
     'y' => t('Yes'),
     'n' => t('No'),
     'sa' => t('Yes, as long as others share alike'),
   );
 
-  $countries = array(
+  public static $countries = array(
     'international' => t('International'),
     'ar' => t('Argentina'),
     'au' => t('Australia'),
@@ -83,17 +76,28 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     'vn' => t('Vietnam'),
   );
 
-  $commercial_options = array(
+  public static $commercial_options = array(
     'y' => t('Yes'),
     'n' => t('No'),
   );
+/**
+ * Creates a creative_commons form element.
+ *
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The element definition.
+ */
+public static function xml_form_elements_creative_commons($element, &$form_state) {
 
   // Get an ID for ajax.
   if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'])) {
     $license_output_id = $form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'];
   }
   else {
-    $license_output_id = drupal_html_id('license_output');
+    # $license_output_id = drupal_html_id('license_output');
+    $license_output_id = 'license_output';
     $form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'] = $license_output_id;
   }
 
@@ -103,8 +107,8 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     $default_value_array = array_reverse(explode('/', $element['#default_value']));
     $properties = explode('-', $default_value_array[3]);
 
-    $commercial = 'y';
-    $derivatives = 'y';
+    $commercial = variable_get('xml_form_builder_cc_default_allow_commercial', 'y');
+    $derivatives = variable_get('xml_form_builder_cc_default_allow_derivatives', 'y');
 
     foreach ($properties as $property) {
       switch ($property) {
@@ -125,12 +129,12 @@ function xml_form_elements_creative_commons($element, &$form_state) {
       }
     }
 
-    $jurisdiction = empty($default_value_array[1]) ? 'international' : $default_value_array[1];
+    $jurisdiction = empty($default_value_array[1]) ? variable_get('xml_form_builder_cc_default_jurisdiction', 'international') : $default_value_array[1];
   }
   else {
-    $derivatives = isset($form_state['input'][$element['#name']]['license_fieldset']['allow_modifications']) ? $form_state['input'][$element['#name']]['license_fieldset']['allow_modifications'] : 'y';
-    $commercial = isset($form_state['input'][$element['#name']]['license_fieldset']['allow_commercial']) ? $form_state['input'][$element['#name']]['license_fieldset']['allow_commercial'] : 'y';
-    $jurisdiction = isset($form_state['input'][$element['#name']]['license_fieldset']['license_jurisdiction']) ? $form_state['input'][$element['#name']]['license_fieldset']['license_jurisdiction'] : 'ca';
+    $derivatives = isset($form_state['input'][$element['#name']]['license_fieldset']['allow_modifications']) ? $form_state['input'][$element['#name']]['license_fieldset']['allow_modifications'] : variable_get('xml_form_builder_cc_default_allow_derivatives', 'y');
+    $commercial = isset($form_state['input'][$element['#name']]['license_fieldset']['allow_commercial']) ? $form_state['input'][$element['#name']]['license_fieldset']['allow_commercial'] : variable_get('xml_form_builder_cc_default_allow_commercial', 'y');
+    $jurisdiction = isset($form_state['input'][$element['#name']]['license_fieldset']['license_jurisdiction']) ? $form_state['input'][$element['#name']]['license_fieldset']['license_jurisdiction'] : variable_get('xml_form_builder_cc_default_jurisdiction', 'international');
   }
 
   // Form elements.
@@ -144,7 +148,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   $element['license_fieldset']['allow_modifications'] = array(
     '#type' => 'select',
     '#title' => t('Allow modifications of your work?'),
-    '#options' => $modification_options,
+    '#options' => CreativeCommons::$modification_options,
     '#default_value' => $derivatives,
     '#ajax' => array(
       'wrapper' => $license_output_id,
@@ -155,7 +159,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   $element['license_fieldset']['allow_commercial'] = array(
     '#type' => 'select',
     '#title' => t('Allow commercial uses of your work?'),
-    '#options' => $commercial_options,
+    '#options' => CreativeCommons::$commercial_options,
     '#default_value' => $commercial,
     '#ajax' => array(
       'wrapper' => $license_output_id,
@@ -166,7 +170,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   $element['license_fieldset']['license_jurisdiction'] = array(
     '#type' => 'select',
     '#title' => t('License Jurisdiction'),
-    '#options' => $countries,
+    '#options' => CreativeCommons::$countries,
     '#default_value' => $jurisdiction,
     '#ajax' => array(
       'wrapper' => $license_output_id,
@@ -203,7 +207,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
 /**
  * Ajax callback to render the CC license.
  */
-function xml_form_elements_creative_commons_ajax(&$form, &$form_state) {
+public static function xml_form_elements_creative_commons_ajax(&$form, &$form_state) {
   $parents = $form_state['triggering_element']['#parents'];
   array_pop($parents);
   $creative_commons_element = drupal_array_get_nested_value($form, $parents);
@@ -227,7 +231,7 @@ function xml_form_elements_creative_commons_ajax(&$form, &$form_state) {
  *   SimpleXMLElement the return from the REST API.
  *   FALSE if failed request.
  */
-function xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction) {
+public static function xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction) {
   $response = drupal_http_request(url(
     'http://api.creativecommons.org/rest/1.5/license/standard/get',
     array(
@@ -257,7 +261,7 @@ function xml_form_elements_get_creative_commons($commercial, $derivatives, $juri
  * @return string
  *   The value of the element.
  */
-function xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction) {
+public static function xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction) {
   $arguments = '';
   if ($commercial == 'n') {
     $arguments = "$arguments-nc";
@@ -269,4 +273,5 @@ function xml_form_elements_creative_commons_value($commercial, $derivatives, $ju
     $arguments = "$arguments-sa";
   }
   return "http://creativecommons.org/licenses/by$arguments/2.5/$jurisdiction/";
+}
 }
