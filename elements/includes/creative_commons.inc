@@ -142,7 +142,7 @@ public static function xml_form_elements_creative_commons($element, &$form_state
   // Fix for static variables
   $modification_options = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$modification_options);
   $commercial_options = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$commercial_options);
-  $jurisdiction = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$jurisdiction);
+  $countries = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$countries);
 
   // Form elements.
   $element['license_fieldset'] = array(
