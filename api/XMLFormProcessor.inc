@@ -132,9 +132,10 @@ class XMLFormProcessor {
     // can update newly created elements. Delete must come last, as we want the
     // update actions to run on elements that may then later be removed.
     $elements = $element->flatten();
-    $this->createNodes($this->getActions($elements, 'create'));
-    $this->modifyNodes($this->getActions($elements, 'update'));
-    $this->modifyNodes($this->getActions($elements, 'delete'));
+    $filtered_elements = $this->filterElements($elements);
+    $this->createNodes($this->getActions($filtered_elements, 'create'));
+    $this->modifyNodes($this->getActions($filtered_elements, 'update'));
+    $this->modifyNodes($this->getActions($filtered_elements, 'delete'));
     $this->modifyNodes($this->getRemovedFormElementsDeleteActions($element));
     return $this->document;
   }
@@ -208,9 +209,10 @@ class XMLFormProcessor {
   protected function getRemovedFormElementsDeleteActions(FormElement $element) {
     $actions = array();
     $elements = $element->flatten();
+    $filtered_elements = $this->filterElements($elements);
     $registered = $this->nodeRegistry->getRegistered();
     foreach ($registered as $hash => $node) {
-      if (isset($elements[$hash]) === FALSE) {
+      if (isset($filtered_elements[$hash]) === FALSE) {
         $element = $this->elementRegistry->get($hash);
         $delete = isset($element->actions->delete) ? $element->actions->delete : NULL;
         if (isset($delete)) {
@@ -221,4 +223,23 @@ class XMLFormProcessor {
     return $actions;
   }
 
+  /**
+   * Filters out elements that are hidden by #access and not to be processed.
+   *
+   * @param array $elements
+   *   An array containing flattened FormElements.
+   *
+   * @return array
+   *   An array of filtered FormElements.
+   */
+  protected function filterElements($elements) {
+    $filter_function = function ($filter_element) {
+      if (isset($filter_element->controls['#access'])) {
+        return $filter_element->controls['#access'];
+      }
+      return TRUE;
+    };
+    $filtered_elements = array_filter($elements, $filter_function);
+    return $filtered_elements;
+  }
 }
