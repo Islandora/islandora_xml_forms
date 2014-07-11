@@ -135,7 +135,7 @@ class TabPanel {
     );
     $delete['#prefix'] = '<div class="ui-tabpanel-delete-button">';
     $delete['#suffix'] = '</div>';
-    $delete['#limit_validation_errors'][] = $element['#parents'];
+    $delete['#limit_validation_errors'] = array();
     $delete['#ajax'] = array(
       'callback' => 'xml_form_elements_ajax_callback',
       'params' => array(
