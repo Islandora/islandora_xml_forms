@@ -129,10 +129,39 @@ class XMLForm extends Form {
   public function submit(array &$form, array &$form_state) {
     module_load_include('inc', 'objective_forms', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
-    $form_values = new FormValues($form_state, $form, $this->registry);
 
+    $flat = $this->flattenDrupalForm($form);
+    $form_element = $this->registry->get($form['#hash']);
+    $descendant_access_change = function ($descendant, $flat_array) {
+      if (isset($flat_array[$descendant->hash]) && $flat_array[$descendant->hash]['#access'] != $descendant['#access']) {
+        $descendant['#access'] = $flat_array[$descendant->hash]['#access'];
+      }
+    };
+    $form_element->eachDecendant($descendant_access_change, $flat);
+    $form_values = new FormValues($form_state, $form, $this->registry);
     $processor = new XMLFormProcessor($form_values, $this->document, $this->registry);
     return $processor->process($this->root);
   }
 
+  /**
+   * Flattens the Drupal form to be used when checking against the registry.
+   *
+   * @param array $form
+   *   An array representing a form within Drupal.
+   *
+   * @return array
+   *   An array where the keys are the hash of the FormElement and the value is
+   *   the corresponding FormElement.
+   */
+  public function flattenDrupalForm($form) {
+    $flattened = array();
+    foreach (element_children($form) as $key) {
+      $child_element = $form[$key];
+      if (isset($child_element['#hash'])) {
+        $flattened[$child_element['#hash']] = $child_element;
+        $flattened = array_merge($flattened, $this->flattenDrupalForm($child_element));
+      }
+    }
+    return $flattened;
+  }
 }

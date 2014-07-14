@@ -33,4 +33,4 @@ script:
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_builder
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_elements
   - phpcpd --names *.module,*.inc,*.test --exclude api/schema sites/all/modules/islandora_xml_forms
-  - drush test-run --uri=http://localhost:8081 "Islandora XML Forms"
+  - drush test-run -v --uri=http://localhost:8081 "Islandora XML Forms"
