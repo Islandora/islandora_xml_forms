@@ -53,6 +53,7 @@ This module requires the following modules/libraries:
 * [Tuque](https://github.com/islandora/tuque)
 * [phplib](https://github.com/islandora/php_lib)
 * [Objective forms](https://github.com/islandora/objective_forms)
+* libxml2 version 2.7+
 
 ## Installation
 
@@ -68,6 +69,7 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 
 * [Islandora Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora)
 * [Islandora Dev Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora-dev)
+* Note if you get error "XML form definition is not valid." during ingest you need to update your libxml2 version to 2.7+
 
 ## FAQ
 
