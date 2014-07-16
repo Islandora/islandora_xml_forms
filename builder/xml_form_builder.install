@@ -61,8 +61,10 @@ function xml_form_builder_schema() {
       'title_field' => array(
         'description' => 'The form field for the object\'s label.',
         'type' => 'varchar',
-        'length' => 128,
-        'not NULL' => TRUE,
+        'length' => 256,
+        'not NULL' => FALSE,
+        'binary' => TRUE,
+        'serialize' => TRUE,
       ),
       'transform' => array(
         'description' => 'An XSL transform for setting the Fedora object\'s Dublin Core metadata datastream.',
@@ -291,9 +293,9 @@ function xml_form_builder_update_7100() {
  */
 function xml_form_builder_update_7101() {
   $results = db_select('xml_form_builder_form_associations', 'fa')
-   ->fields('fa', array('id', 'title_field'))
-   ->execute()
-   ->fetchAll();
+    ->fields('fa', array('id', 'title_field'))
+    ->execute()
+    ->fetchAll();
 
   db_change_field('xml_form_builder_form_associations', 'title_field', 'title_field', array(
     'description' => 'The form field for the object\'s label.',
@@ -436,6 +438,22 @@ function xml_form_builder_update_7103() {
  * Make title_field not required.
  */
 function xml_form_builder_update_7104() {
+  db_change_field('xml_form_builder_form_associations', 'title_field', 'title_field', array(
+    'description' => 'The form field for the object\'s label.',
+    'type' => 'varchar',
+    'length' => 256,
+    'not NULL' => FALSE,
+    'binary' => TRUE,
+    'serialize' => TRUE,
+  ));
+}
+
+/**
+ * Make title_field not required.
+ *
+ * Repeating because hook_schema wasn't updated.
+ */
+function xml_form_builder_update_7105() {
   db_change_field('xml_form_builder_form_associations', 'title_field', 'title_field', array(
     'description' => 'The form field for the object\'s label.',
     'type' => 'varchar',
