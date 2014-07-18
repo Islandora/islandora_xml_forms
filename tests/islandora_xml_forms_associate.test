@@ -121,7 +121,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     $this->drupalPost("islandora/object/$this->collection_pid/manage/overview/ingest", array(), 'Ingest');
     // Submit the form and see if it ingests.
     $page_title = $this->xpath('//h1[@id="page-title"]');
-    if ($page_title[0]) {
+    if (isset($page_title[0]) && $page_title[0]) {
       $page_title = trim($page_title[0]);
       $this->assertTrue($page_title === "Title", "Page title '$page_title' correctly pulled from MODS DSID's titleInfo/title field.", 'Islandora');
     }

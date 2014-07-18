@@ -30,15 +30,15 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/associations.form');
 
   $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
-  $create_table_rows = function($o) {
-    if (is_string($o['title_field'])) {
-      $o['title_field'] = "['" . implode("']['", $o['title_field']) . "']";
+  $create_table_rows = function($association) {
+    if (is_array($association['title_field'])) {
+      $association['title_field'] = "['" . implode("']['", $association['title_field']) . "']";
     }
     else {
-      $o['title_field'] = t('None');
+      $association['title_field'] = t('None');
     }
-    $o['type'] = $o['in_db'] ? 'custom' : 'hook';
-    return $o;
+    $association['type'] = $association['in_db'] ? 'custom' : 'hook';
+    return $association;
   };
   $form += array(
     'list' => array(
@@ -145,10 +145,13 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     $definition->load($_FILES['files']['tmp_name']['file']);
     $object['template'] = $definition->saveXML();
   }
-  if (drupal_write_record('xml_form_builder_form_associations', $object) !== FALSE) {
+  try {
+    db_insert('xml_form_builder_form_associations')
+    ->fields($object)
+    ->execute();
     drupal_set_message(t('Successfully added association.'));
   }
-  else {
+  catch (Exception $e) {
     drupal_set_message(t('Failed to add association.'), 'error');
   }
 }
