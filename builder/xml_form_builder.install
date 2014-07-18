@@ -462,4 +462,26 @@ function xml_form_builder_update_7105() {
     'binary' => TRUE,
     'serialize' => TRUE,
   ));
+
+  // Need to do a check to make sure there's no garbaged double serialized data.
+  $results = db_select('xml_form_builder_form_associations', 'x')
+    ->fields('x')
+    ->execute()
+    ->fetchAllAssoc('id', PDO::FETCH_ASSOC);
+  foreach ($results as $key => $values) {
+    // Check to see if the string has been double serialized.
+    $unserialized_title = unserialize($values['title_field']);
+    if (!(is_array($unserialized_title) || empty($unserialized_title))) {
+      $unserialized_unserialized_title = unserialize($unserialized_title);
+      if (is_array($unserialized_unserialized_title)) {
+        // This needs to be updated because it was double serialized.
+        db_update('xml_form_builder_form_associations')
+          ->fields(array(
+            'title_field' => $unserialized_title,
+          ))
+          ->condition('id', $key)
+          ->execute();
+      }
+    }
+  }
 }
