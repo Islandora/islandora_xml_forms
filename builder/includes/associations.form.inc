@@ -145,8 +145,7 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     $definition->load($_FILES['files']['tmp_name']['file']);
     $object['template'] = $definition->saveXML();
   }
-  drupal_write_record('xml_form_builder_form_associations', $object);
-  /*try {
+  try {
     db_insert('xml_form_builder_form_associations')
     ->fields($object)
     ->execute();
@@ -154,7 +153,7 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
   }
   catch (Exception $e) {
     drupal_set_message(t('Failed to add association.'), 'error');
-  }*/
+  }
 }
 
 /**
