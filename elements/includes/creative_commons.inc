@@ -285,10 +285,10 @@ class CreativeCommons {
    * Static class variables can't be defined with the t().
    *
    * @param string $value
-   *  array value to apply t() to
+   *   array value to apply t() to
    *
    * @return string
-   *  the t() modified string
+   *   the t() modified string
    */
   public static function xmlFormBuilderFixVariables($value) {
     return t('%t', array('%t' => $value));
