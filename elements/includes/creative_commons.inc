@@ -9,8 +9,8 @@
 class CreativeCommons {
 
 
-  
-  public static $modification_options = array(
+
+  public static $modificationOptions = array(
     'y' => 'Yes',
     'n' => 'No',
     'sa' => 'Yes, as long as others share alike',
@@ -78,7 +78,7 @@ class CreativeCommons {
     'vn' => 'Vietnam',
   );
 
-  public static $commercial_options = array(
+  public static $commercialOptions = array(
     'y' => 'Yes',
     'n' => 'No',
   );
@@ -91,14 +91,14 @@ class CreativeCommons {
    * @return array
    *   The element definition.
    */
-  public static function xml_form_elements_creative_commons($element, &$form_state) {
+    public static function xmlFormElementsCreativeCommons($element, &$form_state) {
 
     // Get an ID for ajax.
     if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'])) {
       $license_output_id = $form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'];
     }
     else {
-      # $license_output_id = drupal_html_id('license_output');
+      // $license_output_id = drupal_html_id('license_output');
       $license_output_id = 'license_output';
       $form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'] = $license_output_id;
     }
@@ -151,10 +151,10 @@ class CreativeCommons {
       $jurisdiction = isset($form_state['input'][$element['#name']]['license_fieldset']['license_jurisdiction']) ? $form_state['input'][$element['#name']]['license_fieldset']['license_jurisdiction'] : variable_get('xml_form_builder_cc_default_jurisdiction', 'international');
     }
 
-    // Fix for static variables
-    $modification_options = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$modification_options);
-    $commercial_options = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$commercial_options);
-    $countries = array_map(array('CreativeCommons', 'xml_form_builder_fix_variables'), CreativeCommons::$countries);
+    // Fix for static variables.
+    $modification_options = array_map(array('CreativeCommons', 'xmlFormBuilderFixVariables'), CreativeCommons::$modificationOptions);
+    $commercial_options = array_map(array('CreativeCommons', 'xmlFormBuilderFixVariables'), CreativeCommons::$commercialOptions);
+    $countries = array_map(array('CreativeCommons', 'xmlFormBuilderFixVariables'), CreativeCommons::$countries);
 
     // Form elements.
     $element['license_fieldset'] = array(
@@ -206,7 +206,7 @@ class CreativeCommons {
       $element['#tree'] = FALSE;
     }
 
-    $response = CreativeCommons::xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction);
+    $response = CreativeCommons::xmlFormElementsGetCreativeCommons($commercial, $derivatives, $jurisdiction);
     if ($response) {
       $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = (string) $response->{'license-uri'};
       $element['license_fieldset']['license_output'] = array(
@@ -216,7 +216,7 @@ class CreativeCommons {
       );
     }
     else {
-      $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = CreativeCommons::xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction);
+      $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = CreativeCommons::xmlFormElementsCreativeCommonsValue($commercial, $derivatives, $jurisdiction);
       $element['license_fieldset']['license_output'] = array();
     }
 
@@ -239,7 +239,7 @@ class CreativeCommons {
    *   SimpleXMLElement the return from the REST API.
    *   FALSE if failed request.
    */
-  public static function xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction) {
+  public static function xmlFormElementsGetCreativeCommons($commercial, $derivatives, $jurisdiction) {
     $response = drupal_http_request(url(
       'http://api.creativecommons.org/rest/1.5/license/standard/get',
       array(
@@ -269,7 +269,7 @@ class CreativeCommons {
    * @return string
    *   The value of the element.
    */
-  public static function xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction) {
+  public static function xmlFormElementsCreativeCommonsValue($commercial, $derivatives, $jurisdiction) {
     $arguments = '';
     if ($commercial == 'n') {
       $arguments = "$arguments-nc";
@@ -293,8 +293,8 @@ class CreativeCommons {
    * @return string
    *    the t() modified string
    */
-  public static function xml_form_builder_fix_variables($value) {
-    return t($value);
+  public static function xmlFormBuilderFixVariables($value) {
+    return t('%t', array('%t' => $value));
   }
 }
 
