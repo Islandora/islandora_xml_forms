@@ -8,8 +8,6 @@
 
 class CreativeCommons {
 
-
-
   public static $modificationOptions = array(
     'y' => 'Yes',
     'n' => 'No',
@@ -91,7 +89,7 @@ class CreativeCommons {
    * @return array
    *   The element definition.
    */
-    public static function xmlFormElementsCreativeCommons($element, &$form_state) {
+  public static function xmlFormElementsCreativeCommons($element, &$form_state) {
 
     // Get an ID for ajax.
     if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'])) {
@@ -284,14 +282,13 @@ class CreativeCommons {
   }
 
   /**
-   * Static class variables can't be defined with the t(), 
-   * so this allows us to add it after the fact using array_walk.
+   * Static class variables can't be defined with the t().
    *
    * @param string $value
-   *    array value to apply t() to
+   *  array value to apply t() to
    *
    * @return string
-   *    the t() modified string
+   *  the t() modified string
    */
   public static function xmlFormBuilderFixVariables($value) {
     return t('%t', array('%t' => $value));
