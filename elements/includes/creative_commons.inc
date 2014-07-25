@@ -203,7 +203,6 @@ class CreativeCommons {
       // I win form builder.
       $element['#tree'] = FALSE;
     }
-
     $response = CreativeCommons::xmlFormElementsGetCreativeCommons($commercial, $derivatives, $jurisdiction);
     if ($response) {
       $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = (string) $response->{'license-uri'};
@@ -217,7 +216,6 @@ class CreativeCommons {
       $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'] = CreativeCommons::xmlFormElementsCreativeCommonsValue($commercial, $derivatives, $jurisdiction);
       $element['license_fieldset']['license_output'] = array();
     }
-
     return $element;
   }
 
@@ -291,7 +289,7 @@ class CreativeCommons {
    *   the t() modified string
    */
   public static function xmlFormBuilderFixVariables($value) {
-    return t('%t', array('%t' => $value));
+    return t('@t', array('@t' => $value));
   }
 }
 
