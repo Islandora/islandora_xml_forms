@@ -135,7 +135,7 @@ function xml_form_builder_default_dc_config_features_rebuild($module_name) {
   $values = module_invoke($module_name, 'xml_form_builder_default_dc_config');
   if (!empty($values)) {
     $xslts = db_select('xml_form_builder_xslts', 'x')
-      ->fields('x', array());
+      ->fields('x', array())
       ->execute()
       ->fetchAllAssoc('name', PDO::FETCH_ASSOC);
 
@@ -178,7 +178,7 @@ function xml_form_builder_default_dc_xslt_features_rebuild($module_name) {
   $values = module_invoke($module_name, 'xml_form_builder_default_dc_xslt');
   if (!empty($values)) {
     $xslts = db_select('xml_form_builder_xslts', 'x')
-      ->fields('x', array());
+      ->fields('x', array())
       ->execute()
       ->fetchAllAssoc('name', PDO::FETCH_ASSOC);
 
