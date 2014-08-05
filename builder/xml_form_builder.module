@@ -758,7 +758,7 @@ function xml_form_builder_features_api() {
     'name' => t('Islandora XML Form Builder Default DC Transformation Configuration'),
     'file' => "$mod_path/includes/dc_transforms.features.inc",
     'default_hook' => 'xml_form_builder_default_dc_config',
-    'default_file' => FEATURES_DEFAULTS_CUSTOM,
+    'default_file' => FEATURES_DEFAULTS_INCLUDED,
     'default_filename' => 'features.xml_form_builder_default_dc',
     'feature_source' => TRUE,
   );
@@ -766,7 +766,7 @@ function xml_form_builder_features_api() {
     'name' => t('Islandora XML Form Builder Default DC Transformation XSLTs'),
     'file' => "$mod_path/includes/dc_transforms.features.inc",
     'default_hook' => 'xml_form_builder_default_dc_xslt',
-    'default_file' => FEATURES_DEFAULTS_CUSTOM,
+    'default_file' => FEATURES_DEFAULTS_INCLUDED,
     'default_filename' => 'features.xml_form_builder_default_dc',
     'feature_source' => TRUE,
   );
