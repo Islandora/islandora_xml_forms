@@ -38,7 +38,11 @@ function xml_form_builder_default_dc_config_features_export_options() {
  */
 function xml_form_builder_default_dc_xslt_features_export_options() {
   module_load_include('inc', 'xml_form_builder', 'includes/db');
-  $configs = xml_form_builder_get_xslts();
+  $configs = db_select('xml_form_builder_xslts', 'x')
+    ->fields('x', array('name'))
+    ->execute()
+    ->fetchAllAssoc('name', PDO::FETCH_ASSOC);
+
   $map_to_name = function ($config) {
     return $config['name'];
   };
@@ -61,6 +65,8 @@ function xml_form_builder_default_dc_config_features_export($data, &$export, $mo
   $map_to_xslt_name = function ($config) {
     return $config['xslt_name'];
   };
+
+  // Add in dependency.
   $pipe['xml_form_builder_default_dc_xslt'] = array_unique(array_map($map_to_xslt_name, $configs));
   return $pipe;
 }
@@ -85,12 +91,12 @@ function xml_form_builder_default_dc_config_features_export_render($module_name,
   module_load_include('inc', 'xml_form_builder', 'includes/db');
 
   $code = array();
-  $drop_fields = drupal_map_assoc(array('id'));
+  $drop_fields = drupal_map_assoc(array('id', 'xslt_id'));
   foreach (array_intersect_key(xml_form_builder_default_dc_config_get_mapped_features(), drupal_map_assoc($data)) as $key => $item) {
     $code[$key] = array_diff_key($item, $drop_fields);
   }
 
-  $serialized_code = '  return ' . features_var_export($code) . ';';
+  $serialized_code = 'return ' . features_var_export($code) . ';';
   return array('xml_form_builder_default_dc_config' => $serialized_code);
 }
 
@@ -98,15 +104,18 @@ function xml_form_builder_default_dc_config_features_export_render($module_name,
  * Implements hook_features_export_render().
  */
 function xml_form_builder_default_dc_xslt_features_export_render($module_name, $data, $export = NULL) {
-  module_load_include('inc', 'xml_form_builder', 'includes/db');
+  $xslts = db_select('xml_form_builder_xslts', 'x')
+    ->fields('x', array())
+    ->execute()
+    ->fetchAllAssoc('name', PDO::FETCH_ASSOC);
 
   $code = array();
   $drop_fields = drupal_map_assoc(array('xslt_id'));
-  foreach (array_intersect_key(xml_form_builder_get_xslts(), drupal_map_assoc($data)) as $item) {
+  foreach (array_intersect_key($xslts, drupal_map_assoc($data)) as $item) {
     $code[$item['name']] = array_diff_key($item, $drop_fields);
   }
 
-  $serialized_code = '  return ' . features_var_export($code) . ';';
+  $serialized_code = 'return ' . features_var_export($code) . ';';
   return array('xml_form_builder_default_dc_xslt' => $serialized_code);
 }
 
