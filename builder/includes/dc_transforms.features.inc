@@ -36,7 +36,7 @@ function xml_form_builder_default_dc_config_features_export_options() {
 /**
  * Implements hook_features_export_options().
  */
-function xml_form_builder_default_dc_xslt_features_export_options() {
+function xml_form_builder_default_dc_a_xslt_features_export_options() {
   module_load_include('inc', 'xml_form_builder', 'includes/db');
   $configs = db_select('xml_form_builder_xslts', 'x')
     ->fields('x', array('name'))
@@ -67,18 +67,18 @@ function xml_form_builder_default_dc_config_features_export($data, &$export, $mo
   };
 
   // Add in dependency.
-  $pipe['xml_form_builder_default_dc_xslt'] = array_unique(array_map($map_to_xslt_name, $configs));
+  $pipe['xml_form_builder_default_dc_a_xslt'] = array_unique(array_map($map_to_xslt_name, $configs));
   return $pipe;
 }
 
 /**
  * Implements hook_features_export().
  */
-function xml_form_builder_default_dc_xslt_features_export($data, &$export, $module_name = '') {
+function xml_form_builder_default_dc_a_xslt_features_export($data, &$export, $module_name = '') {
   $pipe = array();
   $export['dependencies']['xml_form_builder'] = 'xml_form_builder';
   foreach ($data as $component) {
-    $export['features']['xml_form_builder_default_dc_xslt'][$component] = $component;
+    $export['features']['xml_form_builder_default_dc_a_xslt'][$component] = $component;
   }
 
   return $pipe;
@@ -103,7 +103,7 @@ function xml_form_builder_default_dc_config_features_export_render($module_name,
 /**
  * Implements hook_features_export_render().
  */
-function xml_form_builder_default_dc_xslt_features_export_render($module_name, $data, $export = NULL) {
+function xml_form_builder_default_dc_a_xslt_features_export_render($module_name, $data, $export = NULL) {
   $xslts = db_select('xml_form_builder_xslts', 'x')
     ->fields('x', array())
     ->execute()
@@ -116,7 +116,7 @@ function xml_form_builder_default_dc_xslt_features_export_render($module_name, $
   }
 
   $serialized_code = 'return ' . features_var_export($code) . ';';
-  return array('xml_form_builder_default_dc_xslt' => $serialized_code);
+  return array('xml_form_builder_default_dc_a_xslt' => $serialized_code);
 }
 
 /**
@@ -142,6 +142,8 @@ function xml_form_builder_default_dc_config_features_revert($module_name) {
  */
 function xml_form_builder_default_dc_config_features_rebuild($module_name) {
   module_load_include('inc', 'xml_form_builder', 'includes/db');
+  $features = module_invoke_all('xml_form_builder_default_dc_a_xslt');
+
   $values = module_invoke($module_name, 'xml_form_builder_default_dc_config');
   if (!empty($values)) {
     $xslts = db_select('xml_form_builder_xslts', 'x')
@@ -163,9 +165,9 @@ function xml_form_builder_default_dc_config_features_rebuild($module_name) {
 /**
  * Implements hook_features_revert().
  */
-function xml_form_builder_default_dc_xslt_features_revert($module_name) {
+function xml_form_builder_default_dc_a_xslt_features_revert($module_name) {
   module_load_include('inc', 'xml_form_builder', 'includes/db');
-  $values = module_invoke($module_name, 'xml_form_builder_default_dc_xslt');
+  $values = module_invoke($module_name, 'xml_form_builder_default_dc_a_xslt');
   if (!empty($values)) {
     $xslts = db_select('xml_form_builder_xslts', 'x')
       ->fields('x', array())
@@ -178,15 +180,15 @@ function xml_form_builder_default_dc_xslt_features_revert($module_name) {
       }
     }
   }
-  xml_form_builder_default_dc_xslt_features_rebuild($module_name);
+  xml_form_builder_default_dc_a_xslt_features_rebuild($module_name);
 }
 
 /**
  * Implements hook_features_rebuild().
  */
-function xml_form_builder_default_dc_xslt_features_rebuild($module_name) {
+function xml_form_builder_default_dc_a_xslt_features_rebuild($module_name) {
   module_load_include('inc', 'xml_form_builder', 'includes/db');
-  $values = module_invoke($module_name, 'xml_form_builder_default_dc_xslt');
+  $values = module_invoke($module_name, 'xml_form_builder_default_dc_a_xslt');
   if (!empty($values)) {
     $xslts = db_select('xml_form_builder_xslts', 'x')
       ->fields('x', array())
