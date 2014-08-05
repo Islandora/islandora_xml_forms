@@ -124,7 +124,7 @@ function xml_form_builder_default_dc_xslt_features_export_render($module_name, $
  */
 function xml_form_builder_default_dc_config_features_revert($module_name) {
   module_load_include('inc', 'xml_form_builder', 'includes/db');
-  $values = module_invoke($module_name, 'xml_form_builder_default_dc_configt');
+  $values = module_invoke($module_name, 'xml_form_builder_default_dc_config');
   $configs = xml_form_builder_default_dc_config_get_mapped_features();
 
   foreach (array_intersect_key($values, $configs) as $key => $item) {
