@@ -760,12 +760,6 @@ function xml_form_builder_features_api() {
     'default_hook' => 'xml_form_builder_default_dc_config',
     'feature_source' => TRUE,
   );
-  $items['xml_form_builder_default_dc_a_xslt'] = array(
-    'name' => t('Islandora XML Form Builder Default DC Transformation XSLTs'),
-    'file' => "$mod_path/includes/dc_transforms.features.inc",
-    'default_hook' => 'xml_form_builder_default_dc_a_xslt',
-    'feature_source' => TRUE,
-  );
 
   return $items;
 }
