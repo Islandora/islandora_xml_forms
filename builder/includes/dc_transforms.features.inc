@@ -134,6 +134,7 @@ function xml_form_builder_default_dc_config_features_revert($module_name) {
   }
 
   drupal_static_reset('xml_form_builder_default_dc_config_get_mapped_features');
+  xml_form_builder_default_dc_config_features_rebuild($module_name);
 }
 
 /**
@@ -177,6 +178,7 @@ function xml_form_builder_default_dc_xslt_features_revert($module_name) {
       }
     }
   }
+  xml_form_builder_default_dc_xslt_features_rebuild($module_name);
 }
 
 /**
