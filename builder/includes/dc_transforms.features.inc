@@ -47,14 +47,10 @@ function xml_form_builder_default_dc_config_features_export_options() {
  * Implements hook_features_export().
  */
 function xml_form_builder_default_dc_config_features_export($data, &$export, $module_name = '') {
-  $pipe = array();
-
   $export['dependencies']['xml_form_builder'] = 'xml_form_builder';
   foreach ($data as $component) {
     $export['features']['xml_form_builder_default_dc_config'][$component] = $component;
   }
-
-  return $pipe;
 }
 
 /**
