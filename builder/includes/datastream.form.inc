@@ -17,16 +17,17 @@
  *   The drupal form state.
  * @param AbstractObject $object
  *   The object to add the datastream to.
- * @param mixed $datastream
- *   The datastream to add / edit, can be either an object or dsid.
+ * @param string $dsid
+ *   The datastream to add / edit.
  *
  * @return array
  *   The form for selecting the association to add the datastream, or the XML
  *   form for adding the datastream.
  */
-function xml_form_builder_datastream_form(array $form, array &$form_state, AbstractObject $object, $datastream) {
+function xml_form_builder_datastream_form(array $form, array &$form_state, AbstractObject $object, $dsid) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/datastream.form');
-  $dsid = is_object($datastream) ? $datastream->id : $datastream;
+  // Leave this here for legacy reasons.
+  $form_state['datastream'] = isset($object[$dsid]) ? $object[$dsid] : FALSE;
   $associations = xml_form_builder_datastream_form_get_associations($form_state, $object->models, $dsid);
   $association = xml_form_builder_datastream_form_get_association($form_state, $associations);
   return isset($association) ?
