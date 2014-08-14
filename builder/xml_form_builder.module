@@ -31,6 +31,9 @@ define('XML_FORM_BUILDER_EXPORT_CALLBACK', XML_FORM_BUILDER_MAIN_MENU . '/%/expo
 define('XML_FORM_BUILDER_SAVE_CALLBACK', XML_FORM_BUILDER_MAIN_MENU . '/%/edit/save');
 define('XML_FORM_BUILDER_EDIT_DATASTREAM_MENU', 'islandora/edit_form/%islandora_object/%');
 
+// Hooks.
+define('XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK', 'xml_form_builder_get_form_modify_definition');
+
 // @codingStandardsIgnoreStart
 define('PERM_XML_FORM_BUILDER_LIST_FORMS', XML_FORM_BUILDER_LIST_FORMS_PERMS);
 define('PERM_XML_FORM_BUILDER_CREATE_FORMS', XML_FORM_BUILDER_CREATE_FORMS_PERMS);
@@ -399,6 +402,13 @@ function xml_form_builder_get_associate_form_path($form_name) {
 /**
  * Gets a Form from the database.
  *
+ * Modules should implement xml_form_builder_get_form_modify_definition hook
+ * when they need to make modifications form builder schema that is loaded
+ * into the form.  This is currently needed to allow for the modifications of
+ * tab panel element access so that when it adds a new element the default
+ * schema template will have the correct permissions to make the element
+ * accessible.
+ *
  * @param array $form
  *   An array containing any "wrapping" elements.
  * @param array $form_state
@@ -430,6 +440,8 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
       $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
       $document = $definition->createXMLDocument($xml);
       $form = $definition->getForm();
+      drupal_alter(XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK, $form,
+        $form_state);
       $xml_form->initialize($form, $document);
     }
     $form = array_merge($form, $xml_form->toArray($form_state));
@@ -744,26 +756,4 @@ function xml_form_builder_islandora_derivative(AbstractObject $object = NULL) {
     }
   }
   return $derivatives;
-}
-
-/**
- * Implements hook_features_api().
- */
-function xml_form_builder_features_api() {
-  $mod_path = drupal_get_path('module', 'xml_form_builder');
-
-  $items = array();
-
-  $items['xml_form_builder_default_dc_config'] = array(
-    'name' => t('Islandora XML Form Builder Default DC Transformation Configuration'),
-    'file' => "$mod_path/includes/dc_transforms.features.inc",
-    'default_hook' => 'xml_form_builder_default_dc_config',
-    'feature_source' => TRUE,
-  );
-  $items['xml_form_builder_default_dc_xslt'] = array(
-    'name' => t('Islandora XML Form Builder Default DC Transformation XSLTs'),
-    'feature_source' => FALSE,
-  );
-
-  return $items;
 }
