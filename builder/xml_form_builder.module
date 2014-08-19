@@ -757,3 +757,25 @@ function xml_form_builder_islandora_derivative(AbstractObject $object = NULL) {
   }
   return $derivatives;
 }
+
+/**
+ * Implements hook_features_api().
+ */
+function xml_form_builder_features_api() {
+  $mod_path = drupal_get_path('module', 'xml_form_builder');
+
+  $items = array();
+
+  $items['xml_form_builder_default_dc_config'] = array(
+    'name' => t('Islandora XML Form Builder Default DC Transformation Configuration'),
+    'file' => "$mod_path/includes/dc_transforms.features.inc",
+    'default_hook' => 'xml_form_builder_default_dc_config',
+    'feature_source' => TRUE,
+  );
+  $items['xml_form_builder_default_dc_xslt'] = array(
+    'name' => t('Islandora XML Form Builder Default DC Transformation XSLTs'),
+    'feature_source' => FALSE,
+  );
+
+  return $items;
+}
