@@ -159,16 +159,17 @@ class XMLSchemaElement extends XMLSchemaNode {
    *   The type of element this is, if one os available.
    */
   public function getType() {
+    $definition = $this->getDefinition();
     if ($this->isAnonymous()) {
-      $child = dom_node_find_child($this->node, 'DOMElement', 'localName', 'complexType');
+      $child = dom_node_find_child($definition, 'DOMElement', 'localName', 'complexType');
       if (empty($child)) {
-        $child = dom_node_find_child($this->node, 'DOMElement', 'localName', 'simpleType');
+        $child = dom_node_find_child($definition, 'DOMElement', 'localName', 'simpleType');
       }
       // If key, keyRef, unique, return NULL.
       return $child;
     }
     else {
-      $type_name = $this->getDefinition()->getAttribute('type');
+      $type_name = $definition->getAttribute('type');
       return $this->schema->findGlobalType($type_name);
     }
   }
