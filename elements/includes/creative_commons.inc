@@ -96,7 +96,6 @@ class CreativeCommons {
       $license_output_id = $form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'];
     }
     else {
-      // $license_output_id = drupal_html_id('license_output');
       $license_output_id = 'license_output';
       $form_state['storage']['xml_form_elements'][$element['#name']]['license_output_id'] = $license_output_id;
     }
