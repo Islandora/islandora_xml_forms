@@ -205,7 +205,7 @@ function template_preprocess_tags(&$vars) {
   global $base_url;
   $tags = &$vars['element'];
   // Location of images.
-  $vars['image_path'] = $base_url . '/' . PATH_XML_FORM_ELEMENTS_IMAGES;
+  $vars['image_path'] = $base_url . '/' . XML_FORM_ELEMENTS_IMAGES_PATH;
   // Visible Add Button.
   $vars['add'] = $tags['controls']['add'];
   // Hidden Edit Button.
