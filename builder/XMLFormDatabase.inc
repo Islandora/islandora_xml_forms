@@ -2,14 +2,20 @@
 
 /**
  * @file
- *
  * Provides a wrapper class around the database table were forms are stored.
  */
+
 class XMLFormDatabase {
+
   /**
    * Constants
    */
-  const table = 'xml_forms';
+  const TABLE = 'xml_forms';
+
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const table = self::TABLE;
+  // @codingStandardsIgnoreEnd
 
   /**
    * Checks to see if the given form exists in the database.
@@ -17,11 +23,11 @@ class XMLFormDatabase {
    * @param string $form_name
    *   The name of the XML Form Definition.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if the given form exists, FALSE otherwise.
    */
   public static function Exists($form_name) {
-    //@TODO: integrate 'fancy' 'dynamic' self::table
+    // @TODO: integrate 'fancy' 'dynamic' self::table
     $count = db_select('xml_forms', 'xf')
       ->condition('xf.name', $form_name)
       ->fields('xf', array('name'))
@@ -32,12 +38,12 @@ class XMLFormDatabase {
   }
 
   /**
-   * Checks to see if the given form exists in the database and is a valid definition.
+   * Checks to see if the given form exists in the database and is valid.
    *
    * @param string $form_name
    *   The name of the XML Form Definition.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if the given form exists, FALSE otherwise.
    */
   public static function Valid($form_name) {
@@ -73,14 +79,21 @@ class XMLFormDatabase {
   /**
    * Upgrade to the latest version and save it back to the database.
    *
+   * @param string $form_name
+   *   The name of the form to update.
    * @param DOMDocument $definition
+   *   The form definition to update.
+   *
+   * @return XMLFormDefinition
+   *   The form definition, upgraded to the latest version.
    */
-  private static function Upgrade($form_name, DOMDocument $definition) {
+  protected static function Upgrade($form_name, DOMDocument $definition) {
     module_load_include('inc', 'xml_form_api', 'XMLFormDefinition');
     $version = XMLFormDefinition::getVersion($definition);
     if (!$version->isLatestVersion()) {
       $definition = XMLFormDefinition::upgradeToLatestVersion($definition);
-      self::Update($form_name, $definition); // Updates to latest.
+      // Updates to latest.
+      self::Update($form_name, $definition);
     }
     return $definition;
   }
@@ -89,13 +102,13 @@ class XMLFormDatabase {
    * Gets a list of all defined form names.
    *
    * @return array
-   *   An array of defined form names, where both the key and the value are the forms name.
-   *   EX. array( 'name' => 'name' );
+   *   An array of defined form names, where both the key and the value are the
+   *   form's name; e.g. array('name' => 'name').
    */
   public static function GetNames() {
     $names = array();
     $result = db_query('SELECT name FROM {xml_forms}')->fetchCol();
-    foreach ($result AS $data) {
+    foreach ($result as $data) {
       $names[] = array('name' => $data, 'indb' => TRUE);
     }
     return $names;
@@ -105,8 +118,8 @@ class XMLFormDatabase {
    * Gets a list of all defined form names that have valid definitions.
    *
    * @return array
-   *   An array of defined form names, where both the key and the value are the forms name.
-   *   EX. array( 'name' => 'name' );
+   *   An array of defined form names, where both the key and the value are the
+   *   form's name, e.g. array('name' => 'name').
    */
   public static function GetValidNames() {
     $form_names = self::GetNames();
@@ -127,10 +140,10 @@ class XMLFormDatabase {
    * @param string $form_name
    *   The name of the XML Form Definition.
    * @param DOMDocument $definition
-   *   A XML Form Definition.
+   *   An XML Form Definition.
    *
-   * @return boolean
-   *  TRUE if successful, otherwise FALSE.
+   * @return bool
+   *   TRUE if successful, otherwise FALSE.
    */
   public static function Create($form_name, DOMDocument $definition = NULL) {
     if (!self::Exists($form_name)) {
@@ -140,7 +153,7 @@ class XMLFormDatabase {
       $object = new stdClass();
       $object->name = $form_name;
       $object->form = $definition->saveXML();
-      return drupal_write_record(self::table, $object) !== FALSE;
+      return drupal_write_record(self::TABLE, $object) !== FALSE;
     }
     return FALSE;
   }
@@ -153,8 +166,8 @@ class XMLFormDatabase {
    * @param string $form_name_dest
    *   The name of the destination form which gets copied to.
    *
-   * @return boolean
-   *   TRUE if successful FALSE otherwise.
+   * @return bool
+   *   TRUE if successful; FALSE otherwise.
    */
   public static function Copy($form_name_src, $form_name_dest) {
     if (self::Exists($form_name_src)) {
@@ -165,14 +178,17 @@ class XMLFormDatabase {
   }
 
   /**
-   * Updates the form with the given form name, the previous definition is lost.
+   * Updates the form with the given form name; the previous definition is lost.
    *
-   * If the form does not exist this function will fail.
+   * If the form does not exist, this function will fail.
    *
    * @param string $form_name
    *   The name of the XML Form Definition.
    * @param DOMDocument $definition
    *   A XML Form Definition.
+   *
+   * @returns bool
+   *   TRUE if successful; FALSE otherwise.
    */
   public static function Update($form_name, DOMDocument $definition) {
     if (self::Exists($form_name)) {
@@ -181,7 +197,7 @@ class XMLFormDatabase {
       if (!$version->isLatestVersion()) {
         $definition = XMLFormDefinition::upgradeToLatestVersion($definition);
       }
-      $num = db_update(self::table)
+      $num = db_update(self::TABLE)
         ->fields(array('form' => $definition->saveXML()))
         ->condition('name', $form_name)
         ->execute();
@@ -201,12 +217,12 @@ class XMLFormDatabase {
    * @param string $form_name
    *   The name of the XML Form Definition.
    *
-   * @return boolean
-   *   TRUE if successful FALSE otherwise.
+   * @return bool
+   *   TRUE if successful; FALSE otherwise.
    */
   public static function Delete($form_name) {
     if (self::Exists($form_name)) {
-      $num = db_delete(self::table)
+      $num = db_delete(self::TABLE)
         ->condition('name', $form_name)
         ->execute();
       if ($num) {

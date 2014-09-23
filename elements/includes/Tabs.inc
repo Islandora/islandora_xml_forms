@@ -2,8 +2,9 @@
 
 /**
  * @file
- *
+ * Class for form tabs.
  */
+
 module_load_include('inc', 'xml_form_elements', 'includes/TabPanel');
 
 class Tabs {
@@ -11,15 +12,23 @@ class Tabs {
   /**
    * Loads the required resources for displaying the Tabs element.
    *
-   * @staticvar boolean $load
-   *   Keeps us from loading the same files multiple times, while not required it just saves some time.
+   * @param array $form_state
+   *   The Drupal form state.
+   *
+   * @staticvar bool $load
+   *   Keeps us from loading the same files multiple times. While not required
+   *   it just saves some time.
    */
   public static function addRequiredResources(array &$form_state) {
     static $load = TRUE;
     if ($load) {
       form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
       Element::addUIWidgets('ui.tabs');
-      Element::addUIThemeStyles(array('ui.core.css', 'ui.tabs.css', 'ui.theme.css'));
+      Element::addUIThemeStyles(array(
+        'ui.core.css',
+        'ui.tabs.css',
+        'ui.theme.css',
+      ));
       Element::addJS('tabs.js');
       Element::addCSS('tabs.css');
       $load = FALSE;
@@ -27,11 +36,17 @@ class Tabs {
   }
 
   /**
+   * Processes the element.
    *
    * @param array $element
-   * @param type $edit
+   *   The tabs element.
    * @param array $form_state
+   *   The Drupal form state.
    * @param array $complete_form
+   *   The completed form.
+   *
+   * @return array
+   *   The processed tabs element.
    */
   public static function process(array $element, array &$form_state, array $complete_form = NULL) {
     self::addRequiredResources($form_state);
@@ -41,8 +56,13 @@ class Tabs {
   }
 
   /**
+   * Checks if a child element has the 'tabpanel' #type.
    *
-   * @param array $children
+   * @param array $child
+   *   The child to determine.
+   *
+   * @return bool
+   *   TRUE if it is a tabpanel, FALSE otherwise.
    */
   public static function FilterChildren(array $child) {
     $ret = ($child['#type'] == 'tabpanel') ? TRUE : FALSE;
@@ -52,16 +72,17 @@ class Tabs {
 }
 
 /**
- * Preprocess tabs theme hook.
+ * Pre-process tabs theme hook.
  *
  * @param array $vars
+ *   Theme variables.
  */
 function template_preprocess_tabs(&$vars) {
   $tabs = $vars['element'];
-  // Header Info
+  // Header Info.
   $vars['collapsible'] = $tabs['#collapsible'] == TRUE;
   $vars['collapsed'] = $tabs['#collapsed'] == TRUE;
-  // Get Tabpanels
+  // Get Tabpanels.
   $keys = element_children($tabs);
   $children = array();
 
@@ -77,11 +98,11 @@ function template_preprocess_tabs(&$vars) {
   $count = 2;
   foreach ($children as $child) {
     $title = isset($child['#title']) ? $child['#title'] : $count;
-    $delete = isset($child[TabPanel::DeleteButton]) ? $child[TabPanel::DeleteButton]['#id'] : FALSE;
+    $delete = isset($child[TabPanel::DELETE_BUTTON]) ? $child[TabPanel::DELETE_BUTTON]['#id'] : FALSE;
     $vars['tabpanels'][] = array($title, $child['#hash'], $delete);
     $count++;
   }
-  // Content Info
+  // Content Info.
   if (isset($tabs['#children'])) {
     $vars['content'] = $tabs['#children'];
   }

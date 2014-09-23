@@ -2,8 +2,9 @@
 
 /**
  * @file
- *
+ * Classes for the XML Form Processor.
  */
+
 module_load_include('inc', 'xml_form_api', 'XMLDocument');
 
 /**
@@ -12,9 +13,9 @@ module_load_include('inc', 'xml_form_api', 'XMLDocument');
 class XMLFormProcessAction {
 
   /**
-   * Action to perform.
+   * ActionInterface to perform.
    *
-   * @var Action
+   * @var ActionInterface
    */
   public $action;
 
@@ -33,13 +34,16 @@ class XMLFormProcessAction {
   public $value;
 
   /**
-   * Creates a XMLFormProcessAction instance.
+   * Creates an XMLFormProcessAction instance.
    *
-   * @param Action $action
+   * @param ActionInterface $action
+   *   The appropriate action that will be performed.
    * @param FormElement $element
+   *   The FormElement that the action will be performed on.
    * @param mixed $value
+   *   The value that will be used in execution.
    */
-  public function __construct(Action $action, FormElement $element, $value = NULL) {
+  public function __construct(ActionInterface $action, FormElement $element, $value = NULL) {
     $this->action = $action;
     $this->element = $element;
     $this->value = $value;
@@ -49,8 +53,11 @@ class XMLFormProcessAction {
    * Executes the action.
    *
    * @param XMLDocument $document
+   *   The document to execute on.
    *
-   * @return boolean
+   * @return bool
+   *   Generally TRUE on execution and FALSE otherwise. Specifics depend on the
+   *   implemented ActionInterface in XMLFormProcessAction::__construct().
    */
   public function execute(XMLDocument $document) {
     return $this->action->execute($document, $this->element, $this->value);
@@ -59,7 +66,7 @@ class XMLFormProcessAction {
 }
 
 /**
- * Process the form generate a Document.
+ * Process the form to generate a Document.
  */
 class XMLFormProcessor {
 
@@ -71,12 +78,14 @@ class XMLFormProcessor {
   protected $values;
 
   /**
+   * Document to be modified with the submitted values.
    *
    * @var XMLDocument
    */
   protected $document;
 
   /**
+   * Registry to access form element information for modifying the document.
    *
    * @var NodeRegistry
    */
@@ -91,14 +100,15 @@ class XMLFormProcessor {
   /**
    * Creates a XMLFormProcessor instance.
    *
-   * This is used to modify the given document with the values and actions specified by the submitted form.
+   * This is used to modify the given document with the values and actions
+   * specified by the submitted form.
    *
    * @param FormValues $values
    *   The submitted values for this form.
-   * @param XMLDocument $definition
+   * @param XMLDocument $document
    *   The document to be modified with the submitted values.
    * @param FormElementRegistry $registry
-   *   The registry used to access form element information required to modify the document correctly.
+   *   Registry to access form element information for modifying the document.
    */
   public function __construct(FormValues $values, XMLDocument $document, FormElementRegistry $registry) {
     $this->values = $values;
@@ -108,38 +118,48 @@ class XMLFormProcessor {
   }
 
   /**
+   * The actual form processor.
    *
    * @param FormElement $element
+   *   The element we are processing on.
+   *
+   * @return XMLDocument
+   *   The processed XML Document.
    */
   public function process(FormElement $element) {
-    /**
-     * The order of action execution here is important, create actions should take place before update,
-     * newly created elements can be registered as we can update newly created elements. Delete must come
-     * last as we want the update actions to run on elements that may then later be removed.
-     */
+    // The order of action execution here is important. Create actions should
+    // take place before updates; newly created elements can be registered as we
+    // can update newly created elements. Delete must come last, as we want the
+    // update actions to run on elements that may then later be removed.
     $elements = $element->flatten();
-    $this->createNodes($this->getActions($elements, 'create'));
-    $this->modifyNodes($this->getActions($elements, 'update'));
-    $this->modifyNodes($this->getActions($elements, 'delete'));
+    $filtered_elements = $this->filterElements($elements);
+    $this->createNodes($this->getActions($filtered_elements, 'create'));
+    $this->modifyNodes($this->getActions($filtered_elements, 'update'));
+    $this->modifyNodes($this->getActions($filtered_elements, 'delete'));
     $this->modifyNodes($this->getRemovedFormElementsDeleteActions($element));
     return $this->document;
   }
 
   /**
+   * Returns an array of actions for the element array passed in.
    *
    * @param array $elements
+   *   The array of elements to get actions for.
    * @param string $type
+   *   The type of action to get.
    *
    * @return array
+   *   An array of actions.
    */
-  private function getActions(array &$elements, $type) {
+  protected function getActions(array &$elements, $type) {
     $actions = array();
     foreach ($elements as $key => $element) {
       $value = $this->values->getValue($element->hash);
       $action = isset($element->actions->$type) ? $element->actions->$type : NULL;
       if (isset($action) && $action->shouldExecute($this->document, $element, $value)) {
         $actions[] = new XMLFormProcessAction($action, $element, $value);
-        unset($elements[$key]); // Remove from the list of actionable elements.
+        // Remove from the list of actionable elements.
+        unset($elements[$key]);
       }
     }
     return $actions;
@@ -149,11 +169,11 @@ class XMLFormProcessor {
    * Creates DOMNodes in the document.
    *
    * @param array $actions
+   *   Actions to use when creating nodes.
    */
-  private function createNodes(array $actions) {
-    /**
-     * The create actions are loop in a while statement to allow for out of order construction of elements.
-     */
+  protected function createNodes(array $actions) {
+    // The create actions are looped in a while statement to allow for out-of-
+    // order construction of elements.
     do {
       $continue = FALSE;
       foreach ($actions as $key => $action) {
@@ -169,25 +189,30 @@ class XMLFormProcessor {
    * Updates/Delete's DOMNodes in the document.
    *
    * @param array $actions
+   *   Actions to use when modifying nodes.
    */
-  private function modifyNodes(array $actions) {
+  protected function modifyNodes(array $actions) {
     foreach ($actions as $action) {
       $action->execute($this->document);
     }
   }
 
   /**
-   * If the registered node's element is no longer in the form,
-   * add an action to delete it.
+   * If registered node element is no longer in the form, add a delete action.
    *
-   * @param array $actions
+   * @param FormElement $element
+   *   The element to get delete actions for.
+   *
+   * @return array
+   *   An array of XMLFormProcessActions.
    */
-  private function getRemovedFormElementsDeleteActions(FormElement $element) {
+  protected function getRemovedFormElementsDeleteActions(FormElement $element) {
     $actions = array();
     $elements = $element->flatten();
+    $filtered_elements = $this->filterElements($elements);
     $registered = $this->nodeRegistry->getRegistered();
     foreach ($registered as $hash => $node) {
-      if (isset($elements[$hash]) === FALSE) {
+      if (isset($filtered_elements[$hash]) === FALSE) {
         $element = $this->elementRegistry->get($hash);
         $delete = isset($element->actions->delete) ? $element->actions->delete : NULL;
         if (isset($delete)) {
@@ -198,4 +223,23 @@ class XMLFormProcessor {
     return $actions;
   }
 
+  /**
+   * Filters out elements that are hidden by #access and not to be processed.
+   *
+   * @param array $elements
+   *   An array containing flattened FormElements.
+   *
+   * @return array
+   *   An array of filtered FormElements.
+   */
+  protected function filterElements($elements) {
+    $filter_function = function ($filter_element) {
+      if (isset($filter_element->controls['#access'])) {
+        return $filter_element->controls['#access'];
+      }
+      return TRUE;
+    };
+    $filtered_elements = array_filter($elements, $filter_function);
+    return $filtered_elements;
+  }
 }

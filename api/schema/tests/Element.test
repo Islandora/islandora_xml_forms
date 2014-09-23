@@ -1,34 +1,31 @@
 <?php
 
-
-
 /**
  * @file
- *
  * Unit Tests.
  */
 
 /**
- * Unit Tests for the FormControl class.
+ * Unit tests for the FormControl class.
  */
-class SchemaAPI_Element_TestCase extends DrupalUnitTestCase {
+class SchemaAPIElementTestCase extends DrupalUnitTestCase {
 
   /**
-   * Get Test info.
+   * Get test info.
    *
    * @return array
-   * Properties that are displayed in the test selection form.
+   *   Properties that are displayed in the test selection form.
    */
   public static function getInfo() {
     return array(
       'name' => 'Element Unit Tests.',
       'description' => 'Unit tests for Element.inc',
-      'group' => 'Schema API',
+      'group' => 'Islandora XML Forms Schema API',
     );
   }
 
   /**
-   * setUp() performs any pre-requisite tasks that need to happen.
+   * Performs any pre-requisite tasks that need to happen.
    */
   public function setUp() {
     // Enable any modules required for the test.
@@ -38,20 +35,24 @@ class SchemaAPI_Element_TestCase extends DrupalUnitTestCase {
   }
 
   /**
-   *
+   * The actual tests.
    */
   public function test() {
     $path = drupal_get_path('module', 'xml_schema_api');
     $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
-    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
+    // Path to the idinfo element.
+    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']';
     $node = $schema->getUniqueNode($path);
     $this->assertNotNull($node);
     $element = new XMLSchemaElement($schema, $node);
     $this->assertNotNull($element);
-    $this->assertFalse($element->isReference()); // Element is not a refence.
-    $this->assertTrue($element->isTyped()); // Element does have a Type.
-    $this->assertNotNull($element->complexType); // Element has a complex type.
+    // Element is not a refence.
+    $this->assertFalse($element->isReference());
+    // Element does have a Type.
+    $this->assertTrue($element->isTyped());
+    // Element has a complex type.
+    $this->assertNotNull($element->complexType);
   }
 
 }

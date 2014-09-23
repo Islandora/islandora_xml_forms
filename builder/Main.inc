@@ -2,17 +2,16 @@
 
 /**
  * @file
- *
  * Callbacks and functions for the Main Page.
  */
 
 /**
  * Show the Main page.
  *
- * Here the user can select which action they would like to do.
+ * Here, the user can select which action they would like to do.
  *
  * @return array
- *   The tble to display.
+ *   The table to display.
  */
 function xml_form_builder_main() {
 
@@ -20,7 +19,7 @@ function xml_form_builder_main() {
   $names = XMLFormRepository::GetNames();
 
   // No forms exist can only create.
-  if (count($names) == 0) { 
+  if (count($names) == 0) {
     return '<div>No forms are defined. Please create a new form.</div><br/>';
   }
 
@@ -40,9 +39,9 @@ function xml_form_builder_main() {
     'rows' => array(),
   );
 
-  foreach($names as $form_info) {
+  foreach ($names as $form_info) {
     $name = $form_info['name'];
-    if($form_info['indb']) {
+    if ($form_info['indb']) {
       $type = t('Custom');
       $edit = l(t('Edit'), xml_form_builder_get_edit_form_path($name));
       $delete = l(t('Delete'), xml_form_builder_get_delete_form_path($name));
@@ -57,7 +56,16 @@ function xml_form_builder_main() {
     $export = l(t('Export'), xml_form_builder_get_export_form_path($name));
     $associate = l(t('Associate'), xml_form_builder_get_associate_form_path($name));
 
-    $table['rows'][] = array($name, $type, $copy, $edit, $view, $export, $delete, $associate);
+    $table['rows'][] = array(
+      $name,
+      $type,
+      $copy,
+      $edit,
+      $view,
+      $export,
+      $delete,
+      $associate,
+    );
   }
 
   return theme('table', $table);

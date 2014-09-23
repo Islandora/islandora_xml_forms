@@ -2,24 +2,29 @@
 
 /**
  * @file
- *
- * Defines the various callbacks and resources needed for the 'datepicker' form element.
+ * Defines callbacks and resources needed for the 'datepicker' form element.
  */
+
 class Datepicker {
 
   /**
    * Loads the required resources for displaying the Datepicker element.
    *
-   * @staticvar boolean $load
-   *   Keeps us from loading the same files multiple times, while not required it just saves some time.
+   * @staticvar bool $load
+   *   Keeps us from loading the same files multiple times; while not required,
+   *   it just saves some time.
    */
   public static function addRequiredResources(&$form_state) {
     static $load = TRUE;
     if ($load) {
       form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Element');
-      //Element::addRequiredResources();
+      // @todo: add Element::addRequiredResources().
       Element::addUIWidgets('ui.datepicker');
-      Element::addUIThemeStyles(array('ui.core.css', 'ui.datepicker.css', 'ui.theme.css'));
+      Element::addUIThemeStyles(array(
+        'ui.core.css',
+        'ui.datepicker.css',
+        'ui.theme.css',
+      ));
       Element::addJS('datepicker.js');
       $load = FALSE;
     }
@@ -30,12 +35,13 @@ class Datepicker {
    *
    * @param array $element
    *   The datepicker form element.
-   * @param boolean $edit
-   *   Not used.
    * @param array $form_state
    *   The Drupal form state.
    * @param array $complete_form
    *   The complete Drupal form definition.
+   *
+   * @return array
+   *   The datepicker form element.
    */
   public static function process(array $element, array &$form_state, array $complete_form = NULL) {
     self::addRequiredResources($form_state);
@@ -47,7 +53,8 @@ class Datepicker {
 /**
  * Implements theme_hook().
  *
- * @param array $vars
+ * @param array $variables
+ *   An array of theming variables.
  */
 function theme_datepicker($variables) {
   $element = $variables['element'];

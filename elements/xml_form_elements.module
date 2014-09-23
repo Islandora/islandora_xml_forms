@@ -122,8 +122,6 @@ function xml_form_elements_theme($existing, $type, $theme, $path) {
  *
  * @param array $element
  *   The element to be processed.
- * @param mixed $edit
- *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
  * @param array $complete_form
@@ -142,8 +140,6 @@ function xml_form_elements_tabs_process(array $element, array &$form_state, arra
  *
  * @param array $element
  *   The element to be processed.
- * @param mixed $edit
- *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
  * @param array $complete_form
@@ -162,8 +158,6 @@ function xml_form_elements_tabpanel_process(array $element, array &$form_state, 
  *
  * @param array $element
  *   The element to be processed.
- * @param mixed $edit
- *   The submitted value for this element, or NULL.
  * @param array $form_state
  *   The drupal form state.
  * @param array $complete_form
@@ -228,6 +222,16 @@ function xml_form_elements_ajax_callback($form, $form_state) {
   return find_element($form, $form_state['triggering_element']['#ajax']['params']['render']);
 }
 
+/**
+ * Alters a form tabs element via AJAX.
+ *
+ * @param FormElement $element
+ *   The form element to alter.
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The form state.
+ */
 function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, array &$form, array &$form_state) {
   $triggering_element = $form_state['triggering_element'];
   $action = $triggering_element['#ajax']['params']['action'];
@@ -235,20 +239,44 @@ function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, ar
     case 'add':
       xml_form_elements_form_element_tabs_ajax_add($element, $form, $form_state);
       break;
+
     case 'delete':
       xml_form_elements_form_element_tabs_ajax_delete($element, $form, $form_state);
       break;
+
   }
 }
 
+/**
+ * Adds a tabs form element via AJAX.
+ *
+ * @param FormElement $element
+ *   The element to add.
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ */
 function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, array &$form, array &$form_state) {
   $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
   $new_tab = clone $tab;
-  $new_tab->eachDecendant(function($element) { $element->default_value = NULL; });
+  $new_tab->eachDecendant(function($element) {
+    $element->default_value = NULL;
+  });
   $element->adopt($new_tab);
   $form[] = $new_tab->toArray();
 }
 
+/**
+ * Deletes a tabs form element via ajax.
+ *
+ * @param FormElement $element
+ *   The element to delete.
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ */
 function xml_form_elements_form_element_tabs_ajax_delete(FormElement $element, array &$form, array &$form_state) {
   $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
   $tab->orphan();
@@ -281,6 +309,16 @@ function xml_form_elements_form_element_tags_ajax_alter(FormElement $element, ar
   }
 }
 
+/**
+ * Adds a tags element via AJAX.
+ *
+ * @param FormElement $element
+ *   The element to add.
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ */
 function xml_form_elements_form_element_tags_ajax_add(FormElement $element, array &$form, array &$form_state) {
   $form_children = element_children($form);
   $input_field = &$form[array_shift($form_children)];
@@ -298,6 +336,16 @@ function xml_form_elements_form_element_tags_ajax_add(FormElement $element, arra
   $form[] = $tag;
 }
 
+/**
+ * Deletes a tags element via AJAX.
+ *
+ * @param FormElement $element
+ *   The tags element to delete.
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ */
 function xml_form_elements_form_element_tags_ajax_delete(FormElement $element, array &$form, array &$form_state) {
   $triggering_element = $form_state['triggering_element'];
   $hash = $triggering_element['#ajax']['params']['child'];
@@ -310,6 +358,16 @@ function xml_form_elements_form_element_tags_ajax_delete(FormElement $element, a
   }
 }
 
+/**
+ * Edits a tags element via AJAX.
+ *
+ * @param FormElement $element
+ *   The tags element to edit.
+ * @param array $form
+ *   The Drupal form.
+ * @param array $form_state
+ *   The Drupal form state.
+ */
 function xml_form_elements_form_element_tags_ajax_edit(FormElement $element, array &$form, array &$form_state) {
   $triggering_element = $form_state['triggering_element'];
   $input_field = &$form[array_shift(element_children($form))];

@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Callbacks and functions used in the Preview Page.
  */
 
@@ -20,7 +19,7 @@
  *   The name of the form to preview.
  *
  * @return array
- *   A Drupal Form that repersents the given form, identified by $form_name.
+ *   A Drupal Form that represents the given form, identified by $form_name.
  */
 function xml_form_builder_preview(array $form, array &$form_state, $form_name) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'Preview');

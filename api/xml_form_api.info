@@ -5,5 +5,5 @@ dependencies[] = objective_forms
 dependencies[] = xml_schema_api
 version = 7.x-dev
 core = 7.x
-
+files[] = tests/FunctionalTests.test
 

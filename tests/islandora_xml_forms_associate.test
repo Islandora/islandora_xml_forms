@@ -49,7 +49,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
       'self_transform' => "$this->self_transform_filename",
       'files[file]' => drupal_get_path('module', 'xml_forms') . "/tests/islandora_solution_pack_test/tests/fixtures/template.xml",
     );
-    $this->drupalPost('admin/islandora/xmlform/Test Solution Pack MODS Form/associations', $edit, 'Add Association');
+    $this->drupalPost('admin/islandora/xmlform/forms/Test Solution Pack MODS Form/associations', $edit, 'Add Association');
     $this->assertText("Successfully added association.", "Successfully added association to Test Solution Pack MODS Form.", 'Islandora');
   }
 
@@ -63,7 +63,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     // First, we need a collection.
     $this->collection_pid = "islandora:{$this->randomName()}";
     $this->createTestCollection($this->randomName(), array('islandora:testCModel'), $this->collection_pid);
-    $this->drupalGet('admin/islandora/xmlform/Test Solution Pack MODS Form/associations');
+    $this->drupalGet('admin/islandora/xmlform/forms/Test Solution Pack MODS Form/associations');
 
     // Before we get going, let's make sure we're looking at a fresh Test
     // Solution Pack MODS Form association page.
@@ -79,7 +79,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     // Assert that ingest still functions despite no form association.
     $this->assertText("New Object", "Collection with no form associations skips form ingest step.", 'Islandora');
     // Test form association re-enabling.
-    $this->drupalGet('admin/islandora/xmlform/Test Solution Pack MODS Form/associations');
+    $this->drupalGet('admin/islandora/xmlform/forms/Test Solution Pack MODS Form/associations');
     $this->clickLink('Enable');
     $this->drupalGet("islandora/object/{$this->collection_pid}/manage/overview/ingest");
     $this->assertField('abstract', "Collection with replaced form association loads form during ingest.", 'Islandora');
@@ -110,7 +110,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     // of the previous SimpleTest database.
     $this->createFormAssociation();
     // Then, we need to disable the other association so it doesn't bother us.
-    $this->drupalGet('admin/islandora/xmlform/Test Solution Pack MODS Form/associations');
+    $this->drupalGet('admin/islandora/xmlform/forms/Test Solution Pack MODS Form/associations');
     $this->clickLink('Disable');
     // Load up the form, and see if the template fields are filled in properly.
     $this->drupalGet("islandora/object/$this->collection_pid/manage/overview/ingest");
@@ -121,7 +121,7 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     $this->drupalPost("islandora/object/$this->collection_pid/manage/overview/ingest", array(), 'Ingest');
     // Submit the form and see if it ingests.
     $page_title = $this->xpath('//h1[@id="page-title"]');
-    if ($page_title[0]) {
+    if (isset($page_title[0]) && $page_title[0]) {
       $page_title = trim($page_title[0]);
       $this->assertTrue($page_title === "Title", "Page title '$page_title' correctly pulled from MODS DSID's titleInfo/title field.", 'Islandora');
     }
@@ -204,20 +204,11 @@ class IslandoraXMLFormAssociationTestCase extends IslandoraCollectionWebTestCase
     ));
     $dc_xml = new DOMDocument();
     $dc_xml->loadXML($object_xml);
-    $title = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'title')->item(0);
     $description = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'description')->item(0);
     $type = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'type')->item(0);
     $genre = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'type')->item(1);
     $language = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'language')->item(0);
     $identifier = $dc_xml->getElementsByTagNameNS("http://purl.org/dc/elements/1.1/", 'identifier')->item(0);
-
-    // Assert dc:title.
-    if (is_object($title)) {
-      $this->assertTrue($title->nodeValue == 'Title', "DC 'title' field was correctly transformed using custom XSLT.", 'Islandora');
-    }
-    else {
-      $this->fail("No DC 'title' field entries found.", 'Islandora');
-    }
 
     // Assert dc:description.
     if (is_object($description)) {

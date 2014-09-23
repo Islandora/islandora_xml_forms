@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Tags controls.
+ */
+
 Drupal.behaviors.xmlFormElementTags = function(context) {
   $('.xml-form-elements-tags .tag-editor:not(.processed)').keypress(function(e) {
     if (e.keyCode == '13') {

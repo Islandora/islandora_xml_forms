@@ -1,34 +1,31 @@
 <?php
 
-
-
 /**
  * @file
- *
  * Unit Tests.
  */
 
 /**
- * Unit Tests for the FormControl class.
+ * Unit tests for the FormControl class.
  */
-class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
+class SchemaAPISchemaTestCase extends DrupalUnitTestCase {
 
   /**
-   * Get Test info.
+   * Get test info.
    *
    * @return array
-   * Properties that are displayed in the test selection form.
+   *   Properties that are displayed in the test selection form.
    */
   public static function getInfo() {
     return array(
       'name' => 'Schema Unit Tests.',
       'description' => 'Unit tests for Schema.inc',
-      'group' => 'Schema API',
+      'group' => 'Islandora XML Forms Schema API',
     );
   }
 
   /**
-   * setUp() performs any pre-requisite tasks that need to happen.
+   * Performs any pre-requisite tasks that need to happen.
    */
   public function setUp() {
     parent::setUp('xml_schema_api');
@@ -36,12 +33,10 @@ class SchemaAPI_Schema_TestCase extends DrupalUnitTestCase {
   }
 
   /**
-   *
+   * The actual tests. Well, test. It's apparently just the one.
    */
   public function test() {
-    /**
-     * Basic Create.
-     */
+    // Basic Create.
     $path = drupal_get_path('module', 'xml_schema_api');
     $schema = new XMLSchema($path . '/tests/data/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($schema);
