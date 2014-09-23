@@ -1,3 +1,8 @@
+/**
+ * @file
+ * Tabs controls.
+ */
+
 Drupal.behaviors.xmlFormElementTabs = {
   tabs: {
     tool_tip: null,

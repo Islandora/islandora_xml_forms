@@ -1,17 +1,17 @@
 <?php
 
-
-
 /**
  * @file
- *
+ * XML Form API module.
  */
+
 module_load_include('inc', 'xml_form_api', 'XMLForm');
 
 /**
  * Register classes for FormProperties.
  *
  * @return array
+ *   Array of properties.
  */
 function xml_form_api_objectify_properties() {
   $properties['#actions'] = array(

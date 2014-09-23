@@ -2,7 +2,9 @@
 
 /**
  * @file
+ * XMLSchema class.
  */
+
 module_load_include('inc', 'php_lib', 'ReadOnlyProtectedMembers');
 module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'php_lib', 'String');
@@ -10,44 +12,62 @@ module_load_include('inc', 'xml_form_api', 'SchemaTag');
 module_load_include('inc', 'xml_schema_api', 'XmlSchemaCache');
 
 /**
- * Ignoring imported documents for the most part as they are not used much in FGDC this will be an issue we will need
- * to address in the future.
+ * XMLSchema class.
+ *
+ * Nigel sez: "Ignoring imported documents for the most part, as they are not
+ * used much in FGDC; this will be an issue we will need to address in the
+ * future."
  */
 class XMLSchema {
+
   /**
    * Constants
    */
-  const prefix = 'xs';
-  const uri = 'http://www.w3.org/2001/XMLSchema';
+  const PREFIX = 'xs';
+  const URI = 'http://www.w3.org/2001/XMLSchema';
+
+  // @deprecated Constants
+  // @codingStandardsIgnoreStart
+  const prefix = self::PREFIX;
+  const uri = self::URI;
+  // @codingStandardsIgnoreEnd
 
   /**
+   * A protected members object generated during this object's instantiation.
    *
-   * @var ReadOnlyProtected
+   * @var ReadOnlyProtectedMembers
    */
   protected $protected;
 
   /**
+   * The actual schema for this object.
    *
    * @var DOMDocument
    */
   protected $schema;
 
   /**
+   * A DOMXpath object created from this object's $schema.
    *
    * @var DOMXPath
    */
   protected $xpath;
 
   /**
+   * An array of include Schemas.
    *
    * @var Schema[]
    */
-  protected $includes; // Array of include Schemas
+  protected $includes;
+
   /**
+   * An array of imported Schemas.
    *
    * @var Schema[]
    */
-  protected $imports; // Array of imported Schemas
+
+  protected $imports;
+
   /**
    * An array of all created schemas identified by file name.
    *
@@ -56,9 +76,12 @@ class XMLSchema {
   protected static $schemas;
 
   /**
+   * Constructor function for the XMLSchema class.
    *
    * @param string $filename
+   *   Filename to add to the protected members array.
    * @param string $namespace
+   *   Namespace to add to the protected members array.
    */
   public function __construct($filename, $namespace = NULL) {
     $filename = trim($filename);
@@ -75,23 +98,27 @@ class XMLSchema {
    * Get a list of members to serialize.
    *
    * @return array
+   *   An array of ('protected', 'includes', 'imports').
    */
   public function __sleep() {
     return array('protected', 'includes', 'imports');
   }
 
   /**
-   * Reinitialize this Object, when unserialized.
+   * Reinitialize this object, when un-serialized.
    */
   public function __wakeup() {
     $this->loadSchema($this->filename);
   }
 
   /**
-   * Get a read only protected variable.
+   * Get a read-only protected variable.
    *
    * @param string $name
+   *   The name of the variable to get.
+   *
    * @return mixed
+   *   The variable as a property of this object's protected members.
    */
   public function __get($name) {
     return $this->protected->$name;
@@ -101,28 +128,38 @@ class XMLSchema {
    * Set the value of a protected member.
    *
    * @param string $name
+   *   The name of the protected member to set.
    * @param mixed $value
+   *   The value to set it to.
    */
   public function __set($name, $value) {
     $this->protected->$name = $value;
   }
 
   /**
+   * Gets the location of the schema file.
    *
    * @param string $filename
+   *   The schema filename.
+   *
    * @return string
+   *   The location of the schema file.
    */
-  private function getSchemaLocation($filename) {
+  protected function getSchemaLocation($filename) {
     $index = strrpos($filename, '/');
     return drupal_substr($filename, 0, $index);
   }
 
   /**
-   * Gets the full path to a schema maybe...
+   * Gets the full path to a schema (Nigel sez: "maybe...").
    *
    * @param string $filename
+   *   The filename to get the full path for.
+   *
+   * @return string
+   *   The full path to the schema.
    */
-  private function getFullPathToSchema($filename) {
+  protected function getFullPathToSchema($filename) {
     $doc = new DOMDocument();
     $filename = trim($filename);
     $scheme = parse_url($filename, PHP_URL_SCHEME);
@@ -139,7 +176,8 @@ class XMLSchema {
             $index = strrpos($location, '/');
             $location = drupal_substr($location, 0, $index);
           }
-          $filename = drupal_substr($filename, $matches[0][$count - 1][1] + 3); // +3 for "../"
+          // Add +3 for "../".
+          $filename = drupal_substr($filename, $matches[0][$count - 1][1] + 3);
         }
         $path = $location . '/' . $filename;
         return $path;
@@ -154,8 +192,9 @@ class XMLSchema {
    * Load the schema.
    *
    * @param string $filename
+   *   The schema to load.
    */
-  private function loadSchema($filename) {
+  protected function loadSchema($filename) {
     $this->schema = $this->loadDocument($filename);
     $this->configureXPath();
     $this->loadIncludedFiles();
@@ -166,16 +205,21 @@ class XMLSchema {
    * Loads the given DOMDocument.
    *
    * @param string $filename
+   *   The filename of the DOMDocument to load.
+   *
+   * @throws Exception
+   *   If we can't find a document, just fail; we shouldn't attempt processing.
    *
    * @return DOMDocument
+   *   The loaded DOMDocument.
    */
-  private function loadDocument($filename) {
+  protected function loadDocument($filename) {
     if (($doc = XmlSchemaCache::Get($filename)) != FALSE) {
       return $doc;
     }
     else {
       $doc = new DOMDocument();
-      if (!@$doc->load($filename)) { // If we can't find a document just fail, we shouldn't attempt any processing.
+      if (!@$doc->load($filename)) {
         throw new Exception(t('Failed to find document %filename', array('%filename' => $filename)));
       }
       XmlSchemaCache::Set($filename, $doc);
@@ -184,18 +228,18 @@ class XMLSchema {
   }
 
   /**
-   * Configure this schema's xpath.
+   * Configure this schema's XPath.
    */
-  private function configureXPath() {
+  protected function configureXPath() {
     $this->xpath = new DOMXPath($this->schema);
-    $this->xpath->registerNamespace(self::prefix, self::uri);
+    $this->xpath->registerNamespace(self::PREFIX, self::URI);
     $this->registerNamespaces();
   }
 
   /**
-   * Register namepaces for use in xpath queries.
+   * Register namespaces for use in XPath queries.
    */
-  private function registerNamespaces() {
+  protected function registerNamespaces() {
     $simple = simplexml_import_dom($this->schema->documentElement);
     $namespaces = $simple->getNamespaces(TRUE);
     foreach ($namespaces as $prefix => $uri) {
@@ -204,15 +248,16 @@ class XMLSchema {
   }
 
   /**
-   * Load included schema's.
+   * Load included schemas.
    */
-  private function loadIncludedFiles() {
+  protected function loadIncludedFiles() {
     $this->includes = array();
     $included_files = $this->getIncludedFiles();
     foreach ($included_files as $include_file) {
       $filename = $this->getFullPathToSchema($include_file);
       if (empty(self::$schemas[$filename])) {
-        $this->includes[$filename] = new XMLSchema($filename, $this->namespace); // Included files share the same namespace.
+        // Included files share the same namespace.
+        $this->includes[$filename] = new XMLSchema($filename, $this->namespace);
       }
       else {
         $this->includes[$filename] = self::$schemas[$filename];
@@ -223,9 +268,10 @@ class XMLSchema {
   /**
    * Gets a list of schema files that this schema includes.
    *
-   * @return array
+   * @return string[]
+   *   An array of included schema files.
    */
-  private function getIncludedFiles() {
+  protected function getIncludedFiles() {
     $included_files = array();
     $result = $this->xpath->query('//xs:include');
     if ($result && $result->length > 0) {
@@ -238,9 +284,9 @@ class XMLSchema {
   }
 
   /**
-   * Load imported schema's.
+   * Load imported schemas.
    */
-  private function loadImportedFiles() {
+  protected function loadImportedFiles() {
     $this->imports = array();
     $imported_files = $this->getImportedFiles();
     foreach ($imported_files as $import_file) {
@@ -259,8 +305,10 @@ class XMLSchema {
    * Gets a list of schema files that this schema imports.
    *
    * @return array
+   *   An array of arrays, each containing the 'schemaLocation' and 'namespace'
+   *   attributes of the imported files.
    */
-  private function getImportedFiles() {
+  protected function getImportedFiles() {
     $imported_files = array();
     $result = $this->xpath->query('//xs:import');
     if ($result && $result->length > 0) {
@@ -274,9 +322,14 @@ class XMLSchema {
   }
 
   /**
-   * Checks to see if the given doc is valid.
+   * Checks to see if the given DOMDocument is valid.
    *
    * @param DOMDocument $doc
+   *   The document to check.
+   *
+   * @return bool
+   *   TRUE if the document validates against the cached schema file; FALSE
+   *   otherwise.
    */
   public function validate(DOMDocument $doc) {
     $filename = XmlSchemaCache::GetCachedFilename($this->filename);
@@ -286,11 +339,13 @@ class XMLSchema {
   }
 
   /**
-   * Query the given path in this schema, and all schema's that are included or imported.
+   * Query the given path in this schema, and all included or imported schemas.
    *
    * @param string $path
+   *   An XPath query to make.
    *
-   * @return array
+   * @return DOMNode[]
+   *   An array of DOMNodes returned from the query.
    */
   public function query($path) {
     if ($this->schema) {
@@ -309,11 +364,17 @@ class XMLSchema {
    * If the node does not exist or is not unique an exception is thrown.
    *
    * @param string $path
+   *   The XPath to use to get the node.
+   *
+   * @throws Exception
+   *   If the node was not unique.
+   *
    * @return DOMNode
+   *   The unique DOMNode returned by the schema.
    */
   public function getUniqueNode($path) {
     $results = $this->query($path);
-    if (count($results) != 1) { // Not unique
+    if (count($results) != 1) {
       throw new Exception('Node at path was not unique. Path: ' . $path);
     }
     return array_shift($results);
@@ -322,7 +383,8 @@ class XMLSchema {
   /**
    * Gets all element tags within this schema.
    *
-   * @return array
+   * @return DOMNode[]
+   *   An array of DOMNodes with the xs:element tag.
    */
   public function getAllElements() {
     return $this->query('//xs:element');
@@ -333,9 +395,12 @@ class XMLSchema {
    *
    * Type is defined as a complexType or simpleType.
    *
-   * @param string $type_name
+   * @param string $name
+   *   The type name to look for.
    *
-   * @return DOMElement
+   * @return DOMNode|NULL
+   *   The found DOMNode if it is the only one found; NULL if none or multiple
+   *   are found.
    */
   public function findGlobalType($name) {
     if (isset($name) && $name != '') {
@@ -346,6 +411,16 @@ class XMLSchema {
     return NULL;
   }
 
+  /**
+   * Looks for a given global element.
+   *
+   * @param string $name
+   *   The name of the element to look for.
+   *
+   * @return DOMNode|NULL
+   *   The found DOMNode if it is the only one found; NULL if none or multiple
+   *   are found.
+   */
   public function findGlobalElement($name) {
     if (isset($name) && $name != '') {
       $path = "/xs:schema/xs:element[@name='$name']";
@@ -355,6 +430,16 @@ class XMLSchema {
     return NULL;
   }
 
+  /**
+   * Looks for a given group element.
+   *
+   * @param string $name
+   *   The name of the element to look for.
+   *
+   * @return DOMNode|NULL
+   *   The found DOMNode if it is the only one found; NULL if none or multiple
+   *   are found.
+   */
   public function findGroup($name) {
     if (isset($name) && $name != '') {
       $path = "/xs:schema/xs:group[@name='$name']";

@@ -1,17 +1,16 @@
 <?php
 
-
-
 /**
  * @file
- *
+ * Implementation of the objective_forms Form class.
  */
+
 module_load_include('inc', 'objective_forms', 'Form');
 module_load_include('inc', 'xml_form_api', 'XMLDocument');
 module_load_include('inc', 'xml_form_api', 'Actions');
 
 /**
- *
+ * The XML Form class.
  */
 class XMLForm extends Form {
 
@@ -23,8 +22,10 @@ class XMLForm extends Form {
   protected $document;
 
   /**
+   * Constructor function for the XMLForm class.
    *
    * @param array $form_state
+   *   The form state.
    */
   public function __construct(array &$form_state) {
     parent::__construct(array(), $form_state);
@@ -36,7 +37,7 @@ class XMLForm extends Form {
   /**
    * Initialize this object from values in storage.
    */
-  private function initializeFromStorage() {
+  protected function initializeFromStorage() {
     $this->root = $this->storage->root;
     $this->document = $this->storage->document;
   }
@@ -44,27 +45,33 @@ class XMLForm extends Form {
   /**
    * Stores information required to rebuild this object.
    */
-  private function storePersistantMembers() {
+  protected function storePersistantMembers() {
     $this->storage->root = $this->root;
     $this->storage->document = $this->document;
     $this->storage->initialized = TRUE;
   }
 
   /**
-   * Initializes this object members.
+   * Initializes this object's members.
    *
-   * This function should be called the first time this object is created for a particular form,
-   * on subsequent submit/validation/etc callbacks, Form::initializeFromStorage() will be
-   * called.
+   * This function should be called the first time this object is created for a
+   * particular form; on subsequent submit/validation/etc callbacks,
+   * Form::initializeFromStorage() will be called.
    *
-   * @param FormDefinition $form_definition
-   * @param Document $xml_document
+   * @throws Exception
+   *   If an attempt is made to initialize a form a second time.
+   *
+   * @param array $form
+   *   The form to initialize.
+   * @param XMLDocument $document
+   *   The XML document to initialize.
    */
   public function initialize(array &$form, XMLDocument $document) {
     if (!$this->initialized) {
       $this->root = new FormElement($this->registry, $form);
       $this->document = $document;
-      $this->generate(); // Register nodes and generate new elements.
+      // Register nodes and generate new elements.
+      $this->generate();
       $this->prepopulate();
       $this->storePersistantMembers();
     }
@@ -74,30 +81,33 @@ class XMLForm extends Form {
   }
 
   /**
-   * Has the form been initialized?
+   * Determines if the form has been initialized.
    *
-   * @return boolean
+   * @return bool
+   *   TRUE or FALSE depending on whether or not the form is initialized.
    */
   public function isInitialized() {
     return $this->storage->initialized;
   }
 
   /**
-   * Called the first time this form is created, this generates additional elements based on the XMLDocument's nodes.
+   * Generates additional elements based on the XMLDocument's nodes.
+   *
+   * Called the first time this form is created.
    *
    * @return array
+   *   Array of elements generated.
    */
-  private function generate() {
+  protected function generate() {
     module_load_include('inc', 'xml_form_api', 'XMLFormGenerator');
     $generator = new XMLFormGenerator($this, $this->document);
     $generator->generate($this->root);
   }
 
   /**
-   * Note this clones the existing set of elements, these elements will not be saved in the storage.
+   * Clones the existing set of elements.
    *
-   * @param FormElements $elements
-   * @return type
+   * These elements will not be saved in the storage.
    */
   public function prepopulate() {
     module_load_include('inc', 'xml_form_api', 'XMLFormPrePopulator');
@@ -106,30 +116,52 @@ class XMLForm extends Form {
   }
 
   /**
+   * Submits the form.
    *
+   * @param array $form
+   *   The form to submit.
    * @param array $form_state
-   */
-  public function validate(array &$form, array &$form_state) {
-//    module_load_include('inc', 'xml_form_api', 'FormValues');
-//    module_load_include('inc', 'xml_form_api', 'XMLFormValidator');
-//    $elements = $this->elements;
-//    $form_values = new FormValues($form_state, $elements);
-//    $validator = new FormValidator($form_values);
-//    return $validator->validate($elements);
-  }
-
-  /**
+   *   The state of the form.
    *
-   * @param array $form_state
-   * @return type
+   * @return XMLDocument
+   *   An XML document generated from the form.
    */
   public function submit(array &$form, array &$form_state) {
     module_load_include('inc', 'objective_forms', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
-    $form_values = new FormValues($form_state, $form, $this->registry);
 
+    $flat = $this->flattenDrupalForm($form);
+    $form_element = $this->registry->get($form['#hash']);
+    $descendant_access_change = function ($descendant, $flat_array) {
+      if (isset($flat_array[$descendant->hash]) && $flat_array[$descendant->hash]['#access'] != $descendant['#access']) {
+        $descendant['#access'] = $flat_array[$descendant->hash]['#access'];
+      }
+    };
+    $form_element->eachDecendant($descendant_access_change, $flat);
+    $form_values = new FormValues($form_state, $form, $this->registry);
     $processor = new XMLFormProcessor($form_values, $this->document, $this->registry);
     return $processor->process($this->root);
   }
 
+  /**
+   * Flattens the Drupal form to be used when checking against the registry.
+   *
+   * @param array $form
+   *   An array representing a form within Drupal.
+   *
+   * @return array
+   *   An array where the keys are the hash of the FormElement and the value is
+   *   the corresponding FormElement.
+   */
+  public function flattenDrupalForm($form) {
+    $flattened = array();
+    foreach (element_children($form) as $key) {
+      $child_element = $form[$key];
+      if (isset($child_element['#hash'])) {
+        $flattened[$child_element['#hash']] = $child_element;
+        $flattened = array_merge($flattened, $this->flattenDrupalForm($child_element));
+      }
+    }
+    return $flattened;
+  }
 }

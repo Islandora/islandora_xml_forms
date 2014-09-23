@@ -2,9 +2,10 @@
 
 /**
  * @file
+ * Handles the display and submission of the associations form.
  *
- * Handles the display and submission of the associations form, which is used to
- * associate xml forms with a given content model's datastream.
+ * This is then used to associate XML forms with a given content model's
+ * datastream.
  */
 
 /**
@@ -27,11 +28,17 @@
 function xml_form_builder_associations_form(array $form, array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/associations.form');
+
   $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
-  $create_table_rows = function($o) {
-    $o['title_field'] = "['" . implode("']['", $o['title_field']) . "']";
-    $o['type'] = $o['in_db'] ? 'custom' : 'hook';
-    return $o;
+  $create_table_rows = function($association) {
+    if (is_array($association['title_field'])) {
+      $association['title_field'] = "['" . implode("']['", $association['title_field']) . "']";
+    }
+    else {
+      $association['title_field'] = t('None');
+    }
+    $association['type'] = $association['in_db'] ? 'custom' : 'hook';
+    return $association;
   };
   $form += array(
     'list' => array(
@@ -39,6 +46,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       '#title' => t('Current associations'),
       '#value' => theme('xml_form_builder_association_table', array(
         'associations' => array_map($create_table_rows, $associations),
+        'use_default_transforms' => variable_get('xml_form_builder_use_default_dc_xslts', FALSE),
       )),
     ),
     'fieldset' => array(
@@ -55,7 +63,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       ),
       'dsid' => array(
         '#type' => 'textfield',
-        '#description' => t('The datastream ID where the object\'s metadata is stored.'),
+        '#description' => t("The datastream ID where the object's metadata is stored."),
         '#title' => t('Metadata Datastream ID'),
         '#required' => TRUE,
         '#default_value' => isset($form_state['values']['dsid']) ? $form_state['values']['dsid'] : NULL,
@@ -68,37 +76,39 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
       'title_field' => array(
         '#type' => 'select',
         '#title' => t('Title Field'),
-        '#description' => t('The form field for the object\'s label.'),
+        '#description' => t("The form field for the object's label."),
         '#prefix' => '<div id="ahah-wrapper">',
         '#suffix' => '</div>',
         '#options' => xml_form_builder_get_title_options($form_name),
-        '#required' => TRUE,
-      ),
-      'transform' => array(
-        '#type' => 'select',
-        '#title' => t('XSL Transform'),
-        '#options' => xml_form_builder_get_transforms(),
-        '#default_value' => 'No Transform',
-        '#description' => t("An XSL transform for setting the Fedora object's Dublin Core metadata datastream."),
-      ),
-      'self_transform' => array(
-        '#type' => 'select',
-        '#title' => t('Self XSL Transform'),
-        '#options' => xml_form_builder_get_self_transforms(),
-        '#default_value' => 'No Transform',
-        '#description' => t('An optional transformation applied to form data prior to ingestion.'),
-      ),
-      'file' => array(
-        '#type' => 'file',
-        '#title' => t('Upload Template Document'),
-        '#description' => t('A sample metadata file used to prepopulate the form on ingest.'),
-      ),
-      'submit' => array(
-        '#type' => 'submit',
-        '#value' => t('Add Association'),
       ),
     ),
   );
+  if (!variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
+    $form['fieldset']['transform'] = array(
+      '#type' => 'select',
+      '#title' => t('XSL Transform'),
+      '#options' => xml_form_builder_get_transforms(),
+      '#default_value' => 'No Transform',
+      '#description' => t("An XSL transform for setting the Fedora object's Dublin Core metadata datastream."),
+    );
+    $form['fieldset']['self_transform'] = array(
+      '#type' => 'select',
+      '#title' => t('Self XSL Transform'),
+      '#options' => xml_form_builder_get_self_transforms(),
+      '#default_value' => 'No Transform',
+      '#description' => t('An optional transformation applied to form data prior to ingestion.'),
+    );
+  }
+  $form['fieldset']['file'] = array(
+    '#type' => 'file',
+    '#title' => t('Upload Template Document'),
+    '#description' => t('A sample metadata file used to prepopulate the form on ingest.'),
+  );
+  $form['fieldset']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Add Association'),
+  );
+
   return $form;
 }
 
@@ -125,6 +135,9 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     $form_state['values'],
     array_combine($object_keys, $object_keys)
   );
+  if (empty($object['title_field'])) {
+    $object['title_field'] = NULL;
+  }
   $object['template'] = '';
   $file_uploaded = $_FILES['files']['error']['file'] == 0;
   if ($file_uploaded) {
@@ -132,10 +145,13 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     $definition->load($_FILES['files']['tmp_name']['file']);
     $object['template'] = $definition->saveXML();
   }
-  if (drupal_write_record('xml_form_builder_form_associations', $object) !== FALSE) {
+  try {
+    db_insert('xml_form_builder_form_associations')
+    ->fields($object)
+    ->execute();
     drupal_set_message(t('Successfully added association.'));
   }
-  else {
+  catch (Exception $e) {
     drupal_set_message(t('Failed to add association.'), 'error');
   }
 }
@@ -158,7 +174,7 @@ function xml_form_builder_get_title_options($form_name) {
       $result = $xpath->query('//element[@name]');
       $elements = dom_node_list_to_array($result);
       if (count($elements) > 0) {
-        $output = array();
+        $output = array(NULL => t('Do not set the label'));
         foreach ($elements as $element) {
           $result = $xpath->query('ancestor-or-self::node()[@name]', $element);
           $ancestors = dom_node_list_to_array($result);
@@ -175,7 +191,7 @@ function xml_form_builder_get_title_options($form_name) {
       }
     }
   }
-  return array(NULL => 'invalid');
+  return array(NULL => t('Do not set the label'));
 }
 
 /**

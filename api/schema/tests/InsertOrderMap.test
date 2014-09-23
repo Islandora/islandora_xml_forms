@@ -1,34 +1,31 @@
 <?php
 
-
-
 /**
  * @file
- *
  * Unit Tests.
  */
 
 /**
- * Unit Tests for the FormControl class.
+ * Unit tests for the FormControl class.
  */
-class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
+class SchemaAPIInsertOrderMapTestCase extends DrupalUnitTestCase {
 
   /**
    * Get Test info.
    *
    * @return array
-   * Properties that are displayed in the test selection form.
+   *   Properties that are displayed in the test selection form.
    */
   public static function getInfo() {
     return array(
       'name' => 'InsertOrderMap Unit Tests.',
       'description' => 'Unit tests for InsertOrderMap.inc',
-      'group' => 'Schema API',
+      'group' => 'Islandora XML Forms Schema API',
     );
   }
 
   /**
-   * setUp() performs any pre-requisite tasks that need to happen.
+   * Performs any pre-requisite tasks that need to happen.
    */
   public function setUp() {
     // Enable any modules required for the test.
@@ -37,7 +34,7 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
   }
 
   /**
-   *
+   * The actual tests.
    */
   public function test() {
     $data_path = drupal_get_path('module', 'xml_schema_api') . '/tests/data';
@@ -45,10 +42,13 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $this->assertNotNull($schema);
     $insert_map = new InsertOrderMap($schema);
     $this->assertNotNull($insert_map);
-    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']'; // Path to the idinfo element.
+    // Path to the idinfo element.
+    $path = '/xsd:schema/xsd:element[@name=\'idinfo\']';
     $map = $insert_map->getInsertOrderMap($path);
-    $this->assertNotNull($map); // Map exists.
-    $this->assertNull($map->parent, 'Top level doesn\'t have parent.'); // Top level doesn't have parent.
+    // Map exists.
+    $this->assertNotNull($map);
+    // Top level doesn't have parent.
+    $this->assertNull($map->parent, 'Top level doesn\'t have parent.');
     $this->assertEqual($map->min, 1, 'Min value set correctly');
     $this->assertEqual($map->max, 1, 'Max value set correctly');
     $this->assertEqual($map instanceof InsertOrderSequence, 'Set top level type correctly');
@@ -66,16 +66,16 @@ class SchemaAPI_InsertOrderMap_TestCase extends DrupalUnitTestCase {
     $parent = $results->item(0);
     $this->assertNotNull($parent, 'Found parent.');
     $new = new DOMElement('origin', 'test');
-    $path = '/xsd:schema/xsd:element[@name=\'citeinfo\']'; // Path to the idinfo element.
+    // Path to the idinfo element.
+    $path = '/xsd:schema/xsd:element[@name=\'citeinfo\']';
     $insert_map->insert($path, $parent, $new);
     $valid = $doc->schemaValidate($data_path . '/schemas/fgdc-std-001-1998.xsd');
     $this->assertNotNull($new->parentNode, 'New element was added to the document.');
     $this->assertEqual($new->parentNode, $parent, 'New element has the correct parent.');
     $this->assertTrue($valid, 'Document remains valid after insert.');
 
-    // Simple Choice insert.
-
-    ///xsd:schema/xsd:element[@name='cntinfo']
+    // @TODO: add a Simple Choice insert test using the path
+    // '/xsd:schema/xsd:element[@name='\cntinfo'\]'.
   }
 
 }

@@ -2,6 +2,7 @@ language: php
 php:
   - 5.3.3
   - 5.4
+  - 5.5
 branches:
   only:
     - 7.x
@@ -25,11 +26,12 @@ before_install:
   - ln -s $HOME/islandora_solution_pack_collection sites/all/modules/islandora_solution_pack_collection
   - drush en --yes --user=1 xml_form_builder xml_form_elements islandora_basic_collection islandora_test_cm
 script:
-  # TODO: either fix this so it ignores appropriate files, or fix the plethora of files it flags.
-  # - ant -buildfile sites/all/modules/islandora_xml_forms/build.xml lint
+  - ant -buildfile sites/all/modules/islandora_xml_forms/build.xml lint
   - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_xml_forms
-  # TODO: same as the previous TODO above.
-  # - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_forms
-  # TODO: the copy/paste detector is recognizing whole classes as duplicate lines. Fix this.
-  # - phpcpd --names *.module,*.inc,*.test sites/all/modules/islandora_xml_forms
-  - drush test-run --uri=http://localhost:8081 "Islandora XML Forms"
+  - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_forms
+  - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_api
+  - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_schema_api
+  - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_builder
+  - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_elements
+  - phpcpd --names *.module,*.inc,*.test --exclude api/schema sites/all/modules/islandora_xml_forms
+  - drush test-run -v --uri=http://localhost:8081 "Islandora XML Forms"

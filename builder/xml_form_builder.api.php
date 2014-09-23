@@ -9,8 +9,8 @@
  * This hook allows modules to add default forms to form builder.
  *
  * @return array
- *   An associative array mapping unique names to associative arrays containing a
- *   single key:
+ *   An associative array mapping unique names to associative arrays containing
+ *   a single key:
  *   - form_file: A string containing the path to the form definition, relative
  *     to the webserver's document root (such that I might be opened
  */
@@ -67,4 +67,25 @@ function hook_islandora_xml_form_builder_form_associations() {
       'template' => FALSE,
     ),
   );
+}
+
+/**
+ * This hook allows modules to change form builder elements in the form array.
+ *
+ * The modification happens before the form schema is passed off to be
+ * rendered to allow modifications to the base schema saved into the form
+ * array. This is currently the only way to grant access to a form field
+ * that is a part of a tab panel.
+ *
+ * @param array $form
+ *   Modifications can be made to the form array allowing access to modify
+ * values/attributes of the form elements after the form builder xml is loaded
+ * into the form array.
+ *
+ * @param array $form_state
+ *   Form State array.
+ */
+function hook_xml_form_builder_get_form_modify_definition_alter(&$form,
+                                                                &$form_state) {
+
 }
