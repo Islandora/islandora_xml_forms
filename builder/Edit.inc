@@ -216,6 +216,7 @@ function xml_form_builder_get_element_types() {
   if (!isset($output)) {
     $types = array_keys(module_invoke_all('element_info'));
     $output = drupal_map_assoc($types);
+    ksort($output);
   }
 
   return $output;
