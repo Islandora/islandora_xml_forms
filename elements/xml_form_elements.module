@@ -463,7 +463,7 @@ function xml_form_elements_defaultable_markup($children, &$elements) {
  */
 function xml_form_elements_creative_commons_process($element, &$form_state, $complete_form) {
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/creative_commons');
-  return xml_form_elements_creative_commons($element, $form_state);
+  return CreativeCommons::xmlFormElementsCreativeCommons($element, $form_state);
 }
 
 /**
@@ -491,7 +491,13 @@ function xml_form_elements_creative_commons_value_callback(&$element, $input, &$
     }
     else {
       extract($input['license_fieldset']);
-      return xml_form_elements_creative_commons_value($allow_commercial, $allow_modifications, $license_jurisdiction);
+      $response = CreativeCommons::xmlFormElementsGetCreativeCommons($allow_commercial, $allow_modifications, $license_jurisdiction);
+      if ($response) {
+        return (string) $response->{'license-uri'};
+      }
+      else {
+        return CreativeCommons::xmlFormElementsCreativeCommonsValue($allow_commercial, $allow_modifications, $license_jurisdiction);
+      }
     }
   }
 }
