@@ -35,5 +35,5 @@ script:
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_builder
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_elements
   - phpcpd --names *.module,*.inc,*.test --exclude api/schema sites/all/modules/islandora_xml_forms
-  - mv -v $HOME/builder/lib $TRAVIS_BUILD_DIR/builder
+  - mv -v $HOME/lib $TRAVIS_BUILD_DIR/builder
   - drush test-run -v --uri=http://localhost:8081 "Islandora XML Forms"
