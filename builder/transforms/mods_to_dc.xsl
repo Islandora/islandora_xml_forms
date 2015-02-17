@@ -7,6 +7,9 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <!-- 
+	Version 1.4		2015-01-30 schema location change: 
+    				http://www.loc.gov/standards/sru/recordSchemas/dc-schema.xsd
+
 	Version 1.3		2013-12-09 tmee@loc.gov
 	Fixed date transformation for dates without start/end points
 	
@@ -48,10 +51,10 @@
 		<xsl:choose>
 			<!-- WS: updated schema location -->
 		<xsl:when test="//mods:modsCollection">			
-			<srw_dc:dcCollection xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/resources/dc-schema.xsd">
+			<srw_dc:dcCollection xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/recordSchemas/dc-schema.xsd">
 				<xsl:apply-templates/>
 			<xsl:for-each select="mods:modsCollection/mods:mods">			
-				<srw_dc:dc xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/resources/dc-schema.xsd">
+				<srw_dc:dc xsi:schemaLocation="info:srw/schema/1/dc-schema http://www.loc.gov/standards/sru/recordSchemas/dc-schema.xsd">
 				<xsl:apply-templates/>
 			</srw_dc:dc>
 			</xsl:for-each>

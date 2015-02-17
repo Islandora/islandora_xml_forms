@@ -25,6 +25,7 @@ before_install:
   - ln -s $HOME/islandora_solution_pack_test sites/all/modules/islandora_solution_pack_test
   - ln -s $HOME/islandora_solution_pack_collection sites/all/modules/islandora_solution_pack_collection
   - drush en --yes --user=1 xml_form_builder xml_form_elements islandora_basic_collection islandora_test_cm
+  - mv -v $TRAVIS_BUILD_DIR/builder/lib $HOME
 script:
   - ant -buildfile sites/all/modules/islandora_xml_forms/build.xml lint
   - $ISLANDORA_DIR/tests/scripts/line_endings.sh sites/all/modules/islandora_xml_forms
@@ -34,4 +35,5 @@ script:
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_builder
   - drush coder-review --reviews=production,security,style,i18n,potx,sniffer xml_form_elements
   - phpcpd --names *.module,*.inc,*.test --exclude api/schema sites/all/modules/islandora_xml_forms
+  - mv -v $HOME/lib $TRAVIS_BUILD_DIR/builder
   - drush test-run -v --uri=http://localhost:8081 "Islandora XML Forms"
