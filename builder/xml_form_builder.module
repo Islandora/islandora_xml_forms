@@ -228,6 +228,18 @@ function xml_form_builder_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ *
+ * Overrides the add datastream callback to be aware of forms.
+ */
+function xml_form_builder_menu_alter(&$items) {
+  $items['islandora/object/%islandora_object/manage/datastreams/add']['page callback'] = 'xml_form_builder_add_datastream_page';
+  $items['islandora/object/%islandora_object/manage/datastreams/add']['page arguments'] = array(2);
+  $items['islandora/object/%islandora_object/manage/datastreams/add']['module'] = 'xml_form_builder';
+  $items['islandora/object/%islandora_object/manage/datastreams/add']['file'] = 'includes/datastream.form.inc';
+}
+
+/**
  * Access callback for the XSLTs admin page.
  */
 function xml_form_builder_xslts_access() {
