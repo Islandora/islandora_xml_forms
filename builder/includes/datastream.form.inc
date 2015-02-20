@@ -235,13 +235,14 @@ function xml_form_builder_add_datastream_page(AbstractObject $object) {
   module_load_include('inc', 'islandora', 'includes/add_datastream.form');
   return array(
     'core_form' => drupal_get_form('islandora_add_datastream_form', $object),
-    'xml_form_fieldset' => xml_form_builder_empty_metadata_datastreams($object) ?
-    array(
-      '#type' => 'fieldset',
-      '#title' => t('Add A Metadata Datastream'),
-      'xml_form' => drupal_get_form('xml_form_builder_create_metadata_form', $object),
-    ) :
-    array(),
+    'xml_form_fieldset' => (xml_form_builder_empty_metadata_datastreams($object) ?
+      array(
+        '#type' => 'fieldset',
+        '#title' => t('Add A Metadata Datastream'),
+        'xml_form' => drupal_get_form('xml_form_builder_create_metadata_form', $object),
+      ) :
+      array()
+    ),
   );
 }
 
