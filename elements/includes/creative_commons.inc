@@ -101,7 +101,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   if (!isset($form_state['input'][$element['#name']]) && isset($element['#default_value'])) {
     // Reversing this array facilitates value_callback mangling by community.
     $default_value_array = array_reverse(explode('/', $element['#default_value']));
-    $properties = explode('-', $default_value_array[3]);
+    $properties = explode('-', array_pop($default_value_array));
 
     $commercial = 'y';
     $derivatives = 'y';
