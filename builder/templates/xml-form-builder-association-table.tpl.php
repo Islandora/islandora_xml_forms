@@ -12,8 +12,12 @@
         <th><?php print t('Type'); ?></th>
         <th><?php print t('Datastream ID'); ?></th>
         <th><?php print t('Label field'); ?></th>
-        <th><?php print t('Transform'); ?></th>
-        <th><?php print t('Self Transform'); ?></th>
+
+        <?php if (!$use_default_transforms): ?>
+          <th><?php print t('Transform'); ?></th>
+          <th><?php print t('Self Transform'); ?></th>
+        <?php endif; ?>
+
         <th><?php print t('Has template'); ?></th>
         <th><?php print t('Operations'); ?></th>
       </tr>
@@ -23,8 +27,12 @@
           <td><?php print ($association['type'] == 'hook') ? t('Built-in') : t('Custom') ?></td>
           <td><?php print $association['dsid'] ?></td>
           <td><?php print $association['title_field'] ?></td>
-          <td><?php print $association['transform'] ?></td>
-          <td><?php print (isset($association['self_transform'])) ? $association['self_transform'] : t("No Self Transform") ?></td>
+
+          <?php if (!$use_default_transforms): ?>
+            <td><?php print $association['transform'] ?></td>
+            <td><?php print (isset($association['self_transform'])) ? $association['self_transform'] : t("No Self Transform") ?></td>
+          <?php endif; ?>
+
           <td><?php print ($association['template']) ? t('Yes') : t('No') ?></td>
           <td>
           <?php if ($association['type'] == 'hook'): ?>
