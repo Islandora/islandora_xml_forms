@@ -36,6 +36,19 @@ function hook_xml_form_builder_get_transforms() {
 }
 
 /**
+ * This hook allows modules to register XSLT self-transformations.
+ *
+ * @return array
+ *   An associative array mapping a shortened name to the full path of the
+ *   transformation.
+ */
+function hook_xml_form_builder_get_self_transforms() {
+  return array(
+    'cleanup.xslt' => 'sites/all/modules/my_cool_module/transforms/cleanup.xslt',
+  );
+}
+
+/**
  * This hook allows modules to register default form associations.
  *
  * @return array
