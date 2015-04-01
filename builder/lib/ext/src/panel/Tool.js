@@ -63,7 +63,7 @@ Ext.define('Ext.panel.Tool', {
     toolOverCls: Ext.baseCSSPrefix + 'tool-over',
     ariaRole: 'button',
     renderTpl: ['<img src="{blank}" class="{baseCls}-{type}" role="presentation"/>'],
-    
+
     /**
      * @cfg {Function} handler
      * A function to execute when the tool is clicked.
@@ -75,12 +75,12 @@ Ext.define('Ext.panel.Tool', {
      * <li><b>tool</b> : Ext.panel.Tool<div class="sub-desc">The tool object</div></li>
      * </ul>
      */
-    
+
     /**
      * @cfg {Object} scope
      * The scope to execute the {@link #handler} function. Defaults to the tool.
      */
-    
+
     /**
      * @cfg {String} type
      * The type of tool to render. The following types are available:
@@ -112,12 +112,12 @@ Ext.define('Ext.panel.Tool', {
      * <li>up</li>
      * </ul>
      */
-    
+
     /**
-     * @cfg {String/Object} tooltip 
+     * @cfg {String/Object} tooltip
      * The tooltip for the tool - can be a string to be used as innerHTML (html tags are accepted) or QuickTips config object
      */
-    
+
     /**
      * @cfg {Boolean} stopEvent
      * Defaults to true. Specify as false to allow click event to propagate.
@@ -135,41 +135,41 @@ Ext.define('Ext.panel.Tool', {
              */
             'click'
         );
-        
+
         //<debug>
         var types = [
-            'close', 
-            'collapse', 
-            'down', 
-            'expand', 
-            'gear', 
-            'help', 
-            'left', 
-            'maximize', 
-            'minimize', 
-            'minus', 
-            'move', 
-            'next', 
-            'pin', 
-            'plus', 
-            'prev', 
-            'print', 
-            'refresh', 
-            'resize', 
-            'restore', 
-            'right', 
-            'save', 
-            'search', 
+            'close',
+            'collapse',
+            'down',
+            'expand',
+            'gear',
+            'help',
+            'left',
+            'maximize',
+            'minimize',
+            'minus',
+            'move',
+            'next',
+            'pin',
+            'plus',
+            'prev',
+            'print',
+            'refresh',
+            'resize',
+            'restore',
+            'right',
+            'save',
+            'search',
             'toggle',
-            'unpin', 
+            'unpin',
             'up'
         ];
-        
+
         if (me.id && Ext.Array.indexOf(types, me.id) > -1 && Ext.global.console) {
             Ext.global.console.warn('When specifying a tool you should use the type option, the id can conflict now that tool is a Component');
         }
         //</debug>
-        
+
         me.type = me.type || me.id;
 
         Ext.applyIf(me.renderData, {
@@ -212,7 +212,7 @@ Ext.define('Ext.panel.Tool', {
      */
     setType: function(type) {
         var me = this;
-        
+
         me.type = type;
         if (me.rendered) {
             me.toolEl.dom.className = me.baseCls + '-' + type;
@@ -238,7 +238,7 @@ Ext.define('Ext.panel.Tool', {
     onClick: function(e, target) {
         var me = this,
             owner;
-            
+
         if (me.disabled) {
             return false;
         }
@@ -256,12 +256,12 @@ Ext.define('Ext.panel.Tool', {
         me.fireEvent('click', me, e);
         return true;
     },
-    
+
     // inherit docs
     onDestroy: function(){
         if (Ext.isObject(this.tooltip)) {
             Ext.tip.QuickTipManager.unregister(this.id);
-        }    
+        }
         this.callParent();
     },
 
