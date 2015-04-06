@@ -33,7 +33,7 @@ function xml_form_builder_delete($form, array &$form_state, $form_name) {
     'description' => array(
       '#type' => 'markup',
       '#prefix' => '<div>',
-      '#markup' => t('Are you sure you want to delete the form <b>%name</b> and all related form associations? This action is irreversible.', array('%name' => $form_name)),
+      '#markup' => t('Are you sure you want to delete the form <strong>%name</strong> and all related form associations? This action is irreversible.', array('%name' => $form_name)),
       '#suffix' => '</div>',
     ),
     'delete' => array(
