@@ -58,6 +58,7 @@ class Tag {
     $tags = &get_form_element_parent($element, $complete_form);
     $element['#id'] = $element['#hash'];
     $element['#title'] = isset($tags['#title']) ? $tags['#title'] : FALSE;
+    $element['#value'] = isset($element['#value']) ? check_plain($element['#value']) : FALSE;
     return $element;
   }
 }
