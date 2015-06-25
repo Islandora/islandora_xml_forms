@@ -429,11 +429,13 @@ function xml_form_builder_get_associate_form_path($form_name) {
  *   The Form to render.
  * @param string $xml
  *   The metadata to prepopulate the form with,
+ * @param array $parents
+ *   An array containing the offset of the parents.
  *
  * @return array
  *   The Drupal Form, if it exists FALSE otherwise.
  */
-function xml_form_builder_get_form(array $form, array &$form_state, $form_name, $xml = NULL) {
+function xml_form_builder_get_form(array $form, array &$form_state, $form_name, $xml = NULL, $parents = array()) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'XMLFormRepository');
   form_load_include($form_state, 'inc', 'xml_form_api', 'XMLForm');
   form_load_include($form_state, 'inc', 'xml_form_api', 'XMLFormDefinition');
@@ -446,7 +448,7 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
     return FALSE;
   }
   try {
-    $xml_form = new XMLForm($form_state);
+    $xml_form = new XMLForm($form_state, $parents);
     // Was not initialized from storage.
     if (!$xml_form->isInitialized()) {
       $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));

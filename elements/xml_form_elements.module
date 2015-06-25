@@ -370,7 +370,8 @@ function xml_form_elements_form_element_tags_ajax_delete(FormElement $element, a
  */
 function xml_form_elements_form_element_tags_ajax_edit(FormElement $element, array &$form, array &$form_state) {
   $triggering_element = $form_state['triggering_element'];
-  $input_field = &$form[array_shift(element_children($form))];
+  $children = element_children($form);
+  $input_field = &$form[array_shift($children)];
   if ($input_field['#default_value'] != '') {
     xml_form_elements_form_element_tags_ajax_add($element, $form, $form_state);
   }
