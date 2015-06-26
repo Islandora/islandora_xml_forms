@@ -94,7 +94,9 @@ class Delete implements ActionInterface {
    *   The DOMNode to delete.
    */
   protected function doDelete(DOMNode $node) {
-    $node->parentNode->removeChild($node);
+    if (isset($node->parentNode)) {
+      $node->parentNode->removeChild($node);
+    }
   }
 
 }
