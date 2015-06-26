@@ -141,6 +141,11 @@ class XMLForm extends Form {
     module_load_include('inc', 'objective_forms', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
 
+    // Have parent offset so let's grab only the portion of the form to
+    // submit!
+    if (!empty($this->parents)) {
+      $form = drupal_array_get_nested_value($form, $this->parents);
+    }
     $flat = $this->flattenDrupalForm($form);
     $form_element = $this->registry->get($form['#hash']);
     $descendant_access_change = function ($descendant, $flat_array) {
