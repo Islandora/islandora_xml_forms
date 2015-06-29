@@ -129,7 +129,7 @@ class XMLForm extends Form {
   /**
    * Submits the form.
    *
-   * @param array $form
+   * @param array $form_in
    *   The form to submit.
    * @param array $form_state
    *   The state of the form.
@@ -137,14 +137,17 @@ class XMLForm extends Form {
    * @return XMLDocument
    *   An XML document generated from the form.
    */
-  public function submit(array &$form, array &$form_state) {
+  public function submit(array &$form_in, array &$form_state) {
     module_load_include('inc', 'objective_forms', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
 
     // Have parent offset so let's grab only the portion of the form to
     // submit!
     if (!empty($this->parents)) {
-      $form = drupal_array_get_nested_value($form, $this->parents);
+      $form =& drupal_array_get_nested_value($form_in, $this->parents);
+    }
+    else {
+      $form =& $form_in;
     }
     $flat = $this->flattenDrupalForm($form);
     $form_element = $this->registry->get($form['#hash']);
