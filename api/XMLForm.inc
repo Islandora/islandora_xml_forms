@@ -22,13 +22,24 @@ class XMLForm extends Form {
   protected $document;
 
   /**
+   * The parent offset for the form.
+   *
+   * @var array
+   */
+  protected $parents;
+
+  /**
    * Constructor function for the XMLForm class.
    *
    * @param array $form_state
    *   The form state.
+   *
+   * @param array $parents
+   *   An array containing an offset of parents.
    */
-  public function __construct(array &$form_state) {
-    parent::__construct(array(), $form_state);
+  public function __construct(array &$form_state, $parents = array()) {
+    $this->parents = $parents;
+    parent::__construct(array(), $form_state, $parents);
     if ($this->storage->initialized) {
       $this->initializeFromStorage();
     }
@@ -68,7 +79,7 @@ class XMLForm extends Form {
    */
   public function initialize(array &$form, XMLDocument $document) {
     if (!$this->initialized) {
-      $this->root = new FormElement($this->registry, $form);
+      $this->root = new FormElement($this->registry, $form, NULL, $this->parents);
       $this->document = $document;
       // Register nodes and generate new elements.
       $this->generate();
@@ -118,7 +129,7 @@ class XMLForm extends Form {
   /**
    * Submits the form.
    *
-   * @param array $form
+   * @param array $form_in
    *   The form to submit.
    * @param array $form_state
    *   The state of the form.
@@ -126,10 +137,18 @@ class XMLForm extends Form {
    * @return XMLDocument
    *   An XML document generated from the form.
    */
-  public function submit(array &$form, array &$form_state) {
+  public function submit(array &$form_in, array &$form_state) {
     module_load_include('inc', 'objective_forms', 'FormValues');
     module_load_include('inc', 'xml_form_api', 'XMLFormProcessor');
 
+    // Have parent offset so let's grab only the portion of the form to
+    // submit!
+    if (!empty($this->parents)) {
+      $form =& drupal_array_get_nested_value($form_in, $this->parents);
+    }
+    else {
+      $form =& $form_in;
+    }
     $flat = $this->flattenDrupalForm($form);
     $form_element = $this->registry->get($form['#hash']);
     $descendant_access_change = function ($descendant, $flat_array) {
