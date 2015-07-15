@@ -81,6 +81,7 @@ function xml_form_elements_element_info() {
       '#process' => array('xml_form_elements_creative_commons_process'),
       '#value_callback' => 'xml_form_elements_creative_commons_value_callback',
     ),
+    // Designed for the form builder UI please do not use programaticaly.
     'indent' => array(
       '#input' => FALSE,
       '#tree' => FALSE,
@@ -90,6 +91,18 @@ function xml_form_elements_element_info() {
       ),
       '#attached' => array(
         'css' => array("$module_path/css/indent.css"),
+      ),
+    ),
+    // Designed for the form builder UI please do not use programaticaly.
+    'inline' => array(
+      '#input' => FALSE,
+      '#tree' => FALSE,
+      '#theme_wrappers' => array('container'),
+      '#attributes' => array(
+        'class' => array('xml-form-elements-inline-element'),
+      ),
+      '#attached' => array(
+        'css' => array("$module_path/css/inline.css"),
       ),
     ),
   );
