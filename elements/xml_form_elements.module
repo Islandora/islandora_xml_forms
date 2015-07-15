@@ -26,6 +26,7 @@ define('XML_FORM_ELEMENTS_IMAGES_PATH', XML_FORM_ELEMENTS_PATH . 'images/');
  * Implements hook_element_info().
  */
 function xml_form_elements_element_info() {
+  $module_path = drupal_get_path('module', 'xml_form_elements');
   return array(
     'tabs' => array(
       '#input' => TRUE,
@@ -79,6 +80,17 @@ function xml_form_elements_element_info() {
       '#tree' => FALSE,
       '#process' => array('xml_form_elements_creative_commons_process'),
       '#value_callback' => 'xml_form_elements_creative_commons_value_callback',
+    ),
+    'indent' => array(
+      '#input' => FALSE,
+      '#tree' => FALSE,
+      '#theme_wrappers' => array('container'),
+      '#attributes' => array(
+        'class' => array('xml-form-elements-indent-element'),
+      ),
+      '#attached' => array(
+        'css' => array("$module_path/css/indent.css"),
+      ),
     ),
   );
 }
