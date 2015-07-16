@@ -5,17 +5,17 @@ php:
   - 5.5
 branches:
   only:
-    - 7.x
+    - /^7.x/
 env:
   - FEDORA_VERSION="3.5"
   - FEDORA_VERSION="3.6.2"
   - FEDORA_VERSION="3.7.0"
 before_install:
   - cd $HOME
-  - git clone -b 7.x git://github.com/Islandora/islandora.git
-  - git clone -b 7.x git://github.com/Islandora/php_lib.git
-  - git clone -b 7.x git://github.com/Islandora/objective_forms.git
-  - git clone -b 7.x git://github.com/Islandora/islandora_solution_pack_collection.git
+  - git clone -b /^7.x/ git://github.com/Islandora/islandora.git
+  - git clone -b /^7.x/ git://github.com/Islandora/php_lib.git
+  - git clone -b /^7.x/ git://github.com/Islandora/objective_forms.git
+  - git clone -b /^7.x/ git://github.com/Islandora/islandora_solution_pack_collection.git
   - export ISLANDORA_DIR=$HOME/islandora
   - $HOME/islandora/tests/scripts/travis_setup.sh
   - cd $HOME/drupal-*
