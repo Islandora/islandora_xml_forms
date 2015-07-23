@@ -1190,7 +1190,7 @@ Ext.formbuilder.createElementForm = function () {
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
-                target: 'ahah',
+                target: 'ajax',
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="ajax" id="ajax"></a>#ajax</h3>' +
                    '<p><strong>Used by</strong>:' +

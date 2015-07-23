@@ -128,7 +128,7 @@ Ext.formbuilder = (function() {
           record.set(name, toObject(store));
         });
         /* Ahah */
-        if(values['ahah'] == "on") {
+        if(values['ajax'] == "on") {
           var ahah = {
             effect: values['ahah_effect'],
             event: values['ahah_event'],
@@ -145,7 +145,7 @@ Ext.formbuilder = (function() {
               interval: values['ahah_progress_interval']
             };
           }
-          record.set('ahah', ahah);
+          record.set('ajax', ahah);
         }
         var actions = {};
         var has_actions = false;

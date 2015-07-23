@@ -115,19 +115,19 @@ Ext.formbuilder.createTreePanel = function() {
             Ext.getCmp(name).store.loadData(converted, false);
           });
           /* Ahah */
-          var ahah = data.ahah;
-          if(ahah !== undefined && ahah != "") {
+          var ajax = data.ajax;
+          if(ajax !== undefined && ajax != "") {
             var values = {
-              ahah: "on",
-              ahah_effect: ahah.effect,
-              ahah_event: ahah.event,
-              ahah_method: ahah.method,
-              ahah_path: ahah.path,
-              ahah_wrapper: ahah.wrapper,
-              ahah_keypress: ahah.keypress
+              ajax: "on",
+              ahah_effect: ajax.effect,
+              ahah_event: ajax.event,
+              ahah_method: ajax.method,
+              ahah_path: ajax.path,
+              ahah_wrapper: ajax.wrapper,
+              ahah_keypress: ajax.keypress
             };
-            if(ahah.progress !== undefined && ahah.progress != "") {
-              var progress = ahah.progress;
+            if(ajax.progress !== undefined && ajax.progress != "") {
+              var progress = ajax.progress;
               values.ahah_progress = "on";
               values.ahah_progress_type = progress.type;
               values.ahah_progress_message = progress.message;
