@@ -1,4 +1,5 @@
-.xml-form-elements-inline-element > .form-item {
+.xml-form-elements-inline-element > .form-item,
+.form-item .xml-form-elements-inline-element > .form-item {
   display: inline;
   float: left;
   margin-right: 1em;
