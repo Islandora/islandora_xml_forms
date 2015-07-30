@@ -64,8 +64,8 @@ Ext.data.Types.MAP = {
 /**
  *
  */
-Ext.data.Types.AJAX_PROCESS = {
-    type: 'AJAX_PROCESS',
+Ext.data.Types.AJAX_PROGRESS = {
+    type: 'AJAX_PROGRESS',
     fields: [{
         name: 'type',
         type: 'string'
@@ -86,7 +86,13 @@ Ext.data.Types.AJAX_PROCESS = {
 Ext.data.Types.AJAX = {
     type: 'AJAX',
     fields: [{
+        name: 'callback',
+        type: 'string'
+    }, {
         name: 'effect',
+        type: 'string'
+    }, {
+        name: 'speed',
         type: 'string'
     }, {
         name: 'event',
@@ -98,14 +104,20 @@ Ext.data.Types.AJAX = {
         name: 'path',
         type: 'string'
     }, {
+        name: 'prevent',
+        type: 'string'
+    }, {
+        name: 'trigger_as',
+        type: 'string'
+    }, {
         name: 'wrapper',
         type: 'string'
     }, {
         name: 'keypress',
         type: 'boolean'
     }, {
-        name: 'process',
-        type: types.AJAX_PROCESS
+        name: 'progress',
+        type: types.AJAX_PROGRESS
     }]
 }
 

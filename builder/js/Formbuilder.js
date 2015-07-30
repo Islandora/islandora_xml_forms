@@ -127,25 +127,29 @@ Ext.formbuilder = (function() {
           var store = Ext.getCmp(name).store;
           record.set(name, toObject(store));
         });
-        /* Ahah */
+        /* Ajax */
         if(values['ajax'] == "on") {
-          var ahah = {
-            effect: values['ahah_effect'],
-            event: values['ahah_event'],
-            method: values['ahah_method'],
-            path: values['ahah_path'],
-            wrapper: values['ahah_wrapper'],
-            keypress: values['ahah_keypress']
+          var ajax = {
+            callback: values['ajax_callback'],
+            effect: values['ajax_effect'],
+            speed: values['ajax_speed'],
+            event: values['ajax_event'],
+            method: values['ajax_method'],
+            path: values['ajax_path'],
+            prevent: values['ajax_prevent'],
+            trigger_as: values['ajax_trigger_as'],
+            wrapper: values['ajax_wrapper'],
+            keypress: values['ajax_keypress']
           };
-          if(values['ahah_progress'] == "on") {
-            ahah.progress = {
-              type: values['ahah_progress_type'],
-              message: values['ahah_progress_message'],
-              url: values['ahah_progress_url'],
-              interval: values['ahah_progress_interval']
+          if(values['ajax_progress'] == "on") {
+            ajax.progress = {
+              type: values['ajax_progress_type'],
+              message: values['ajax_progress_message'],
+              url: values['ajax_progress_url'],
+              interval: values['ajax_progress_interval']
             };
           }
-          record.set('ajax', ahah);
+          record.set('ajax', ajax);
         }
         var actions = {};
         var has_actions = false;

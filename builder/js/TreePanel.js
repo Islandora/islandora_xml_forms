@@ -114,34 +114,38 @@ Ext.formbuilder.createTreePanel = function() {
             }
             Ext.getCmp(name).store.loadData(converted, false);
           });
-          /* Ahah */
+          /* Ajax */
           var ajax = data.ajax;
           if(ajax !== undefined && ajax != "") {
             var values = {
               ajax: "on",
-              ahah_effect: ajax.effect,
-              ahah_event: ajax.event,
-              ahah_method: ajax.method,
-              ahah_path: ajax.path,
-              ahah_wrapper: ajax.wrapper,
-              ahah_keypress: ajax.keypress
+              ajax_callback: ajax.callback,
+              ajax_effect: ajax.effect,
+              ajax_speed: ajax.speed,
+              ajax_event: ajax.event,
+              ajax_method: ajax.method,
+              ajax_path: ajax.path,
+              ajax_prevent: ajax.prevent,
+              ajax_trigger_as: ajax.trigger_as,
+              ajax_wrapper: ajax.wrapper,
+              ajax_keypress: ajax.keypress
             };
             if(ajax.progress !== undefined && ajax.progress != "") {
               var progress = ajax.progress;
-              values.ahah_progress = "on";
-              values.ahah_progress_type = progress.type;
-              values.ahah_progress_message = progress.message;
-              values.ahah_progress_url = progress.url;
-              values.ahah_progress_interval = progress.interval;
+              values.ajax_progress = "on";
+              values.ajax_progress_type = progress.type;
+              values.ajax_progress_message = progress.message;
+              values.ajax_progress_url = progress.url;
+              values.ajax_progress_interval = progress.interval;
             }
             else {
-              Ext.getCmp('ahah_progress').collapse();
+              Ext.getCmp('ajax_progress').collapse();
             }
             form.setValues(values);
           }
           else {
             Ext.getCmp('ajax').collapse();
-            Ext.getCmp('ahah_progress').collapse();
+            Ext.getCmp('ajax_progress').collapse();
           }
           var actions = data.actions;
           if(actions !== undefined && actions != "") {
