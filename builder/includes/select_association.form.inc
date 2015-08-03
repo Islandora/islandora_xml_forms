@@ -34,7 +34,7 @@ function xml_form_builder_select_association_form(array $form, array &$form_stat
   $selected_model = $get_default('models', key($models));
   $forms = xml_form_builder_select_association_form_get_forms($associations, $selected_model);
   $selected_form = $get_default('available_forms', key($forms));
-  // We check if the form exists incase the model was changed.
+  // We check if the form exists in case the model was changed.
   $selected_form = in_array($selected_form, $forms) ? $selected_form : $forms[current($forms)];
 
   $multiple_forms = count($forms) > 1;
@@ -58,7 +58,7 @@ function xml_form_builder_select_association_form(array $form, array &$form_stat
       '#title' => t('Select a Form'),
       '#prefix' => '<div id="forms_wrapper">',
       '#suffix' => '</div>',
-      '#type' => 'select',
+      '#type' => 'radios',
       '#options' => $forms,
       '#default_value' => $selected_form,
     ),
