@@ -51,8 +51,9 @@ Ext.formbuilder.createElementForm = function () {
       name: 'key',
       fieldLabel: Drupal.t('Identifier'),
       width: 640,
-      regex: /^[^!"#$%&'()*+,.\/\\:;<=>?@[\]^`{|}~]+$/,
-      regexText: "Invalid Identifier it must not contain (^!\"#$%&'()*+,.\/:;<=>?@[\]^`{|}~)",
+      allowBlank: false,
+      regex: /^[a-zA-Z0-9_\-\x7f-\xff][a-zA-Z0-9_\-\x7f-\xff]*$/,
+      regexText: "Invalid Identifier, it may only contain letters, numbers, hyphens or underscores",
       listeners: {
         render: function() {
           Ext.create('Ext.tip.ToolTip', {
