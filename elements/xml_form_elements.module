@@ -48,7 +48,8 @@ function xml_form_elements_element_info() {
     ),
     'tag' => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_tag_process'),
+      '#autocomplete_path' => FALSE,
+      '#process' => array('xml_form_elements_tag_process', 'form_process_autocomplete'),
       '#theme' => 'tag',
     ),
     'datepicker' => array(
@@ -81,7 +82,7 @@ function xml_form_elements_element_info() {
       '#process' => array('xml_form_elements_creative_commons_process'),
       '#value_callback' => 'xml_form_elements_creative_commons_value_callback',
     ),
-    // Designed for the form builder UI please do not use programaticaly.
+    // Designed for the form builder UI please do not use programmatically.
     'indent' => array(
       '#input' => FALSE,
       '#tree' => FALSE,
@@ -93,7 +94,7 @@ function xml_form_elements_element_info() {
         'css' => array("$module_path/css/indent.css"),
       ),
     ),
-    // Designed for the form builder UI please do not use programaticaly.
+    // Designed for the form builder UI please do not use programmatically.
     'inline' => array(
       '#input' => FALSE,
       '#tree' => FALSE,
