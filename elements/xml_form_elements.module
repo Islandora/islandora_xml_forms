@@ -48,8 +48,7 @@ function xml_form_elements_element_info() {
     ),
     'tag' => array(
       '#input' => TRUE,
-      '#autocomplete_path' => FALSE,
-      '#process' => array('xml_form_elements_tag_process', 'form_process_autocomplete'),
+      '#process' => array('xml_form_elements_tag_process'),
       '#theme' => 'tag',
     ),
     'datepicker' => array(
@@ -107,6 +106,19 @@ function xml_form_elements_element_info() {
       ),
     ),
   );
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function xml_form_elements_element_info_alter(&$type) {
+  // As of Drupal 7.39, a new function is required to "sanitize" the
+  // autocomplete process and avoid cross-site scripting (SA-CORE-2015-003).
+  // For backward-compatibility, ensure this function exists before applying it.
+  if (function_exists('form_process_autocomplete')) {
+    $type['tag']['#autocomplete_path'] = FALSE;
+    $type['tag']['#process'][] = 'form_process_autocomplete';
+  }
 }
 
 /**
