@@ -55,9 +55,7 @@ class Tags {
    */
   public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
     self::addRequiredResources($form_state);
-    // Remove numbers from the ID, since they can
-    // cause problems during the autocomplete process.
-    $element['#id'] = rtrim(preg_replace('/\d+/', '', $element['#id']), '-');
+    $element['#id'] = $element['#hash'];
     $element['#size'] = isset($element['#size']) ? $element['#size'] : 60;
     $element['#tree'] = TRUE;
     $element['#after_build'] = array('xml_form_elements_after_build_tags');

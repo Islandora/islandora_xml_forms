@@ -56,9 +56,7 @@ class Tag {
    */
   public static function Process(array $element, array &$form_state, array $complete_form = NULL) {
     $tags = &get_form_element_parent($element, $complete_form);
-    // Remove numbers from the ID, since they can
-    // cause problems during the autocomplete process.
-    $element['#id'] = rtrim(preg_replace('/\d+/', '', $element['#id']), '-');
+    $element['#id'] = $element['#hash'];
     $element['#title'] = isset($tags['#title']) ? $tags['#title'] : FALSE;
     $element['#value'] = isset($element['#value']) ? check_plain($element['#value']) : FALSE;
     return $element;
