@@ -81,7 +81,7 @@ function xml_form_elements_element_info() {
       '#process' => array('xml_form_elements_creative_commons_process'),
       '#value_callback' => 'xml_form_elements_creative_commons_value_callback',
     ),
-    // Designed for the form builder UI please do not use programaticaly.
+    // Designed for the form builder UI please do not use programmatically.
     'indent' => array(
       '#input' => FALSE,
       '#tree' => FALSE,
@@ -93,7 +93,7 @@ function xml_form_elements_element_info() {
         'css' => array("$module_path/css/indent.css"),
       ),
     ),
-    // Designed for the form builder UI please do not use programaticaly.
+    // Designed for the form builder UI please do not use programmatically.
     'inline' => array(
       '#input' => FALSE,
       '#tree' => FALSE,
@@ -106,6 +106,19 @@ function xml_form_elements_element_info() {
       ),
     ),
   );
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function xml_form_elements_element_info_alter(&$type) {
+  // As of Drupal 7.39, a new function is required to "sanitize" the
+  // autocomplete process and avoid cross-site scripting (SA-CORE-2015-003).
+  // For backward-compatibility, ensure this function exists before applying it.
+  if (function_exists('form_process_autocomplete')) {
+    $type['tag']['#autocomplete_path'] = FALSE;
+    $type['tag']['#process'][] = 'form_process_autocomplete';
+  }
 }
 
 /**
@@ -357,6 +370,8 @@ function xml_form_elements_form_element_tags_ajax_add(FormElement $element, arra
   $input->parent->adopt($tag);
   $tag = $tag->toArray();
   $tag['#default_value'] = $default_value;
+  // Since cloned tags are not textfields just unset #autocomplete_path key.
+  unset($tag['#autocomplete_path']);
   // Update drupal form.
   $form[] = $tag;
 }
