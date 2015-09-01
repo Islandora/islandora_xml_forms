@@ -370,6 +370,8 @@ function xml_form_elements_form_element_tags_ajax_add(FormElement $element, arra
   $input->parent->adopt($tag);
   $tag = $tag->toArray();
   $tag['#default_value'] = $default_value;
+  //Since cloned tags are not textfields just unset #autocomplete_path key.
+  unset($tag['#autocomplete_path']);
   // Update drupal form.
   $form[] = $tag;
 }

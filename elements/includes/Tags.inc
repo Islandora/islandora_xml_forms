@@ -225,7 +225,6 @@ function template_preprocess_tags(&$vars) {
   $textfield = array(
     'element' => array_shift($vars['tags']),
   );
-  $textfield['element']['#id'] = $tags['#id'];
   $textfield['element']['#size'] = $tags['#size'];
   $textfield['element']['#autocomplete_path'] = isset($textfield['element']['#autocomplete_path']) ? $textfield['element']['#autocomplete_path'] : FALSE;
   // Theme the text field to take advantage of autocomplete.
