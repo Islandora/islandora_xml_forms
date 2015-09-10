@@ -26,6 +26,9 @@ class NodeRegistry implements Serializable {
    * object, NodeRegistry::restored() must be called to convert the XPaths back
    * to DOMNodes.
    *
+   * Registered DOMNodes should not be orphan. This leads to wrong XPaths that
+   * can't be converted back to DOMNodes.
+   *
    * @var array
    */
   protected $registered;
@@ -124,6 +127,22 @@ class NodeRegistry implements Serializable {
       throw new Exception("DOMNodes cannot be registered until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
     }
     $this->registered[$hash] = $node;
+  }
+
+  /**
+   * Unregisters a relationship between a FormElement and DOMNode.
+   *
+   * @param string $hash
+   *   The #hash property of the FormElement to remove from the registry.
+   *
+   * @throws Exception
+   *   If NodeRegistry::restoreRequired is flagged as true and this is called.
+   */
+  public function unregister($hash) {
+    if ($this->restoredRequired) {
+      throw new Exception("DOMNodes cannot be registered until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
+    }
+    unset($this->registered[$hash]);
   }
 
   /**
