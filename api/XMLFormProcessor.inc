@@ -213,7 +213,7 @@ class XMLFormProcessor {
     // nodeRegistry.
     // This is needed because the serialization and unserialization
     // process of NodeRegistry with orphan Domnodes results in invalid
-    // XPath's that silently fail when unserializing the supper
+    // XPath's that silently fail when unserializing the super
     // structure a.k.a $form_state.
     $registered = $this->nodeRegistry->getRegistered();
     $elements = $element->flatten();
