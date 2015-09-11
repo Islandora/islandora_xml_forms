@@ -131,12 +131,15 @@ class XMLFormProcessor {
     // take place before updates; newly created elements can be registered as we
     // can update newly created elements. Delete must come last, as we want the
     // update actions to run on elements that may then later be removed.
+    // At last we clean up our nodeRegistry. This is necessary because after
+    // deletion we can end with orphan domnodes and attributes attached to this.
     $elements = $element->flatten();
     $filtered_elements = $this->filterElements($elements);
     $this->createNodes($this->getActions($filtered_elements, 'create'));
     $this->modifyNodes($this->getActions($filtered_elements, 'update'));
     $this->modifyNodes($this->getActions($filtered_elements, 'delete'));
     $this->modifyNodes($this->getRemovedFormElementsDeleteActions($element));
+    $this->cleanupNodeRegistry($element);
     return $this->document;
   }
 
@@ -194,6 +197,44 @@ class XMLFormProcessor {
   protected function modifyNodes(array $actions) {
     foreach ($actions as $action) {
       $action->execute($this->document);
+    }
+  }
+
+  /**
+   * Cleanups orphan DOMNodes from the registry.
+   *
+   * @param FormElement $element
+   *   The element to check against.
+   */
+  protected function cleanupNodeRegistry(FormElement $element) {
+    // Checks if the form elements associated with a DOMNodes where
+    // removed. If any found, verifies if the associated DOMNodes are
+    // attributes of an orphan node or orphan ones, removing those from
+    // nodeRegistry.
+    // This is needed because the serialization and unserialization
+    // process of NodeRegistry with orphan Domnodes results in invalid
+    // XPath's that silently fail when unserializing the super
+    // structure a.k.a $form_state.
+    $registered = $this->nodeRegistry->getRegistered();
+    $elements = $element->flatten();
+    $filtered_elements = $this->filterElements($elements);
+    foreach ($registered as $hash => $node) {
+      if (isset($filtered_elements[$hash]) === FALSE) {
+        if ($node->nodeType === XML_ATTRIBUTE_NODE) {
+          if (!isset($node->ownerElement->parentNode)) {
+            $this->nodeRegistry->unregister($hash);
+          }
+        }
+        else {
+          $currentelement = $this->elementRegistry->get($hash);
+          $delete = isset($currentelement->actions->delete) ? $currentelement->actions->delete : NULL;
+          if (isset($delete)) {
+            if (!isset($node->parentNode)) {
+              $this->nodeRegistry->unregister($hash);
+            }
+          }
+        }
+      }
     }
   }
 
