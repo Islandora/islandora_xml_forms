@@ -53,7 +53,7 @@ This module requires the following modules/libraries:
 * [Tuque](https://github.com/islandora/tuque)
 * [phplib](https://github.com/islandora/php_lib)
 * [Objective forms](https://github.com/islandora/objective_forms)
-* libxml2 version 2.7+
+* [libxml2](http://xmlsoft.org/) version 2.7+
 
 ## Installation
 
@@ -62,6 +62,12 @@ Install as usual, see [this](https://drupal.org/documentation/install/modules-th
 ## Configuration
 
 Create and import forms at Administration » Form Builder (admin/islandora/xmlform).
+
+![image](https://cloud.githubusercontent.com/assets/2371345/9818577/b47086fe-587f-11e5-919c-fd98c5d637b6.png)
+
+You can also set whether a default DC XSLT will be enforced.
+
+![image](https://cloud.githubusercontent.com/assets/2371345/9818551/98ef94ce-587f-11e5-9d26-81bb18e45901.png)
 
 ## Documentation
 
@@ -74,7 +80,6 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 * [Islandora Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora)
 * [Islandora Dev Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora-dev)
 * Note if you get error "XML form definition is not valid." during ingest you need to update your libxml2 version to 2.7+
-* Additional documentation on using XML Forms can be found [here](https://github.com/Islandora/islandora/wiki/Working-Programmatically-With-XML-Forms).
 
 ## FAQ
 
@@ -101,7 +106,7 @@ A. No. The following element types are not supported for full CRUD (create/read/
 
 Current maintainers:
 
-* [Nigel Banks](https://github.com/nigelgbanks)
+* [Diego Pino](https://github.com/DiegoPino)
 
 ## Development
 
