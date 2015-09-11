@@ -20,6 +20,7 @@ Ext.formbuilder.createTreePanel = function() {
       }
     },
     width: 230,
+    height: 820,
     margin: '1 0 1 1',
     rootVisible: false,
     split: true,
