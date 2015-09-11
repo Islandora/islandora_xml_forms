@@ -65,7 +65,7 @@ Create and import forms at Administration » Form Builder (admin/islandora/xmlfo
 
 ![image](https://cloud.githubusercontent.com/assets/2371345/9818577/b47086fe-587f-11e5-919c-fd98c5d637b6.png)
 
-"Use Default DC XSLTs" checkbox overrides the ability to have a custom DC XSLT and self transform with each form association.
+You can also set whether a default DC XSLT will be enforced.
 
 ![image](https://cloud.githubusercontent.com/assets/2371345/9818551/98ef94ce-587f-11e5-9d26-81bb18e45901.png)
 
