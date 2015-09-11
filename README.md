@@ -53,7 +53,7 @@ This module requires the following modules/libraries:
 * [Tuque](https://github.com/islandora/tuque)
 * [phplib](https://github.com/islandora/php_lib)
 * [Objective forms](https://github.com/islandora/objective_forms)
-* libxml2 version 2.7+
+* [libxml2](http://xmlsoft.org/) version 2.7+
 
 ## Installation
 
