@@ -13,9 +13,15 @@ Ext.formbuilder.createTreePanel = function() {
     title: Drupal.t('Elements'),
     store: this.elementStore,
     region: 'west',
+    scroll: false,
+    viewConfig: {
+      style: {
+        overflow: 'auto'
+      }
+    },
     width: 230,
+    height: 820,
     margin: '1 0 1 1',
-    autoScroll: true,
     rootVisible: false,
     split: true,
     tbar: {
