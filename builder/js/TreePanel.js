@@ -8,17 +8,15 @@ Ext.formbuilder.createTreePanel = function() {
     viewConfig: {
       plugins: {
         ptype: 'treeviewdragdrop'
+      },
+      style: {
+        overflow: 'auto'
       }
     },
     title: Drupal.t('Elements'),
     store: this.elementStore,
     region: 'west',
     scroll: false,
-    viewConfig: {
-      style: {
-        overflow: 'auto'
-      }
-    },
     width: 230,
     height: 820,
     margin: '1 0 1 1',
