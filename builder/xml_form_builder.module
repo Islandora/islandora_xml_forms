@@ -560,7 +560,7 @@ function xml_form_builder_update_object(AbstractObject $object, array $associati
   if ($label) {
     $object->label = $label;
   }
-  $object->models = array($association['content_model']);
+  $object->models = array_merge($object->models, array($association['content_model']));
   $document = $document->document;
   $run_transforms = !variable_get('xml_form_builder_use_default_dc_xslts', FALSE);
   if (isset($association['self_transform']) && $association['self_transform'] != 'No Transform' && $run_transforms) {
