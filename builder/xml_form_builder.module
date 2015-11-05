@@ -631,15 +631,15 @@ function xml_form_builder_update_metadata_datastream(AbstractObject $object, $da
     if ($datastream->label != "$datastream_id Record") {
       $datastream->label = "$datastream_id Record";
     }
-    if ($datastream->mimetype != 'text/xml') {
-      $datastream->mimetype = 'text/xml';
+    if ($datastream->mimetype != 'application/xml') {
+      $datastream->mimetype = 'application/xml';
     }
   }
   else {
     $datastream = $object->constructDatastream($datastream_id, 'M');
     $datastream->setContentFromString(trim($document->saveXML()));
     $datastream->label = "$datastream_id Record";
-    $datastream->mimetype = 'text/xml';
+    $datastream->mimetype = 'application/xml';
     $object->ingestDatastream($datastream);
     $created = TRUE;
   }

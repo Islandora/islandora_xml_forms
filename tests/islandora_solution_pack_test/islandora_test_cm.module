@@ -17,7 +17,7 @@ function islandora_test_cm_islandora_required_objects(IslandoraTuque $connection
   // DS-COMPOSITE-MODEL Datastream.
   $datastream = $test_content_model->constructDatastream('DS-COMPOSITE-MODEL', 'X');
   $datastream->label = 'DS-COMPOSITE-MODEL';
-  $datastream->mimetype = 'text/xml';
+  $datastream->mimetype = 'application/xml';
   $datastream->setContentFromFile("$module_path/xml/islandora_test_cm_ds_composite_model.xml", FALSE);
   $test_content_model->ingestDatastream($datastream);
   return array(
