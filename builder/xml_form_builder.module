@@ -532,7 +532,7 @@ function xml_form_builder_islandora_edit_datastream_registry(AbstractObject $obj
   $associations = xml_form_builder_get_associations(array(), $object->models, array($datastream->id));
   if (count($associations) > 0) {
     return array(
-      array(
+      'xml_form_builder_edit_form_registry' => array(
         'name' => t('Islandora Content Model Forms'),
         'url' => "islandora/edit_form/{$object->id}/{$datastream->id}",
       ),
