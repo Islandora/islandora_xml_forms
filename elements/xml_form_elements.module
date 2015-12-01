@@ -298,9 +298,28 @@ function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, ar
 function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, array &$form, array &$form_state) {
   $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
   $new_tab = clone $tab;
-  $new_tab->eachDecendant(function($element) {
-    $element->default_value = NULL;
-  });
+  // Load an empty copy of the curreny xml form to be used for setting defaults
+  // field values of the cloned tab.
+  if ($form_state['build_info']['form_id'] == 'xml_form_builder_preview') {
+    $form_name = $form_state['build_info']['args']['0'];
+  }
+  else {
+    $form_name = $form_state['association']['form_name'];
+  }
+  $empty_form = drupal_get_form($form_name);
+  $tab_field = $form_state['triggering_element']['#parents']['0'];
+  $tab_index = $form_state['triggering_element']['#parents']['1'];
+  $original_tabs = isset($empty_form[$tab_field][$tab_index]) ? $empty_form[$tab_field][$tab_index] : NULL;
+
+  $set_default_value = function ($element, $original_tabs) {
+    $default = NULL;
+    // Attempt to set the default based on the configured default form value.
+    if (isset($original_tabs[$element->getIndex()]['#default_value'])) {
+      $default = $original_tabs[$element->getIndex()]['#default_value'];
+    }
+    $element->default_value = $default;
+  };
+  $new_tab->eachDecendant($set_default_value, $original_tabs);
   $element->adopt($new_tab);
   $form[] = $new_tab->toArray();
 }
