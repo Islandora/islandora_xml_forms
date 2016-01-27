@@ -20,7 +20,7 @@
   </div>
   <span class="tag-list">
     <?php foreach ($tags as $tag): ?>
-      <?php if (!empty($tag['#value'])): ?>
+      <?php if ($tag['#value']): ?>
         <span title="<?php print "{$tag['#value']}" ?>">
           <span class="edit-tag" onclick="jQuery('#<?php print $edit[$tag['#hash']]['#id'] ?>').trigger('mousedown'); return false;"><?php print decode_entities("{$tag['#value']}") ?></span>
           <span class="remove-tag" onclick="jQuery('#<?php print $remove[$tag['#hash']]['#id'] ?>').trigger('mousedown'); return false;"></span>
