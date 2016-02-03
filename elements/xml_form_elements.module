@@ -300,17 +300,17 @@ function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, arra
   $new_tab = clone $tab;
   $new_tab->eachDecendant(function($element) {
     $element->default_value = $element->getOriginalDefaultValue();
-      if ($element->controls['#type'] == 'tags') {
-        $at_least_one = FALSE;
-        foreach ($element->children as $child) {
-          if ($at_least_one) {
-            $child->orphan();
-          }
-          else {
-            $at_least_one = TRUE;
-          }
+    if ($element->controls['#type'] == 'tags') {
+      $at_least_one = FALSE;
+      foreach ($element->children as $child) {
+        if ($at_least_one) {
+          $child->orphan();
+        }
+        else {
+          $at_least_one = TRUE;
         }
       }
+    }
   });
   $element->adopt($new_tab);
   $form[] = $new_tab->toArray();
