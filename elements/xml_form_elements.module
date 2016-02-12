@@ -301,13 +301,10 @@ function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, arra
   $each_function = function ($element) {
     $element->default_value = $element->getOriginalDefaultValue();
     if ($element->controls['#type'] == 'tags') {
-      $at_least_one = FALSE;
       foreach ($element->children as $child) {
-        if ($at_least_one) {
+        $child->default_value = $child->getOriginalDefaultValue();
+        if (empty($child->default_value)) {
           $child->orphan();
-        }
-        else {
-          $at_least_one = TRUE;
         }
       }
     }
