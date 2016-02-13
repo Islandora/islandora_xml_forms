@@ -298,9 +298,18 @@ function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, ar
 function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, array &$form, array &$form_state) {
   $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
   $new_tab = clone $tab;
-  $new_tab->eachDecendant(function($element) {
+  $each_function = function ($element) {
     $element->default_value = $element->getOriginalDefaultValue();
-  });
+    if ($element->controls['#type'] == 'tags') {
+      foreach ($element->children as $child) {
+        $child->default_value = $child->getOriginalDefaultValue();
+        if (empty($child->default_value)) {
+          $child->orphan();
+        }
+      }
+    }
+  };
+  $new_tab->eachDecendant($each_function);
   $element->adopt($new_tab);
   $form[] = $new_tab->toArray();
 }

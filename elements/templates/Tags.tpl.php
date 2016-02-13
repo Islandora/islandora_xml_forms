@@ -8,7 +8,7 @@
   <?php print $textfield; ?>
   <input type="image" src="<?php print $image_path ?>add.png" name="<?php print $add['#name'] ?>" id="<?php print $add['#id'] ?>" value="add">
   <div class="hidden-controls">
-    <?php 
+    <?php
       print ((is_array($edit) && array_key_exists('#children', $edit)) ? $edit['#children'] : '');
       print ((is_array($remove) && array_key_exists('#children', $remove)) ? $remove['#children'] : '');
   ?>
