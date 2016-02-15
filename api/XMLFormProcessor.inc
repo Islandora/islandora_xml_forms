@@ -137,6 +137,8 @@ class XMLFormProcessor {
     $filtered_elements = $this->filterElements($elements);
     $this->createNodes($this->getActions($filtered_elements, 'create'));
     $this->modifyNodes($this->getActions($filtered_elements, 'update'));
+    // This does nothing right now.
+    // AppendIteratorDelete actions always return false to shouldExecute().
     $this->modifyNodes($this->getActions($filtered_elements, 'delete'));
     $this->modifyNodes($this->getRemovedFormElementsDeleteActions($element));
     $this->cleanupNodeRegistry($element);
@@ -209,16 +211,17 @@ class XMLFormProcessor {
   protected function cleanupNodeRegistry(FormElement $element) {
     // Checks if the form elements associated with a DOMNodes where
     // removed. If any found, verifies if the associated DOMNodes are
-    // attributes of an orphan node or orphan ones, removing those from
-    // nodeRegistry.
+    // attributes of an orphan node or descentants of one that had a delete
+    // action processed, removing those from nodeRegistry.
     // This is needed because the serialization and unserialization
-    // process of NodeRegistry with orphan Domnodes results in invalid
-    // XPath's that silently fail when unserializing the super
+    // process of NodeRegistry with orphan DOMNodes results in invalid
+    // XPaths that silently fail when unserializing the super
     // structure a.k.a $form_state.
     $registered = $this->nodeRegistry->getRegistered();
     $elements = $element->flatten();
     $filtered_elements = $this->filterElements($elements);
-    foreach ($registered as $hash => $node) {
+    $elements_tounregister = array();
+    foreach ($registered as $hash => &$node) {
       if (isset($filtered_elements[$hash]) === FALSE) {
         if ($node->nodeType === XML_ATTRIBUTE_NODE) {
           if (!isset($node->ownerElement->parentNode)) {
@@ -229,8 +232,10 @@ class XMLFormProcessor {
           $currentelement = $this->elementRegistry->get($hash);
           $delete = isset($currentelement->actions->delete) ? $currentelement->actions->delete : NULL;
           if (isset($delete)) {
-            if (!isset($node->parentNode)) {
-              $this->nodeRegistry->unregister($hash);
+            $elements_tounregister = array_keys($currentelement->flatten());
+            foreach ($elements_tounregister as $descendant_hash) {
+              $this->nodeRegistry->unregister($descendant_hash);
+              unset($registered[$descendant_hash]);
             }
           }
         }
