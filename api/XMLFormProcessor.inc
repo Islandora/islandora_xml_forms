@@ -138,7 +138,7 @@ class XMLFormProcessor {
     $this->createNodes($this->getActions($filtered_elements, 'create'));
     $this->modifyNodes($this->getActions($filtered_elements, 'update'));
     // This does nothing right now.
-    // AppendIteratorDelete actions always return false to shouldExecute().
+    // Delete actions always return false to shouldExecute().
     $this->modifyNodes($this->getActions($filtered_elements, 'delete'));
     $this->modifyNodes($this->getRemovedFormElementsDeleteActions($element));
     $this->cleanupNodeRegistry($element);
