@@ -220,7 +220,6 @@ class XMLFormProcessor {
     $registered = $this->nodeRegistry->getRegistered();
     $elements = $element->flatten();
     $filtered_elements = $this->filterElements($elements);
-    $elements_tounregister = array();
     foreach ($registered as $hash => &$node) {
       if (isset($filtered_elements[$hash]) === FALSE) {
         if ($node->nodeType === XML_ATTRIBUTE_NODE) {
