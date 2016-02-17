@@ -211,10 +211,10 @@ class XMLFormProcessor {
   protected function cleanupNodeRegistry(FormElement $element) {
     // Checks if the form elements associated with a DOMNodes where
     // removed. If any found, verifies if the associated DOMNodes are
-    // attributes of an orphan node or descentants of one that had a delete
+    // attributes of an orphan node or descendants of one that had a delete
     // action processed, removing those from nodeRegistry.
     // This is needed because the serialization and unserialization
-    // process of NodeRegistry with orphan DOMNodes results in invalid
+    // process of nodeRegistry with orphan DOMNodes results in invalid
     // XPaths that silently fail when unserializing the super
     // structure a.k.a $form_state.
     $registered = $this->nodeRegistry->getRegistered();
