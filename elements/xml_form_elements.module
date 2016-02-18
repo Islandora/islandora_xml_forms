@@ -303,11 +303,35 @@ function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, arra
     if ($element->controls['#type'] == 'tags') {
       foreach ($element->children as $child) {
         $child->default_value = $child->getOriginalDefaultValue();
-        if (empty($child->default_value)) {
+
+        // We should orphan object only if they have no default AND it is not
+        // the last child.  We must retain one, otherwise we'll get AJAX an
+        // AJAX error when adding an element after adding another tab.
+        $no_default = empty($child->default_value);
+        $is_not_last = count($element->children) > 1;
+
+        if ($no_default && $is_not_last) {
           $child->orphan();
         }
       }
+
+      // In order to provide functionality identical to when the tab is first
+      // created, we need to dedeupe based on the first element's default
+      // value.  Otherwise we can wind up with multiples of the same default
+      // value.
+      if (count($element->children > 1)) {
+        $first = array_shift($element->children);
+
+        foreach ($element->children as $child) {
+          if (strcmp($child->default_value, $first->default_value) == 0) {
+            $child->orphan();
+          }
+        }
+
+        array_unshift($element->children, $first);
+      }
     }
+
   };
   $new_tab->eachDecendant($each_function);
   $element->adopt($new_tab);
