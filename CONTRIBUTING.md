@@ -60,7 +60,7 @@ Islandora releases occur twice yearly, at the end of April and October. Two to t
 
 To join an Islandora Release Team, sign up for one or more modules in any of the following roles:
 
-* **Component Manager** (Very familiar with module code; reviews and merges commits)
+* **Component Manager** (Very familiar with module code; reviews commits)
 * **Tester** (Tests JIRA tickets marked "Ready for test" and does a general workover of the module)
 * **Documentor** (Reviews and updates existing documentation or writes new documentation for new modules)
 * **Auditor** (Reviews and updates README and LICENSE files to ensure complaince with templates and standards)
@@ -73,14 +73,14 @@ _If you are interested in contributing code to Islandora but do not know where t
 
 In this case you should [browse open issues](https://jira.duraspace.org/issues/?jql=project%20%3D%20ISLANDORA%20AND%20resolution%20%3D%20Unresolved%20ORDER%20BY%20priority%20DESC).
 
-If you are contributing Drupal code, it must adhere to [Drupal Coding Standards](https://www.drupal.org/coding-standards); Travis CI will check for this on pull requests.
+If you are contributing Drupal code, it must adhere to [Drupal Coding Standards](https://www.drupal.org/coding-standards); Travis CI will check for this on pull requests. You should also follow the Islandora community's [Git Guidelines and Best Practices](https://github.com/Islandora/islandora/wiki/Git-Guidelines-and-Best-Practices). 
 
 Contributions to the Islandora codebase should be sent as GitHub pull requests. See section _Create a pull request_ below for details. If there is any problem with the pull request we can work through it using the commenting features of GitHub.
 
 * For _small patches_, feel free to submit pull requests directly for those patches.
 * For _larger code contributions_, please use the following process. The idea behind this process is to prevent any wasted work and catch design issues early on.
 
-    1. [Open an issue](https://github.com/Islandora-Labs/islandora/issues) and assign it the label of "New Feature" or "Improvement", if a similar issue does not exist already. If a similar issue does exist, then you may consider participating in the work on the existing issue.
+    1. [Open an issue](https://jira.duraspace.org/secure/CreateIssue!default.jspa) and assign it the label of "New Feature" or "Improvement", if a similar issue does not exist already. If a similar issue does exist, then you may consider participating in the work on the existing issue.
     2. Comment on the issue with your plan for implementing the issue. Explain what pieces of the codebase you are going to touch and how everything is going to fit together.
     3. Islandora committers will work with you on the design to make sure you are on the right track.
     4. Implement your issue, create a pull request (see below), and iterate from there.
@@ -123,4 +123,4 @@ The pull request process will roughly look like this:
 
 ## License Agreements
 
-The Islandora Foundation requires that contributors complete a [Contributor License Agreement](http://islandora.ca/sites/default/files/islandora_cla.pdf) or be covered by a [Corporate Contributor Licencse Agreement](http://islandora.ca/sites/default/files/islandora_ccla.pdf). The signed copy of the license agreement should be sent to <a href="mailto:community@islandora.ca?Subject=Contributor%20License%20Agreement" target="_top">community@islandora.ca</a>. This license is for your protection as a contributor as well as the protection of the Foundation and its users; it does not change your rights to use your own contributions for any other purpose.
+The Islandora Foundation requires that contributors complete a [Contributor License Agreement](http://islandora.ca/sites/default/files/islandora_cla.pdf) or be covered by a [Corporate Contributor License Agreement](http://islandora.ca/sites/default/files/islandora_ccla.pdf). The signed copy of the license agreement should be sent to <a href="mailto:community@islandora.ca?Subject=Contributor%20License%20Agreement" target="_top">community@islandora.ca</a>. This license is for your protection as a contributor as well as the protection of the Foundation and its users; it does not change your rights to use your own contributions for any other purpose. A list of current CLAs is kept [here](https://github.com/Islandora/islandora/wiki/Contributor-License-Agreements).
