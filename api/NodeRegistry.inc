@@ -140,7 +140,7 @@ class NodeRegistry implements Serializable {
    */
   public function unregister($hash) {
     if ($this->restoredRequired) {
-      throw new Exception("DOMNodes cannot be registered until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
+      throw new Exception("DOMNodes cannot be unregistered until this object has been restored. Make sure 'NodeRegistry::restore()' has been called after this object has been unserialized.");
     }
     unset($this->registered[$hash]);
   }
