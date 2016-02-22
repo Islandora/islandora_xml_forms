@@ -37,11 +37,14 @@ class XMLForm extends Form {
    * @param array $parents
    *   An array containing an offset of parents.
    */
-  public function __construct(array &$form_state, $parents = array()) {
-    $this->parents = $parents;
+  public function __construct(array &$form_state, $parents = array(), $name = NULL) {
     parent::__construct(array(), $form_state, $parents);
     if ($this->storage->initialized) {
       $this->initializeFromStorage();
+    }
+    else {
+      $this->parents = $parents;
+      $this->name = $name;
     }
   }
 
@@ -51,6 +54,8 @@ class XMLForm extends Form {
   protected function initializeFromStorage() {
     $this->root = $this->storage->root;
     $this->document = $this->storage->document;
+    $this->name = $this->storage->name;
+    $this->parents = $this->storage->parents;
   }
 
   /**
@@ -59,6 +64,8 @@ class XMLForm extends Form {
   protected function storePersistantMembers() {
     $this->storage->root = $this->root;
     $this->storage->document = $this->document;
+    $this->storage->name = $this->name;
+    $this->storage->parents = $this->parents;
     $this->storage->initialized = TRUE;
   }
 
