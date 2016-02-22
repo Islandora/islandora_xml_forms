@@ -29,6 +29,13 @@ class XMLForm extends Form {
   protected $parents;
 
   /**
+   * The name of the form from which we were constructed.
+   *
+   * @var string
+   */
+  protected $name;
+
+  /**
    * Constructor function for the XMLForm class.
    *
    * @param array $form_state
@@ -37,8 +44,9 @@ class XMLForm extends Form {
    * @param array $parents
    *   An array containing an offset of parents.
    */
-  public function __construct(array &$form_state, $parents = array()) {
+  public function __construct(array &$form_state, $parents = array(), $name = NULL) {
     $this->parents = $parents;
+    $this->name = $name;
     parent::__construct(array(), $form_state, $parents);
     if ($this->storage->initialized) {
       $this->initializeFromStorage();
@@ -51,6 +59,7 @@ class XMLForm extends Form {
   protected function initializeFromStorage() {
     $this->root = $this->storage->root;
     $this->document = $this->storage->document;
+    $this->name = $this->storage->name;
   }
 
   /**
@@ -59,6 +68,7 @@ class XMLForm extends Form {
   protected function storePersistantMembers() {
     $this->storage->root = $this->root;
     $this->storage->document = $this->document;
+    $this->storage->name = $this->name;
     $this->storage->initialized = TRUE;
   }
 
@@ -182,5 +192,16 @@ class XMLForm extends Form {
       }
     }
     return $flattened;
+  }
+
+  /**
+   * Getter for the form name.
+   *
+   * @return string|NULL
+   *   The name of the form if it was given during instantiation; otherwise,
+   *   NULL.
+   */
+  public function getFormName() {
+    return $this->name;
   }
 }
