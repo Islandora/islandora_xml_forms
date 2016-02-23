@@ -310,44 +310,84 @@ function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, arra
   }
 
   // Load up the original form definition using throw-away state.
-  $definition = new XMLFormDefinition(XMLFormRepository::Get($xml_form->getFormName()));
-  $defined_form = $definition->getForm();
-  $empty_form_state = form_state_defaults();
-  drupal_alter(XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK, $defined_form, $empty_form_state);
+  $form_name = $xml_form->getFormName();
+  if ($form_name !== NULL) {
+    $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
+    $defined_form = $definition->getForm();
+    $empty_form_state = form_state_defaults();
+    drupal_alter(XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK, $defined_form, $empty_form_state);
 
-  // Helper function: Find the tab element.
-  $find_tab_element = function ($form, $offsets) {
-    $target = $form;
-    foreach (array_slice($offsets, 0, -1) as $ancestor) {
-      if (isset($target[$ancestor])) {
-        $target = $target[$ancestor];
-      }
-      else {
-        $children = element_children($target);
-        if (is_numeric($ancestor) && intval($ancestor) == $ancestor && !empty($children)) {
-          // Likely hierarchical things ("tabpanel" in "tabs" or similar)...
-          // Grab the first element.
-          $target = $target[reset($children)];
+    // Helper function: Find the tab element.
+    $find_tab_element = function ($form, $offsets) {
+      $target = $form;
+      foreach (array_slice($offsets, 0, -1) as $ancestor) {
+        if (isset($target[$ancestor])) {
+          $target = $target[$ancestor];
         }
         else {
-          throw new Exception(t('Offset @offset does not exist.', array(
-            '@offset' => $ancestor,
-          )));
+          $children = element_children($target);
+          if (is_numeric($ancestor) && intval($ancestor) == $ancestor && !empty($children)) {
+            // Likely hierarchical things ("tabpanel" in "tabs" or similar)...
+            // Grab the first element.
+            $target = $target[reset($children)];
+          }
+          else {
+            throw new Exception(t('Offset @offset does not exist.', array(
+              '@offset' => $ancestor,
+            )));
+          }
         }
       }
-    }
-    return $target;
-  };
+      return $target;
+    };
 
-  try {
-    $defined_tab_element = $find_tab_element($defined_form, $form_state['triggering_element']['#array_parents']);
-    $tab_element = new FormElement($xml_form->registry, $defined_tab_element);
+    try {
+      $defined_tab_element = $find_tab_element($defined_form, $form_state['triggering_element']['#array_parents']);
+      $tab_element = new FormElement($xml_form->registry, $defined_tab_element);
+    }
+    catch (Exception $e) {
+      watchdog('xml_form_elements', 'Error in Tabs AJAX: @message', array(
+        '@message' => $e->getMessage(),
+      ));
+      return;
+    }
   }
-  catch (Exception $e) {
-    watchdog('xml_form_elements', 'Error in Tabs AJAX: @message', array(
-      '@message' => $e->getMessage(),
-    ));
-    return;
+  else {
+    watchdog('xml_form_elements', 'XMLForm instantiated without form name.', array(), WATCHDOG_WARNING);
+    // No XML Form definition: Direct clone of tab in which "Add" was clicked,
+    // then grabbing the "original" defaults.
+    $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
+    $tab_element = clone $tab;
+    $each_function = function ($element) {
+      // Set a FormElement to its default value.
+      $set_to_default = function ($el) {
+        $el->default_value = $el->getOriginalDefaultValue();
+      };
+
+      // Set this one...
+      $set_to_default($element);
+
+      if ($element->controls['#type'] == 'tags') {
+        // ... and make child "tag" elements unique.
+        // First, map 'em all to their defaults.
+        array_map($set_to_default, $element->children);
+
+        // Filter function: Only pass unique values.
+        $child_filter = function ($child) {
+          static $values = array();
+          $value = $child->default_value;
+          if ($value && !in_array($value, $values)) {
+            $values[] = $value;
+            return TRUE;
+          }
+          return FALSE;
+        };
+
+        // Run the filter function.
+        $element->children = array_filter($element->children, $child_filter);
+      }
+    };
+    $tab_element->eachDecendant($each_function);
   }
 
   $element->adopt($tab_element);
