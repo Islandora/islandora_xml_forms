@@ -288,8 +288,7 @@ function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, ar
 /**
  * Adds a tabs form element via AJAX.
  *
- * Create new tabs from the original form definition, instead of cloning a
- * "dirty" tab.
+ * Create new tabs from the original form definition.
  *
  * @param FormElement $element
  *   The element to add.
