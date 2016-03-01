@@ -190,4 +190,15 @@ class XMLForm extends Form {
     }
     return $flattened;
   }
+
+  /**
+   * Getter for the form name.
+   *
+   * @return string|NULL
+   *   The name of the form if it was given during instantiation; otherwise,
+   *   NULL.
+   */
+  public function getFormName() {
+    return $this->name;
+  }
 }
