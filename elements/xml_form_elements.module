@@ -312,10 +312,18 @@ function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, arra
   // Load up the original form definition using throw-away state.
   $form_name = $xml_form->getFormName();
   if ($form_name !== NULL) {
-    $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
-    $defined_form = $definition->getForm();
-    $empty_form_state = form_state_defaults();
-    drupal_alter(XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK, $defined_form, $empty_form_state);
+    $stash_name = 'xml_form_elements_tabs_stash';
+    if (!isset($form_state[$stash_name]) || $form_state[$stash_name]['form_name'] != $form_name) {
+      $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
+      // Cache a copy of the originally defined form structure in the form
+      // state.
+      $form_state[$stash_name] = array(
+        'form_name' => $form_name,
+        'original_form' => $definition->getForm(),
+      );
+      $empty_form_state = form_state_defaults();
+      drupal_alter(XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK, $form_state[$stash_name]['original_form'], $empty_form_state);
+    }
 
     // Helper function: Find the tab element.
     $find_tab_element = function ($form, $offsets) {
@@ -342,7 +350,7 @@ function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, arra
     };
 
     try {
-      $defined_tab_element = $find_tab_element($defined_form, $form_state['triggering_element']['#array_parents']);
+      $defined_tab_element = $find_tab_element($form_state[$stash_name]['original_form'], $form_state['triggering_element']['#array_parents']);
       $tab_element = new FormElement($xml_form->registry, $defined_tab_element);
     }
     catch (Exception $e) {
