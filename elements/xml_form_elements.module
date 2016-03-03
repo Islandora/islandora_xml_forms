@@ -288,6 +288,8 @@ function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, ar
 /**
  * Adds a tabs form element via AJAX.
  *
+ * Create new tabs from the original form definition.
+ *
  * @param FormElement $element
  *   The element to add.
  * @param array $form
@@ -296,22 +298,108 @@ function xml_form_elements_form_element_tabs_ajax_alter(FormElement $element, ar
  *   The Drupal form state.
  */
 function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, array &$form, array &$form_state) {
-  $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
-  $new_tab = clone $tab;
-  $each_function = function ($element) {
-    $element->default_value = $element->getOriginalDefaultValue();
-    if ($element->controls['#type'] == 'tags') {
-      foreach ($element->children as $child) {
-        $child->default_value = $child->getOriginalDefaultValue();
-        if (empty($child->default_value)) {
-          $child->orphan();
+  $xml_form = new XMLForm($form_state);
+
+  if (!$xml_form->isInitialized()) {
+    // XXX: Tabs depend on maintaining the '#hash' values assigned by
+    // objective_forms "Form" objects; however, the "Form" object itself does
+    // not itself maintain the required state, and so is unable to build the
+    // form with the '#hash' values intact.
+    form_error($element->toArray(), t('Using tabs outside of XML forms is not supported.'));
+    return;
+  }
+
+  // Load up the original form definition using throw-away state.
+  $form_name = $xml_form->getFormName();
+  if ($form_name !== NULL) {
+    $stash_name = 'xml_form_elements_tabs_stash';
+    if (!isset($form_state[$stash_name]) || $form_state[$stash_name]['form_name'] != $form_name) {
+      $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
+      // Cache a copy of the originally defined form structure in the form
+      // state.
+      $form_state[$stash_name] = array(
+        'form_name' => $form_name,
+        'original_form' => $definition->getForm(),
+      );
+      $empty_form_state = form_state_defaults();
+      drupal_alter(XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK, $form_state[$stash_name]['original_form'], $empty_form_state);
+    }
+
+    // Helper function: Find the tab element.
+    $find_tab_element = function ($form, $offsets) {
+      $target = $form;
+      foreach (array_slice($offsets, 0, -1) as $ancestor) {
+        if (isset($target[$ancestor])) {
+          $target = $target[$ancestor];
+        }
+        else {
+          $children = element_children($target);
+          if (is_numeric($ancestor) && intval($ancestor) == $ancestor && !empty($children)) {
+            // Likely hierarchical things ("tabpanel" in "tabs" or similar)...
+            // Grab the first element.
+            $target = $target[reset($children)];
+          }
+          else {
+            throw new Exception(t('Offset @offset does not exist.', array(
+              '@offset' => $ancestor,
+            )));
+          }
         }
       }
+      return $target;
+    };
+
+    try {
+      $defined_tab_element = $find_tab_element($form_state[$stash_name]['original_form'], $form_state['triggering_element']['#array_parents']);
+      $tab_element = new FormElement($xml_form->registry, $defined_tab_element);
     }
-  };
-  $new_tab->eachDecendant($each_function);
-  $element->adopt($new_tab);
-  $form[] = $new_tab->toArray();
+    catch (Exception $e) {
+      watchdog('xml_form_elements', 'Error in Tabs AJAX: @message', array(
+        '@message' => $e->getMessage(),
+      ));
+      return;
+    }
+  }
+  else {
+    watchdog('xml_form_elements', 'XMLForm instantiated without form name.', array(), WATCHDOG_WARNING);
+    // No XML Form definition: Direct clone of tab in which "Add" was clicked,
+    // then grabbing the "original" defaults.
+    $tab = $element->findElement($form_state['triggering_element']['#ajax']['params']['child']);
+    $tab_element = clone $tab;
+    $each_function = function ($element) {
+      // Set a FormElement to its default value.
+      $set_to_default = function ($el) {
+        $el->default_value = $el->getOriginalDefaultValue();
+      };
+
+      // Set this one...
+      $set_to_default($element);
+
+      if ($element->controls['#type'] == 'tags') {
+        // ... and make child "tag" elements unique.
+        // First, map 'em all to their defaults.
+        array_map($set_to_default, $element->children);
+
+        // Filter function: Only pass unique values.
+        $child_filter = function ($child) {
+          static $values = array();
+          $value = $child->default_value;
+          if ($value && !in_array($value, $values)) {
+            $values[] = $value;
+            return TRUE;
+          }
+          return FALSE;
+        };
+
+        // Run the filter function.
+        $element->children = array_filter($element->children, $child_filter);
+      }
+    };
+    $tab_element->eachDecendant($each_function);
+  }
+
+  $element->adopt($tab_element);
+  $form[] = $tab_element->toArray();
 }
 
 /**
