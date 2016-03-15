@@ -17,7 +17,7 @@ class XMLFormRepository extends XMLFormDatabase {
    *   also arrays, in the format "array('form_file' => 'path/to/the/form')".
    */
   protected static function getFormsFromHook() {
-    return module_invoke_all('islandora_xml_form_builder_forms');
+    return module_invoke_all('xml_form_builder_forms');
   }
 
   /**

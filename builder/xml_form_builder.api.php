@@ -14,7 +14,7 @@
  *   - form_file: A string containing the path to the form definition, relative
  *     to the webserver's document root (such that I might be opened
  */
-function hook_islandora_xml_form_builder_forms() {
+function hook_xml_form_builder_forms() {
   return array(
     'Unique Form Name' => array(
       'form_file' => 'full/path/to/form/definition/file.xml',
@@ -68,7 +68,7 @@ function hook_xml_form_builder_get_self_transforms() {
  *   - template: A string whose contents should be used to prepopulate the
  *     form.  Can be empty or FALSE.
  */
-function hook_islandora_xml_form_builder_form_associations() {
+function hook_xml_form_builder_form_associations() {
   return array(
     // By convention, the unique name should start with your modules name.
     'unique_assoication_name' => array(
