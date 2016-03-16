@@ -154,9 +154,6 @@ function xml_form_builder_get_hook_associations(array $forms = array(), array $m
  */
 function xml_form_builder_get_transforms() {
   $tranforms = module_invoke_all('xml_form_builder_get_transforms');
-  // @todo Remove (deprecated) invokation if
-  // "islandora_content_model_forms_get_transforms".
-  $tranforms += module_invoke_all('islandora_content_model_forms_get_transforms');
   $tranforms['No Transform'] = 'No Transform';
   return $tranforms;
 }
