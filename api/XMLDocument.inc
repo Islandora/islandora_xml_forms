@@ -224,14 +224,15 @@ class XMLDocument {
   }
 
   /**
-   * Create new DOMDocument with pretty formatting
+   * Create new DOMDocument with pretty formatting.
    *
    * @return \DOMDocument
+   *   The newly created DOMDocument
    */
   private function createDOMDocument() {
     $document = new DOMDocument();
-    $document->preserveWhiteSpace = false;
-    $document->formatOutput = true;
+    $document->preserveWhiteSpace = FALSE;
+    $document->formatOutput = TRUE;
 
     return $document;
   }
