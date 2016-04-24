@@ -56,7 +56,7 @@ class Datepicker {
  * @param array $variables
  *   An array of theming variables.
  */
-function theme_datepicker($variables) {
+function theme_datepicker_xml_form_elements($variables) {
   $element = $variables['element'];
   $array_switch = is_array($element['#value']) && isset($element['#value']['value']);
   $element_val = $array_switch ? $element['#value']['value'] : $element['#value'];

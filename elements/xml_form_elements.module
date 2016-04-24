@@ -14,7 +14,7 @@ define('XML_FORM_ELEMENTS_TABPANEL_THEME', 'tabpanel');
 define('XML_FORM_ELEMENTS_TAGS_THEME', 'tags');
 define('XML_FORM_ELEMENTS_TAGS_CONTENT_THEME', 'tags_content');
 define('XML_FORM_ELEMENTS_TAG_THEME', 'tag');
-define('XML_FORM_ELEMENTS_DATEPICKER_THEME', 'datepicker');
+define('XML_FORM_ELEMENTS_DATEPICKER_THEME', 'datepicker_xml_form_elements');
 define('XML_FORM_ELEMENTS_PATH', drupal_get_path('module', 'xml_form_elements') . '/');
 define('XML_FORM_ELEMENTS_INCLUDES_PATH', XML_FORM_ELEMENTS_PATH . 'includes/');
 define('XML_FORM_ELEMENTS_JQUERY_THEME_PATH', XML_FORM_ELEMENTS_PATH . 'theme/');
@@ -51,10 +51,10 @@ function xml_form_elements_element_info() {
       '#process' => array('xml_form_elements_tag_process'),
       '#theme' => 'tag',
     ),
-    'datepicker' => array(
+    XML_FORM_ELEMENTS_DATEPICKER_THEME => array(
       '#input' => TRUE,
-      '#process' => array('xml_form_elements_datepicker_process'),
-      '#theme' => 'datepicker',
+      '#process' => array('xml_form_elements_datepicker_xml_form_elements_process'),
+      '#theme' => XML_FORM_ELEMENTS_DATEPICKER_THEME,
       '#theme_wrappers' => array('form_element'),
     ),
     'defaultable_markup' => array(
@@ -240,7 +240,7 @@ function xml_form_elements_tag_process($element, &$form_state, $complete_form) {
  * @return array
  *   The processed element.
  */
-function xml_form_elements_datepicker_process($element, &$form_state, $complete_form) {
+function xml_form_elements_datepicker_xml_form_elements_process($element, &$form_state, $complete_form) {
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/Datepicker');
   return Datepicker::Process($element, $form_state, $complete_form);
 }
