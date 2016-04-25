@@ -14,8 +14,6 @@ function xml_form_elements_rename_datepicker_batch_operation(&$context) {
   $sandbox = &$context['sandbox'];
 
   if (!isset($sandbox['forms'])) {
-    $context['results']['success'] = array();
-    $context['results']['skipped'] = array();
     $sandbox['forms'] = db_select('xml_forms', 'x')
       ->fields('x')
       ->execute()
