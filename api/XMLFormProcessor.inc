@@ -222,7 +222,7 @@ class XMLFormProcessor {
     $filtered_elements = $this->filterElements($elements);
     foreach ($registered as $hash => &$node) {
       if (isset($filtered_elements[$hash]) === FALSE) {
-        if ($node->nodeType === XML_ATTRIBUTE_NODE) {
+        if (isset($node->nodeType) && $node->nodeType === XML_ATTRIBUTE_NODE) {
           if (!isset($node->ownerElement->parentNode)) {
             $this->nodeRegistry->unregister($hash);
           }
