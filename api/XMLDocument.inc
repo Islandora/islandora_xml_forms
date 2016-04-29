@@ -97,7 +97,7 @@ class XMLDocument {
    * Reinitialize this object after it has be un-serialized.
    */
   public function __wakeup() {
-    $this->document = new DOMDocument();
+    $this->document = $this->createDOMDocument();
     $this->document->loadXML($this->xml);
     $this->xpath = new DOMXPath($this->document);
     $this->registry->restore($this->document);
@@ -138,7 +138,7 @@ class XMLDocument {
    *   A DOMDocument created using the parameters passed in.
    */
   protected function createDocument($root_name, Namespaces $namespaces, $xml) {
-    $document = new DOMDocument();
+    $document = $this->createDOMDocument();
     // Load from XML or create the root node.
     isset($xml) ?
         $document->loadXML($xml) :
@@ -221,6 +221,20 @@ class XMLDocument {
       throw new Exception($msg);
     }
     return $results;
+  }
+
+  /**
+   * Create new DOMDocument with pretty formatting.
+   *
+   * @return \DOMDocument
+   *   The newly created DOMDocument
+   */
+  private function createDOMDocument() {
+    $document = new DOMDocument();
+    $document->preserveWhiteSpace = FALSE;
+    $document->formatOutput = TRUE;
+
+    return $document;
   }
 
 }
