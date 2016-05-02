@@ -14,6 +14,9 @@ define('XML_FORM_ELEMENTS_TABPANEL_THEME', 'tabpanel');
 define('XML_FORM_ELEMENTS_TAGS_THEME', 'tags');
 define('XML_FORM_ELEMENTS_TAGS_CONTENT_THEME', 'tags_content');
 define('XML_FORM_ELEMENTS_TAG_THEME', 'tag');
+// XXX: Defining this with the module name as the suffix as ExtJS cuts off
+// the display of elements over certain characters. Similarly, the element
+// listing is sorted alphabetically.
 define('XML_FORM_ELEMENTS_DATEPICKER_THEME', 'datepicker_xml_form_elements');
 define('XML_FORM_ELEMENTS_PATH', drupal_get_path('module', 'xml_form_elements') . '/');
 define('XML_FORM_ELEMENTS_INCLUDES_PATH', XML_FORM_ELEMENTS_PATH . 'includes/');
