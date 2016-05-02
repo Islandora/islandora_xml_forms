@@ -31,7 +31,7 @@ function xml_form_elements_rename_datepicker_batch_operation(&$context) {
   $dom->loadXML($form['form']);
 
   $xpath = new DOMXPath($dom);
-  $results = $xpath->query("//type[text() = 'datepicker']");
+  $results = $xpath->query("//element/properties/type[text() = 'datepicker']");
   if ($results->length > 0) {
     foreach ($results as $element) {
       $element->nodeValue = XML_FORM_ELEMENTS_DATEPICKER_THEME;
