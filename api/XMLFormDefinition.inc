@@ -476,7 +476,10 @@ class XMLFormDefinition {
     $children = $property->children();
     if (count($children) == 0) {
       // If cast fails the string is returned.
-      return cast_string_to_type((string) $property);
+      $type = cast_string_to_type((string) $property);
+      // XXX: This is to handle the renaming of the datepicker element for built
+      // in forms. Remove this at some point.
+      return $type === 'datepicker' ? XML_FORM_ELEMENTS_DATEPICKER_THEME : $type;
     }
     $output = array();
     foreach ($children as $child) {
