@@ -448,7 +448,7 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
     return FALSE;
   }
   try {
-    $xml_form = new XMLForm($form_state, $parents);
+    $xml_form = new XMLForm($form_state, $parents, $form_name);
     // Was not initialized from storage.
     if (!$xml_form->isInitialized()) {
       $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
