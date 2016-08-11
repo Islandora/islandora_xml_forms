@@ -305,6 +305,8 @@ function xml_form_builder_enable_association($form_name, $id) {
  *   The drupal form state.
  * @param string $form_name
  *   The name of an XML form.
+ * @param string $id
+ *   The id of this association.
  *
  * @return array
  *   The drupal form definition.
@@ -427,5 +429,5 @@ function xml_form_builder_edit_association_form_submit(array $form, array &$form
   catch (Exception $e) {
     drupal_set_message(t('Failed to update association.'), 'error');
   }
-  $form_state['redirect'] = "/admin/islandora/xmlform/forms/$form_name/associations";
+  $form_state['redirect'] = "admin/islandora/xmlform/forms/$form_name/associations";
 }

@@ -204,7 +204,7 @@ function xml_form_builder_menu() {
     'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
-  // Remove existing associations, redirect back to list.
+  // Edit existing associations, redirect back to list.
   $items[XML_FORM_BUILDER_EDIT_ASSOCIATE_MENU] = array(
     'title' => 'Edit Form Association',
     'description' => 'Edit form association.',
@@ -594,7 +594,7 @@ function xml_form_builder_update_object(AbstractObject $object, array $associati
  *   Document to be transformed.
  * @param string $transform
  *   Name of xslt to be applied.
- *
+ *\
  * @return DOMDocument
  *   Transformed document on success, original on failure.
  */
