@@ -131,10 +131,7 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     'transform',
     'self_transform',
   );
-  $object = array_intersect_key(
-    $form_state['values'],
-    array_combine($object_keys, $object_keys)
-  );
+  $object = array_intersect_key($form_state['values'], array_combine($object_keys, $object_keys));
   if (empty($object['title_field'])) {
     $object['title_field'] = NULL;
   }
@@ -147,8 +144,8 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
   }
   try {
     db_insert('xml_form_builder_form_associations')
-    ->fields($object)
-    ->execute();
+        ->fields($object)
+        ->execute();
     drupal_set_message(t('Successfully added association.'));
   }
   catch (Exception $e) {
@@ -219,8 +216,8 @@ function xml_form_builder_disable_association($form_name, $id) {
   // Database defined association.
   if ($association['in_db']) {
     db_delete('xml_form_builder_form_associations')
-      ->condition('id', intval($id))
-      ->execute();
+        ->condition('id', intval($id))
+        ->execute();
     drupal_set_message(t('Deleted the association ID:%id from %form_name.', array(
       '%id' => $id,
       '%form_name' => $form_name,
@@ -229,24 +226,24 @@ function xml_form_builder_disable_association($form_name, $id) {
   else {
     // Hook defined association.
     $num_results = db_select('xml_form_builder_association_hooks', 'fa')
-      ->fields('fa')
-      ->condition('id', $id)
-      ->countQuery()
-      ->execute()
-      ->fetchField();
+        ->fields('fa')
+        ->condition('id', $id)
+        ->countQuery()
+        ->execute()
+        ->fetchField();
     if ($num_results == 1) {
       db_update('xml_form_builder_association_hooks')
-        ->fields(array('enabled' => (int) FALSE))
-        ->condition('id', $id)
-        ->execute();
+          ->fields(array('enabled' => (int) FALSE))
+          ->condition('id', $id)
+          ->execute();
     }
     else {
       db_insert('xml_form_builder_association_hooks')
-        ->fields(array(
-          'id' => $id,
-          'enabled' => (int) FALSE,
-        ))
-        ->execute();
+          ->fields(array(
+            'id' => $id,
+            'enabled' => (int) FALSE,
+          ))
+          ->execute();
     }
     drupal_set_message(t('Successfully disabled association.'));
   }
@@ -275,16 +272,16 @@ function xml_form_builder_enable_association($form_name, $id) {
   // Hook defined association, can't enable non hook associations.
   if (!$association['in_db']) {
     $num_results = db_select('xml_form_builder_association_hooks', 'fa')
-      ->fields('fa')
-      ->condition('id', $id)
-      ->countQuery()
-      ->execute()
-      ->fetchField();
+        ->fields('fa')
+        ->condition('id', $id)
+        ->countQuery()
+        ->execute()
+        ->fetchField();
     if ($num_results == 1) {
       db_update('xml_form_builder_association_hooks')
-        ->fields(array('enabled' => (int) TRUE))
-        ->condition('id', $id)
-        ->execute();
+          ->fields(array('enabled' => (int) TRUE))
+          ->condition('id', $id)
+          ->execute();
     }
     else {
       db_insert('xml_form_builder_association_hooks')
@@ -297,4 +294,138 @@ function xml_form_builder_enable_association($form_name, $id) {
   }
   drupal_set_message(t('Successfully enabled association.'));
   drupal_goto(xml_form_builder_get_associate_form_path($form_name));
+}
+
+/**
+ * Defines the association edit form.
+ *
+ * @param array $form
+ *   The drupal form.
+ * @param array $form_state
+ *   The drupal form state.
+ * @param string $form_name
+ *   The name of an XML form.
+ *
+ * @return array
+ *   The drupal form definition.
+ */
+function xml_form_builder_edit_association_form(array $form, array &$form_state, $form_name, $id) {
+  module_load_include('inc', 'xml_form_builder', 'includes/associations');
+  $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
+  foreach ($associations as $association) {
+    if ($association['id'] == $id) {
+      break;
+    }
+  }
+  $options = xml_form_builder_get_title_options($form_name);
+  $search = "['" . implode("']['", $association['title_field']) . "']";
+  $selected = array_search($search, $options);
+
+  $form = array(
+    'fieldset' => array(
+      '#type' => 'fieldset',
+      '#title' => t('Edit Association for @form', array('@form' => $form_name)),
+      '#collapsible' => TRUE,
+      'content_model' => array(
+        '#type' => 'textfield',
+        '#title' => t('Content Model'),
+        '#required' => TRUE,
+        '#autocomplete_path' => ISLANDORA_CONTENT_MODELS_AUTOCOMPLETE,
+        '#description' => t('The content model to associate with a form. If the content model has no decendents it will not show up in autocomplete.'),
+        '#default_value' => $association['content_model'],
+      ),
+      'dsid' => array(
+        '#type' => 'textfield',
+        '#description' => t("The datastream ID where the object's metadata is stored."),
+        '#title' => t('Metadata Datastream ID'),
+        '#required' => TRUE,
+        '#default_value' => $association['dsid'],
+      ),
+      'form_name' => array(
+        '#type' => 'value',
+        '#title' => t('Form Name'),
+        '#value' => $form_name,
+      ),
+      'title_field' => array(
+        '#type' => 'select',
+        '#title' => t('Title Field'),
+        '#description' => t("The form field for the object's label."),
+        '#prefix' => '<div id="ahah-wrapper">',
+        '#suffix' => '</div>',
+        '#options' => $options,
+        '#default_value' => $selected,
+      ),
+      'id' => array(
+        '#type' => 'value',
+        '#value' => $id,
+      ),
+    ),
+  );
+  if (!variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
+    $form['fieldset']['transform'] = array(
+      '#type' => 'select',
+      '#title' => t('XSL Transform'),
+      '#options' => xml_form_builder_get_transforms(),
+      '#default_value' => $association['transform'],
+      '#description' => t("An XSL transform for setting the Fedora object's Dublin Core metadata datastream."),
+    );
+    $form['fieldset']['self_transform'] = array(
+      '#type' => 'select',
+      '#title' => t('Self XSL Transform'),
+      '#options' => xml_form_builder_get_self_transforms(),
+      '#default_value' => $association['self_transform'],
+      '#description' => t('An optional transformation applied to form data prior to ingestion.'),
+    );
+  }
+  $form['fieldset']['file'] = array(
+    '#type' => 'file',
+    '#title' => t('Upload Template Document'),
+    '#description' => t('A sample metadata file used to prepopulate the form on ingest.'),
+  );
+  $form['fieldset']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Edit Association'),
+  );
+
+  return $form;
+}
+
+/**
+ * Default submit handler for the associations edit form.
+ *
+ * @param array $form
+ *   The drupal form.
+ * @param array $form_state
+ *   The drupal form state.
+ */
+function xml_form_builder_edit_association_form_submit(array $form, array &$form_state) {
+  module_load_include('inc', 'xml_form_builder', 'includes/associations');
+  $id = $form_state['values']['id'];
+  $form_name = $form_state['values']['form_name'];
+  $template = '';
+  $file_uploaded = $_FILES['files']['error']['file'] == 0;
+  if ($file_uploaded) {
+    $definition = new DOMDocument();
+    $definition->load($_FILES['files']['tmp_name']['file']);
+    $template = $definition->saveXML();
+  }
+  try {
+    db_update('xml_form_builder_form_associations')
+        ->fields(array(
+          'content_model' => $form_state['values']['content_model'],
+          'dsid' => $form_state['values']['dsid'],
+          'title_field' => $form_state['values']['title_field'],
+          'transform' => $form_state['values']['transform'],
+          'self_transform' => $form_state['values']['self_transform'],
+          'template' => $template,
+            )
+        )
+        ->condition('id', $id)
+        ->execute();
+    drupal_set_message(t('Association updated.'));
+  }
+  catch (Exception $e) {
+    drupal_set_message(t('Failed to update association.'), 'error');
+  }
+  $form_state['redirect'] = "/admin/islandora/xmlform/forms/$form_name/associations";
 }
