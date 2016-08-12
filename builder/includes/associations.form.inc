@@ -379,14 +379,21 @@ function xml_form_builder_edit_association_form(array $form, array &$form_state,
       '#description' => t('An optional transformation applied to form data prior to ingestion.'),
     );
   }
+  $form['fieldset']['remove_transform'] = array(
+    '#title' => t('Remove existing template'),
+    '#type' => 'checkbox',
+    '#access' => $association['template'],
+  );
+
   $form['fieldset']['file'] = array(
     '#type' => 'file',
-    '#title' => t('Upload Template Document'),
+    '#title' => $association['template'] ? t('Replace Current Template Document') : t('Upload Template Document'),
     '#description' => t('A sample metadata file used to prepopulate the form on ingest.'),
-  );
-  $form['fieldset']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Edit Association'),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="remove_transform"]' => array('checked' => FALSE),
+      ),
+    ),
   );
 
   return $form;
@@ -406,7 +413,7 @@ function xml_form_builder_edit_association_form_submit(array $form, array &$form
   $form_name = $form_state['values']['form_name'];
   $template = '';
   $file_uploaded = $_FILES['files']['error']['file'] == 0;
-  if ($file_uploaded) {
+  if ($file_uploaded & !$form_state['values']['remove_transform']) {
     $definition = new DOMDocument();
     $definition->load($_FILES['files']['tmp_name']['file']);
     $template = $definition->saveXML();
