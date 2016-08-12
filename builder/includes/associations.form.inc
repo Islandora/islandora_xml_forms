@@ -384,10 +384,10 @@ function xml_form_builder_edit_association_form(array $form, array &$form_state,
     '#type' => 'checkbox',
     '#access' => $association['template'],
   );
-
+  $title = $association['template'] ? t('Replace Current Template Document') : t('Upload Template Document');
   $form['fieldset']['file'] = array(
     '#type' => 'file',
-    '#title' => $association['template'] ? t('Replace Current Template Document') : t('Upload Template Document'),
+    '#title' => $title,
     '#description' => t('A sample metadata file used to prepopulate the form on ingest.'),
     '#states' => array(
       'visible' => array(
