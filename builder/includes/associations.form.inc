@@ -395,7 +395,10 @@ function xml_form_builder_edit_association_form(array $form, array &$form_state,
       ),
     ),
   );
-
+  $form['fieldset']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Edit Association'),
+  );
   return $form;
 }
 
@@ -418,17 +421,19 @@ function xml_form_builder_edit_association_form_submit(array $form, array &$form
     $definition->load($_FILES['files']['tmp_name']['file']);
     $template = $definition->saveXML();
   }
+  $updates = array(
+    'content_model' => $form_state['values']['content_model'],
+    'dsid' => $form_state['values']['dsid'],
+    'title_field' => $form_state['values']['title_field'],
+    'transform' => $form_state['values']['transform'],
+    'self_transform' => $form_state['values']['self_transform'],
+  );
+  if ($template || $form_state['values']['remove_transform']) {
+    $updates['template'] = $template;
+  }
   try {
     db_update('xml_form_builder_form_associations')
-        ->fields(array(
-          'content_model' => $form_state['values']['content_model'],
-          'dsid' => $form_state['values']['dsid'],
-          'title_field' => $form_state['values']['title_field'],
-          'transform' => $form_state['values']['transform'],
-          'self_transform' => $form_state['values']['self_transform'],
-          'template' => $template,
-            )
-        )
+        ->fields($updates)
         ->condition('id', $id)
         ->execute();
     drupal_set_message(t('Association updated.'));
