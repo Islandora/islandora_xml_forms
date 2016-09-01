@@ -313,14 +313,14 @@ function xml_form_builder_enable_association($form_name, $id) {
  */
 function xml_form_builder_edit_association_form(array $form, array &$form_state, $form_name, $id) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
-  $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
-  foreach ($associations as $association) {
-    if ($association['id'] == $id) {
-      break;
-    }
-  }
+  $association = xml_form_builder_get_association($id);
   $options = xml_form_builder_get_title_options($form_name);
-  $search = "['" . implode("']['", $association['title_field']) . "']";
+  if (is_array($association['title_field'])) {
+    $search = "['" . implode("']['", $association['title_field']) . "']";
+  }
+  else {
+    $search = t('None');
+  }
   $selected = array_search($search, $options);
 
   $form = array(
@@ -425,9 +425,12 @@ function xml_form_builder_edit_association_form_submit(array $form, array &$form
     'content_model' => $form_state['values']['content_model'],
     'dsid' => $form_state['values']['dsid'],
     'title_field' => $form_state['values']['title_field'],
-    'transform' => $form_state['values']['transform'],
-    'self_transform' => $form_state['values']['self_transform'],
   );
+  if (!variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
+    $updates['transform'] = $form_state['values']['transform'];
+    $updates['self_transform'] = $form_state['values']['self_transform'];
+  }
+
   if ($template || $form_state['values']['remove_transform']) {
     $updates['template'] = $template;
   }
