@@ -385,9 +385,13 @@ function xml_form_builder_edit_association_form(array $form, array &$form_state,
     '#access' => $association['template'],
   );
   $title = $association['template'] ? t('Replace Current Template Document') : t('Upload Template Document');
-  $form['fieldset']['file'] = array(
-    '#type' => 'file',
+  $form['fieldset']['template_file'] = array(
+    '#type' => 'managed_file',
     '#title' => filter_xss($title),
+    '#upload_location' => 'public://islandora_form_template',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('xml'),
+    ),
     '#description' => t('A sample metadata file used to prepopulate the form on ingest.'),
     '#states' => array(
       'visible' => array(
@@ -415,10 +419,11 @@ function xml_form_builder_edit_association_form_submit(array $form, array &$form
   $id = $form_state['values']['id'];
   $form_name = $form_state['values']['form_name'];
   $template = '';
-  $file_uploaded = $_FILES['files']['error']['file'] == 0;
+  $file_uploaded = isset($form_state['values']['template_file']);
   if ($file_uploaded & !$form_state['values']['remove_transform']) {
+    $template_file = file_load($form_state['values']['template_file']);
     $definition = new DOMDocument();
-    $definition->load($_FILES['files']['tmp_name']['file']);
+    $definition->load($template_file->uri);
     $template = $definition->saveXML();
   }
   $updates = array(
