@@ -14,8 +14,6 @@
             <xsl:apply-templates select="@*[normalize-space()]"/>
             <xsl:apply-templates select="mods:languageTerm"/>
             <xsl:apply-templates select="mods:scriptTerm"/>
-            <!-- Do not strip any custom elements. -->
-            <xsl:apply-templates select="node()[not(self::mods:languageTerm|self::mods:scriptTerm)]"/>
         </xsl:copy>
     </xsl:template>
     <xsl:template match="mods:location">
@@ -26,8 +24,6 @@
             <xsl:apply-templates select="mods:url"/>
             <xsl:apply-templates select="mods:holdingSimple"/>
             <xsl:apply-templates select="mods:holdingExternal"/>
-            <!-- Do not strip any custom elements. -->
-            <xsl:apply-templates select="node()[not(self::mods:physicalLocation|self::mods:shelfLocator|self::mods:url|self::mods:holdingSimple|self::mods:holdingExternal)]"/>
         </xsl:copy>
     </xsl:template>
     <xsl:template match="mods:copyInformation">
@@ -40,8 +36,6 @@
             <xsl:apply-templates select="mods:note"/>
             <xsl:apply-templates select="mods:enumerationAndChronology"/>
             <xsl:apply-templates select="mods:itemIdentifier"/>
-            <!-- Do not strip any custom elements. -->
-            <xsl:apply-templates select="node()[not(self::mods:form|self::mods:subLocation|self::mods:shelfLocator|self::mods:electronicLocator|self::mods:note|self::mods:enumerationAndChronology|self::mods:itemIdentifier)]"/>
         </xsl:copy>
     </xsl:template>
     <!--
@@ -55,7 +49,6 @@
         <xsl:copy>
             <xsl:apply-templates select="@*[normalize-space()]"/>
             <xsl:apply-templates select="mods:etal"/>
-            <!-- Do not strip any custom elements. -->
             <xsl:apply-templates select="node()[not(self::mods:etal)]"/>
         </xsl:copy>
     </xsl:template>
@@ -70,8 +63,6 @@
             <xsl:apply-templates select="mods:end"/>
             <xsl:apply-templates select="mods:total"/>
             <xsl:apply-templates select="mods:list"/>
-            <!-- Do not strip any custom elements. -->
-            <xsl:apply-templates select="node()[not(self::mods:start|self::mods:end|self::mods:total|self::mods:list)]"/>
         </xsl:copy>
     </xsl:template>
     <xsl:template match="mods:cartographics">
@@ -81,8 +72,6 @@
             <xsl:apply-templates select="mods:projection"/>
             <xsl:apply-templates select="mods:coordinates"/>
             <xsl:apply-templates select="mods:cartographicExtension"/>
-            <!-- Do not strip any custom elements. -->
-            <xsl:apply-templates select="node()[not(self::mods:scale|self::mods:projection|self::mods:coordinates|self::mods:cartographicExtension)]"/>
         </xsl:copy>
     </xsl:template>
 </xsl:stylesheet>
