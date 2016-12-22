@@ -658,7 +658,7 @@ class XMLFormDefinitionGenerator {
       }
     }
     else {
-      $property->{0} = cast_type_to_string($value);
+      $property[0] = cast_type_to_string($value);
     }
   }
 
