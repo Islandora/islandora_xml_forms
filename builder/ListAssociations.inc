@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Callbacks and functions for the Main Page.
+ * Callbacks and functions for the Associations Page.
  */
 
 /**
