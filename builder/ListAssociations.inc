@@ -18,14 +18,14 @@ function xml_form_builder_list_associations() {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
 
   $associations_list = array(
-    '#theme'=> 'item_list',
+    '#theme' => 'item_list',
     '#items' => array(),
   );
 
   $associations = xml_form_builder_get_associations(array(), array(), array(), TRUE);
   $map = array();
 
-  foreach($associations as $association) {
+  foreach ($associations as $association) {
     $cmodel = $association['content_model'];
     $form = $association['form_name'];
     if (!isset($map[$cmodel])) {
@@ -35,24 +35,26 @@ function xml_form_builder_list_associations() {
   }
   ksort($map);
 
-  function association_table_rows($form){
-    return array(l($form, xml_form_builder_get_associate_form_path($form)));
+  /**
+   * Returns a link to the edit associations form for form $form_name.
+   */
+  function create_form_association_link($form_name) {
+    return array(l($form_name, xml_form_builder_get_associate_form_path($form_name)));
   }
 
   foreach ($map as $cmodel => $forms) {
     $form_table = array(
       '#theme' => 'table',
-      '#rows' => array_map('association_table_rows', $forms),
+      '#rows' => array_map('create_form_association_link', $forms),
     );
     $object = islandora_object_load($cmodel);
     if ($object) {
-      $label =  $object->label . " ($cmodel)";
+      $label = $object->label . " ($cmodel)";
     }
     else {
       $label = $cmodel;
     }
-    $associations_list['#items'][] = $label  . drupal_render($form_table);
-
+    $associations_list['#items'][] = $label . drupal_render($form_table);
   }
 
   return array($associations_list);
