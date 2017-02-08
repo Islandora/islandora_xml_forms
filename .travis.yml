@@ -41,3 +41,4 @@ script:
   - phpcpd --names *.module,*.inc,*.test --exclude api/schema sites/all/modules/islandora_xml_forms
   - mv -v $HOME/lib $TRAVIS_BUILD_DIR/builder
   - drush test-run -v --uri=http://localhost:8081 "Islandora XML Forms"
+  - drush test-run -v --uri=http://localhost:8081 "Islandora XML Forms Schema API"

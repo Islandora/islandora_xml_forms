@@ -8,7 +8,7 @@
 /**
  * Unit Tests for the FormControl class.
  */
-class SchemaAPIComplexTypeTestCase extends DrupalUnitTestCase {
+class SchemaAPIComplexTypeTestCase extends DrupalWebTestCase {
 
   /**
    * Get test info.
