@@ -117,7 +117,10 @@ function xml_form_builder_get_database_associations(array $forms = array(), arra
  *   All the associations that match the given constraints.
  */
 function xml_form_builder_get_hook_associations(array $forms = array(), array $models = array(), array $dsids = array(), $only_enabled = TRUE) {
-  $associations = module_invoke_all('islandora_xml_form_builder_form_associations');
+  $associations = module_invoke_all('xml_form_builder_form_associations');
+  // @todo Remove (deprecated) invokation if
+  // "islandora_xml_form_builder_form_associations".
+  $associations += module_invoke_all('islandora_xml_form_builder_form_associations');
   // Filter associations based on given parameters.
   $filtered_associations = array();
   foreach ($associations as $id => $association) {
@@ -154,9 +157,6 @@ function xml_form_builder_get_hook_associations(array $forms = array(), array $m
  */
 function xml_form_builder_get_transforms() {
   $tranforms = module_invoke_all('xml_form_builder_get_transforms');
-  // @todo Remove (deprecated) invokation if
-  // "islandora_content_model_forms_get_transforms".
-  $tranforms += module_invoke_all('islandora_content_model_forms_get_transforms');
   $tranforms['No Transform'] = 'No Transform';
   return $tranforms;
 }
