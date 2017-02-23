@@ -8,7 +8,7 @@
 /**
  * Unit tests for the FormControl class.
  */
-class SchemaAPIInsertOrderMapTestCase extends DrupalUnitTestCase {
+class SchemaAPIInsertOrderMapTestCase extends DrupalWebTestCase {
 
   /**
    * Get Test info.
@@ -39,14 +39,14 @@ class SchemaAPIInsertOrderMapTestCase extends DrupalUnitTestCase {
   public function test() {
     $data_path = drupal_get_path('module', 'xml_schema_api') . '/tests/data';
     $schema = new XMLSchema($data_path . '/schemas/fgdc-std-001-1998.xsd');
-    $this->assertNotNull($schema);
+    $this->assertNotNull($schema, 'Schema is not null.');
     $insert_map = new InsertOrderMap($schema);
-    $this->assertNotNull($insert_map);
+    $this->assertNotNull($insert_map, 'Insert map is not null.');
     // Path to the idinfo element.
     $path = '/xsd:schema/xsd:element[@name=\'idinfo\']';
     $map = $insert_map->getInsertOrderMap($path);
     // Map exists.
-    $this->assertNotNull($map);
+    $this->assertNotNull($map, 'Map is not null.');
     // Top level doesn't have parent.
     $this->assertNull($map->parent, 'Top level doesn\'t have parent.');
     $this->assertEqual($map->min, 1, 'Min value set correctly');
