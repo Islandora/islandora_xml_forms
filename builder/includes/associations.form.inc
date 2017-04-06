@@ -147,10 +147,10 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
         ->fields($object)
         ->execute();
     drupal_set_message(t('Successfully added association.'));
-    }
-    catch (Exception $e) {
-    drupal_set_message(t('Failed to add association.'), 'error');
   }
+  catch (Exception $e) {
+    drupal_set_message(t('Failed to add association.'), 'error');
+}
 }
 
 /**
@@ -419,7 +419,7 @@ function xml_form_builder_edit_association_form_submit(array $form, array &$form
   $id = $form_state['values']['id'];
   $form_name = $form_state['values']['form_name'];
   $template = '';
-  if ($form_state['values']['template_file'] &!$form_state['values']['remove_transform']) {
+  if ($form_state['values']['template_file'] & !$form_state['values']['remove_transform']) {
     $template_file = file_load($form_state['values']['template_file']);
     $definition = new DOMDocument();
     $definition->load($template_file->uri);
