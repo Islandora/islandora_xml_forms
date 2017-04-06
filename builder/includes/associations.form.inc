@@ -150,7 +150,7 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
   }
   catch (Exception $e) {
     drupal_set_message(t('Failed to add association.'), 'error');
-}
+  }
 }
 
 /**
