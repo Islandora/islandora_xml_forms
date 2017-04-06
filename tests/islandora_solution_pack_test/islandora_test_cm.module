@@ -29,9 +29,9 @@ function islandora_test_cm_islandora_required_objects(IslandoraTuque $connection
 }
 
 /**
- * Implements hook_islandora_xml_form_builder_forms().
+ * Implements hook_xml_form_builder_forms().
  */
-function islandora_test_cm_islandora_xml_form_builder_forms() {
+function islandora_test_cm_xml_form_builder_forms() {
   $module_path = drupal_get_path('module', 'islandora_test_cm');
   return array(
     'Test Solution Pack MODS Form' => array(
@@ -41,9 +41,9 @@ function islandora_test_cm_islandora_xml_form_builder_forms() {
 }
 
 /**
- * Implements hook_islandora_xml_form_builder_form_associations().
+ * Implements hook_xml_form_builder_form_associations().
  */
-function islandora_test_cm_islandora_xml_form_builder_form_associations() {
+function islandora_test_cm_xml_form_builder_form_associations() {
   return array(
     'islandora_test_cm_mods_form' => array(
       'content_model' => 'islandora:testCModel',

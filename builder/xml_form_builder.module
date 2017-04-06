@@ -14,6 +14,7 @@ define('XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS', 'Associate XML Forms');
 
 define('XML_FORM_BUILDER_ADMIN_MENU', 'admin/islandora/xmlform');
 define('XML_FORM_BUILDER_MAIN_MENU', XML_FORM_BUILDER_ADMIN_MENU . '/forms');
+define('XML_FORM_BUILDER_ASSOCIATIONS', XML_FORM_BUILDER_ADMIN_MENU . '/associations');
 define('XML_FORM_BUILDER_SETTINGS_MENU', XML_FORM_BUILDER_ADMIN_MENU . '/settings');
 define('XML_FORM_BUILDER_XSLTS_MENU', XML_FORM_BUILDER_ADMIN_MENU . '/xslts');
 define('XML_FORM_BUILDER_ADD_XSLTS_MENU', XML_FORM_BUILDER_XSLTS_MENU . '/add_xslt');
@@ -75,6 +76,16 @@ function xml_form_builder_menu() {
     'page callback' => 'xml_form_builder_main',
     'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
     'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $items[XML_FORM_BUILDER_ASSOCIATIONS] = array(
+    'title' => 'Enabled Associations',
+    'description' => 'View form associations by content model',
+    'file' => 'ListAssociations.inc',
+    'page callback' => 'xml_form_builder_list_associations',
+    'access arguments' => array(XML_FORM_BUILDER_LIST_FORMS_PERMS),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
   );
   $items[XML_FORM_BUILDER_SETTINGS_MENU] = array(
     'title' => 'Settings',
@@ -83,6 +94,7 @@ function xml_form_builder_menu() {
     'page arguments' => array('xml_form_builder_settings_form'),
     'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
   );
   $items[XML_FORM_BUILDER_XSLTS_MENU] = array(
     'title' => 'XSLTs',

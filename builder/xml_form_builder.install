@@ -38,31 +38,31 @@ function xml_form_builder_schema() {
     'fields' => array(
       'id' => array(
         'type' => 'serial',
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'content_model' => array(
         'description' => 'The name of the content model.',
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'form_name' => array(
         'description' => 'The name of the stored form.',
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'dsid' => array(
         'description' => 'The datastream ID of the metadata to be edited.',
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'title_field' => array(
         'description' => 'The form field for the object\'s label.',
         'type' => 'varchar',
         'length' => 256,
-        'not NULL' => FALSE,
+        'not null' => FALSE,
         'binary' => TRUE,
         'serialize' => TRUE,
       ),
@@ -70,19 +70,19 @@ function xml_form_builder_schema() {
         'description' => 'An XSL transform for setting the Fedora object\'s Dublin Core metadata datastream.',
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'self_transform' => array(
         'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.',
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => FALSE,
+        'not null' => FALSE,
       ),
       'template' => array(
         'description' => 'A sample metadata file used to prepopulate the form on ingest.',
         'type' => 'text',
         'size' => 'medium',
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
     ),
     'primary key' => array('id'),
@@ -94,13 +94,13 @@ function xml_form_builder_schema() {
         'description' => 'The name of the hook.',
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'enabled' => array(
         'description' => 'The hook\'s status (enabled or not).',
         'type' => 'int',
         'size' => 'tiny',
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
     ),
     'primary key' => array('id'),
@@ -117,13 +117,13 @@ function xml_form_builder_schema() {
         'description' => 'The name of the XSLT.',
         'type' => 'varchar',
         'length' => 255,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'xslt' => array(
         'description' => 'An XSLT.',
         'type' => 'text',
         'size' => 'big',
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
     ),
     'unique keys' => array('name' => array('name')),
@@ -141,24 +141,24 @@ function xml_form_builder_schema() {
         'description' => 'The name of the content model.',
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'name' => array(
         'description' => 'The name of the mapping.',
         'type' => 'varchar',
         'length' => 255,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'xslt_id' => array(
         'description' => 'An XSLT id.',
         'type' => 'int',
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
       'dsid' => array(
         'description' => 'The datastream ID of the metadata to be edited.',
         'type' => 'varchar',
         'length' => 128,
-        'not NULL' => TRUE,
+        'not null' => TRUE,
       ),
     ),
     'foreign keys' => array(
@@ -483,5 +483,140 @@ function xml_form_builder_update_7105() {
           ->execute();
       }
     }
+  }
+}
+
+/**
+ * Update fields to have not NULL.
+ *
+ * Had a syntax error in our schema.
+ */
+function xml_form_builder_update_7106() {
+  db_change_field('xml_form_builder_form_associations', 'id', 'id',
+    array(
+      'type' => 'serial',
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_form_associations', 'content_model', 'content_model',
+    array(
+      'description' => 'The name of the content model.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_form_associations', 'form_name', 'form_name',
+    array(
+      'description' => 'The name of the stored form.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_form_associations', 'dsid', 'dsid',
+    array(
+      'description' => 'The datastream ID of the metadata to be edited.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_form_associations', 'transform', 'transform',
+    array(
+      'description' => 'An XSL transform for setting the Fedora object\'s Dublin Core metadata datastream.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_form_associations', 'template', 'template',
+    array(
+      'description' => 'A sample metadata file used to prepopulate the form on ingest.',
+      'type' => 'text',
+      'size' => 'medium',
+      'not null' => TRUE,
+    )
+  );
+
+  db_change_field('xml_form_builder_association_hooks', 'id', 'id',
+    array(
+      'description' => 'The name of the hook.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_association_hooks', 'enabled', 'enabled',
+    array(
+      'description' => 'The hook\'s status (enabled or not).',
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+    )
+  );
+
+  db_change_field('xml_form_builder_xslts', 'name', 'name',
+    array(
+      'description' => 'The name of the XSLT.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_xslts', 'xslt', 'xslt',
+    array(
+      'description' => 'An XSLT.',
+      'type' => 'text',
+      'size' => 'big',
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_xslts', 'xslt_id', 'xslt_id',
+    array(
+      'type' => 'serial',
+      'not null' => TRUE,
+    )
+  );
+
+  db_change_field('xml_form_builder_default_xslts', 'content_model', 'content_model',
+    array(
+      'description' => 'The name of the content model.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_default_xslts', 'name', 'name',
+    array(
+      'description' => 'The name of the mapping.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_default_xslts', 'xslt_id', 'xslt_id',
+    array(
+      'description' => 'An XSLT id.',
+      'type' => 'int',
+      'not null' => TRUE,
+    )
+  );
+  db_change_field('xml_form_builder_default_xslts', 'dsid', 'dsid',
+    array(
+      'description' => 'The datastream ID of the metadata to be edited.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => TRUE,
+    )
+  );
+
+  $db_type = db_driver();
+
+  if ($db_type == 'pgsql') {
+    // XXX: https://www.drupal.org/node/190027.
+    db_add_primary_key('xml_form_builder_form_associations', array('id'));
+    db_add_primary_key('xml_form_builder_association_hooks', array('id'));
+    db_add_primary_key('xml_form_builder_xslts', array('xslt_id'));
   }
 }

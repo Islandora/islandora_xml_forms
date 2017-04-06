@@ -190,7 +190,7 @@ class Create implements ActionInterface {
       self::XML => 'createXML',
     );
     try {
-      return $this->$action[$this->type]($document, $value);
+      return $this->{$action[$this->type]}($document, $value);
     }
     catch (Exception $e) {
       $value = htmlentities($this->value);
