@@ -114,15 +114,17 @@
 	</xsl:template>
 
 	<xsl:template match="mods:subject[mods:topic | mods:name | mods:occupation | mods:geographic | mods:hierarchicalGeographic | mods:cartographics | mods:temporal] ">
-		<dc:subject>
-			<xsl:for-each select="mods:topic | mods:occupation">
-				<xsl:value-of select="."/>
-				<xsl:if test="position()!=last()">--</xsl:if>
-			</xsl:for-each>
-			<xsl:for-each select="mods:name">
-				<xsl:call-template name="name"/>
-			</xsl:for-each>
-		</dc:subject>
+		<xsl:if test="mods:topic | mods:occupation | mods:name">
+			<dc:subject>
+				<xsl:for-each select="mods:topic | mods:occupation">
+					<xsl:value-of select="."/>
+					<xsl:if test="position()!=last()">--</xsl:if>
+				</xsl:for-each>
+				<xsl:for-each select="mods:name">
+					<xsl:call-template name="name"/>
+				</xsl:for-each>
+			</dc:subject>
+		</xsl:if>
 
 		<xsl:for-each select="mods:titleInfo/mods:title">
 			<dc:subject>
