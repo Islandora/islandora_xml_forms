@@ -1012,98 +1012,166 @@ Ext.formbuilder.createElementForm = function () {
           },
           items: [{
             xtype: 'textfield',
-            id: 'ahah-effect',
-            name: 'ahah_effect',
-            fieldLabel: Drupal.t('Effect'),
+            id: 'ajax-callback',
+            name: 'ajax_callback',
+            fieldLabel: Drupal.t('Callback'),
             listeners: {
               render: function() {
                 Ext.create('Ext.tip.ToolTip', {
-                  target: 'ahah-effect',
+                  target: 'ajax-callback',
                   anchor: 'left',
-                  html:  Drupal.t('<h3><a name="ahah_effect" id="ahah_effect"></a>#ajax[\'effect\']</h3>' +
-                  '<p><strong>Description</strong>: Specifies the effect used when adding content from an AHAH request. </p>' +
-                  '<p><strong>Values</strong>: String. Possible values: \'none\' (default), \'fade\', \'slide\'. If the <a href="http://interface.eyecon.ro/">interface elements library</a> is installed, any effect with the name <em>effect</em>Toggle may also be used. </p>')
-                });
-              }
-            }
-          },{
-            xtype: 'textfield',
-            id: 'ahah-event',
-            name: 'ahah_event',
-            fieldLabel: Drupal.t('Event'),
-            listeners: {
-              render: function() {
-                Ext.create('Ext.tip.ToolTip', {
-                  target: 'ahah-event',
-                  anchor: 'left',
-                  html: Drupal.t('<h3><a name="ahah_event" id="ahah_event"></a>#ajax[\'event\']</h3>' +
-                 '<p><strong>Description</strong>: When this event occurs in this element, Drupal will perform an HTTP request in the background via JavaScript.</p>' +
-                 '<p><strong>Values</strong>: String. Possible values: Any valid <a href="http://docs.jquery.com/Events">jQuery event</a>, including \'mousedown\', \'blur\', and \'change\'.'+
-                 'Note that #ajax[\'event\'] does not need to be explicitly specified. Although it can be manually set, usually the <a href="#element_default_values">default value </a> will be sufficient.</p>')
+                  html: Drupal.t('<h3><a name="ajax_callback" id="ajax_callback"></a>#ajax[\'callback\']</h3>' +
+                  '<p><strong>Description</strong>: Specifies the name of a callback function which will be called during an AJAX call. It can return HTML, a renderable array, or an array of AJAX Commands. This callback function is given the $form and $form_state parameters, allowing it to produce a result, which it returns for rendering. </p>' +
+                  '<p>Note: #ajax[\'callback\'] and #ajax[\'path\'] are mutually exclusive. \'callback\' is easier to use and requires less code setup, but may not provide the capabilities required for some functions. When you can, use \'callback\'. </p>' +
+                  '<p><strong>Values</strong>: String containing a function name.</p>')
                 });
               }
             }
           }, {
             xtype: 'textfield',
-            id: 'ahah-method',
-            name: 'ahah_method',
+            id: 'ajax-effect',
+            name: 'ajax_effect',
+            fieldLabel: Drupal.t('Effect'),
+            listeners: {
+              render: function() {
+                Ext.create('Ext.tip.ToolTip', {
+                  target: 'ajax-effect',
+                  anchor: 'left',
+                  html:  Drupal.t('<h3><a name="ajax_effect" id="ajax_effect"></a>#ajax[\'effect\']</h3>' +
+                  '<p><strong>Description</strong>: Specifies the effect used when adding content from an AJAX request. </p>' +
+                  '<p><strong>Values</strong>: String. Possible values: \'none\' (default), \'fade\', \'slide\'. If the <a href="http://interface.eyecon.ro/">interface elements library</a> is installed, any effect with the name <em>effect</em>Toggle may also be used. </p>')
+                });
+              }
+            }
+          },  {
+            xtype: 'textfield',
+            id: 'ajax-speed',
+            name: 'ajax_speed',
+            fieldLabel: Drupal.t('Speed'),
+            listeners: {
+              render: function() {
+                Ext.create('Ext.tip.ToolTip', {
+                  target: 'ajax-speed',
+                  anchor: 'left',
+                  html:  Drupal.t('<h3><a name="ajax_speed" id="ajax_speed"></a>#ajax[\'speed\']</h3>' +
+                  '<p><strong>Description</strong>: The effect speed to use. Defaults to \'slow\'. May be \'slow\', \'fast\' or a number in milliseconds which represents the length of time the effect should run. </p>')
+                });
+              }
+            }
+          }, {
+            xtype: 'textfield',
+            id: 'ajax-event',
+            name: 'ajax_event',
+            fieldLabel: Drupal.t('Event'),
+            listeners: {
+              render: function() {
+                Ext.create('Ext.tip.ToolTip', {
+                  target: 'ajax-event',
+                  anchor: 'left',
+                  html: Drupal.t('<h3><a name="ajax_event" id="ajax_event"></a>#ajax[\'event\']</h3>' +
+                 '<p><strong>Description</strong>: When this event occurs to this element, Drupal will perform an HTTP request in the background via JavaScript.</p>' +
+                 '<p><strong>Values</strong>: String. Possible values: Any valid <a href="http://docs.jquery.com/Events">jQuery event</a>,  including \'mousedown\' (for submit, imagebutton, and button), \'blur\' (for textfield and textarea), \'change\' (for select). '+
+                 'Note that #ajax[\'event\'] does not need to be explicitly specified. Although it can be manually set, usually the default value will be sufficient.</p>')
+                });
+              }
+            }
+          }, {
+            xtype: 'checkbox',
+            id: 'ajax-keypress',
+            name: 'ajax_keypress',
+            fieldLabel: Drupal.t('Keypress'),
+            inputValue: true,
+            listeners: {
+              render: function() {
+                Ext.create('Ext.tip.ToolTip', {
+                  target: 'ajax-keypress',
+                  anchor: 'left',
+                  html: Drupal.t('<h3><a name="ajax_keypress" id="ajax_keypress"></a>#ajax[\'keypress\']</h3>' +
+                  '<p><strong>Description</strong>: If set to TRUE, then the element\'s #ajax[\'event\'] will be triggered if the ENTER key is pressed while the element has focus.</p>')
+                });
+              }
+            }
+          }, {
+            xtype: 'textfield',
+            id: 'ajax-method',
+            name: 'ajax_method',
             fieldLabel: Drupal.t('Method'),
             listeners: {
               render: function() {
                 Ext.create('Ext.tip.ToolTip', {
-                  target: 'ahah-method',
+                  target: 'ajax-method',
                   anchor: 'left',
-                  html: Drupal.t('<h3><a name="ahah_method" id="ahah_method"></a>#ajax[\'method\']</h3>' +
-                 '<p><strong>Description</strong>: Modifies the behavior of the returned HTML from an AHAH request when inserting into the <a href="#ajax_wrapper">#ajax_wrapper</a>. If not set, the returned HTML will replace the contents of the wrapper element, but it\'s also possible to use any of the available <a href="http://docs.jquery.com/DOM/Manipulation">jQuery operations for DOM manipulation</a>. </p>' +
+                  html: Drupal.t('<h3><a name="ajax_method" id="ajax_method"></a>#ajax[\'method\']</h3>' +
+                 '<p><strong>Description</strong>: Modify the behavior of the returned HTML from an AJAX request when inserting into the #ajax_wrapper. If not set, the returned HTML will <em>replace</em> the contents of the wrapper element, but it\'s also possible to use any of the available <a href="http://docs.jquery.com/DOM/Manipulation">jQuery operations for DOM manipulation</a>. </p>' +
                  '<p><strong>Values</strong>: String. Possible values: \'replace\' (default), \'after\', \'append\', \'before\', \'prepend\'.</p>')
                 });
               }
             }
           },{
             xtype: 'textfield',
-            id: 'ahah-path',
-            name: 'ahah_path',
+            id: 'ajax-path',
+            name: 'ajax_path',
             fieldLabel: Drupal.t('Path'),
             listeners: {
               render: function() {
                 Ext.create('Ext.tip.ToolTip', {
-                  target: 'ahah-path',
+                  target: 'ajax-path',
                   anchor: 'left',
-                  html: Drupal.t('<h3><a name="ahah_path" id="ahah_path"></a>#ajax[\'path\']</h3>' +
-                 '<p><strong>Description</strong>: If set, this property triggers AHAH behaviors on a form element. This is the Drupal menu path to a callback function which will generate HTML and return the HTML string to Drupal. The result will be placed in the <em>div</em> element specified in <a href="#ajax_wrapper">#ajax[\'wrapper\']</a>. </p>' +
+                  html: Drupal.t('<h3><a name="ajax_path" id="ajax_path"></a>#ajax[\'path\']</h3>' +
+                 '<p><strong>Description</strong>: This is the Drupal menu path for a callback function which will generate HTML and return the string of HTML to Drupal. The result will replace the div specified in #ajax[\'wrapper\']. This property is infrequently used in Drupal 7 and higher, because it is set automatically if using the #ajax[\'callback\'] property. When using #ajax[\'callback\'] the path is automatically set to system/ajax, which provides a menu callback that can be used for many situations. </p>' +
+                 '<p>Note: \'path\' and \'callback\' are mutually exclusive.</p>' +
                  '<p><strong>Values</strong>: String containing a Drupal menu path.</p>')
                 });
               }
             }
           }, {
             xtype: 'textfield',
-            id: 'ahah-wrapper',
-            name: 'ahah_wrapper',
-        fieldLabel: Drupal.t('Wrapper'),
+            id: 'ajax-prevent',
+            name: 'ajax_prevent',
+            fieldLabel: Drupal.t('Prevent'),
             listeners: {
               render: function() {
                 Ext.create('Ext.tip.ToolTip', {
-                  target: 'ahah-wrapper',
+                  target: 'ajax-prevent',
                   anchor: 'left',
-                  html: Drupal.t('<h3><a name="ahah_wrapper" id="ahah_wrapper"></a>#ajax[\'wrapper\']</h3>' +
-                 '<p><strong>Description</strong>: Defines the HTML <em>id</em> attribute of an element on the page that will serve as the destination for HTML returned by an AHAH request. A <em>div</em> element is generally used as the wrapper since it provides the most flexibility for placement of elements before, after or inside of its HTML tags. This property is required for using AHAH requests in a form element.</p>' +
-                 '<p><strong>Values</strong>: String containg a valid <em>id</em> attribute of an HTML element on the same page.</p>')
+                  html: Drupal.t('<h3><a name="ajax_prevent" id="ajax_prevent"></a>#ajax[\'prevent\']</h3>' +
+                  '<p><strong>Description</strong>: A JavaScript event to prevent when \'event\' is triggered. Defaults to \'click\' for #ajax on #type \'submit\', \'button\', and \'image_button\'. Multiple events may be specified separated by spaces. For example, when binding #ajax behaviors to form buttons, pressing the ENTER key within a textfield triggers the \'click\' event of the form\'s first submit button. Triggering Ajax in this situation leads to problems, like breaking autocomplete textfields. Because of that, Ajax behaviors are bound to the \'mousedown\' event on form buttons by default. However, binding to \'mousedown\' rather than \'click\' means that it is possible to trigger a click by pressing the mouse, holding the mouse button down until the Ajax request is complete and the button is re-enabled, and then releasing the mouse button. For this case, \'prevent\' can be set to \'click\', so an additional event handler is bound to prevent such a click from triggering a non-Ajax form submission. This also prevents a textfield\'s ENTER press triggering a button\'s non-Ajax form submission behavior.</p>' +
+                  '<p><strong>Values</strong>: String. Possible values: One or more jQuery events, with multiple events separated by space characters.</p>')
                 });
               }
             }
           }, {
-            xtype: 'checkbox',
-            id: 'ahah-keypress',
-            name: 'ahah_keypress',
-            fieldLabel: Drupal.t('Keypress'),
-            inputValue: true,
+            xtype: 'textfield',
+            id: 'ajax-trigger-as',
+            name: 'ajax_trigger_as',
+            fieldLabel: Drupal.t('Trigger as'),
             listeners: {
               render: function() {
                 Ext.create('Ext.tip.ToolTip', {
-                  target: 'ahah-keypress',
+                  target: 'ajax-trigger-as',
                   anchor: 'left',
-                  html: Drupal.t('<h3><a name="ahah_keypress" id="ahah_keypress"></a>#ajax[\'keypress\']</h3>' +
-                 '<p><strong>Description</strong>: If set to TRUE, then the element\'s #ajax[\'event\'] will be triggered if the ENTER key is pressed while the element has focus.</p>')
+                  html: Drupal.t('<h3><a name="ajax_trigger_as" id="ajax_trigger_as"></a>#ajax[\'trigger_as\']</h3>' +
+                  '<p><strong>Description</strong>:  For a non-submit, non-button element, allows selection of the submit element which will be activated when the element is triggered. For example, if a select element is ajax-enabled, and it changes, an element identified by #ajax[\'trigger_as\'][\'name\'] or #ajax[\'trigger_as\'][\'value\'] will be used as the triggering element, especially for button-level validation.</p>' +
+                  '<p><strong>Values</strong>: Array.</p>' +
+                  '<p>Possible values</p>' +
+                  '<li><ul>array(\'name\' => some_submit_or_button_name)</ul><ul>array(\'value\' => some_submit_or_button_value)</ul></li>' +
+                  '<p>Note that if #tree == TRUE, #name encodes the parents of the element in it, as when used with form_set_error(), i.e. "level1][level2][element".</p>')
+                });
+              }
+            }
+          }, {
+            xtype: 'textfield',
+            id: 'ajax-wrapper',
+            name: 'ajax_wrapper',
+            fieldLabel: Drupal.t('Wrapper'),
+            listeners: {
+              render: function() {
+                Ext.create('Ext.tip.ToolTip', {
+                  target: 'ajax-wrapper',
+                  anchor: 'left',
+                  html: Drupal.t('<h3><a name="ajax_wrapper" id="ajax_wrapper"></a>#ajax[\'wrapper\']</h3>' +
+                  '<p><strong>Description</strong>: This property defines the HTML id attribute of an element on the page which will be replaced by the html returned by the #ajax[\'path\'] or #ajax[\'callback\'] function. Usually, a div element is used as the wrapper, as it provides the most flexibility for placement of elements before, after, or inside of its HTML tags. This property is required for using AJAX requests in on a form element.  Note that the entire element with this ID is replaced, not just the contents of the element.</p>' +
+                  '<p><strong>Values</strong>: String containg a valid id attribute of an HTML element on the same page. This <em>must not</em> contain the \'#\' character that a selector would have.</p>')
                 });
               }
             }
@@ -1111,66 +1179,66 @@ Ext.formbuilder.createElementForm = function () {
             xtype:'fieldset',
             checkboxToggle: true,
             collapsed: true,
-            checkboxName: 'ahah_progress',
-            id: 'ahah_progress',
+            checkboxName: 'ajax_progress',
+            id: 'ajax_progress',
             title: Drupal.t('Progress'),
             items: [{
               xtype: 'textfield',
-              id: 'ahah-progress-type',
-              name: 'ahah_progress_type',
+              id: 'ajax-progress-type',
+              name: 'ajax_progress_type',
               fieldLabel: Drupal.t('Type'),
               listeners: {
                 render: function() {
                   Ext.create('Ext.tip.ToolTip', {
-                    target: 'ahah-progress-type',
+                    target: 'ajax-progress-type',
                     anchor: 'top',
-                    html: Drupal.t('<p>Possible values:</p>' +
-                   '<ul><li><strong>#ajax[\'progress\'][\'type\']</strong> String. Possible values: \'throbber\' (default), \'bar\'.</li></ul>')
+                    html: Drupal.t('<h3>#ajax[\'progress\'][\'type\']</h3>' +
+                   '<p>String. Possible values: \'throbber\' (default), \'bar\'.</p>')
                   });
                 }
               }
             }, {
               xtype: 'textfield',
-              id: 'ahah-progress-message',
-              name: 'ahah_progress_message',
+              id: 'ajax-progress-message',
+              name: 'ajax_progress_message',
               fieldLabel: Drupal.t('Message'),
               listeners: {
                 render: function() {
                   Ext.create('Ext.tip.ToolTip', {
-                    target: 'ahah-progress-message',
+                    target: 'ajax-progress-message',
                     anchor: 'top',
-                    html: Drupal.t('<p>Possible values:</p>' +
-                   '<ul><li><strong>#ajax[\'progress\'][\'message\']</strong> String. An optional message to the user; should be wrapped with <a href="/api/drupal/includes--common.inc/function/t/6" title="Translate strings to the page language or a given language." class="local">t</a>().</li></ul>')
+                    html: Drupal.t('<h3>#ajax[\'progress\'][\'message\']</h3>' +
+                   '<p> String. An optional message to the user; should be wrapped with t().</p>')
                   });
                 }
               }
             }, {
               xtype: 'textfield',
-              id: 'ahah-progress-url',
-              name: 'ahah_progress_url',
+              id: 'ajax-progress-url',
+              name: 'ajax_progress_url',
               fieldLabel: Drupal.t('Url'),
               listeners: {
                 render: function() {
                   Ext.create('Ext.tip.ToolTip', {
-                    target: 'ahah-progress-url',
+                    target: 'ajax-progress-url',
                     anchor: 'top',
-                    html: Drupal.t('<p>Possible values:</p>' +
-                   '<ul><li><strong>#ajax[\'progress\'][\'url\']</strong> String. The optional callback path to use to determine how full the progress bar is (as defined in progress.js). Only useable when \'type\' is \'bar\'.</li></ul>')
+                    html: Drupal.t('<h3>#ajax[\'progress\'][\'url\']</h3>' +
+                   '<p> String. The optional callback path to use to determine how full the progress bar is (as defined in progress.js). Only useable when \'type\' is \'bar\'.</p>')
                   });
                 }
               }
             }, {
               xtype: 'textfield',
-              id: 'ahah-progress-interval',
-              name: 'ahah_progress_interval',
+              id: 'ajax-progress-interval',
+              name: 'ajax_progress_interval',
               fieldLabel: Drupal.t('Interval'),
               listeners: {
                 render: function() {
                   Ext.create('Ext.tip.ToolTip', {
-                    target: 'ahah-progress-interval',
+                    target: 'ajax-progress-interval',
                     anchor: 'top',
-                    html: Drupal.t('<p>Possible values:</p>' +
-                   '<li><strong>#ajax[\'progress\'][\'interval\']</strong> String. The interval to be used in updating the progress bar (as defined in progress.js). Ony used if \'url\' is defined and \'type\' is \'bar\'.</li>')
+                    html: Drupal.t('<h3>#ajax[\'progress\'][\'interval\']</h3>' +
+                   '<p>String. The interval to be used in updating the progress bar (as defined in progress.js). Ony used if \'url\' is defined and \'type\' is \'bar\'.</p>')
                   });
                 }
               }
@@ -1178,9 +1246,9 @@ Ext.formbuilder.createElementForm = function () {
             listeners: {
               render: function() {
                 Ext.create('Ext.tip.ToolTip', {
-                  target: 'ahah-progress',
+                  target: 'ajax-progress',
                   anchor: 'bottom',
-                  html: Drupal.t('<h3><a name="ahah_progress" id="ahah_progress"></a>#ajax[\'progress\']</h3>' +
+                  html: Drupal.t('<h3><a name="ajax_progress" id="ajax_progress"></a>#ajax[\'progress\']</h3>' +
                  '<p><strong>Description</strong>: Choose either a throbber or progress bar that is displayed while awaiting a response from the callback, and add an optional message.</p>' +
                  '<p><strong>Values</strong>: Array.</p>' +
                  '<p>Possible keys: \'type\', \'message\', \'url\', \'interval\'</p>')
@@ -1191,7 +1259,7 @@ Ext.formbuilder.createElementForm = function () {
           listeners: {
             render: function() {
               Ext.create('Ext.tip.ToolTip', {
-                target: 'ahah',
+                target: 'ajax',
                 anchor: 'left',
                 html: Drupal.t('<h3><a name="ajax" id="ajax"></a>#ajax</h3>' +
                    '<p><strong>Used by</strong>:' +
@@ -1206,7 +1274,7 @@ Ext.formbuilder.createElementForm = function () {
                    '<a href="#textarea">textarea</a>,' +
                    '<a href="#textfield">textfield</a>' +
                    '</p>' +
-                   '<p>An array of elements whose values control the behavior of the element with respect to Drupal AHAH JavaScript methods.</p>')
+                   '<p>An array of elements whose values control the behavior of the element with respect to Drupal AJAX JavaScript methods.</p>')
               });
             }
           }

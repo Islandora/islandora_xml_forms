@@ -64,8 +64,8 @@ Ext.data.Types.MAP = {
 /**
  *
  */
-Ext.data.Types.AHAH_PROCESS = {
-    type: 'AHAH_PROCESS',
+Ext.data.Types.AJAX_PROGRESS = {
+    type: 'AJAX_PROGRESS',
     fields: [{
         name: 'type',
         type: 'string'
@@ -83,10 +83,16 @@ Ext.data.Types.AHAH_PROCESS = {
 /**
  *
  */
-Ext.data.Types.AHAH = {
-    type: 'AHAH',
+Ext.data.Types.AJAX = {
+    type: 'AJAX',
     fields: [{
+        name: 'callback',
+        type: 'string'
+    }, {
         name: 'effect',
+        type: 'string'
+    }, {
+        name: 'speed',
         type: 'string'
     }, {
         name: 'event',
@@ -98,14 +104,20 @@ Ext.data.Types.AHAH = {
         name: 'path',
         type: 'string'
     }, {
+        name: 'prevent',
+        type: 'string'
+    }, {
+        name: 'trigger_as',
+        type: 'string'
+    }, {
         name: 'wrapper',
         type: 'string'
     }, {
         name: 'keypress',
         type: 'boolean'
     }, {
-        name: 'process',
-        type: types.AHAH_PROCESS
+        name: 'progress',
+        type: types.AJAX_PROGRESS
     }]
 }
 
@@ -140,8 +152,8 @@ Ext.define('Element', {
         name: 'after_build', // After Build Form Control
         type: 'array'
     }, {
-        name: 'ahah', 
-        type: types.AHAH
+        name: 'ajax',
+        type: types.AJAX
     }, {
         name: 'attributes',
         type: types.MAP

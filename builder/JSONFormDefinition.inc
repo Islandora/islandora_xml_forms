@@ -170,7 +170,7 @@ class JSONFormDefinition {
       'type' => 'is_non_empty_string',
       'access' => 'is_bool',
       'after_build' => 'is_non_empty_array',
-      'ahah' => 'is_non_empty_array',
+      'ajax' => 'is_non_empty_array',
       'attributes' => 'is_non_empty_array',
       'autocomplete_path' => 'is_non_empty_string',
       'button_type' => 'is_non_empty_string',
