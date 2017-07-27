@@ -329,9 +329,12 @@ function xml_form_elements_form_element_tabs_ajax_add(FormElement $element, arra
     }
 
     // Helper function: Find the tab element.
-    $find_tab_element = function ($form, $offsets) {
+    $find_tab_element = function ($form, $offsets) use ($xml_form) {
       $target = $form;
-      foreach (array_slice($offsets, 0, -1) as $ancestor) {
+      // XXX: Use the parents here for an offset count as it is technically
+      // possible to embed an Islandora XML Form Builder form within another
+      // Drupal form.
+      foreach (array_slice($offsets, count($xml_form->root->getParentsArray()), -1) as $ancestor) {
         if (isset($target[$ancestor])) {
           $target = $target[$ancestor];
         }
