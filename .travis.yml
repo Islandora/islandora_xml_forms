@@ -1,20 +1,37 @@
 sudo: required
+dist: trusty
 language: php
+
+matrix:
+  include:
+   #5.3.3 Ubuntu Precise exceptions
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.5"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.6.2"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.7.0"
+    - php: 5.3.3
+      dist: precise
+      env: FEDORA_VERSION="3.8.1"
 php:
-  - 5.3.3
   - 5.4
   - 5.5
   - 5.6
   - 7.0
   - 7.1
-branches:
-  only:
-    - /^7.x/
 env:
   - FEDORA_VERSION="3.5"
   - FEDORA_VERSION="3.6.2"
   - FEDORA_VERSION="3.7.0"
   - FEDORA_VERSION="3.8.1"
+
+branches:
+  only:
+    - /^7.x/
 before_install:
   - cd $HOME
   - git clone -b 7.x git://github.com/Islandora/islandora.git
