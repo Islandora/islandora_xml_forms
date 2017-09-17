@@ -28,6 +28,7 @@ define('XML_FORM_BUILDER_DELETE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/delete')
 define('XML_FORM_BUILDER_ASSOCIATIONS_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/associations');
 define('XML_FORM_BUILDER_ASSOCIATE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/associate/%');
 define('XML_FORM_BUILDER_DISASSOCIATE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/disassociate/%');
+define('XML_FORM_BUILDER_EDIT_ASSOCIATE_MENU', XML_FORM_BUILDER_MAIN_MENU . '/%/edit_association/%');
 define('XML_FORM_BUILDER_EXPORT_CALLBACK', XML_FORM_BUILDER_MAIN_MENU . '/%/export');
 define('XML_FORM_BUILDER_SAVE_CALLBACK', XML_FORM_BUILDER_MAIN_MENU . '/%/edit/save');
 define('XML_FORM_BUILDER_EDIT_DATASTREAM_MENU', 'islandora/edit_form/%islandora_object/%');
@@ -215,6 +216,17 @@ function xml_form_builder_menu() {
     'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
     'type' => MENU_CALLBACK,
   );
+  // Edit existing associations, redirect back to list.
+  $items[XML_FORM_BUILDER_EDIT_ASSOCIATE_MENU] = array(
+    'title' => 'Edit Form Association',
+    'description' => 'Edit form association.',
+    'file' => 'includes/associations.form.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('xml_form_builder_edit_association_form', 4, 6),
+    // @todo Use something fedora specific.
+    'access arguments' => array(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS),
+    'type' => MENU_CALLBACK,
+  );
   // Enable default/hook associations, redirect back to list.
   $items[XML_FORM_BUILDER_ASSOCIATE_MENU] = array(
     'title' => 'Enable Form Association',
@@ -256,7 +268,7 @@ function xml_form_builder_menu_alter(&$items) {
  */
 function xml_form_builder_xslts_access() {
   if (user_access(XML_FORM_BUILDER_ASSOCIATE_FORMS_PERMS) &&
-    variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
+      variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
     return TRUE;
   }
   return FALSE;
@@ -349,7 +361,7 @@ function xml_form_builder_export($form_name) {
  * Gets the path to the copy page for the given form name.
  *
  * @param string $form_name
- *   The form to load the copy page with,
+ *   The form to load the copy page with.
  *
  * @return string
  *   The path to the copy page.
@@ -362,7 +374,7 @@ function xml_form_builder_get_copy_form_path($form_name) {
  * Gets the path to the edit page for the given form name.
  *
  * @param string $form_name
- *   The form to load the edit page with,
+ *   The form to load the edit page with.
  *
  * @return string
  *   The path to the edit page.
@@ -375,7 +387,7 @@ function xml_form_builder_get_edit_form_path($form_name) {
  * Gets the path to the view page for the given form name.
  *
  * @param string $form_name
- *   The form to load the view page with,
+ *   The form to load the view page with.
  *
  * @return string
  *   The path to the view page.
@@ -388,7 +400,7 @@ function xml_form_builder_get_view_form_path($form_name) {
  * Gets the path to the delete page for the given form name.
  *
  * @param string $form_name
- *   The form to load the delete page with,
+ *   The form to load the delete page with.
  *
  * @return string
  *   The path to the delete page.
@@ -401,7 +413,7 @@ function xml_form_builder_get_export_form_path($form_name) {
  * Gets the path to the delete page for the given form name.
  *
  * @param string $form_name
- *   The form to load the delete page with,
+ *   The form to load the delete page with.
  *
  * @return string
  *   The path to the delete page.
@@ -414,7 +426,7 @@ function xml_form_builder_get_delete_form_path($form_name) {
  * Gets the path to the associations page for the given form name.
  *
  * @param string $form_name
- *   The form to load the associations page with,
+ *   The form to load the associations page with.
  *
  * @return string
  *   The path to the associations page.
@@ -436,11 +448,11 @@ function xml_form_builder_get_associate_form_path($form_name) {
  * @param array $form
  *   An array containing any "wrapping" elements.
  * @param array $form_state
- *   The Drupal Form State
+ *   The Drupal Form State.
  * @param string $form_name
  *   The Form to render.
  * @param string $xml
- *   The metadata to prepopulate the form with,
+ *   The metadata to prepopulate the form with.
  * @param array $parents
  *   An array containing the offset of the parents.
  *
@@ -466,8 +478,7 @@ function xml_form_builder_get_form(array $form, array &$form_state, $form_name, 
       $definition = new XMLFormDefinition(XMLFormRepository::Get($form_name));
       $document = $definition->createXMLDocument($xml);
       $form = $definition->getForm();
-      drupal_alter(XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK, $form,
-        $form_state);
+      drupal_alter(XML_FORM_BUILDER_GET_FORM_MODIFY_DEFINITION_HOOK, $form, $form_state);
       $xml_form->initialize($form, $document);
     }
     $form = array_merge($form, $xml_form->toArray($form_state));
@@ -592,9 +603,9 @@ function xml_form_builder_update_object(AbstractObject $object, array $associati
  * Applies xslt to incoming datastream.
  *
  * @param DOMDocument $source_document
- *   Document to be transformed
- * @param xslt $transform
- *   Name of xslt to be applied
+ *   Document to be transformed.
+ * @param string $transform
+ *   Name of xslt to be applied.
  *
  * @return DOMDocument
  *   Transformed document on success, original on failure.
@@ -625,7 +636,7 @@ function xml_form_builder_transform_metadata_datastream(DOMDocument $source_docu
  *
  * @param AbstractObject $object
  *   The object to update.
- * @param array $datastream_id
+ * @param string $datastream_id
  *   The datastream to update.
  * @param DOMDocument $document
  *   The document to transform.
