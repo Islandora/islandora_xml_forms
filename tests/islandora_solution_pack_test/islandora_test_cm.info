@@ -3,5 +3,5 @@ description = "An extremely basic content model that can deployed when testing."
 dependencies[] = islandora
 package = "Islandora"
 core = 7.x
-version = 7.x-1.10RC1
+version = 7.x-1.10RC2
 hidden = TRUE

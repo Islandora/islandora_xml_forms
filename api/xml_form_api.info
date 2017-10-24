@@ -3,7 +3,7 @@ description = Generates Drupal forms from an XML definition. Allows for creation
 package = Islandora Dependencies
 dependencies[] = objective_forms
 dependencies[] = xml_schema_api
-version = 7.x-1.10RC1
+version = 7.x-1.10RC2
 core = 7.x
 files[] = tests/FunctionalTests.test
 
