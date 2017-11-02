@@ -30,7 +30,7 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/associations.form');
 
   $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
-  $create_table_rows = function($association) {
+  $create_table_rows = function ($association) {
     if (is_array($association['title_field'])) {
       $association['title_field'] = "['" . implode("']['", $association['title_field']) . "']";
     }
@@ -131,6 +131,13 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
     'transform',
     'self_transform',
   );
+  // If default XLST used, these form state values will not be present.
+  if (variable_get('xml_form_builder_use_default_dc_xslts', FALSE)) {
+    // 'No Transform' is the default used in the form.
+    $form_state['values']['transform'] = 'No Transform';
+    $form_state['values']['self_transform'] = 'No Transform';
+  }
+
   $object = array_intersect_key($form_state['values'], array_combine($object_keys, $object_keys));
   if (empty($object['title_field'])) {
     $object['title_field'] = NULL;
@@ -144,12 +151,12 @@ function xml_form_builder_associations_form_submit(array $form, array &$form_sta
   }
   try {
     db_insert('xml_form_builder_form_associations')
-        ->fields($object)
-        ->execute();
+      ->fields($object)
+      ->execute();
     drupal_set_message(t('Successfully added association.'));
   }
   catch (Exception $e) {
-    drupal_set_message(t('Failed to add association.'), 'error');
+    drupal_set_message(t('Failed to add association, with error: @msg', array('@msg' => $e->getMessage())), 'error');
   }
 }
 
