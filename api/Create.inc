@@ -178,8 +178,7 @@ class Create implements ActionInterface {
             if ($node === $created) {
               break;
             }
-          }
-          while ($node = $node->parentNode);
+          } while ($node = $node->parentNode);
           if ($node) {
             $created_toregister = $read_node;
             break;
