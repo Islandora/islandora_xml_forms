@@ -7,6 +7,7 @@
 
 module_load_include('inc', 'xml_form_api', 'ActionInterface');
 module_load_include('inc', 'xml_form_api', 'Path');
+module_load_include('inc', 'xml_form_api', 'XMLFormPrePopulator');
 module_load_include('inc', 'xml_schema_api', 'InsertOrderMap');
 
 /**
@@ -166,7 +167,35 @@ class Create implements ActionInterface {
       $parent = $results->item(0);
       $created = $this->doCreate($document, $value);
       $this->append($document, $created, $parent);
-      $document->registry->register($element->hash, $created);
+      // If we added a whole XML fragment, we re-read the correct node to
+      // register.
+      if ($this->type == self::XML && isset($element->actions) && isset($element->actions->read)) {
+        $read_nodes = dom_node_list_to_array($element->actions->read->execute($document, $element));
+        // Find the first node for which $created is a parent (or self).
+        foreach ($read_nodes as $read_node) {
+          $node = $read_node;
+          do {
+            if ($node === $created) {
+              break;
+            }
+          } while ($node = $node->parentNode);
+          if ($node) {
+            $created_toregister = $read_node;
+            break;
+          }
+        }
+      }
+      if (!isset($created_toregister)) {
+        $created_toregister = $created;
+      }
+      $document->registry->register($element->hash, $created_toregister);
+      // If we added a whole XML fragment, we update the FormElement's value.
+      if ($this->type == self::XML) {
+        $populator = new XMLFormPrePopulator($document);
+        $populator->prePopulateElement($element);
+        unset($populator);
+        $element->value = $element->default_value;
+      }
       return TRUE;
     }
     return FALSE;
