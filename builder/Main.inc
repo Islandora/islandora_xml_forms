@@ -17,7 +17,6 @@ function xml_form_builder_main() {
 
   module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   $names = XMLFormRepository::GetNames();
-
   // No forms exist can only create.
   if (count($names) == 0) {
     return '<div>No forms are defined. Please create a new form.</div><br/>';

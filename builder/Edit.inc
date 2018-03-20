@@ -24,6 +24,10 @@ function xml_form_builder_edit($form_name) {
     drupal_not_found();
     exit();
   }
+  $breadcrumb[] = l(t('Home'), '<front>');
+  $breadcrumb[] = l(t('Islandora Admin'), 'admin/islandora');
+  $breadcrumb[] = l(t('Form Builder'), 'admin/islandora/xmlform');
+  drupal_set_breadcrumb($breadcrumb);
 
   xml_form_builder_edit_include_css();
   xml_form_builder_edit_include_js();

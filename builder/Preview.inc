@@ -24,6 +24,10 @@
 function xml_form_builder_preview(array $form, array &$form_state, $form_name) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'Preview');
   $form = xml_form_builder_get_form($form, $form_state, $form_name);
+  $breadcrumb[] = l(t('Home'), '<front>');
+  $breadcrumb[] = l(t('Islandora Admin'), 'admin/islandora');
+  $breadcrumb[] = l(t('Form Builder'), 'admin/islandora/xmlform');
+  drupal_set_breadcrumb($breadcrumb);
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Submit',
