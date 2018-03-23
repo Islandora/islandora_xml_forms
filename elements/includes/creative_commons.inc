@@ -16,12 +16,14 @@
  */
 function xml_form_elements_creative_commons($element, &$form_state) {
   $modification_options = array(
+    'na' => t('Not applicable - no license selected'),
     'y' => t('Yes'),
     'n' => t('No'),
     'sa' => t('Yes, as long as others share alike'),
   );
 
   $countries = array(
+    'na' => t('Not applicable - no license selected'),
     'international' => t('International'),
     'ar' => t('Argentina'),
     'au' => t('Australia'),
@@ -84,6 +86,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   );
 
   $commercial_options = array(
+    'na' => t('Not applicable - no license selected'),
     'y' => t('Yes'),
     'n' => t('No'),
   );
