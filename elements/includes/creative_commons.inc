@@ -15,6 +15,8 @@
  *   The element definition.
  */
 function xml_form_elements_creative_commons($element, &$form_state) {
+  $creative_commons_base_url = "http://creativecommons.org/licenses/";
+
   $modification_options = array(
     'y' => t('Yes'),
     'n' => t('No'),
@@ -106,7 +108,9 @@ function xml_form_elements_creative_commons($element, &$form_state) {
       // There is a value defined so it wasn't disabled.
       $disabled = FALSE;
     }
-    $default_value_array = array_reverse(explode('/', $element['#default_value']));
+    $default_value_array = array_reverse(explode('/',
+      str_replace($creative_commons_base_url, "", $element['#default_value'])
+    ));
     $properties = explode('-', array_pop($default_value_array));
 
     $commercial = 'y';
@@ -193,7 +197,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   );
 
   // Value gets populated if default value is populated.
-  if (current_path() == 'system/ajax' || !$element['#value'] ||
+  if (current_path() == 'system/ajax' || (!$element['#value'] && !$disabled) ||
     (isset($element['#default_value']) && $element['#value'] == $element['#default_value'])) {
     $element['#tree'] = TRUE;
   }
