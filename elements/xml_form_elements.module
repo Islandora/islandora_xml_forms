@@ -635,7 +635,10 @@ function xml_form_elements_creative_commons_value_callback(&$element, $input, &$
     }
     else {
       extract($input['license_fieldset']);
-      return xml_form_elements_creative_commons_value($allow_commercial, $allow_modifications, $license_jurisdiction);
+      if (!isset($disabled)) {
+        $disabled = FALSE;
+      }
+      return xml_form_elements_creative_commons_value($allow_commercial, $allow_modifications, $license_jurisdiction, $disabled);
     }
   }
 }
