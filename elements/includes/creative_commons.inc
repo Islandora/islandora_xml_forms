@@ -172,6 +172,11 @@ function xml_form_elements_creative_commons($element, &$form_state) {
       'wrapper' => $license_output_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
     ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="accessCondition[license_fieldset][disabled]"]' => array('checked' => FALSE),
+      ),
+    ),
   );
 
   $element['license_fieldset']['allow_commercial'] = array(
@@ -182,6 +187,11 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     '#ajax' => array(
       'wrapper' => $license_output_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
+    ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="accessCondition[license_fieldset][disabled]"]' => array('checked' => FALSE),
+      ),
     ),
   );
 
@@ -194,10 +204,15 @@ function xml_form_elements_creative_commons($element, &$form_state) {
       'wrapper' => $license_output_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
     ),
+    '#states' => array(
+      'visible' => array(
+        ':input[name="accessCondition[license_fieldset][disabled]"]' => array('checked' => FALSE),
+      ),
+    ),
   );
 
   // Value gets populated if default value is populated.
-  if (current_path() == 'system/ajax' || (!$element['#value'] && !$disabled) ||
+  if (current_path() == 'system/ajax' || (!$element['#value'] && !isset($form_state['input'][$element['#name']]['license_fieldset']['disabled'])) ||
     (isset($element['#default_value']) && $element['#value'] == $element['#default_value'])) {
     $element['#tree'] = TRUE;
   }
@@ -213,6 +228,11 @@ function xml_form_elements_creative_commons($element, &$form_state) {
       '#type' => 'item',
       '#id' => $license_output_id,
       '#markup' => '<strong>' . t('Selected license:') . '</strong><div>' . $response->html->asXml() . '</div>',
+      '#states' => array(
+        'visible' => array(
+          ':input[name="accessCondition[license_fieldset][disabled]"]' => array('checked' => FALSE),
+        ),
+      ),
     );
   }
   else {
