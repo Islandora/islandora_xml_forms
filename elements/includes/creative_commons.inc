@@ -159,7 +159,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   $element['license_fieldset']['disabled'] = array(
     '#type' => 'checkbox',
     '#title' => t("Don't output Creative Commons license."),
-    '#description' => t('Check this box to avoid outputting a creative commons license. This will still output a blank element, so make sure to use a cleanup template to remote it.'),
+    '#description' => t('Check this box to avoid outputting a creative commons license. This will still output a blank element, so make sure to use a cleanup template to remove it.'),
     '#default_value' => $disabled,
   );
 
