@@ -82,7 +82,6 @@ function xml_form_elements_element_info() {
       '#input' => TRUE,
       '#tree' => FALSE,
       '#process' => array('xml_form_elements_creative_commons_process'),
-      '#value_callback' => 'xml_form_elements_creative_commons_value_callback',
     ),
     // Designed for the form builder UI please do not use programmatically.
     'indent' => array(
@@ -590,10 +589,7 @@ function xml_form_elements_defaultable_markup($children, &$elements) {
 }
 
 /**
- * Process for the creative_commons_process form element.
- *
- * The state of #tree is managed by this form element because #tree is needed
- * for ajax but destroys the value_callback.
+ * Process for the `creative_commons` form element.
  *
  * @param array $element
  *   The element to create.
@@ -608,37 +604,4 @@ function xml_form_elements_defaultable_markup($children, &$elements) {
 function xml_form_elements_creative_commons_process($element, &$form_state, $complete_form) {
   form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/creative_commons');
   return xml_form_elements_creative_commons($element, $form_state);
-}
-
-/**
- * Value callback for creative commons element.
- *
- * Input isn't set in form builder edits. Data from the process function can't
- * be relied on to be available in value callbacks because Drupal caches before
- * the element is processed.
- *
- * @param array $element
- *   The element.
- * @param array $input
- *   The input of the element.
- * @param array $form_state
- *   The form state.
- *
- * @return string
- *   The license URI.
- */
-function xml_form_elements_creative_commons_value_callback(&$element, $input, &$form_state) {
-  form_load_include($form_state, 'inc', 'xml_form_elements', 'includes/creative_commons');
-  if (isset($input) && $input && current_path() != 'system/ajax') {
-    if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'])) {
-      return $form_state['storage']['xml_form_elements'][$element['#name']]['license_uri'];
-    }
-    else {
-      extract($input['license_fieldset']);
-      if (!isset($disabled)) {
-        $disabled = FALSE;
-      }
-      return xml_form_elements_creative_commons_value($allow_commercial, $allow_modifications, $license_jurisdiction, $disabled);
-    }
-  }
 }
