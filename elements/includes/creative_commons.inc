@@ -238,22 +238,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   if ($values['license_fieldset']['license_type'] != 'none' && !empty($values['license_fieldset']['license_uri'])) {
     // Get data from storage.
     $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $values['license_fieldset']['license_uri']);
-    if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query']) &&
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query'] == $current_query &&
-      isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response']) &&
-      ($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'] !== FALSE)) {
-      // Get response from storage.
-      $response = simplexml_load_string($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'], 'SimpleXMLElement');
-    }
-    else {
-      $response = xml_form_elements_get_creative_commons_from_uri($values['license_fieldset']['license_uri']);
-      // Cache response.
-      if (!isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data'])) {
-        $form_state['storage']['xml_form_elements'][$element['#name']]['api_data'] = array();
-      }
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query'] = $current_query;
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'] = ($response !== FALSE) ? $response->asXML() : FALSE;
-    }
+    $response = xml_form_elements_creative_commons_get_api_response($element['#name'], 'api_data', $current_query, $form_state);
     if ($response) {
       if ($response->getName() == 'error') {
         $cc_markup = t('None (form has errors).');
@@ -284,7 +269,6 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   $element['license_fieldset']['license_update'] = array(
     '#type' => 'button',
     '#value' => t('Update license'),
-    '#weight' => 10,
     '#limit_validation_errors' => array(),
     '#submit' => array('xml_form_elements_creative_commons_license_update_submit'),
     '#return_value' => 'update-license',
@@ -401,23 +385,7 @@ function xml_form_elements_creative_commons_get_value_array_from_input(&$element
   if (!in_array($license, array('none', 'manual'))) {
     // Check if there is a newer version unless user sets the URI manually.
     $current_query = xml_form_elements_creative_commons_make_value_array($license, $derivatives, $commercial, $jurisdiction, '', '');
-    $response = FALSE;
-    if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get']['query']) &&
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get']['query'] == $current_query &&
-      isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get']['response']) &&
-      ($form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get']['response'] !== FALSE)) {
-      // Get response from storage.
-      $response = simplexml_load_string($form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get']['response'], 'SimpleXMLElement');
-    }
-    else {
-      $response = xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction, FALSE, '', $license);
-      // Cache response.
-      if (!isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get'])) {
-        $form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get'] = array();
-      }
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get']['query'] = $current_query;
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data_get']['response'] = ($response !== FALSE) ? $response->asXML() : FALSE;
-    }
+    $response = xml_form_elements_creative_commons_get_api_response($element['#name'], 'api_data_get', $current_query, $form_state);
     if ($response) {
       $license_uri = (string) $response->{'license-uri'};
       $license_value_array = xml_form_elements_creative_commons_parse_uri($license_uri);
@@ -440,22 +408,7 @@ function xml_form_elements_creative_commons_get_value_array_from_input(&$element
             watchdog('xml_form_elements', 'Creative Commons default license seems to be deprecated. Please announce the developers.', array(), WATCHDOG_WARNING);
           }
           $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $license_uri);
-          if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query']) &&
-            $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query'] == $current_query &&
-            isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response']) &&
-            ($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'] !== FALSE)) {
-            // Get response from storage.
-            $response = simplexml_load_string($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'], 'SimpleXMLElement');
-          }
-          else {
-            $response = xml_form_elements_get_creative_commons_from_uri($license_uri);
-            // Cache response.
-            if (!isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data'])) {
-              $form_state['storage']['xml_form_elements'][$element['#name']]['api_data'] = array();
-            }
-            $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query'] = $current_query;
-            $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'] = ($response !== FALSE) ? $response->asXML() : FALSE;
-          }
+          $response = xml_form_elements_creative_commons_get_api_response($element['#name'], 'api_data', $current_query, $form_state);
           if ($response) {
             if ($response->getName() == 'error') {
               // The license URI is not recognized.
@@ -471,11 +424,7 @@ function xml_form_elements_creative_commons_get_value_array_from_input(&$element
       else {
         // Manually update cache for output.
         $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $license_uri);
-        if (!isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data'])) {
-          $form_state['storage']['xml_form_elements'][$element['#name']]['api_data'] = array();
-        }
-        $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query'] = $current_query;
-        $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'] = ($response !== FALSE) ? $response->asXML() : FALSE;
+        xml_form_elements_creative_commons_store_api_response($element['#name'], 'api_data', $current_query, $response, $form_state);
       }
     }
     else {
@@ -487,25 +436,10 @@ function xml_form_elements_creative_commons_get_value_array_from_input(&$element
   elseif ($license == 'manual' && $license_uri != '') {
     // Check manually entered license URI.
     $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $license_uri);
-    if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query']) &&
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query'] == $current_query &&
-      isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response']) &&
-      ($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'] !== FALSE)) {
-      // Get response from storage.
-      $response = simplexml_load_string($form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'], 'SimpleXMLElement');
-    }
-    else {
-      $response = xml_form_elements_get_creative_commons_from_uri($license_uri);
-      // Cache response.
-      if (!isset($form_state['storage']['xml_form_elements'][$element['#name']]['api_data'])) {
-        $form_state['storage']['xml_form_elements'][$element['#name']]['api_data'] = array();
-      }
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['query'] = $current_query;
-      $form_state['storage']['xml_form_elements'][$element['#name']]['api_data']['response'] = ($response !== FALSE) ? $response->asXML() : FALSE;
-    }
+    $response = xml_form_elements_creative_commons_get_api_response($element['#name'], 'api_data', $current_query, $form_state);
     if ($response) {
-      // The license URI is not recognized.
       if ($response->getName() == 'error') {
+        // The license URI is not recognized.
         $error = TRUE;
         form_set_error($element['#name'] . '][license_fieldset][license_uri', t("CC license URI seems to be invalid. Perhaps you would prefer to choose one automatically?"));
       }
@@ -514,6 +448,12 @@ function xml_form_elements_creative_commons_get_value_array_from_input(&$element
       // We could not reach the API.
       drupal_set_message(t("Warning: Could not reach Creative Commons API to validate your input."));
     }
+  }
+  // In no error occurred, we reset all the variables based on the URI,
+  // except for the license type.
+  if (!$error && $license_uri != '') {
+    list($new_license, $commercial, $derivatives, $version, $jurisdiction) = xml_form_elements_creative_commons_parse_uri($license_uri);
+    unset($new_license);
   }
   // Force values into $form_state['input']
   $form_state['input'][$element['#name']] = xml_form_elements_creative_commons_make_value_array($license, $derivatives, $commercial, $jurisdiction, $version, $license_uri);
@@ -620,7 +560,7 @@ function xml_form_elements_creative_commons_get_license_path($license) {
  *   - The license ('zero', 'mark', 'by' or 'sampling+')
  *   - Commercial use ('y', 'n'; 'y' if license not 'by')
  *   - Derivative creation ('y', 'n', 'sa'; 'y' if license not 'by')
- *   - Jurisdiction (empty string if international or not applicable)
+ *   - Jurisdiction ('international' if international or not applicable)
  *   - Version
  */
 function xml_form_elements_creative_commons_parse_uri($license_uri) {
@@ -660,6 +600,9 @@ function xml_form_elements_creative_commons_parse_uri($license_uri) {
   $version = array_pop($default_value_array);
 
   $jurisdiction = array_pop($default_value_array);
+  if (empty($jurisdiction)) {
+    $jurisdiction = 'international';
+  }
 
   return array($license, $commercial, $derivatives, $version, $jurisdiction);
 }
@@ -681,6 +624,67 @@ function xml_form_elements_creative_commons_ajax(&$form, &$form_state) {
   $creative_commons_element = drupal_array_get_nested_value($form, $parents);
 
   return $creative_commons_element;
+}
+
+/**
+ * Store an API response in storage.
+ *
+ * @param string $element_name
+ *   The `creative_commons` element's name.
+ * @param string $storage_folder
+ *   The storage "subfolder".
+ * @param array $values
+ *   The associative value array that was used in the query
+ *   (@see xml_form_elements_creative_commons_make_value_array())
+ * @param SimpleXMLElement $response
+ *   The API response.
+ * @param array $form_state
+ *   The form state.
+ */
+function xml_form_elements_creative_commons_store_api_response($element_name, $storage_folder, $values, $response, &$form_state) {
+  if (!isset($form_state['storage']['xml_form_elements'][$element_name][$storage_folder])) {
+    $form_state['storage']['xml_form_elements'][$element_name][$storage_folder] = array();
+  }
+  $form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['query'] = $values;
+  $form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response'] = ($response !== FALSE) ? $response->asXML() : FALSE;
+}
+
+/**
+ * Perform API request and cache in storage.
+ *
+ * @param string $element_name
+ *   The `creative_commons` element's name.
+ * @param string $storage_folder
+ *   The storage "subfolder".
+ * @param array $values
+ *   The associative value array to use in the query
+ *   (@see xml_form_elements_creative_commons_make_value_array()).
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return mixed
+ *   SimpleXMLElement the return from the REST API.
+ *   FALSE if failed request.
+ */
+function xml_form_elements_creative_commons_get_api_response($element_name, $storage_folder, $values, &$form_state) {
+  if (isset($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['query']) &&
+    $form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['query'] == $values &&
+    isset($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response']) &&
+    ($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response'] !== FALSE)) {
+    // Get response from storage.
+    $response = simplexml_load_string($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response'], 'SimpleXMLElement');
+  }
+  else {
+    if (!empty($values['license_fieldset']['license_uri'])) {
+      $response = xml_form_elements_get_creative_commons_from_uri($values['license_fieldset']['license_uri'], FALSE);
+    }
+    else {
+      $response = xml_form_elements_get_creative_commons($values['license_fieldset']['allow_commercial'], $values['license_fieldset']['allow_modifications'], $values['license_fieldset']['license_jurisdiction'], FALSE, $values['license_fieldset']['license_version'], $values['license_fieldset']['license_type']);
+    }
+    // Cache response.
+    xml_form_elements_creative_commons_store_api_response($element_name, $storage_folder, $values, $response, $form_state);
+  }
+  return $response;
 }
 
 /**
