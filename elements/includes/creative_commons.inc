@@ -452,8 +452,14 @@ function xml_form_elements_creative_commons_get_value_array_from_input(&$element
   // In no error occurred, we reset all the variables based on the URI,
   // except for the license type.
   if (!$error && $license_uri != '') {
-    list($new_license, $commercial, $derivatives, $version, $jurisdiction) = xml_form_elements_creative_commons_parse_uri($license_uri);
+    list($new_license, $commercial, $derivatives, $new_version, $jurisdiction) = xml_form_elements_creative_commons_parse_uri($license_uri);
+    // Keep blank version only if not in manual mode.
+    if ($license == 'manual' || $version != '') {
+      $version = $new_version;
+    }
+    // Unset dummy variables.
     unset($new_license);
+    unset($new_version);
   }
   // Force values into $form_state['input']
   $form_state['input'][$element['#name']] = xml_form_elements_creative_commons_make_value_array($license, $derivatives, $commercial, $jurisdiction, $version, $license_uri);
