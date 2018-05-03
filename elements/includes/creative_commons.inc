@@ -558,6 +558,11 @@ function xml_form_elements_creative_commons_get_values_from_uri($license_uri) {
     xml_form_elements_creative_commons_make_value_array('manual', '', '', '', '', $license_uri)
   );
 
+  // If no license URI is set, default to no output.
+  if (empty($license_uri)) {
+    $values['license_fieldset']['license_type'] = 'none';
+  }
+
   // Parse URI only if it is non-empty and valid.
   if (!empty($license_uri) && xml_form_elements_creative_commons_license_uri_has_valid_format($license_uri)) {
     // Reversing this array facilitates value_callback mangling by community.
