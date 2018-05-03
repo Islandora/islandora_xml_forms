@@ -10,42 +10,71 @@
  */
 const XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL = 'http://creativecommons.org/';
 const XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL = 'https://api.creativecommons.org/rest/1.5/';
-const XML_FORM_ELEMENTS_CREATIVE_COMMONS_LICENSE_URI_DEFAULT = 'http://creativecommons.org/licenses/by/4.0/';
-const XML_FORM_ELEMENTS_CREATIVE_COMMONS_DISABLED_DEFAULT = TRUE;
 
 /**
- * Creates a `creative_commons` form element.
- *
- * @param array $form_state
- *   The form state.
+ * Returns license type options.
  *
  * @return array
- *   The element definition.
+ *   Associative array mapping types to descriptions.
  */
-function xml_form_elements_creative_commons($element, &$form_state) {
+function xml_form_elements_creative_commons_license_type_options() {
+  // Create the 'none' option.
+  $none_option = array('none' => t('Do not output any license'));
+  // Create the 'manual' option.
+  $manual_option = array('manual' => t('Manually enter a license URI'));
+  // Create license options.
+  // (Note: One could also retrieve this from the API; see
+  // https://api.creativecommons.org/docs/readme_15.html#locale-xx;
+  // however, make sure to provide at least the 'by' option not to break code.)
   $license_options = array(
-    'none' => t('Do not output any license'),
     'by' => t('Creative Commons Attribution'),
     'zero' => t('CC0 Universal (Public Domain)'),
     'mark' => t('Public Domain Mark'),
-    'manual' => t('Manually enter a license URI'),
   );
+  // Return options.
+  return array_merge($none_option, $license_options, $manual_option);
+}
 
-  $modification_options = array(
+/**
+ * Return derivative options for 'by' licenses.
+ *
+ * @return array
+ *   Associative array mapping options to descriptions.
+ */
+function xml_form_elements_creative_commons_derivative_options() {
+  return array(
     'y' => t('Yes'),
     'n' => t('No'),
     'sa' => t('Yes, as long as others share alike'),
   );
+}
 
-  $commercial_options = array(
+/**
+ * Return commercial options for 'by' licenses.
+ *
+ * @return array
+ *   Associative array mapping options to descriptions.
+ */
+function xml_form_elements_creative_commons_commercial_options() {
+  return array(
     'y' => t('Yes'),
     'n' => t('No'),
   );
+}
 
-  // List retrieved on 2018-04-28 from
-  // https://api.creativecommons.org/rest/1.5/support/jurisdictions
-  $countries = array(
-    'international' => t('International'),
+/**
+ * Return jurisdiction options for 'by' licenses.
+ *
+ * @return array
+ *   Associative array mapping options to descriptions.
+ */
+function xml_form_elements_creative_commons_jurisdiction_options() {
+  // Create 'international' option.
+  $international_option = array('' => t('International'));
+  // Create jursidiction options.
+  // (List retrieved on 2018-04-28 from
+  // https://api.creativecommons.org/rest/1.5/support/jurisdictions)
+  $jurisdiction_options = array(
     'ar' => t('Argentina'),
     'au' => t('Australia'),
     'at' => t('Austria'),
@@ -107,7 +136,21 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     've' => t('Venezuela'),
     'vn' => t('Vietnam'),
   );
+  return array_merge($international_option, $jurisdiction_options);
+}
 
+/**
+ * Creates a `creative_commons` form element.
+ *
+ * @param array $element
+ *   The form element.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The element definition.
+ */
+function xml_form_elements_creative_commons($element, &$form_state) {
   // Get an ID for ajax.
   if (isset($form_state['storage']['xml_form_elements'][$element['#name']]['license_fieldset_id'])) {
     $license_fieldset_id = $form_state['storage']['xml_form_elements'][$element['#name']]['license_fieldset_id'];
@@ -117,10 +160,15 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     $form_state['storage']['xml_form_elements'][$element['#name']]['license_fieldset_id'] = $license_fieldset_id;
   }
 
-  // Get current values and store them in the element.
+  // Get current values, process them and store them in the element.
   $input = isset($form_state['input'][$element['#name']]) ? $form_state['input'][$element['#name']] : NULL;
-  $values = xml_form_elements_creative_commons_get_value_array_from_input($element, $input, $form_state);
+  $values = xml_form_elements_creative_commons_process_input($element, $input, $form_state);
   $element['#value'] = $values;
+  // Force values into $form_state['input']
+  $form_state['input'][$element['#name']] = $values;
+
+  // Store the license type options in a variable.
+  $license_options = xml_form_elements_creative_commons_license_type_options();
 
   // Form elements.
 
@@ -144,12 +192,12 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     ),
   );
 
-  $element['license_fieldset']['allow_modifications'] = array(
+  $element['license_fieldset']['allow_derivatives'] = array(
     '#type' => 'select',
     '#title' => t('Allow modifications of your work?'),
     '#description' => t('Note that this is only relevant if you selected "@option" above.', array('@option' => $license_options['by'])),
-    '#options' => $modification_options,
-    '#default_value' => $values['license_fieldset']['allow_modifications'],
+    '#options' => xml_form_elements_creative_commons_derivative_options(),
+    '#default_value' => $values['license_fieldset']['allow_derivatives'],
     '#ajax' => array(
       'wrapper' => $license_fieldset_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
@@ -165,7 +213,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     '#type' => 'select',
     '#title' => t('Allow commercial uses of your work?'),
     '#description' => t('Note that this is only relevant if you selected "@option" above.', array('@option' => $license_options['by'])),
-    '#options' => $commercial_options,
+    '#options' => xml_form_elements_creative_commons_commercial_options(),
     '#default_value' => $values['license_fieldset']['allow_commercial'],
     '#ajax' => array(
       'wrapper' => $license_fieldset_id,
@@ -181,7 +229,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   $element['license_fieldset']['license_jurisdiction'] = array(
     '#type' => 'select',
     '#title' => t('License Jurisdiction'),
-    '#options' => $countries,
+    '#options' => xml_form_elements_creative_commons_jurisdiction_options(),
     '#description' => t('Note that this is only relevant if you selected "@option" above.', array('@option' => $license_options['by'])),
     '#default_value' => $values['license_fieldset']['license_jurisdiction'],
     '#ajax' => array(
@@ -232,26 +280,49 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     ),
   );
 
-  // Prepare license output markup.
-  $cc_markup = t('None.');
-  // Only get markup if user wants a license and have a license URI set.
-  if ($values['license_fieldset']['license_type'] != 'none' && !empty($values['license_fieldset']['license_uri'])) {
-    // Get data from storage.
-    $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $values['license_fieldset']['license_uri']);
-    $response = xml_form_elements_creative_commons_get_api_response($element['#name'], 'api_data', $current_query, $form_state);
-    if ($response) {
-      if ($response->getName() == 'error') {
-        $cc_markup = t('None (form has errors).');
-      }
-      else {
-        $cc_markup = $response->html->asXml();
-        // Mend bogus <html> tags.
-        $cc_markup = preg_replace('#^<html>#', '<div>', $cc_markup);
-        $cc_markup = preg_replace('#</html>$#', '</div>', $cc_markup);
+  // Get all form errors, attach 'error' class to erroneous elements and
+  // instruct the user to inform the admin if the error is due to a
+  // misconfiguration.
+  // Note: the first part is necessary when the error occurred on first load
+  // (but otherwise results in the 'error' class being attached twice).
+  $form_errors = form_get_errors();
+  if ($form_errors) {
+    foreach (array_keys($element['license_fieldset']) as $name) {
+      if (in_array($element['#name'] . '][license_fieldset][' . $name, array_keys($form_errors))) {
+        $element['license_fieldset'][$name]['#attributes']['class'][] = 'error';
       }
     }
-    else {
+    if (!$input) {
+      // There was no input, so the form was probably built from the previous
+      // step. Hence, it is likely that we are displaying the site default,
+      // so the admin should be warned.
+      drupal_set_message(t('It is likely that the Creative Commons form element "@display_name" has been misconfigured. Please inform the site administrator.', array('@display_name' => $element['license_fieldset']['#title'])), 'error');
+      watchdog('xml_form_elements', 'It is likely that the Creative Commons form element "@element_name" has been misconfigured.', array('@element_name' => $element['#name']), WATCHDOG_WARNING);
+    }
+  }
+
+  // Prepare license output markup.
+  $cc_markup = $form_errors ? t('None (form has errors).') : t('None.');
+  // Only get API markup if the form has no errors, the user wants a license and
+  // we have a license URI set.
+  if (!$form_errors && $values['license_fieldset']['license_type'] != 'none' && !empty($values['license_fieldset']['license_uri'])) {
+    // Get data from storage.
+    $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $values['license_fieldset']['license_uri']);
+    $response = xml_form_elements_creative_commons_retrieve_api_response($element['#name'], 'api_data', $current_query, $form_state);
+    if (!$response) {
       $cc_markup = t('"@uri" (manually generated since Creative Commons API could not be reached).', array('@uri' => $values['license_fieldset']['license_uri']));
+    }
+    elseif ($response->getName() == 'error') {
+      // We should never be here.
+      drupal_set_message(t('An unexpected error occurred with the Creative Commons form element "@display_name". Please inform the site administrator.', array('@display_name' => $element['license_fieldset']['#title'])), 'error');
+      watchdog('xml_form_elements', 'The Creative Commons API returned an error on "@uri" that should have been cought already. Probably you just found a bug.', array('@uri' => $element['license_fieldset']['license_uri']), WATCHDOG_WARNING);
+    }
+    else {
+      // Get the HTML markup for the selected license.
+      $cc_markup = $response->html->asXml();
+      // Mend bogus <html> tags.
+      $cc_markup = preg_replace('#^<html>#', '<div>', $cc_markup);
+      $cc_markup = preg_replace('#</html>$#', '</div>', $cc_markup);
     }
   }
   // Generate markup element.
@@ -280,6 +351,25 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   $element['#element_validate'] = array('xml_form_elements_creative_commons_validate');
 
   return $element;
+}
+
+/**
+ * Ajax callback to render the CC license.
+ *
+ * @param array $form
+ *   The form.
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The markup to replace the target (wrapper) with.
+ */
+function xml_form_elements_creative_commons_ajax(&$form, &$form_state) {
+  $parents = $form_state['triggering_element']['#parents'];
+  array_pop($parents);
+  $creative_commons_element = drupal_array_get_nested_value($form, $parents);
+
+  return $creative_commons_element;
 }
 
 /**
@@ -314,166 +404,12 @@ function xml_form_elements_creative_commons_validate(&$element, &$form_state, $f
 }
 
 /**
- * Get current value array for `creative_commons` form element.
- *
- * @param array $element
- *   The `creative_commons` form element.
- * @param array|NULL $input
- *   The user input (or NULL to retrieve defaults).
- * @param array $form_state
- *   The form state.
- *
- * @return array
- *   The associative array representing the form values.
- */
-function xml_form_elements_creative_commons_get_value_array_from_input(&$element, $input, &$form_state) {
-  // Get defaults (from element or, if unset, from the module).
-  $disabled_default = empty($element['#default_value']) ? XML_FORM_ELEMENTS_CREATIVE_COMMONS_DISABLED_DEFAULT : FALSE;
-  $license_uri_default = !empty($element['#default_value']) ? $element['#default_value'] : XML_FORM_ELEMENTS_CREATIVE_COMMONS_LICENSE_URI_DEFAULT;
-  list($license_default, $commercial_default, $derivatives_default, $version_default, $jurisdiction_default) = xml_form_elements_creative_commons_parse_uri($license_uri_default);
-  // If disabled, we set license type and license URI accordingly.
-  if ($disabled_default) {
-    $license_default = 'none';
-    $license_uri_default = '';
-  }
-  $error = FALSE;
-  // Read input if set, otherwise populate with defaults.
-  if (isset($input) && $input) {
-    $license = $input['license_fieldset']['license_type'];
-    // Disable if license is not recognized (or 'none').
-    if (!in_array($license, array('zero', 'mark', 'by', 'manual'))) {
-      $license = 'none';
-      $disabled = TRUE;
-    }
-    else {
-      $disabled = FALSE;
-    }
-    $commercial = $input['license_fieldset']['allow_commercial'];
-    $derivatives = $input['license_fieldset']['allow_modifications'];
-    $version = $input['license_fieldset']['license_version'];
-    // Clean up version.
-    if (!empty($version) && !preg_match("/^[0-9]\.[0-9]$/", $version)) {
-      $error = TRUE;
-      form_set_error($element['#name'] . '][license_fieldset][license_version', t("Invalid CC license version (leave empty for newest)."));
-    }
-    $jurisdiction = $input['license_fieldset']['license_jurisdiction'];
-    // Read license URI only if in 'manual' mode, otherwise wipe it.
-    if ($license == 'manual') {
-      $license_uri = isset($input['license_fieldset']['license_uri']) ? $input['license_fieldset']['license_uri'] : '';
-      // Clean up URI.
-      if (!empty($license_uri) && (
-        (strpos("#", $license_uri) !== FALSE) ||
-        !preg_match("#^" . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . "[a-z]+/[a-z+-]+/[0-9]\.[0-9]/([a-z]+/)?$#", $license_uri)
-      )) {
-        $error = TRUE;
-        form_set_error($element['#name'] . '][license_fieldset][license_uri', t("Invalid license URI format."));
-      }
-    }
-    else {
-      $license_uri = '';
-    }
-  }
-  else {
-    $disabled = $disabled_default;
-    $license = $license_default;
-    $commercial = $commercial_default;
-    $derivatives = $derivatives_default;
-    $version = $version_default;
-    $jurisdiction = $jurisdiction_default;
-    $license_uri = $license_uri_default;
-  }
-  if (!in_array($license, array('none', 'manual'))) {
-    // Check if there is a newer version unless user sets the URI manually.
-    $current_query = xml_form_elements_creative_commons_make_value_array($license, $derivatives, $commercial, $jurisdiction, '', '');
-    $response = xml_form_elements_creative_commons_get_api_response($element['#name'], 'api_data_get', $current_query, $form_state);
-    if ($response) {
-      $license_uri = (string) $response->{'license-uri'};
-      $license_value_array = xml_form_elements_creative_commons_parse_uri($license_uri);
-      $new_version = $license_value_array[3];
-      if ($version != '') {
-        if ((float) $new_version < (float) $version) {
-          // The queried version is too high.
-          $error = TRUE;
-          form_set_error($element['#name'] . '][license_fieldset][license_version', t("CC license version not (yet) available (leave empty for newest)."));
-        }
-        elseif ((float) $new_version == (float) $version) {
-          // The queried version is already the newest.
-          $version = '';
-        }
-        else {
-          // The queried version is lower and we need to replace it in the URI.
-          $license_uri = str_replace($new_version, $version, $license_uri);
-          if ($license_uri == XML_FORM_ELEMENTS_CREATIVE_COMMONS_LICENSE_URI_DEFAULT) {
-            // Warn that the module default seems to be deprecated.
-            watchdog('xml_form_elements', 'Creative Commons default license seems to be deprecated. Please announce the developers.', array(), WATCHDOG_WARNING);
-          }
-          $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $license_uri);
-          $response = xml_form_elements_creative_commons_get_api_response($element['#name'], 'api_data', $current_query, $form_state);
-          if ($response) {
-            if ($response->getName() == 'error') {
-              // The license URI is not recognized.
-              $error = TRUE;
-              form_set_error($element['#name'] . '][license_fieldset][license_version', t("CC license version does not exist (leave empty for newest)."));
-            }
-          }
-          else {
-            drupal_set_message(t("Warning: Could not reach Creative Commons API to validate your input."));
-          }
-        }
-      }
-      else {
-        // Manually update cache for output.
-        $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $license_uri);
-        xml_form_elements_creative_commons_store_api_response($element['#name'], 'api_data', $current_query, $response, $form_state);
-      }
-    }
-    else {
-      // We have to build the license URI without the help of the API.
-      drupal_set_message(t('Warning: Could not query the Creative Commons API. Creating license manually.'));
-      $license_uri = xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction, FALSE, $version, $license);
-    }
-  }
-  elseif ($license == 'manual' && $license_uri != '') {
-    // Check manually entered license URI.
-    $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $license_uri);
-    $response = xml_form_elements_creative_commons_get_api_response($element['#name'], 'api_data', $current_query, $form_state);
-    if ($response) {
-      if ($response->getName() == 'error') {
-        // The license URI is not recognized.
-        $error = TRUE;
-        form_set_error($element['#name'] . '][license_fieldset][license_uri', t("CC license URI seems to be invalid. Perhaps you would prefer to choose one automatically?"));
-      }
-    }
-    else {
-      // We could not reach the API.
-      drupal_set_message(t("Warning: Could not reach Creative Commons API to validate your input."));
-    }
-  }
-  // In no error occurred, we reset all the variables based on the URI,
-  // except for the license type.
-  if (!$error && $license_uri != '') {
-    list($new_license, $commercial, $derivatives, $new_version, $jurisdiction) = xml_form_elements_creative_commons_parse_uri($license_uri);
-    // Keep blank version only if not in manual mode.
-    if ($license == 'manual' || $version != '') {
-      $version = $new_version;
-    }
-    // Unset dummy variables.
-    unset($new_license);
-    unset($new_version);
-  }
-  // Force values into $form_state['input']
-  $form_state['input'][$element['#name']] = xml_form_elements_creative_commons_make_value_array($license, $derivatives, $commercial, $jurisdiction, $version, $license_uri);
-  // Return value array.
-  return $form_state['input'][$element['#name']];
-}
-
-/**
  * Generate `creative_commons` value array.
  *
  * @param string $license
  *   The license type.
  * @param string $derivatives
- *   Modifications.
+ *   Derivatives.
  * @param string $commercial
  *   Commercial.
  * @param string $jurisdiction
@@ -490,12 +426,396 @@ function xml_form_elements_creative_commons_make_value_array($license, $derivati
   return array(
     'license_fieldset' => array(
       'license_type' => $license,
-      'allow_modifications' => $derivatives,
+      'allow_derivatives' => $derivatives,
       'allow_commercial' => $commercial,
       'license_jurisdiction' => $jurisdiction,
       'license_version' => $version,
       'license_uri' => $license_uri,
     ));
+}
+
+/**
+ * Get path for license.
+ *
+ * @param string $license
+ *   A string containing the license ('zero', 'mark', 'by' or 'sampling+').
+ *
+ * @return string|FALSE
+ *   The path where the license is found ('licenses' or 'publicdomain'),
+ *   or FALSE if $license was not recognized.
+ */
+function xml_form_elements_creative_commons_get_license_path($license) {
+  $publicdomain = array('zero', 'mark');
+  $licenses = array('by', 'sampling+');
+  if (in_array($license, $publicdomain)) {
+    return 'publicdomain';
+  }
+  elseif (in_array($license, $licenses)) {
+    return 'licenses';
+  }
+  return FALSE;
+}
+
+/**
+ * Test the Creative Commons version format validity.
+ *
+ * @param string $license_version
+ *   The license version.
+ *
+ * @return bool
+ *   TRUE if format is valid, FALSE otherwise.
+ */
+function xml_form_elements_creative_commons_license_version_has_valid_format($license_version) {
+  if (empty($license_version) || preg_match("#^[0-9]\.[0-9]$#", $license_version)) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Test the Creative Commons license URI format validity.
+ *
+ * @param string $license_uri
+ *   The license URI.
+ *
+ * @return bool
+ *   TRUE if format is valid, FALSE otherwise.
+ */
+function xml_form_elements_creative_commons_license_uri_has_valid_format($license_uri) {
+  if (empty($license_uri) || (
+    preg_match("#^" . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . "[a-z]+/[a-z+-]+/[0-9]\.[0-9]/([a-z]+/)?$#", $license_uri) &&
+    (!preg_match("#/by#", $license_uri) ||
+      preg_match("#^" . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . xml_form_elements_creative_commons_get_license_path('by') . "/by((-nc)?(-nd|-sa?)|(-nd|-sa)?(-nc)?)/#", $license_uri))
+  )) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Quick value array clean-up.
+ *
+ * @param array $values
+ *   The value array.
+ *
+ * @return array
+ *   The cleaned-up value array.
+ */
+function xml_form_elements_creative_commons_cleanup_values($values) {
+  // Get all allowed options.
+  $allowed_licenses = array_keys(xml_form_elements_creative_commons_license_type_options());
+  $by_options = array();
+  $by_options['allow_derivatives'] = array_keys(xml_form_elements_creative_commons_derivative_options());
+  $by_options['allow_commercial'] = array_keys(xml_form_elements_creative_commons_commercial_options());
+  $by_options['license_jurisdiction'] = array_keys(xml_form_elements_creative_commons_jurisdiction_options());
+  // Check if queried license type exists, reset to 'none' otherwise.
+  if (!in_array($values['license_fieldset']['license_type'], $allowed_licenses)) {
+    $values['license_fieldset']['license_type'] = 'none';
+  }
+  // Clean up selected 'by' options.
+  if ($values['license_fieldset']['license_type'] != 'by') {
+    // Reset derivative, commercial and jurisdiction options when not 'by'.
+    foreach ($by_options as $key => $opts) {
+      $values['license_fieldset'][$key] = $opts[0];
+    }
+  }
+  else {
+    // Check if all selected options exist, reset them otherwise.
+    foreach ($by_options as $key => $opts) {
+      if (!in_array($values['license_fieldset'][$key], $opts)) {
+        $values['license_fieldset'][$key] = $opts[0];
+      }
+    }
+  }
+  // Clean up version.
+  if (in_array($values['license_fieldset']['license_type'], array('none', 'manual'))) {
+    $values['license_fieldset']['license_version'] = '';
+  }
+  // Nuke license URI if not in manual mode.
+  if ($values['license_fieldset']['license_type'] != 'manual') {
+    $values['license_fieldset']['license_uri'] = '';
+  }
+  // Return cleaned-up user values.
+  return $values;
+}
+
+/**
+ * Create CC element value array from license URI.
+ *
+ * @param string $license_uri
+ *   The CC license URI.
+ *
+ * @return array
+ *   The associative value array corresponding to the URI.
+ */
+function xml_form_elements_creative_commons_get_values_from_uri($license_uri) {
+  // Get supported licenses (assuming 'by', as well as the special values
+  // 'none' and 'manual').
+  $supported_licenses = array_diff(array_keys(xml_form_elements_creative_commons_license_type_options()), array('none', 'manual'));
+
+  // Make a default array based on the URI.
+  $values = xml_form_elements_creative_commons_cleanup_values(
+    xml_form_elements_creative_commons_make_value_array('manual', '', '', '', '', $license_uri)
+  );
+
+  // Parse URI only if it is non-empty and valid.
+  if (!empty($license_uri) && xml_form_elements_creative_commons_license_uri_has_valid_format($license_uri)) {
+    // Reversing this array facilitates value_callback mangling by community.
+    $uri_value_array = array_reverse(explode('/',
+      preg_replace('#^' . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . '#', '', $license_uri)
+    ));
+    // Remove the license path.
+    array_pop($uri_value_array);
+    // Get license with properties.
+    $properties = explode('-', array_pop($uri_value_array));
+    // If the license is supported, set the type.
+    if (in_array($properties[0], $supported_licenses)) {
+      $values['license_fieldset']['license_type'] = $properties[0];
+    }
+    // Parse 'by' options.
+    if ($properties[0] == 'by') {
+      foreach ($properties as $property) {
+        switch ($property) {
+          case 'by':
+            break;
+
+          case 'nc':
+            $values['license_fieldset']['allow_commercial'] = 'n';
+            break;
+
+          case 'nd':
+            $values['license_fieldset']['allow_derivatives'] = 'n';
+            break;
+
+          case 'sa':
+            $values['license_fieldset']['allow_derivatives'] = 'sa';
+            break;
+        }
+      }
+    }
+    // Get version.
+    $values['license_fieldset']['license_version'] = array_pop($uri_value_array);
+    // Get jurisdiction.
+    $values['license_fieldset']['license_jurisdiction'] = array_pop($uri_value_array);
+    // Clean up jurisdiction.
+    $supported_jurisdictions = array_keys(xml_form_elements_creative_commons_jurisdiction_options());
+    if (!in_array($values['license_fieldset']['license_jurisdiction'], $supported_jurisdictions)) {
+      $values['license_fieldset']['license_jurisdiction'] = $supported_jurisdictions[0];
+    }
+  }
+
+  // Return the parsed values including the license URI.
+  return $values;
+}
+
+/**
+ * Create license URI from CC element value array.
+ *
+ * @param array $values
+ *   The associative value array corresponding to the URI.
+ *
+ * @return string
+ *   The CC license URI.
+ */
+function xml_form_elements_creative_commons_get_uri_from_values($values) {
+  // Return empty string if license type 'none' was specified.
+  if ($values['license_fieldset']['license_type'] == 'none') {
+    return '';
+  }
+  // Return the specified license URI when in manual mode.
+  if ($values['license_fieldset']['license_type'] == 'manual') {
+    return $values['license_fieldset']['license_uri'];
+  }
+  // Get the specified license.
+  $license = $values['license_fieldset']['license_type'];
+  // Get supported licenses (assuming 'by', as well as the special values
+  // 'none' and 'manual').
+  $supported_licenses = array_diff(array_keys(xml_form_elements_creative_commons_license_type_options()), array('none', 'manual'));
+  // Get the path for the specified license.
+  $path = xml_form_elements_creative_commons_get_license_path($license);
+  // Return the specified license URI if the license or its path are unknown.
+  if (!in_array($license, $supported_licenses) || $path === FALSE) {
+    return $values['license_fieldset']['license_uri'];
+  }
+  // Get the license arguments for 'by'.
+  $arguments = '';
+  if ($license == 'by') {
+    if ($values['license_fieldset']['allow_commercial'] == 'n') {
+      $arguments = "$arguments-nc";
+    }
+    if ($values['license_fieldset']['allow_derivatives'] == 'n') {
+      $arguments = "$arguments-nd";
+    }
+    elseif ($values['license_fieldset']['allow_derivatives'] == 'sa') {
+      $arguments = "$arguments-sa";
+    }
+  }
+  // Get the specified jurisdiction.
+  $jurisdiction = $values['license_fieldset']['license_jurisdiction'];
+  // Clean up jurisdiction if non-empty.
+  if (!empty($jurisdiction)) {
+    // Get the supported jurisdictions (assuming the first one should map
+    // to '').
+    $supported_jurisdictions = array_keys(xml_form_elements_creative_commons_jurisdiction_options());
+    // Empty jurisdiction if not supported or first (default) choice; otherwise
+    // append a slash.
+    if (!in_array($jurisdiction, $supported_jurisdictions) || $jurisdiction == $supported_jurisdictions[0]) {
+      $jurisdiction = '';
+    }
+    else {
+      $jurisdiction .= '/';
+    }
+  }
+  // Get the specified version.
+  $version = $values['license_fieldset']['license_version'];
+  // If no version was specified, default to versions that should be available.
+  if (empty($version)) {
+    $version = ($license == 'by') ? ($jurisdiction == '' ? '4.0' : '2.5') : '1.0';
+  }
+  // Return the license URI.
+  return XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . "$path/$license$arguments/$version/$jurisdiction";
+}
+
+/**
+ * Process input and get values for `creative_commons` form element.
+ *
+ * @param array $element
+ *   The `creative_commons` form element.
+ * @param array|NULL $input
+ *   The user input (or NULL to retrieve defaults).
+ * @param array $form_state
+ *   The form state.
+ *
+ * @return array
+ *   The associative array representing the form element values.
+ *
+ * Note that validation for the `creative_commons` element is done whithin this
+ * function. This has the side effect that users cannot go to the previous step
+ * in a mulit-step form before resolving erroneous choices.
+ */
+function xml_form_elements_creative_commons_process_input(&$element, $input, &$form_state) {
+  // Get defaults from element, if available.
+  $default_values = xml_form_elements_creative_commons_get_values_from_uri(isset($element['#default_value']) ? $element['#default_value'] : '');
+  // Set initial values.
+  $values = !empty($input) ? xml_form_elements_creative_commons_cleanup_values($input) : $default_values;
+  // If no output was requested, return.
+  if ($values['license_fieldset']['license_type'] == 'none') {
+    return $values;
+  }
+  // If in manual mode, try to guess the license, but reset to manual.
+  if ($values['license_fieldset']['license_type'] == 'manual') {
+    $values = xml_form_elements_creative_commons_get_values_from_uri($values['license_fieldset']['license_uri']);
+    $values['license_fieldset']['license_type'] = 'manual';
+  }
+  // If in manual mode with no license URI set, return.
+  if ($values['license_fieldset']['license_type'] == 'manual' && empty($values['license_fieldset']['license_uri'])) {
+    return $values;
+  }
+
+  // Know if we have errors.
+  $error = FALSE;
+
+  // Validate the initial version.
+  if (!xml_form_elements_creative_commons_license_version_has_valid_format($values['license_fieldset']['license_version'])) {
+    $error = TRUE;
+    form_set_error($element['#name'] . '][license_fieldset][license_version', t('Invalid CC license version format.'));
+  }
+
+  // Validate the initial license URI.
+  if (!xml_form_elements_creative_commons_license_uri_has_valid_format($values['license_fieldset']['license_uri'])) {
+    $error = TRUE;
+    $test_uri = preg_replace('#^https?#', 'http', preg_replace('#/?$#', '/', $values['license_fieldset']['license_uri'], 1));
+    if (xml_form_elements_creative_commons_license_uri_has_valid_format($test_uri)) {
+      form_set_error($element['#name'] . '][license_fieldset][license_uri', t('The CC license URI needs to start with "http://" and end with a slash "/".'));
+    }
+    else {
+      form_set_error($element['#name'] . '][license_fieldset][license_uri', t('Invalid CC license URI format.'));
+    }
+  }
+
+  // If there was an error, return.
+  if ($error) {
+    return $values;
+  }
+
+  // Check if there is a newer version unless user sets the URI manually.
+  if (!in_array($values['license_fieldset']['license_type'], array('none', 'manual'))) {
+    // Prepare the API query (keep only what's needed).
+    $current_query = $values;
+    $current_query['license_fieldset']['license_version'] = '';
+    $current_query['license_fieldset']['license_uri'] = '';
+    $response = xml_form_elements_creative_commons_retrieve_api_response($element['#name'], 'api_data_get', $current_query, $form_state);
+    if ($response && $response->getName() != 'error') {
+      // Get the newest license URI and get its version.
+      $new_license_uri = (string) $response->{'license-uri'};
+      $new_values = xml_form_elements_creative_commons_get_values_from_uri($new_license_uri);
+      $new_version = $new_values['license_fieldset']['license_version'];
+      // Get current version.
+      $version = $values['license_fieldset']['license_version'];
+      // Check version validity, if specified.
+      if ($version != '') {
+        // Update the target license URI's version.
+        $new_license_uri = str_replace($new_version, $version, $new_license_uri);
+        // Compare versions.
+        if ((float) $new_version < (float) $version) {
+          // The specified version is too high.
+          $error = TRUE;
+          form_set_error($element['#name'] . '][license_fieldset][license_version', t("CC license version not (yet) available."));
+        }
+        elseif ((float) $new_version == (float) $version) {
+          // The specified version is already the newest, so we empty it.
+          $values['license_fieldset']['license_version'] = '';
+        }
+      }
+      else {
+        // Manually update cache for output.
+        $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $new_license_uri);
+        xml_form_elements_creative_commons_store_api_response($element['#name'], 'api_data', $current_query, $response, $form_state);
+      }
+    }
+    else {
+      // We have to build the license URI without the help of the API.
+      if (!$response) {
+        drupal_set_message(t("Could not query the Creative Commons API. Creating license URI manually."), 'warning');
+      }
+      elseif ($response->getName() == 'error') {
+        drupal_set_message(t("The Creative Commons API unexpectedly returned an error. Creating license URI manually."), 'warning');
+      }
+      $new_license_uri = xml_form_elements_creative_commons_get_uri_from_values($values);
+    }
+    // Store the new license URI.
+    $values['license_fieldset']['license_uri'] = $new_license_uri;
+  }
+
+  // If there was an error, return.
+  if ($error) {
+    return $values;
+  }
+
+  // Check the URI we are about to return.
+  if (!empty($values['license_fieldset']['license_uri'])) {
+    $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $values['license_fieldset']['license_uri']);
+    $response = xml_form_elements_creative_commons_retrieve_api_response($element['#name'], 'api_data', $current_query, $form_state);
+    if ($response) {
+      if ($response->getName() == 'error') {
+        // The license URI is not recognized.
+        $error = TRUE;
+        if ($values['license_fieldset']['license_type'] == 'manual') {
+          form_set_error($element['#name'] . '][license_fieldset][license_uri', t("CC license URI seems to be invalid. Perhaps you would prefer to choose one automatically?"));
+        }
+        else {
+          form_set_error($element['#name'] . '][license_fieldset][license_version', t("CC license version does not seem to exist."));
+        }
+      }
+    }
+    else {
+      // We could not reach the API.
+      drupal_set_message(t("Could not reach Creative Commons API to validate your input."), 'warning');
+    }
+  }
+
+  // Return the values for the form element.
+  return $values;
 }
 
 /**
@@ -534,102 +854,50 @@ function xml_form_elements_creative_commons_get_api_path($license) {
 }
 
 /**
- * Get path for license.
+ * Get a license from the CC API.
  *
- * @param string $license
- *   A string containing the license ('zero', 'mark', 'by' or 'sampling+').
+ * @param string $path
+ *   The path from which to query.
+ * @param array $options
+ *   The http query array to attach to the query.
  *
- * @return string|FALSE
- *   The path where the license is found ('licenses' or 'publicdomain'),
- *   or FALSE if $license was not recognized.
+ * @return SimpleXMLElement|FALSE
+ *   The response from the REST API as a SimpleXMLElement, or FALSE if request
+ *   failed.
+ *
+ * Note that there may be a bug in the CC API. Querying, e.g., 'fi'
+ * jurisdiction, 'sa' derivatives and 'y' or 'n' commercial, results in a
+ * CC-BY-SA/CC-BY-NC-SA 4.0 International license, instead of the corresponding
+ * 1.0 Finland version (which exists and is not deprecated).
+ * This behaviour, unfortunately, breaks our logic, so users will have to
+ * insert those licenses manually, and admins cannot set them as default.
  */
-function xml_form_elements_creative_commons_get_license_path($license) {
-  $publicdomain = array('zero', 'mark');
-  $licenses = array('by', 'sampling+');
-  if (in_array($license, $publicdomain)) {
-    return 'publicdomain';
+function xml_form_elements_creative_commons_query_api_get($path, $options = array()) {
+  $response = drupal_http_request(url(XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL . $path, array('query' => $options)));
+  if ($response->code != 200) {
+    watchdog('xml_form_elements', 'The Creative Commons API responded with code %code.', array('%code' => $response->code), WATCHDOG_WARNING);
+    return FALSE;
   }
-  elseif (in_array($license, $licenses)) {
-    return 'licenses';
-  }
-  return FALSE;
+  return simplexml_load_string($response->data, 'SimpleXMLElement');
 }
 
 /**
- * Parse Creative Commons URI.
+ * Get license details from the CC API.
  *
  * @param string $license_uri
- *   A string containing the CC license URI.
+ *   The license URI for which to query details.
  *
- * @return array
- *   An array containing:
- *   - The license ('zero', 'mark', 'by' or 'sampling+')
- *   - Commercial use ('y', 'n'; 'y' if license not 'by')
- *   - Derivative creation ('y', 'n', 'sa'; 'y' if license not 'by')
- *   - Jurisdiction ('international' if international or not applicable)
- *   - Version
+ * @return SimpleXMLElement|FALSE
+ *   The response from the REST API as a SimpleXMLElement, or FALSE if request
+ *   failed.
  */
-function xml_form_elements_creative_commons_parse_uri($license_uri) {
-  $creative_commons_base_url = XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL;
-
-  // Reversing this array facilitates value_callback mangling by community.
-  $default_value_array = array_reverse(explode('/',
-    str_replace($creative_commons_base_url, "", $license_uri)
-  ));
-  // Remove the license path.
-  array_pop($default_value_array);
-  $properties = explode('-', array_pop($default_value_array));
-  $license = $properties[0];
-
-  $commercial = 'y';
-  $derivatives = 'y';
-
-  foreach ($properties as $property) {
-    switch ($property) {
-      case 'by':
-        break;
-
-      case 'nc':
-        $commercial = 'n';
-        break;
-
-      case 'nd':
-        $derivatives = 'n';
-        break;
-
-      case 'sa':
-        $derivatives = 'sa';
-        break;
-    }
+function xml_form_elements_creative_commons_query_api_details($license_uri) {
+  $response = drupal_http_request(url(XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL . 'details', array('query' => array('license-uri' => $license_uri))));
+  if ($response->code != 200) {
+    watchdog('xml_form_elements', 'The Creative Commons API responded with code %code.', array('%code' => $response->code), WATCHDOG_WARNING);
+    return FALSE;
   }
-
-  $version = array_pop($default_value_array);
-
-  $jurisdiction = array_pop($default_value_array);
-  if (empty($jurisdiction)) {
-    $jurisdiction = 'international';
-  }
-
-  return array($license, $commercial, $derivatives, $version, $jurisdiction);
-}
-
-/**
- * Ajax callback to render the CC license.
- *
- * @param array $form
- *   The form.
- * @param array $form_state
- *   The form state.
- *
- * @return array
- *   The markup to replace the target (wrapper) with.
- */
-function xml_form_elements_creative_commons_ajax(&$form, &$form_state) {
-  $parents = $form_state['triggering_element']['#parents'];
-  array_pop($parents);
-  $creative_commons_element = drupal_array_get_nested_value($form, $parents);
-
-  return $creative_commons_element;
+  return simplexml_load_string($response->data, 'SimpleXMLElement');
 }
 
 /**
@@ -672,7 +940,7 @@ function xml_form_elements_creative_commons_store_api_response($element_name, $s
  *   SimpleXMLElement the return from the REST API.
  *   FALSE if failed request.
  */
-function xml_form_elements_creative_commons_get_api_response($element_name, $storage_folder, $values, &$form_state) {
+function xml_form_elements_creative_commons_retrieve_api_response($element_name, $storage_folder, $values, &$form_state) {
   if (isset($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['query']) &&
     $form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['query'] == $values &&
     isset($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response']) &&
@@ -681,11 +949,27 @@ function xml_form_elements_creative_commons_get_api_response($element_name, $sto
     $response = simplexml_load_string($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response'], 'SimpleXMLElement');
   }
   else {
-    if (!empty($values['license_fieldset']['license_uri'])) {
-      $response = xml_form_elements_get_creative_commons_from_uri($values['license_fieldset']['license_uri'], FALSE);
+    if (empty($values['license_fieldset']['license_uri'])) {
+      // Without specified URI, get a fresh license based on input values.
+      $api_path = xml_form_elements_creative_commons_get_api_path($values['license_fieldset']['license_type']);
+      // Default to standard for unknown licenses.
+      if (!$api_path) {
+        $api_path = 'license/standard/get';
+      }
+      // Prepare query options.
+      $api_options = array();
+      if ($values['license_fieldset']['license_type'] == 'by') {
+        $api_options = array(
+          'commercial' => $values['license_fieldset']['allow_commercial'],
+          'derivatives' => $values['license_fieldset']['allow_derivatives'],
+          'jurisdiction' => $values['license_fieldset']['license_jurisdiction'],
+        );
+      }
+      $response = xml_form_elements_creative_commons_query_api_get($api_path, $api_options);
     }
     else {
-      $response = xml_form_elements_get_creative_commons($values['license_fieldset']['allow_commercial'], $values['license_fieldset']['allow_modifications'], $values['license_fieldset']['license_jurisdiction'], FALSE, $values['license_fieldset']['license_version'], $values['license_fieldset']['license_type']);
+      // Get the license details for the specified license URI.
+      $response = xml_form_elements_creative_commons_query_api_details($values['license_fieldset']['license_uri']);
     }
     // Cache response.
     xml_form_elements_creative_commons_store_api_response($element_name, $storage_folder, $values, $response, $form_state);
@@ -694,156 +978,80 @@ function xml_form_elements_creative_commons_get_api_response($element_name, $sto
 }
 
 /**
- * Ask the creative commons REST API for a license.
+ * Ask the creative commons REST API for a 'by' license.
  *
  * Left as a function for use by community modules.
  *
+ * @deprecated As of release 7.x-1.11, this function remains only for backwards
+ *   compatibilty. New code should use
+ *   xml_form_elements_creative_commons_query_api_get() instead.
+ *   Update your code, as this function might be removed.
+ *
  * @param string $commercial
- *   'y' to allow 'n' to disallow.
+ *   'y' to allow, 'n' to disallow.
  * @param string $derivatives
- *   'y' to allow 'n' to disallow, 'sa' to share alike.
+ *   'y' to allow, 'n' to disallow, 'sa' to share alike.
  * @param string $jurisdiction
  *   Legal jurisdiction code.
  * @param bool $disabled
- *   TRUE returns FALSE, FALSE (default) performs request.
- * @param string $version
- *   Specify (earlier) version (blank (default) for newest).
- * @param string $license
- *   Get licenses other than 'by' (default): 'zero', 'mark', 'sampling+'.
+ *   If TRUE, return FALSE; otherwise perform query.
  *
  * @return mixed
  *   SimpleXMLElement the return from the REST API.
  *   FALSE if failed request.
  */
-function xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction, $disabled = FALSE, $version = '', $license = 'by') {
-  // Do not make request if disabled. Otherwise, either get an up-to-date
-  // license if $version is empty, or get license details if $version is
-  // specified.
+function xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction, $disabled = FALSE) {
+  // Show deprecated message.
+  module_load_include('inc', 'islandora', 'includes/utilities');
+  $deprecated_message = islandora_deprecated('7.x-1.11', t('Use @newfunction() instead.', array('@newfunction' => 'xml_form_elements_creative_commons_query_api_get')));
+  trigger_error(filter_xss($deprecated_message), E_USER_DEPRECATED);
+  // Return FALSE if disabled.
   if ($disabled) {
     return FALSE;
   }
-  elseif ($version != '') {
-    return xml_form_elements_get_creative_commons_from_uri(xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction, $disabled, $version, $license));
-  }
-  $path = xml_form_elements_creative_commons_get_api_path($license);
-  if (!$path) {
-    $path = 'standard';
-  }
-  // $commercial, $derivatives and $jurisdiction only make sense for
-  // attribution licenses.
-  $response = drupal_http_request(url(
-    XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL . $path,
-    ($license == 'by') ? array(
-      'query' => array(
-        'commercial' => $commercial,
-        'derivatives' => $derivatives,
-        'jurisdiction' => $jurisdiction,
-      ),
-    ) : array()
-  ));
-  if ($response->code != 200) {
-    error_log("xml_form responded {$response->code}");
-    return FALSE;
-  }
-  return simplexml_load_string($response->data, 'SimpleXMLElement');
+  // This function only pertains to 'by' licenses.
+  $api_path = 'license/standard/get';
+  // Prepare query options.
+  $api_options = array(
+    'commercial' => $commercial,
+    'derivatives' => $derivatives,
+    'jurisdiction' => $jurisdiction,
+  );
+  // Return API response.
+  return xml_form_elements_creative_commons_query_api_get($api_path, $api_options);
 }
 
 /**
- * Ask the creative commons REST API for a license based on URI.
+ * Gets the 'by' license URI for the element.
  *
- * Left as a function for use by community modules.
- *
- * @param string $license_uri
- *   A Creative Commonse license URI.
- * @param bool $disabled
- *   TRUE returns FALSE, FALSE (default) performs request.
- *
- * @return mixed
- *   SimpleXMLElement the return from the REST API.
- *   FALSE if failed request.
- */
-function xml_form_elements_get_creative_commons_from_uri($license_uri, $disabled = FALSE) {
-  // Do not make request if disabled.
-  if ($disabled) {
-    return FALSE;
-  }
-  $response = drupal_http_request(url(
-    XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL . 'details',
-    array(
-      'query' => array(
-        'license-uri' => $license_uri,
-      ),
-    )
-  ));
-  if ($response->code != 200) {
-    error_log("xml_form responded {$response->code}");
-    return FALSE;
-  }
-  return simplexml_load_string($response->data, 'SimpleXMLElement');
-}
-
-/**
- * Gets the license URI value for the element.
+ * @deprecated As of release 7.x-1.11, this function remains only for backwards
+ *   compatibilty. New code should use
+ *   xml_form_elements_creative_commons_get_uri_from_values() instead.
+ *   Update your code, as this function might be removed.
  *
  * @param string $commercial
- *   'y' to allow 'n' to disallow.
+ *   'y' to allow, 'n' to disallow.
  * @param string $derivatives
- *   'y' to allow 'n' to disallow.
+ *   'y' to allow, 'n' to disallow, 'sa' to share alike.
  * @param string $jurisdiction
  *   Legal jurisdiction code.
  * @param bool $disabled
- *   TRUE returns empty string, FALSE (default) returns value.
- * @param string $enforced_version
- *   Override license version (empty string to take default).
- * @param string $license
- *   'by' (default), 'zero', 'mark'.
+ *   If TRUE, return empty string; otherwise generate the URI.
  *
  * @return string
- *   The license URI value of the element.
- *
- * Note: $commercial, $derivatives and $jurisdiction are not parsed for
- * licenses other than 'by', and we do not support the (deprecated!)
- * 'sampling+'.
+ *   The value of the element.
  */
-function xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction, $disabled = FALSE, $enforced_version = '', $license = 'by') {
+function xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction, $disabled = FALSE) {
+  // Show deprecated message.
+  module_load_include('inc', 'islandora', 'includes/utilities');
+  $deprecated_message = islandora_deprecated('7.x-1.11', t('Use @newfunction() instead.', array('@newfunction' => 'xml_form_elements_creative_commons_get_uri_from_values')));
+  trigger_error(filter_xss($deprecated_message), E_USER_DEPRECATED);
   // Return empty string if disabled.
   if ($disabled) {
     return '';
   }
-  $path = xml_form_elements_creative_commons_get_license_path($license);
-  // Default to 'by' if $license cannot be handled otherwise.
-  if (!$path || $license == 'sampling+') {
-    // Either we do not know the license, or it is the deprecated one.
-    $license = 'by';
-    $path = 'licenses';
-  }
-  $arguments = '';
-  if ($enforced_version !== '') {
-    // Select specified version.
-    $license_version = $enforced_version;
-  }
-  else {
-    // Default to versions that should be available.
-    $license_version = ($license == 'by') ? ($jurisdiction == 'international' ? 4.0 : '2.5') : '1.0';
-  }
-  if ($license == 'by') {
-    if ($commercial == 'n') {
-      $arguments = "$arguments-nc";
-    }
-    if ($derivatives == 'n') {
-      $arguments = "$arguments-nd";
-    }
-    elseif ($derivatives == 'sa') {
-      $arguments = "$arguments-sa";
-    }
-  }
-  if ($license != 'by' || $jurisdiction == 'international') {
-    // Not needed for international or 'zero', 'mark' licenses.
-    $jurisdiction = '';
-  }
-  else {
-    // If not international add the trailing slash.
-    $jurisdiction .= '/';
-  }
-  return "http://creativecommons.org/licenses/$license$arguments/$license_version/$jurisdiction";
+  // Generate form element values based on parameters.
+  $values = xml_form_elements_creative_commons_make_value_array('by', $derivatives, $commercial, $jurisdiction, '', '');
+  // Return the license URI.
+  return xml_form_elements_creative_commons_get_uri_from_values($values);
 }
