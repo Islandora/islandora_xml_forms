@@ -758,7 +758,7 @@ function xml_form_elements_creative_commons_process_input(&$element, $input, &$f
       // Get current version.
       $version = $values['license_fieldset']['license_version'];
       // Check version validity, if specified.
-      if ($version != '') {
+      if ($version != '' && (float) $new_version != (float) $version) {
         // Update the target license URI's version.
         $new_license_uri = str_replace($new_version, $version, $new_license_uri);
         // Compare versions.
@@ -767,12 +767,11 @@ function xml_form_elements_creative_commons_process_input(&$element, $input, &$f
           $error = TRUE;
           form_set_error($element['#name'] . '][license_fieldset][license_version', t("CC license version not (yet) available."));
         }
-        elseif ((float) $new_version == (float) $version) {
-          // The specified version is already the newest, so we empty it.
-          $values['license_fieldset']['license_version'] = '';
-        }
       }
       else {
+        // We queried the newest version, or the specified version is already
+        // the newest. We make sure the version is empty for the next request.
+        $values['license_fieldset']['license_version'] = '';
         // Manually update cache for output.
         $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $new_license_uri);
         xml_form_elements_creative_commons_store_api_response($element['#name'], 'api_data', $current_query, $response, $form_state);
