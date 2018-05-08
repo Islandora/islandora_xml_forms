@@ -350,6 +350,9 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   // Add validator.
   $element['#element_validate'] = array('xml_form_elements_creative_commons_validate');
 
+  // Add javascript.
+  $element['#attached'] = array('js' => array(drupal_get_path('module', 'xml_form_elements') . '/js/creative_commons.js'));
+
   return $element;
 }
 
