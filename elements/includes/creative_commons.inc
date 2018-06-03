@@ -12,7 +12,7 @@ const XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL = 'http://creativecommons.org/
 const XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL = 'https://api.creativecommons.org/rest/1.5/';
 
 /**
- * Returns license type options.
+ * Return license type options.
  *
  * @return array
  *   Associative array mapping types to descriptions.
@@ -140,7 +140,7 @@ function xml_form_elements_creative_commons_jurisdiction_options() {
 }
 
 /**
- * Creates a `creative_commons` form element.
+ * Create a `creative_commons` form element.
  *
  * @param array $element
  *   The form element.
@@ -160,18 +160,12 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     $form_state['storage']['xml_form_elements'][$element['#name']]['license_fieldset_id'] = $license_fieldset_id;
   }
 
-  // Get current values, process them and store them in the element.
-  $input = isset($form_state['input'][$element['#name']]) ? $form_state['input'][$element['#name']] : NULL;
-  $values = xml_form_elements_creative_commons_process_input($element, $input, $form_state);
-  $element['#value'] = $values;
-  // Force values into $form_state['input']
-  $form_state['input'][$element['#name']] = $values;
-
   // Store the license type options in a variable.
   $license_options = xml_form_elements_creative_commons_license_type_options();
 
-  // Form elements.
+  // Form elements that need to be populated.
 
+  // The wrapping field set.
   $element['license_fieldset'] = array(
     '#id' => $license_fieldset_id,
     '#type' => 'fieldset',
@@ -180,24 +174,26 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     '#title' => t('License'),
   );
 
+  // License type chooser.
   $element['license_fieldset']['license_type'] = array(
     '#type' => 'select',
     '#title' => t('Select a license type'),
     '#description' => t('Select "@option" to avoid outputting a creative commons license. This will still output a blank element in the resulting XML, so make sure to use a cleanup template to remove it.', array('@option' => $license_options['none'])),
-    '#options' => $license_options,
-    '#default_value' => $values['license_fieldset']['license_type'],
+    '#empty_option' => $license_options['none'],
+    '#empty_value' => 'none',
+    '#options' => array_diff_key($license_options, array('none' => '')),
     '#ajax' => array(
       'wrapper' => $license_fieldset_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
     ),
   );
 
+  // Allow modification chooser for 'by' licenses.
   $element['license_fieldset']['allow_derivatives'] = array(
     '#type' => 'select',
     '#title' => t('Allow modifications of your work?'),
     '#description' => t('Note that this is only relevant if you selected "@option" above.', array('@option' => $license_options['by'])),
     '#options' => xml_form_elements_creative_commons_derivative_options(),
-    '#default_value' => $values['license_fieldset']['allow_derivatives'],
     '#ajax' => array(
       'wrapper' => $license_fieldset_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
@@ -209,12 +205,12 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     ),
   );
 
+  // Allow commercial chooser for 'by' licenses.
   $element['license_fieldset']['allow_commercial'] = array(
     '#type' => 'select',
     '#title' => t('Allow commercial uses of your work?'),
     '#description' => t('Note that this is only relevant if you selected "@option" above.', array('@option' => $license_options['by'])),
     '#options' => xml_form_elements_creative_commons_commercial_options(),
-    '#default_value' => $values['license_fieldset']['allow_commercial'],
     '#ajax' => array(
       'wrapper' => $license_fieldset_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
@@ -226,12 +222,12 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     ),
   );
 
+  // Jurisdiction chooser for 'by' licenses.
   $element['license_fieldset']['license_jurisdiction'] = array(
     '#type' => 'select',
     '#title' => t('License Jurisdiction'),
     '#options' => xml_form_elements_creative_commons_jurisdiction_options(),
     '#description' => t('Note that this is only relevant if you selected "@option" above.', array('@option' => $license_options['by'])),
-    '#default_value' => $values['license_fieldset']['license_jurisdiction'],
     '#ajax' => array(
       'wrapper' => $license_fieldset_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
@@ -243,13 +239,11 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     ),
   );
 
-  $element['license_fieldset']['license_version'] = array(
-    '#type' => 'textfield',
+  // Version overriding checkbox.
+  $element['license_fieldset']['override_license_version'] = array(
+    '#type' => 'checkbox',
     '#title' => t('Override License Version'),
-    '#description' => t('Optionally set to a previous version (leave empty to get newest).'),
-    '#size' => 3,
-    '#maxlength' => 3,
-    '#default_value' => $values['license_fieldset']['license_version'],
+    '#description' => t('Optionally set to a previous version.'),
     '#ajax' => array(
       'wrapper' => $license_fieldset_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
@@ -262,11 +256,31 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     ),
   );
 
+  // Version text field.
+  $element['license_fieldset']['license_version'] = array(
+    '#type' => 'textfield',
+    '#title' => t('License Version'),
+    '#description' => t('Choose a license version (leave empty to get newest). Note that this only takes effect if you checked "@title" above.', array('@title' => $element['license_fieldset']['override_license_version']['#title'])),
+    '#size' => 3,
+    '#maxlength' => 3,
+    '#ajax' => array(
+      'wrapper' => $license_fieldset_id,
+      'callback' => 'xml_form_elements_creative_commons_ajax',
+      'keypress' => TRUE,
+    ),
+    '#states' => array(
+      'invisible' => array(
+        array(":input[name=\"{$element['#name']}[license_fieldset][license_type]\"]" => array(array('value' => 'none'), array('value' => 'manual'))),
+        array(":input[name=\"{$element['#name']}[license_fieldset][override_license_version]\"]" => array('checked' => FALSE)),
+      ),
+    ),
+  );
+
+  // License URI text field.
   $element['license_fieldset']['license_uri'] = array(
     '#type' => 'textfield',
     '#title' => t('Manually enter a license URI'),
     '#description' => t('Note that you need to set the license type to "@option" for this to take effect.', array('@option' => $license_options['manual'])),
-    '#default_value' => $values['license_fieldset']['license_uri'],
     '#ajax' => array(
       'wrapper' => $license_fieldset_id,
       'callback' => 'xml_form_elements_creative_commons_ajax',
@@ -280,55 +294,9 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     ),
   );
 
-  // Get all form errors, attach 'error' class to erroneous elements and
-  // instruct the user to inform the admin if the error is due to a
-  // misconfiguration.
-  // Note: the first part is necessary when the error occurred on first load
-  // (but otherwise results in the 'error' class being attached twice).
-  $form_errors = form_get_errors();
-  if ($form_errors) {
-    foreach (array_keys($element['license_fieldset']) as $name) {
-      if (in_array($element['#name'] . '][license_fieldset][' . $name, array_keys($form_errors))) {
-        $element['license_fieldset'][$name]['#attributes']['class'][] = 'error';
-      }
-    }
-    if (!$input) {
-      // There was no input, so the form was probably built from the previous
-      // step. Hence, it is likely that we are displaying the site default,
-      // so the admin should be warned.
-      drupal_set_message(t('It is likely that the Creative Commons form element "@display_name" has been misconfigured. Please inform the site administrator.', array('@display_name' => $element['license_fieldset']['#title'])), 'error');
-      watchdog('xml_form_elements', 'It is likely that the Creative Commons form element "@element_name" has been misconfigured.', array('@element_name' => $element['#name']), WATCHDOG_WARNING);
-    }
-  }
-
-  // Prepare license output markup.
-  $cc_markup = $form_errors ? t('None (form has errors).') : t('None.');
-  // Only get API markup if the form has no errors, the user wants a license and
-  // we have a license URI set.
-  if (!$form_errors && $values['license_fieldset']['license_type'] != 'none' && !empty($values['license_fieldset']['license_uri'])) {
-    // Get data from storage.
-    $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $values['license_fieldset']['license_uri']);
-    $response = xml_form_elements_creative_commons_retrieve_api_response($element['#name'], 'api_data', $current_query, $form_state);
-    if (!$response) {
-      $cc_markup = t('"@uri" (manually generated since Creative Commons API could not be reached).', array('@uri' => $values['license_fieldset']['license_uri']));
-    }
-    elseif ($response->getName() == 'error') {
-      // We should never be here.
-      drupal_set_message(t('An unexpected error occurred with the Creative Commons form element "@display_name". Please inform the site administrator.', array('@display_name' => $element['license_fieldset']['#title'])), 'error');
-      watchdog('xml_form_elements', 'The Creative Commons API returned an error on "@uri" that should have been cought already. Probably you just found a bug.', array('@uri' => $element['license_fieldset']['license_uri']), WATCHDOG_WARNING);
-    }
-    else {
-      // Get the HTML markup for the selected license.
-      $cc_markup = $response->html->asXml();
-      // Mend bogus <html> tags.
-      $cc_markup = preg_replace('#^<html>#', '<div>', $cc_markup);
-      $cc_markup = preg_replace('#</html>$#', '</div>', $cc_markup);
-    }
-  }
-  // Generate markup element.
+  // License markup element.
   $element['license_fieldset']['license_output'] = array(
     '#type' => 'item',
-    '#markup' => '<strong>' . t('Selected license:') . '</strong> ' . $cc_markup,
     '#states' => array(
       'invisible' => array(
         ":input[name=\"{$element['#name']}[license_fieldset][license_type]\"]" => array('value' => 'none'),
@@ -336,11 +304,11 @@ function xml_form_elements_creative_commons($element, &$form_state) {
     ),
   );
 
-  // Element for graceful degradation w/out JS.
+  // Update button for graceful degradation w/out JS.
   $element['license_fieldset']['license_update'] = array(
     '#type' => 'button',
     '#value' => t('Update license'),
-    '#limit_validation_errors' => array(),
+    '#limit_validation_errors' => array(array($element['#name'])),
     '#submit' => array('xml_form_elements_creative_commons_license_update_submit'),
     '#return_value' => 'update-license',
     '#prefix' => '<noscript>',
@@ -353,7 +321,83 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   // Add javascript.
   $element['#attached'] = array('js' => array(drupal_get_path('module', 'xml_form_elements') . '/js/creative_commons.js'));
 
+  // If there is no input, or the temporary storage contains data (meaning
+  // that the validator already exectued), populate the element with values.
+  if (!isset($form_state['input'][$element['#name']]) || isset($form_state['temporary'][$element['#name']])) {
+    _xml_form_elements_creative_commons_populate_element($element, $form_state);
+  }
+
+  // Get all form errors, attach 'error' class to erroneous elements and
+  // instruct the user to inform the admin if the error is due to a
+  // misconfiguration.
+  // Note: the first part is necessary when the error occurred on first load
+  // (but otherwise results in the 'error' class being attached twice).
+  $form_errors = form_get_errors();
+  if ($form_errors) {
+    foreach (array_keys($element['license_fieldset']) as $name) {
+      if (in_array($element['#name'] . '][license_fieldset][' . $name, array_keys($form_errors))) {
+        $element['license_fieldset'][$name]['#attributes']['class'][] = 'error';
+      }
+    }
+    if (empty($form_state['input'][$element['#name']])) {
+      // There was no input, so the form was probably built from the previous
+      // step. Hence, it is likely that we are displaying the site default,
+      // so the admin should be warned.
+      drupal_set_message(t('It is likely that the Creative Commons form element "@display_name" has been misconfigured. Please inform the site administrator.', array('@display_name' => $element['license_fieldset']['#title'])), 'error');
+      watchdog('xml_form_elements', 'It is likely that the Creative Commons form element "@element_name" in "@form_name" has been misconfigured.', array('@element_name' => $element['#name'], '@form_name' => $form_state['storage'][FormStorage::STORAGE_ROOT]['name']), WATCHDOG_WARNING);
+    }
+  }
+
   return $element;
+}
+
+/**
+ * Helper function to populate `creative_commons` elements.
+ *
+ * @param array $element
+ *   The form element.
+ * @param array $form_state
+ *   The form state.
+ *
+ * Note: only call this after all the elements have been defined.
+ */
+function _xml_form_elements_creative_commons_populate_element(&$element, &$form_state) {
+  // If this is not the first run, get markup and values from temporary
+  // storage; otherwise call utility function to process user input, resp.
+  // the default value, and store the data.
+  if (isset($form_state['temporary'][$element['#name']])) {
+    list($markup, $values) = $form_state['temporary'][$element['#name']];
+  }
+  else {
+    list($markup, $values) = xml_form_elements_creative_commons_get_processed_values($element, $form_state);
+    $form_state['temporary'][$element['#name']] = array($markup, $values);
+  }
+
+  // Update $form_state values.
+  form_set_value($element, $values, $form_state);
+
+  // Update element value.
+  $element['#value'] = $values;
+
+  // Populate elements' values and default values.
+  foreach ($values['license_fieldset'] as $key => $val) {
+    $element['license_fieldset'][$key]['#value'] = $val;
+    $element['license_fieldset'][$key]['#default_value'] = $val;
+  }
+
+  // Set license output markup.
+  $element['license_fieldset']['license_output']['#markup'] = $markup;
+
+  // Set required elements when necessary.
+  if ($element['#required']) {
+    $element['license_fieldset']['license_type']['#required'] = ($values['license_fieldset']['license_type'] != 'manual');
+    $element['license_fieldset']['license_uri']['#required'] = ($values['license_fieldset']['license_type'] == 'manual');
+  }
+
+  // Nuke the description of the type chooser when none was chosen.
+  if ($element['license_fieldset']['license_type']['#value'] == 'none') {
+    unset($element['license_fieldset']['license_type']['#description']);
+  }
 }
 
 /**
@@ -391,9 +435,6 @@ function xml_form_elements_creative_commons_license_update_submit($form, &$form_
 /**
  * Validator for the `creative_commons` element.
  *
- * Validation is actually done elsewhere. We use this function only to set the
- * element's value for form builder.
- *
  * @param array $element
  *   The form element.
  * @param array $form_state
@@ -402,8 +443,27 @@ function xml_form_elements_creative_commons_license_update_submit($form, &$form_
  *   The form.
  */
 function xml_form_elements_creative_commons_validate(&$element, &$form_state, $form) {
-  // Set the value in $form_state so that form builder can use it.
-  $form_state['values'][$element['#name']] = is_string($element['#value']) ? $element['#value'] : $element['#value']['license_fieldset']['license_uri'];
+  // Make sure creative commons form errors get displayed.
+  $validation_sections =& drupal_static('form_set_error' . ':limit_validation_errors');
+  $original_validation_sections = $validation_sections;
+  $validation_sections = array(array($element['#name']));
+  // Populate element.
+  _xml_form_elements_creative_commons_populate_element($element, $form_state);
+  // If a license is required, error if none was chosen.
+  if (($element['license_fieldset']['license_type']['#value'] == 'none') && $element['license_fieldset']['license_type']['#required']) {
+    form_set_error($element['#name'] . '][license_fieldset][license_type', t('@element is required.', array('@element' => $element['license_fieldset']['license_type']['#title'])));
+  }
+  // If a license is required, error if no URI was given in manual mode.
+  if (($element['license_fieldset']['license_type']['#value'] == 'manual') && $form_state['values'][$element['#name']]['license_fieldset']['license_uri'] == '' && $element['license_fieldset']['license_uri']['#required']) {
+    form_set_error($element['#name'] . '][license_fieldset][license_uri', t('@element is required.', array('@element' => $element['license_fieldset']['license_uri']['#title'])));
+  }
+  // Re-set validation sections.
+  $validation_sections = $original_validation_sections;
+  // If user submits, set the scalar value in $form_state so that form builder
+  // can use it.
+  if ($form_state['submitted'] && !$form_state['rebuild']) {
+    $form_state['values'][$element['#name']] = is_string($element['#value']) ? $element['#value'] : $element['#value']['license_fieldset']['license_uri'];
+  }
 }
 
 /**
@@ -417,6 +477,8 @@ function xml_form_elements_creative_commons_validate(&$element, &$form_state, $f
  *   Commercial.
  * @param string $jurisdiction
  *   Legal jurisdiction code.
+ * @param bool $override_version
+ *   TRUE to override version, FALSE to get newest.
  * @param string $version
  *   License version.
  * @param string $license_uri
@@ -425,13 +487,14 @@ function xml_form_elements_creative_commons_validate(&$element, &$form_state, $f
  * @return array
  *   The associative array representing the `creative_commons` input values.
  */
-function xml_form_elements_creative_commons_make_value_array($license, $derivatives, $commercial, $jurisdiction, $version, $license_uri) {
+function xml_form_elements_creative_commons_make_value_array($license, $derivatives, $commercial, $jurisdiction, $override_version, $version, $license_uri) {
   return array(
     'license_fieldset' => array(
       'license_type' => $license,
       'allow_derivatives' => $derivatives,
       'allow_commercial' => $commercial,
       'license_jurisdiction' => $jurisdiction,
+      'override_license_version' => $override_version,
       'license_version' => $version,
       'license_uri' => $license_uri,
     ));
@@ -487,7 +550,7 @@ function xml_form_elements_creative_commons_license_version_has_valid_format($li
 function xml_form_elements_creative_commons_license_uri_has_valid_format($license_uri) {
   if (empty($license_uri) || (
     preg_match("#^" . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . "[a-z]+/[a-z+-]+/[0-9]\.[0-9]/([a-z]+/)?$#", $license_uri) &&
-    (!preg_match("#/by#", $license_uri) ||
+    (!preg_match("#/by[-/]#", $license_uri) ||
       preg_match("#^" . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . xml_form_elements_creative_commons_get_license_path('by') . "/by((-nc)?(-nd|-sa?)|(-nd|-sa)?(-nc)?)/#", $license_uri))
   )) {
     return TRUE;
@@ -496,50 +559,83 @@ function xml_form_elements_creative_commons_license_uri_has_valid_format($licens
 }
 
 /**
- * Quick value array clean-up.
+ * Quick input array clean-up.
  *
- * @param array $values
- *   The value array.
+ * @param array $input
+ *   The input array.
  *
  * @return array
- *   The cleaned-up value array.
+ *   The cleaned-up input array.
  */
-function xml_form_elements_creative_commons_cleanup_values($values) {
+function xml_form_elements_creative_commons_cleanup_input($input) {
+  // Define dummy element.
+  $dummy_input = xml_form_elements_creative_commons_make_value_array(NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+  // Reset to dummy element when $input is null or does not have the expected
+  // format.
+  if (empty($input) || !isset($input['license_fieldset'])) {
+    $input = $dummy_input;
+  }
+  // Nuke unexpected keys.
+  $input = array_intersect_key($input, $dummy_input);
+  $input['license_fieldset'] = array_intersect_key($input['license_fieldset'], $dummy_input['license_fieldset']);
   // Get all allowed options.
   $allowed_licenses = array_keys(xml_form_elements_creative_commons_license_type_options());
   $by_options = array();
   $by_options['allow_derivatives'] = array_keys(xml_form_elements_creative_commons_derivative_options());
   $by_options['allow_commercial'] = array_keys(xml_form_elements_creative_commons_commercial_options());
   $by_options['license_jurisdiction'] = array_keys(xml_form_elements_creative_commons_jurisdiction_options());
-  // Check if queried license type exists, reset to 'none' otherwise.
-  if (!in_array($values['license_fieldset']['license_type'], $allowed_licenses)) {
-    $values['license_fieldset']['license_type'] = 'none';
+  // Check if queried license type exists, is a string and is allowed, reset to
+  // 'none' otherwise.
+  if (!isset($input['license_fieldset']['license_type']) ||
+    !is_string($input['license_fieldset']['license_type']) ||
+    !in_array($input['license_fieldset']['license_type'], $allowed_licenses)) {
+    $input['license_fieldset']['license_type'] = 'none';
   }
   // Clean up selected 'by' options.
-  if ($values['license_fieldset']['license_type'] != 'by') {
+  if ($input['license_fieldset']['license_type'] != 'by') {
     // Reset derivative, commercial and jurisdiction options when not 'by'.
     foreach ($by_options as $key => $opts) {
-      $values['license_fieldset'][$key] = $opts[0];
+      $input['license_fieldset'][$key] = $opts[0];
     }
   }
   else {
-    // Check if all selected options exist, reset them otherwise.
+    // Check if all selected options exist, are strings and allowed, reset them
+    // otherwise.
     foreach ($by_options as $key => $opts) {
-      if (!in_array($values['license_fieldset'][$key], $opts)) {
-        $values['license_fieldset'][$key] = $opts[0];
+      if (!isset($input['license_fieldset'][$key]) ||
+        !is_string($input['license_fieldset'][$key]) ||
+        !in_array($input['license_fieldset'][$key], $opts)) {
+        $input['license_fieldset'][$key] = $opts[0];
       }
     }
   }
+  // If version override is integer, make it a string.
+  if (isset($input['license_fieldset']['override_license_version']) &&
+    is_int($input['license_fieldset']['override_license_version'])) {
+    $input['license_fieldset']['override_license_version'] = (string) $input['license_fieldset']['override_license_version'];
+  }
+  // Clean up version override.
+  if (!isset($input['license_fieldset']['override_license_version']) ||
+    !is_string($input['license_fieldset']['override_license_version']) ||
+    !in_array($input['license_fieldset']['override_license_version'], array('0', '1')) ||
+    in_array($input['license_fieldset']['license_type'], array('none', 'manual'))) {
+    $input['license_fieldset']['override_license_version'] = '0';
+  }
   // Clean up version.
-  if (in_array($values['license_fieldset']['license_type'], array('none', 'manual'))) {
-    $values['license_fieldset']['license_version'] = '';
+  if (!isset($input['license_fieldset']['license_version']) ||
+    !is_string($input['license_fieldset']['license_version']) ||
+    ($input['license_fieldset']['override_license_version'] != '1') ||
+    in_array($input['license_fieldset']['license_type'], array('none', 'manual'))) {
+    $input['license_fieldset']['license_version'] = '';
   }
-  // Nuke license URI if not in manual mode.
-  if ($values['license_fieldset']['license_type'] != 'manual') {
-    $values['license_fieldset']['license_uri'] = '';
+  // Empty license URI if unset, not a string or not in manual mode.
+  if (!isset($input['license_fieldset']['license_uri']) ||
+    !is_string($input['license_fieldset']['license_uri']) ||
+    ($input['license_fieldset']['license_type'] != 'manual')) {
+    $input['license_fieldset']['license_uri'] = '';
   }
-  // Return cleaned-up user values.
-  return $values;
+  // Return cleaned-up user input.
+  return $input;
 }
 
 /**
@@ -557,8 +653,8 @@ function xml_form_elements_creative_commons_get_values_from_uri($license_uri) {
   $supported_licenses = array_diff(array_keys(xml_form_elements_creative_commons_license_type_options()), array('none', 'manual'));
 
   // Make a default array based on the URI.
-  $values = xml_form_elements_creative_commons_cleanup_values(
-    xml_form_elements_creative_commons_make_value_array('manual', '', '', '', '', $license_uri)
+  $values = xml_form_elements_creative_commons_cleanup_input(
+    xml_form_elements_creative_commons_make_value_array('manual', '', '', '', '0', '', $license_uri)
   );
 
   // If no license URI is set, default to no output.
@@ -572,15 +668,15 @@ function xml_form_elements_creative_commons_get_values_from_uri($license_uri) {
     $uri_value_array = array_reverse(explode('/',
       preg_replace('#^' . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . '#', '', $license_uri)
     ));
-    // Remove the license path.
-    array_pop($uri_value_array);
+    // Get the license path.
+    $path = array_pop($uri_value_array);
     // Get license with properties.
     $properties = explode('-', array_pop($uri_value_array));
-    // If the license is supported, set the type.
-    if (in_array($properties[0], $supported_licenses)) {
+    // If the license is supported and has correct path, set the type.
+    if (in_array($properties[0], $supported_licenses) && (xml_form_elements_creative_commons_get_license_path($properties[0]) === $path)) {
       $values['license_fieldset']['license_type'] = $properties[0];
     }
-    // Parse 'by' options.
+    // Parse 'by' options; otherwise reset to manual if those options exist.
     if ($properties[0] == 'by') {
       foreach ($properties as $property) {
         switch ($property) {
@@ -601,6 +697,11 @@ function xml_form_elements_creative_commons_get_values_from_uri($license_uri) {
         }
       }
     }
+    elseif (count($properties) != 1) {
+      $values['license_fieldset']['license_type'] = 'manual';
+    }
+    // Since we do not know if version is newest, we set version overriding.
+    $values['license_fieldset']['override_license_version'] = '1';
     // Get version.
     $values['license_fieldset']['license_version'] = array_pop($uri_value_array);
     // Get jurisdiction.
@@ -685,43 +786,75 @@ function xml_form_elements_creative_commons_get_uri_from_values($values) {
 }
 
 /**
- * Process input and get values for `creative_commons` form element.
+ * Get markup and values for `creative_commons` form element.
  *
  * @param array $element
  *   The `creative_commons` form element.
- * @param array|NULL $input
- *   The user input (or NULL to retrieve defaults).
  * @param array $form_state
  *   The form state.
  *
  * @return array
- *   The associative array representing the form element values.
- *
- * Note that validation for the `creative_commons` element is done whithin this
- * function. This has the side effect that users cannot go to the previous step
- * in a mulit-step form before resolving erroneous choices.
+ *   An array containing:
+ *   - the markup for the chosen license;
+ *   - the associative value array for that license.
  */
-function xml_form_elements_creative_commons_process_input(&$element, $input, &$form_state) {
-  // Get defaults from element, if available.
-  $default_values = xml_form_elements_creative_commons_get_values_from_uri(isset($element['#default_value']) ? $element['#default_value'] : '');
-  // Set initial values.
-  $values = !empty($input) ? xml_form_elements_creative_commons_cleanup_values($input) : $default_values;
-  // If no output was requested, return.
-  if ($values['license_fieldset']['license_type'] == 'none') {
-    return $values;
+function xml_form_elements_creative_commons_get_processed_values(&$element, &$form_state) {
+  // Get current form values or defaults.
+  $values = isset($form_state['input'][$element['#name']]) ?
+    xml_form_elements_creative_commons_cleanup_input(is_string($form_state['values'][$element['#name']]) ?
+      xml_form_elements_creative_commons_get_values_from_uri($form_state['values'][$element['#name']]) :
+      $form_state['values'][$element['#name']]) :
+    xml_form_elements_creative_commons_get_values_from_uri(isset($element['#default_value']) ?
+      $element['#default_value'] :
+      '');
+
+  // Set prefix for license HTML markup.
+  $cc_prefix = '<strong>' . t('Selected license:') . '</strong> ';
+
+  // Define none markup.
+  $none = t('None.');
+
+  // Create empty values.
+  $empty_values = xml_form_elements_creative_commons_get_values_from_uri('');
+
+  // If some values are missing, return filled-up value array.
+  if (!isset($values['license_fieldset']) || !empty(array_diff_key($empty_values['license_fieldset'], $values['license_fieldset']))) {
+    $values['license_fieldset'] = array_merge($empty_values['license_fieldset'], isset($values['license_fieldset']) ? $values['license_fieldset'] : array());
+    drupal_set_message(t('An internal error occurred while processing the Creative Commons form element "@display_name" (unexpected data loss). Please inform the site administrator.', array("@display_name" => $element['license_fieldset']['#title'])), 'error');
+    watchdog('xml_form_elements', 'Unexpected data loss when processing element "@element_name" in "@form_name". Probably you just found a bug.', array('@element_name' => $element['#name'], '@form_name' => $form_state['storage'][FormStorage::STORAGE_ROOT]['name']), WATCHDOG_ERROR);
+    return array($cc_prefix . t('None (internal error).'), $values);
   }
-  // If in manual mode, try to guess the license, but reset to manual.
-  if ($values['license_fieldset']['license_type'] == 'manual') {
+
+  // Remember manual mode.
+  $manual = ($values['license_fieldset']['license_type'] == 'manual');
+
+  // If in manual mode, try to guess the license.
+  if ($manual) {
     $values = xml_form_elements_creative_commons_get_values_from_uri($values['license_fieldset']['license_uri']);
-    $values['license_fieldset']['license_type'] = 'manual';
   }
-  // If in manual mode with no license URI set, return.
-  if ($values['license_fieldset']['license_type'] == 'manual' && empty($values['license_fieldset']['license_uri'])) {
-    return $values;
+
+  // If in manual mode with no license URI set, set to empty.
+  if ($manual && empty($values['license_fieldset']['license_uri'])) {
+    $values = $empty_values;
+  }
+
+  // If no output was requested, return empty.
+  if ($values['license_fieldset']['license_type'] == 'none') {
+    // If in manual mode, re-set mode.
+    if ($manual) {
+      $empty_values['license_fieldset']['license_type'] = 'manual';
+    }
+    return array($cc_prefix . $none, $empty_values);
   }
 
   // Know if we have errors.
   $error = FALSE;
+
+  // Define the element for version errors.
+  $error_element = $element['#name'] . ($manual ? '][license_fieldset][license_uri' : '][license_fieldset][license_version');
+
+  // Define none with form errors markup.
+  $none_err = t('None (form has errors).');
 
   // Validate the initial version.
   if (!xml_form_elements_creative_commons_license_version_has_valid_format($values['license_fieldset']['license_version'])) {
@@ -741,18 +874,37 @@ function xml_form_elements_creative_commons_process_input(&$element, $input, &$f
     }
   }
 
-  // If there was an error, return.
+  // If there was an error, return current values.
   if ($error) {
-    return $values;
+    // If in manual mode, re-set mode.
+    if ($manual) {
+      $values['license_fieldset']['license_type'] = 'manual';
+    }
+    return array($cc_prefix . $none_err, $values);
   }
 
-  // Check if there is a newer version unless user sets the URI manually.
-  if (!in_array($values['license_fieldset']['license_type'], array('none', 'manual'))) {
-    // Prepare the API query (keep only what's needed).
-    $current_query = $values;
-    $current_query['license_fieldset']['license_version'] = '';
-    $current_query['license_fieldset']['license_uri'] = '';
-    $response = xml_form_elements_creative_commons_retrieve_api_response($element['#name'], 'api_data_get', $current_query, $form_state);
+  // Remember if _user_ wants to override version.
+  $override_version = isset($form_state['input'][$element['#name']]) &&
+    ((bool) ((int) $values['license_fieldset']['override_license_version']));
+
+  // If not in (pure) manual mode (i.e. we know the license), get the newest.
+  if ($values['license_fieldset']['license_type'] != 'manual') {
+    // Get the appropriate API path for the requested license type.
+    $api_path = xml_form_elements_creative_commons_get_api_path($values['license_fieldset']['license_type']);
+    // Default to standard for unknown licenses.
+    if (!$api_path) {
+      $api_path = 'license/standard/get';
+    }
+    // Prepare query options.
+    $api_options = array();
+    if ($values['license_fieldset']['license_type'] == 'by') {
+      $api_options = array(
+        'commercial' => $values['license_fieldset']['allow_commercial'],
+        'derivatives' => $values['license_fieldset']['allow_derivatives'],
+        'jurisdiction' => $values['license_fieldset']['license_jurisdiction'],
+      );
+    }
+    $response = xml_form_elements_creative_commons_query_api_get($api_path, $api_options);
     if ($response && $response->getName() != 'error') {
       // Get the newest license URI and get its version.
       $new_license_uri = (string) $response->{'license-uri'};
@@ -760,24 +912,22 @@ function xml_form_elements_creative_commons_process_input(&$element, $input, &$f
       $new_version = $new_values['license_fieldset']['license_version'];
       // Get current version.
       $version = $values['license_fieldset']['license_version'];
-      // Check version validity, if specified.
-      if ($version != '' && (float) $new_version != (float) $version) {
+      // Check version validity, if overriding.
+      if (($values['license_fieldset']['override_license_version'] == '1') && $version != '' && ((float) $new_version != (float) $version)) {
         // Update the target license URI's version.
         $new_license_uri = str_replace($new_version, $version, $new_license_uri);
         // Compare versions.
         if ((float) $new_version < (float) $version) {
           // The specified version is too high.
           $error = TRUE;
-          form_set_error($element['#name'] . '][license_fieldset][license_version', t("CC license version not (yet) available."));
+          form_set_error($error_element, t("CC license version not (yet) available."));
         }
       }
       else {
         // We queried the newest version, or the specified version is already
-        // the newest. We make sure the version is empty for the next request.
-        $values['license_fieldset']['license_version'] = '';
-        // Manually update cache for output.
-        $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $new_license_uri);
-        xml_form_elements_creative_commons_store_api_response($element['#name'], 'api_data', $current_query, $response, $form_state);
+        // the newest. We update the version and switch to non-overriding.
+        $values['license_fieldset']['license_version'] = $new_version;
+        $values['license_fieldset']['override_license_version'] = '0';
       }
     }
     else {
@@ -790,19 +940,36 @@ function xml_form_elements_creative_commons_process_input(&$element, $input, &$f
       }
       $new_license_uri = xml_form_elements_creative_commons_get_uri_from_values($values);
     }
-    // Store the new license URI.
-    $values['license_fieldset']['license_uri'] = $new_license_uri;
+    // If we had already a URI in manual mode and it differs from the new one,
+    // reset to manual now; otherwise store the new license URI.
+    if ($manual && (!empty($values['license_fieldset']['license_uri']) && $values['license_fieldset']['license_uri'] !== $new_license_uri)) {
+      $values['license_fieldset']['license_type'] = 'manual';
+    }
+    else {
+      $values['license_fieldset']['license_uri'] = $new_license_uri;
+    }
+    // Reset version overriding in automatic mode, if _user_ requested it.
+    if (!$manual && $override_version) {
+      $values['license_fieldset']['override_license_version'] = '1';
+    }
   }
 
-  // If there was an error, return.
+  // If there was an error, return current values.
   if ($error) {
-    return $values;
+    // If in manual mode, re-set mode.
+    if ($manual) {
+      $values['license_fieldset']['license_type'] = 'manual';
+    }
+    return array($cc_prefix . $none_err, $values);
   }
 
-  // Check the URI we are about to return.
-  if (!empty($values['license_fieldset']['license_uri'])) {
-    $current_query = xml_form_elements_creative_commons_make_value_array('', '', '', '', '', $values['license_fieldset']['license_uri']);
-    $response = xml_form_elements_creative_commons_retrieve_api_response($element['#name'], 'api_data', $current_query, $form_state);
+  // If in manual mode, or if the previous request was unsuccessful, or if a
+  // different version was specified, query the API for validation for
+  // non-empty URIs.
+  if ((($values['license_fieldset']['license_type'] == 'manual') || !isset($new_version) || ($version != '' && ((float) $version != (float) $new_version)))
+    && !empty($values['license_fieldset']['license_uri'])) {
+    // Get the license details for the specified license URI.
+    $response = xml_form_elements_creative_commons_query_api_details($values['license_fieldset']['license_uri']);
     if ($response) {
       if ($response->getName() == 'error') {
         // The license URI is not recognized.
@@ -811,7 +978,7 @@ function xml_form_elements_creative_commons_process_input(&$element, $input, &$f
           form_set_error($element['#name'] . '][license_fieldset][license_uri', t("CC license URI seems to be invalid. Perhaps you would prefer to choose one automatically?"));
         }
         else {
-          form_set_error($element['#name'] . '][license_fieldset][license_version', t("CC license version does not seem to exist."));
+          form_set_error($error_element, t("CC license version does not seem to exist."));
         }
       }
     }
@@ -821,8 +988,47 @@ function xml_form_elements_creative_commons_process_input(&$element, $input, &$f
     }
   }
 
-  // Return the values for the form element.
-  return $values;
+  // If there was an error, return current values.
+  if ($error) {
+    // If in manual mode, re-set mode.
+    if ($manual) {
+      $values['license_fieldset']['license_type'] = 'manual';
+    }
+    return array($cc_prefix . $none_err, $values);
+  }
+
+  // Prepare the license markup.
+  $cc_markup = $none;
+  // If the license URI is set (as expected), get the API markup.
+  if (!empty($values['license_fieldset']['license_uri'])) {
+    if (!$response) {
+      $cc_markup = t('"@uri" (manually generated since Creative Commons API could not be reached).', array('@uri' => $values['license_fieldset']['license_uri']));
+    }
+    elseif ($response->getName() == 'error') {
+      // We should never be here.
+      drupal_set_message(t('An unexpected error occurred with the Creative Commons form element "@display_name". Please inform the site administrator.', array('@display_name' => $element['license_fieldset']['#title'])), 'error');
+      watchdog('xml_form_elements', 'The Creative Commons API returned an error on "@uri" that should have been cought already. This happened while processing element "@element_name" in "@form_name". Probably you just found a bug.', array(
+        '@uri' => $element['license_fieldset']['license_uri'],
+        '@element_name' => $element['#name'],
+        '@form_name' => $form_state['storage'][FormStorage::STORAGE_ROOT]['name'],
+      ), WATCHDOG_ERROR);
+    }
+    else {
+      // Get the HTML markup for the selected license.
+      $cc_markup = $response->html->asXml();
+      // Mend bogus <html> tags.
+      $cc_markup = preg_replace('#^<html>#', '<div>', $cc_markup);
+      $cc_markup = preg_replace('#</html>$#', '</div>', $cc_markup);
+    }
+  }
+
+  // If in manual mode, re-set mode.
+  if ($manual) {
+    $values['license_fieldset']['license_type'] = 'manual';
+  }
+
+  // Return current values.
+  return array($cc_prefix . $cc_markup, $values);
 }
 
 /**
@@ -880,12 +1086,7 @@ function xml_form_elements_creative_commons_get_api_path($license) {
  * insert those licenses manually, and admins cannot set them as default.
  */
 function xml_form_elements_creative_commons_query_api_get($path, $options = array()) {
-  $response = drupal_http_request(url(XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL . $path, array('query' => $options)));
-  if ($response->code != 200) {
-    watchdog('xml_form_elements', 'The Creative Commons API responded with code %code.', array('%code' => $response->code), WATCHDOG_WARNING);
-    return FALSE;
-  }
-  return simplexml_load_string($response->data, 'SimpleXMLElement');
+  return _xml_form_elements_creative_commons_query_api($path, $options);
 }
 
 /**
@@ -899,89 +1100,28 @@ function xml_form_elements_creative_commons_query_api_get($path, $options = arra
  *   failed.
  */
 function xml_form_elements_creative_commons_query_api_details($license_uri) {
-  $response = drupal_http_request(url(XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL . 'details', array('query' => array('license-uri' => $license_uri))));
+  return _xml_form_elements_creative_commons_query_api('details', array('license-uri' => $license_uri));
+}
+
+/**
+ * Helper function to query the CC API.
+ *
+ * @param string $path
+ *   The API path to query.
+ * @param array $query
+ *   The query.
+ *
+ * @return SimpleXMLElement|FALSE
+ *   The response from the REST API as a SimpleXMLElement, or FALSE if request
+ *   failed.
+ */
+function _xml_form_elements_creative_commons_query_api($path, $query = array()) {
+  $response = drupal_http_request(url(XML_FORM_ELEMENTS_CREATIVE_COMMONS_API_URL . $path, array('query' => $query)));
   if ($response->code != 200) {
     watchdog('xml_form_elements', 'The Creative Commons API responded with code %code.', array('%code' => $response->code), WATCHDOG_WARNING);
     return FALSE;
   }
   return simplexml_load_string($response->data, 'SimpleXMLElement');
-}
-
-/**
- * Store an API response in storage.
- *
- * @param string $element_name
- *   The `creative_commons` element's name.
- * @param string $storage_folder
- *   The storage "subfolder".
- * @param array $values
- *   The associative value array that was used in the query
- *   (@see xml_form_elements_creative_commons_make_value_array())
- * @param SimpleXMLElement $response
- *   The API response.
- * @param array $form_state
- *   The form state.
- */
-function xml_form_elements_creative_commons_store_api_response($element_name, $storage_folder, $values, $response, &$form_state) {
-  if (!isset($form_state['storage']['xml_form_elements'][$element_name][$storage_folder])) {
-    $form_state['storage']['xml_form_elements'][$element_name][$storage_folder] = array();
-  }
-  $form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['query'] = $values;
-  $form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response'] = ($response !== FALSE) ? $response->asXML() : FALSE;
-}
-
-/**
- * Perform API request and cache in storage.
- *
- * @param string $element_name
- *   The `creative_commons` element's name.
- * @param string $storage_folder
- *   The storage "subfolder".
- * @param array $values
- *   The associative value array to use in the query
- *   (@see xml_form_elements_creative_commons_make_value_array()).
- * @param array $form_state
- *   The form state.
- *
- * @return mixed
- *   SimpleXMLElement the return from the REST API.
- *   FALSE if failed request.
- */
-function xml_form_elements_creative_commons_retrieve_api_response($element_name, $storage_folder, $values, &$form_state) {
-  if (isset($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['query']) &&
-    $form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['query'] == $values &&
-    isset($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response']) &&
-    ($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response'] !== FALSE)) {
-    // Get response from storage.
-    $response = simplexml_load_string($form_state['storage']['xml_form_elements'][$element_name][$storage_folder]['response'], 'SimpleXMLElement');
-  }
-  else {
-    if (empty($values['license_fieldset']['license_uri'])) {
-      // Without specified URI, get a fresh license based on input values.
-      $api_path = xml_form_elements_creative_commons_get_api_path($values['license_fieldset']['license_type']);
-      // Default to standard for unknown licenses.
-      if (!$api_path) {
-        $api_path = 'license/standard/get';
-      }
-      // Prepare query options.
-      $api_options = array();
-      if ($values['license_fieldset']['license_type'] == 'by') {
-        $api_options = array(
-          'commercial' => $values['license_fieldset']['allow_commercial'],
-          'derivatives' => $values['license_fieldset']['allow_derivatives'],
-          'jurisdiction' => $values['license_fieldset']['license_jurisdiction'],
-        );
-      }
-      $response = xml_form_elements_creative_commons_query_api_get($api_path, $api_options);
-    }
-    else {
-      // Get the license details for the specified license URI.
-      $response = xml_form_elements_creative_commons_query_api_details($values['license_fieldset']['license_uri']);
-    }
-    // Cache response.
-    xml_form_elements_creative_commons_store_api_response($element_name, $storage_folder, $values, $response, $form_state);
-  }
-  return $response;
 }
 
 /**
