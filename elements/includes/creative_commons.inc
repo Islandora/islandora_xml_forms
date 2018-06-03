@@ -818,8 +818,8 @@ function xml_form_elements_creative_commons_get_processed_values(&$element, &$fo
   $empty_values = xml_form_elements_creative_commons_get_values_from_uri('');
 
   // If some values are missing, return filled-up value array.
-  $missing_values = array_diff_key($empty_values['license_fieldset'], $values['license_fieldset']);
-  if (!isset($values['license_fieldset']) || !empty($missing_values)) {
+  $missing_values = array('license_fieldset' => array_diff_key($empty_values['license_fieldset'], $values['license_fieldset']));
+  if (!isset($values['license_fieldset']) || !empty($missing_values['license_fieldset'])) {
     $values['license_fieldset'] = array_merge($empty_values['license_fieldset'], isset($values['license_fieldset']) ? $values['license_fieldset'] : array());
     drupal_set_message(t('An internal error occurred while processing the Creative Commons form element "@display_name" (unexpected data loss). Please inform the site administrator.', array("@display_name" => $element['license_fieldset']['#title'])), 'error');
     watchdog('xml_form_elements', 'Unexpected data loss when processing element "@element_name" in "@form_name". Probably you just found a bug.', array('@element_name' => $element['#name'], '@form_name' => $form_state['storage'][FormStorage::STORAGE_ROOT]['name']), WATCHDOG_ERROR);
@@ -976,7 +976,14 @@ function xml_form_elements_creative_commons_get_processed_values(&$element, &$fo
         // The license URI is not recognized.
         $error = TRUE;
         if ($values['license_fieldset']['license_type'] == 'manual') {
-          form_set_error($element['#name'] . '][license_fieldset][license_uri', t("CC license URI seems to be invalid. Perhaps you would prefer to choose one automatically?"));
+          // If only the jurisdiction was unknown, alert the user; otherwise
+          // suggest choosing the license automatically.
+          if (strpos($values['license_fieldset']['license_uri'], $new_license_uri) === 0) {
+            form_set_error($element['#name'] . '][license_fieldset][license_uri', t("CC license jurisdiction unknown or not applicable for this license."));
+          }
+          else {
+            form_set_error($element['#name'] . '][license_fieldset][license_uri', t("CC license URI seems to be invalid. Perhaps you would prefer to choose one automatically?"));
+          }
         }
         else {
           form_set_error($error_element, t("CC license version does not seem to exist."));
