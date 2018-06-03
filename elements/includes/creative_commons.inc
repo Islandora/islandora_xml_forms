@@ -178,7 +178,7 @@ function xml_form_elements_creative_commons($element, &$form_state) {
   $element['license_fieldset']['license_type'] = array(
     '#type' => 'select',
     '#title' => t('Select a license type'),
-    '#description' => t('Select "@option" to avoid outputting a creative commons license. This will still output a blank element in the resulting XML, so make sure to use a cleanup template to remove it.', array('@option' => $license_options['none'])),
+    '#description' => t('Select "@option" to avoid outputting a creative commons license.', array('@option' => $license_options['none'])),
     '#empty_option' => $license_options['none'],
     '#empty_value' => 'none',
     '#options' => array_diff_key($license_options, array('none' => '')),
@@ -394,9 +394,9 @@ function _xml_form_elements_creative_commons_populate_element(&$element, &$form_
     $element['license_fieldset']['license_uri']['#required'] = ($values['license_fieldset']['license_type'] == 'manual');
   }
 
-  // Nuke the description of the type chooser when none was chosen.
+  // Replace the description of the type chooser when none was chosen.
   if ($element['license_fieldset']['license_type']['#value'] == 'none') {
-    unset($element['license_fieldset']['license_type']['#description']);
+    $element['license_fieldset']['license_type']['#description'] = t('Note that your selection will still output a blank element in the resulting XML, so make sure to use a cleanup template to remove it.');
   }
 }
 
