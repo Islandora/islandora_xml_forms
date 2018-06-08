@@ -551,7 +551,7 @@ function xml_form_elements_creative_commons_license_uri_has_valid_format($licens
   if (empty($license_uri) || (
     preg_match("#^" . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . "[a-z]+/[a-z+-]+/[0-9]\.[0-9]/([a-z]+/)?$#", $license_uri) &&
     (!preg_match("#/by[-/]#", $license_uri) ||
-      preg_match("#^" . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . xml_form_elements_creative_commons_get_license_path('by') . "/by((-nc)?(-nd|-sa?)|(-nd|-sa)?(-nc)?)/#", $license_uri))
+      preg_match("#^" . XML_FORM_ELEMENTS_CREATIVE_COMMONS_BASE_URL . xml_form_elements_creative_commons_get_license_path('by') . "/by((-nc)?(-nd|-sa)?|(-nd|-sa)?(-nc)?)/#", $license_uri))
   )) {
     return TRUE;
   }
