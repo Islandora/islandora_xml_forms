@@ -1153,7 +1153,7 @@ function _xml_form_elements_creative_commons_query_api($path, $query = array()) 
  *
  * @return mixed
  *   SimpleXMLElement the return from the REST API.
- *   FALSE if failed request.
+ *   FALSE if failed request or if `$disabled` evaluates to `TRUE`.
  */
 function xml_form_elements_get_creative_commons($commercial, $derivatives, $jurisdiction, $disabled = FALSE) {
   // Show deprecated message.
@@ -1194,7 +1194,8 @@ function xml_form_elements_get_creative_commons($commercial, $derivatives, $juri
  *   If TRUE, return empty string; otherwise generate the URI.
  *
  * @return string
- *   The value of the element.
+ *   The value of the element, or the empty string `''` if `$disabled`
+ *   evaluates to `TRUE`.
  */
 function xml_form_elements_creative_commons_value($commercial, $derivatives, $jurisdiction, $disabled = FALSE) {
   // Show deprecated message.
