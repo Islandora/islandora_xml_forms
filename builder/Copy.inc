@@ -55,7 +55,8 @@ function xml_form_builder_copy($form, array &$form_state, $form_name) {
 /**
  * Validates the name Drupal Form Element.
  *
- * Ensures that the name doesn't match any existing form names.
+ * Ensures that the name does not match any existing form names and that it
+ * does not contain troublesome characters.
  *
  * @param array $element
  *   The name Drupal Form Element.
@@ -65,6 +66,17 @@ function xml_form_builder_copy($form, array &$form_state, $form_name) {
 function xml_form_builder_copy_validate_name(array $element, array &$form_state) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
   $form_name = &$form_state['values']['form_name'];
+  $forbidden_chars = array('/', '#', '?');
+  foreach ($forbidden_chars as $char) {
+    if (strpos($form_name, $char) !== FALSE) {
+      $error_msg = t('The given form name "%name" is not allowed to contain any of the following characters: "@charlist".', array(
+        '%name' => $form_name,
+        '@charlist' => implode('", "', $forbidden_chars),
+      ));
+      form_set_error('form_name', $error_msg);
+      break;
+    }
+  }
   if (XMLFormRepository::Exists($form_name)) {
     $error_msg = t('The given form name "%name" is already in use. Form names must be unique.', array('%name' => $form_name));
     form_set_error('form_name', $error_msg);
