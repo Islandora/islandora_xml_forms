@@ -81,6 +81,10 @@ Having problems or solved a problem? Check out the Islandora google groups for a
 * [Islandora Dev Group](https://groups.google.com/forum/?hl=en&fromgroups#!forum/islandora-dev)
 * Note if you get error "XML form definition is not valid." during ingest you need to update your libxml2 version to 2.7+
 
+### Known Issues
+
+* **Creative Commons Form Element**: Note that there seems to be a bug in the Creative Commons API triggered by certain combinations of _License Jurisdiction_ and other parameters. Querying, e.g., "Yes, as long as others share alike" for _Allow modifications of your work?_ and "Finland" for _License Jurisdiction_ results in a CC-BY-SA, resp. CC-BY-NC-SA, _4.0 International_ license, instead of the corresponding _1.0 Finland_ version (which exists and is not deprecated). The only way to obtain the correct license in this case is to enter `http://creativecommons.org/licenses/by-sa/1.0/fi/`, resp. `http://creativecommons.org/licenses/by-nc-sa/1.0/fi/`, _manually_ (choose "Manually select a license URI" for _Select a license type_). Also, this kind of licenses cannot be set by administrators in Form Builder as _Default Value_ for the Creative Commons Form Element.
+
 ## FAQ
 
 Q. Can I convert an existing field to any form element type listed in the "Type" options under the "Common Form Controls" tab (or create new form elements using any form element type)?
