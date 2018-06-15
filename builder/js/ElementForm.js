@@ -1217,6 +1217,7 @@ Ext.formbuilder.createElementForm = function () {
         items: [{
           xtype: 'formgrid',
           id: 'attributes',
+          autoScroll: true,
           name: 'attributes',
           title: Drupal.t('Attributes'),
           store: Ext.create('Ext.data.Store', {
@@ -1267,6 +1268,7 @@ Ext.formbuilder.createElementForm = function () {
           xtype: 'formgrid',
           id: 'element_validate',
           name: 'element_validate',
+          autoScroll: true,
           title: Drupal.t('Element Validate'),
           store: Ext.create('Ext.data.Store', {
             fields:['value'],
@@ -1307,6 +1309,7 @@ Ext.formbuilder.createElementForm = function () {
           title: Drupal.t('Process'),
           id: 'process',
           name: 'process',
+          autoScroll: true,
           store: Ext.create('Ext.data.Store', {
             fields:['value'],
             proxy: {
@@ -1345,6 +1348,7 @@ Ext.formbuilder.createElementForm = function () {
           title: Drupal.t('Pre Render'),
           id: 'pre_render',
           name: 'pre_render',
+          autoScroll: true,
           store: Ext.create('Ext.data.Store', {
             fields:['value'],
             proxy: {
@@ -1388,6 +1392,7 @@ Ext.formbuilder.createElementForm = function () {
           title: Drupal.t('Post Render'),
           id: 'post_render',
           name: 'post_render',
+          autoScroll: true,
           store: Ext.create('Ext.data.Store', {
             fields:['value'],
             proxy: {
@@ -1431,6 +1436,7 @@ Ext.formbuilder.createElementForm = function () {
           title: Drupal.t('After Build'),
           id: 'after_build',
           name: 'after_build',
+          autoScroll: true,
           store: Ext.create('Ext.data.Store', {
             fields:['value'],
             proxy: {
@@ -1467,6 +1473,7 @@ Ext.formbuilder.createElementForm = function () {
         }, {
           xtype: 'formgrid',
           id: 'options',
+          autoScroll: true,
           name: 'options',
           title: Drupal.t('Options'),
           store: Ext.create('Ext.data.Store', {
@@ -1517,6 +1524,7 @@ Ext.formbuilder.createElementForm = function () {
           title: Drupal.t('User Data'),
           id: 'user_data',
           name: 'user_data',
+          autoScroll: true,
           store: Ext.create('Ext.data.Store', {
             fields:['key', 'value'],
             proxy: {
@@ -1565,6 +1573,7 @@ Ext.formbuilder.createElementForm = function () {
           title: Drupal.t('Submit'),
           id: 'submit',
           name: 'submit',
+          autoScroll: true,
           store: Ext.create('Ext.data.Store', {
             fields:['value'],
             proxy: {
@@ -1604,6 +1613,7 @@ Ext.formbuilder.createElementForm = function () {
           title: Drupal.t('Validate'),
           id: 'validate',
           name: 'validate',
+          autoScroll: true,
           store: Ext.create('Ext.data.Store', {
             fields:['value'],
             proxy: {
