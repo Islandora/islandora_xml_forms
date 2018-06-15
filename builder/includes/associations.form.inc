@@ -20,7 +20,7 @@
  * @param array $form_state
  *   The drupal form state.
  * @param string $form_name
- *   The name of an XML form.
+ *   The name of an XML form (rawurlencoded).
  *
  * @return array
  *   The drupal form definition.
@@ -29,6 +29,11 @@ function xml_form_builder_associations_form(array $form, array &$form_state, $fo
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
   form_load_include($form_state, 'inc', 'xml_form_builder', 'includes/associations.form');
 
+  $form_name = rawurldecode($form_name);
+  $breadcrumb[] = l(t('Home'), '<front>');
+  $breadcrumb[] = l(t('Islandora Admin'), 'admin/islandora');
+  $breadcrumb[] = l(t('Form Builder'), 'admin/islandora/xmlform');
+  drupal_set_breadcrumb($breadcrumb);
   $associations = xml_form_builder_get_associations(array($form_name), array(), array(), FALSE);
   $create_table_rows = function ($association) {
     if (is_array($association['title_field'])) {
@@ -205,8 +210,8 @@ function xml_form_builder_get_title_options($form_name) {
  * provided by a hook.
  *
  * @param string $form_name
- *   The name of the form for which the associations are being adjusted.
- *   (used to redirect).
+ *   The name of the form for which the associations are being adjusted
+ *   (rawurlencoded; used to redirect).
  * @param string|int $id
  *   The identifier for the form association.  A string for "default" forms
  *   (added in via associations), and an integer for associations added via
@@ -214,6 +219,7 @@ function xml_form_builder_get_title_options($form_name) {
  */
 function xml_form_builder_disable_association($form_name, $id) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
+  $form_name = rawurldecode($form_name);
   $association = xml_form_builder_get_association($id);
   if (!isset($association)) {
     drupal_set_message(t('Specified association does not exist.'), 'error');
@@ -261,8 +267,8 @@ function xml_form_builder_disable_association($form_name, $id) {
  * Enable a default association identified by $id.
  *
  * @param string $form_name
- *   The name of the form for which the associations are being adjusted.
- *   (used to redirect).
+ *   The name of the form for which the associations are being adjusted
+ *   (rawurlencoded; used to redirect).
  * @param string $id
  *   The identifier for the form association. Note that only "default"
  *   associations added via hook_xml_form_builder_form_associations() can be
@@ -270,6 +276,7 @@ function xml_form_builder_disable_association($form_name, $id) {
  */
 function xml_form_builder_enable_association($form_name, $id) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
+  $form_name = rawurldecode($form_name);
   $association = xml_form_builder_get_association($id);
   if (!isset($association)) {
     drupal_set_message(t('Specified association does not exist.'), 'error');
@@ -311,7 +318,7 @@ function xml_form_builder_enable_association($form_name, $id) {
  * @param array $form_state
  *   The drupal form state.
  * @param string $form_name
- *   The name of an XML form.
+ *   The name of an XML form (rawurlencoded).
  * @param string $id
  *   The id of this association.
  *
@@ -320,6 +327,7 @@ function xml_form_builder_enable_association($form_name, $id) {
  */
 function xml_form_builder_edit_association_form(array $form, array &$form_state, $form_name, $id) {
   module_load_include('inc', 'xml_form_builder', 'includes/associations');
+  $form_name = rawurldecode($form_name);
   $association = xml_form_builder_get_association($id);
   $options = xml_form_builder_get_title_options($form_name);
   if (is_array($association['title_field'])) {

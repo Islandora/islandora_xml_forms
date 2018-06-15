@@ -195,8 +195,8 @@ function xml_form_builder_menu() {
     'type' => MENU_CALLBACK,
   );
   $items[XML_FORM_BUILDER_ASSOCIATIONS_MENU] = array(
-    'title' => 'Associate Form "@form"',
-    'title arguments' => array('@form' => 4),
+    'title arguments' => array(4),
+    'title callback' => '_xml_form_builder_associations_menu_title_callback',
     'description' => 'Associate a form.',
     'file' => 'includes/associations.form.inc',
     'page callback' => 'drupal_get_form',
@@ -250,6 +250,16 @@ function xml_form_builder_menu() {
   );
   return $items;
 }
+
+/**
+ * Title callback for associations menu.
+ *
+ * @param string $name
+ *   The form name (rawurlencoded).
+ */
+function _xml_form_builder_associations_menu_title_callback($name) {
+  return t('Associate Form "@form"', array('@form' => rawurldecode($name)));
+};
 
 /**
  * Implements hook_menu_alter().
@@ -345,10 +355,11 @@ function xml_form_builder_permission() {
  * Downloads the XML Form Definition to the clients computer..
  *
  * @param string $form_name
- *   The name of the form to download.
+ *   The name of the form to download (rawurlencoded).
  */
 function xml_form_builder_export($form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
+  $form_name = rawurldecode($form_name);
   header('Content-Type: text/xml', TRUE);
   header('Content-Disposition: attachment; filename="' . $form_name . '.xml"');
   $definition = XMLFormRepository::Get($form_name);
@@ -361,12 +372,13 @@ function xml_form_builder_export($form_name) {
  * Gets the path to the copy page for the given form name.
  *
  * @param string $form_name
- *   The form to load the copy page with.
+ *   The form to load the copy page with (rawurlencoded).
  *
  * @return string
  *   The path to the copy page.
  */
 function xml_form_builder_get_copy_form_path($form_name) {
+  $form_name = rawurlencode($form_name);
   return str_replace('%', $form_name, XML_FORM_BUILDER_COPY_MENU);
 }
 
@@ -374,12 +386,13 @@ function xml_form_builder_get_copy_form_path($form_name) {
  * Gets the path to the edit page for the given form name.
  *
  * @param string $form_name
- *   The form to load the edit page with.
+ *   The form to load the edit page with (rawurlencoded).
  *
  * @return string
  *   The path to the edit page.
  */
 function xml_form_builder_get_edit_form_path($form_name) {
+  $form_name = rawurlencode($form_name);
   return str_replace('%', $form_name, XML_FORM_BUILDER_EDIT_MENU);
 }
 
@@ -387,12 +400,13 @@ function xml_form_builder_get_edit_form_path($form_name) {
  * Gets the path to the view page for the given form name.
  *
  * @param string $form_name
- *   The form to load the view page with.
+ *   The form to load the view page with (rawurlencoded).
  *
  * @return string
  *   The path to the view page.
  */
 function xml_form_builder_get_view_form_path($form_name) {
+  $form_name = rawurlencode($form_name);
   return str_replace('%', $form_name, XML_FORM_BUILDER_VIEW_MENU);
 }
 
@@ -400,12 +414,13 @@ function xml_form_builder_get_view_form_path($form_name) {
  * Gets the path to the delete page for the given form name.
  *
  * @param string $form_name
- *   The form to load the delete page with.
+ *   The form to load the delete page with (rawurlencoded).
  *
  * @return string
  *   The path to the delete page.
  */
 function xml_form_builder_get_export_form_path($form_name) {
+  $form_name = rawurlencode($form_name);
   return str_replace('%', $form_name, XML_FORM_BUILDER_EXPORT_CALLBACK);
 }
 
@@ -413,12 +428,13 @@ function xml_form_builder_get_export_form_path($form_name) {
  * Gets the path to the delete page for the given form name.
  *
  * @param string $form_name
- *   The form to load the delete page with.
+ *   The form to load the delete page with (rawurlencoded).
  *
  * @return string
  *   The path to the delete page.
  */
 function xml_form_builder_get_delete_form_path($form_name) {
+  $form_name = rawurlencode($form_name);
   return str_replace('%', $form_name, XML_FORM_BUILDER_DELETE_MENU);
 }
 
@@ -426,12 +442,13 @@ function xml_form_builder_get_delete_form_path($form_name) {
  * Gets the path to the associations page for the given form name.
  *
  * @param string $form_name
- *   The form to load the associations page with.
+ *   The form to load the associations page with (rawurlencoded).
  *
  * @return string
  *   The path to the associations page.
  */
 function xml_form_builder_get_associate_form_path($form_name) {
+  $form_name = rawurlencode($form_name);
   return str_replace('%', $form_name, XML_FORM_BUILDER_ASSOCIATIONS_MENU);
 }
 

@@ -16,13 +16,14 @@
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name
- *   The name of the form to preview.
+ *   The name of the form to preview (rawurlencoded).
  *
  * @return array
  *   A Drupal Form that represents the given form, identified by $form_name.
  */
 function xml_form_builder_preview(array $form, array &$form_state, $form_name) {
   form_load_include($form_state, 'inc', 'xml_form_builder', 'Preview');
+  $form_name = rawurldecode($form_name);
   $form = xml_form_builder_get_form($form, $form_state, $form_name);
   $breadcrumb[] = l(t('Home'), '<front>');
   $breadcrumb[] = l(t('Islandora Admin'), 'admin/islandora');
