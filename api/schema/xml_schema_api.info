@@ -3,7 +3,7 @@ description = Provides functions and classes that allow for effective use of inf
 
 dependencies[] = php_lib
 package =  Islandora Dependencies
-version = 7.x-1.11RC1
+version = 7.x-1.11
 core = 7.x
 
 files[] = tests/ComplexType.test
