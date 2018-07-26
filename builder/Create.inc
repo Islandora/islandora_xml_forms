@@ -63,7 +63,7 @@ function xml_form_builder_create($form, array &$form_state, $type) {
 /**
  * Validates the name Drupal Form Element.
  *
- * Ensures that the name doesn't match any existing form names.
+ * Ensures that the name does not match any existing form names.
  *
  * @param array $element
  *   The name Drupal Form Element.

@@ -13,13 +13,14 @@
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name
- *   The name of the form to copy.
+ *   The name of the form to copy (rawurlencoded).
  *
  * @return array
  *   The Drupal Form.
  */
 function xml_form_builder_copy($form, array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormRepository');
+  $form_name = rawurldecode($form_name);
   if (isset($_POST['cancel'])) {
     drupal_goto(XML_FORM_BUILDER_MAIN_MENU);
   }
@@ -55,7 +56,7 @@ function xml_form_builder_copy($form, array &$form_state, $form_name) {
 /**
  * Validates the name Drupal Form Element.
  *
- * Ensures that the name doesn't match any existing form names.
+ * Ensures that the name does not match any existing form names.
  *
  * @param array $element
  *   The name Drupal Form Element.

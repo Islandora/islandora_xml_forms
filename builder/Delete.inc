@@ -13,13 +13,14 @@
  * @param array $form_state
  *   The Drupal Form State.
  * @param string $form_name
- *   The name of the form to delete.
+ *   The name of the form to delete (rawurlencoded).
  *
  * @return array
  *   The Drupal Form.
  */
 function xml_form_builder_delete($form, array &$form_state, $form_name) {
   module_load_include('inc', 'xml_form_builder', 'XMLFormDatabase');
+  $form_name = rawurldecode($form_name);
   if (!XMLFormDatabase::Exists($form_name)) {
     drupal_set_message(t('Form "%name" does not exist.', array('%name' => $form_name)), 'error');
     drupal_not_found();
