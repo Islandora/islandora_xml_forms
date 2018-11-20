@@ -70,7 +70,7 @@ function xml_form_builder_schema() {
         'description' => 'An XSL transform for setting the Fedora object\'s Dublin Core metadata datastream.',
         'type' => 'varchar',
         'length' => 128,
-        'not null' => TRUE,
+        'not null' => FALSE,
       ),
       'self_transform' => array(
         'description' => 'A xsl transform for setting the Fedora Object\'s Dublin Core metadata datastream.',
@@ -522,14 +522,6 @@ function xml_form_builder_update_7106() {
       'not null' => TRUE,
     )
   );
-  db_change_field('xml_form_builder_form_associations', 'transform', 'transform',
-    array(
-      'description' => 'An XSL transform for setting the Fedora object\'s Dublin Core metadata datastream.',
-      'type' => 'varchar',
-      'length' => 128,
-      'not null' => TRUE,
-    )
-  );
   db_change_field('xml_form_builder_form_associations', 'template', 'template',
     array(
       'description' => 'A sample metadata file used to prepopulate the form on ingest.',
@@ -619,4 +611,20 @@ function xml_form_builder_update_7106() {
     db_add_primary_key('xml_form_builder_association_hooks', array('id'));
     db_add_primary_key('xml_form_builder_xslts', array('xslt_id'));
   }
+}
+
+/**
+ * Allow null in tranform field.
+ *
+ * Previous update was causing issues when the transform was allowed to be null.
+ */
+function xml_form_builder_update_7107() {
+  db_change_field('xml_form_builder_form_associations', 'transform', 'transform',
+    array(
+      'description' => 'An XSL transform for setting the Fedora object\'s Dublin Core metadata datastream.',
+      'type' => 'varchar',
+      'length' => 128,
+      'not null' => FALSE,
+    )
+  );
 }
