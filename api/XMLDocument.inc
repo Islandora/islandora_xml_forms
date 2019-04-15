@@ -141,7 +141,7 @@ class XMLDocument {
     $document = $this->createDOMDocument();
     // Load from XML or create the root node.
     isset($xml) ?
-        $document->loadXML($xml) :
+        $document->loadXML(islandora_sanitize_input_for_valid_xml($xml)) :
         $document->appendChild(new DOMElement($root_name, NULL, $namespaces->getDefaultURI()));
     $this->namespaces->addNamespacesAttributesTo($document->documentElement);
     return $document;
