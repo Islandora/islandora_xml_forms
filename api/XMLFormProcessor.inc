@@ -46,7 +46,7 @@ class XMLFormProcessAction {
   public function __construct(ActionInterface $action, FormElement $element, $value = NULL) {
     $this->action = $action;
     $this->element = $element;
-    $this->value = $value;
+    $this->value = islandora_sanitize_input_for_valid_xml($value);
   }
 
   /**
