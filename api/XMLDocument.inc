@@ -141,7 +141,7 @@ class XMLDocument {
     $document = $this->createDOMDocument();
     // Load from XML or create the root node.
     isset($xml) ?
-        $document->loadXML($xml) :
+        $document->loadXML(preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $xml)) :
         $document->appendChild(new DOMElement($root_name, NULL, $namespaces->getDefaultURI()));
     $this->namespaces->addNamespacesAttributesTo($document->documentElement);
     return $document;
