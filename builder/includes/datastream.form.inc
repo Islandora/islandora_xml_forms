@@ -155,6 +155,7 @@ function xml_form_builder_datastream_form_metadata_form(array $form, array &$for
   $form['update'] = array(
     '#type' => 'submit',
     '#value' => t('Update'),
+    '#suffix' => '<div class="updatewarning"><span class="warning" title="Warning">' . t('All hidden characters will be filtered and not saved.') . '</span></div>',
     '#name' => 'update',
     '#submit' => array('xml_form_builder_datastream_form_metadata_form_submit'),
   );
