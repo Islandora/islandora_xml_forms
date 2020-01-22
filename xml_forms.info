@@ -3,6 +3,7 @@ description = Build, store and render Drupal forms that allow for manipulation o
 dependencies[] = xml_form_api
 dependencies[] = xml_form_builder
 dependencies[] = xml_form_elements
+dependencies[] = islandora
 files[] = tests/islandora_xml_forms_associate.test
 files[] = tests/islandora_xml_forms_basic_operations.test
 files[] = tests/islandora_xml_forms_test_cm_tests.test
