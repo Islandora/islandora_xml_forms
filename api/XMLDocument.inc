@@ -138,6 +138,7 @@ class XMLDocument {
    *   A DOMDocument created using the parameters passed in.
    */
   protected function createDocument($root_name, Namespaces $namespaces, $xml) {
+    module_load_include('inc', 'islandora', 'includes/utilities');
     $document = $this->createDOMDocument();
     // Load from XML or create the root node.
     isset($xml) ?
