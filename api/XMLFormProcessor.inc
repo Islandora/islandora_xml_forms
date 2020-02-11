@@ -44,6 +44,7 @@ class XMLFormProcessAction {
    *   The value that will be used in execution.
    */
   public function __construct(ActionInterface $action, FormElement $element, $value = NULL) {
+    module_load_include('inc', 'islandora', 'includes/utilities');
     $this->action = $action;
     $this->element = $element;
     $this->value = islandora_sanitize_input_for_valid_xml($value);
