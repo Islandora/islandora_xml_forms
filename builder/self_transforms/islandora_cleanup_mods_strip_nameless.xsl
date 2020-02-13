@@ -85,6 +85,5 @@
             <xsl:apply-templates select="node()[not(self::mods:scale|self::mods:projection|self::mods:coordinates|self::mods:cartographicExtension)]"/>
         </xsl:copy>
     </xsl:template>
-    <xsl:template match="mods:name[mods:namePart[.='']]"/>
     <xsl:template match="mods:name[not(mods:namePart)]"/>
 </xsl:stylesheet>
